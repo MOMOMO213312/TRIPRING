@@ -13,6 +13,11 @@ type Props = {
 /** Lets the traveler pick a country, browse every city TripRing flies to there,
  *  and jump straight into a prefilled search for the one they pick. */
 export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: Props) {
+  const fromCity = useMemo(
+    () => airports.find((a) => a.code === fromAirport)?.city ?? fromAirport,
+    [airports, fromAirport],
+  );
+
   const byCountry = useMemo(() => {
     const map = new Map<string, AirportRow[]>();
     for (const airport of airports) {
@@ -88,6 +93,7 @@ export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: P
                   to={`/search?from=${fromAirport}&to=${airport.code}`}
                   image={image}
                   title={airport.city}
+                  subtitle={`من ${fromCity}`}
                   price={null}
                 />
               );
