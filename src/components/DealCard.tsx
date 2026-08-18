@@ -147,11 +147,17 @@ export function DealCard({
         </div>
 
         <div className="mt-auto flex flex-col gap-2">
-          <Link to={`/book/${deal.id}`}>
-            <Button fullWidth variant="primary">
-              احجز الآن
+          {deal.available_seats > 0 ? (
+            <Link to={`/book/${deal.id}`}>
+              <Button fullWidth variant="primary">
+                احجز الآن
+              </Button>
+            </Link>
+          ) : (
+            <Button fullWidth variant="primary" disabled>
+              نفدت المقاعد
             </Button>
-          </Link>
+          )}
           <a href={whatsAppLink(waPhone, waMessage)} target="_blank" rel="noreferrer">
             <Button fullWidth variant="outline" className="gap-2 border-gray-300 text-gray-800">
               <WhatsAppIcon className="size-4 text-[#25D366]" />
