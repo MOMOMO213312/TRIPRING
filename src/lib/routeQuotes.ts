@@ -9,18 +9,16 @@ export type RouteQuote = {
   toCity: string;
   flightType: string | null;
   notes: string | null;
-  minPrice: number;
-  maxPrice: number;
-  market: number;
   bestDeal: DealRow | null;
   liveDeals: DealRow[]; // all live deals on this route, cheapest first
-  changePercent: number | null; // null when there's no live deal (shown as "MKT")
 };
 
 /**
  * Combines the static route_price_reference table with the currently-live deals
  * (already fetched on the homepage — no extra Supabase round-trip) to produce one
- * quote per route, each compared against its market average.
+ * quote per route. Only real, live deal prices are ever surfaced — no price is
+ * shown unless it matches exactly what the customer will see on the page the
+ * quote links to.
  */
 export function buildRouteQuotes(
   references: RoutePriceReferenceRow[],
@@ -33,8 +31,6 @@ export function buildRouteQuotes(
       .sort((a, b) => a.price - b.price);
 
     const bestDeal = liveDeals[0] ?? null;
-    const market = (ref.min_price_usd + ref.max_price_usd) / 2;
-    const changePercent = bestDeal ? Math.round(((bestDeal.price - market) / market) * 100) : null;
 
     return {
       key: ref.id,
@@ -44,12 +40,8 @@ export function buildRouteQuotes(
       toCity: airportLabel(ref.to_airport, airports),
       flightType: ref.flight_type,
       notes: ref.notes,
-      minPrice: ref.min_price_usd,
-      maxPrice: ref.max_price_usd,
-      market,
       bestDeal,
       liveDeals,
-      changePercent,
     };
   });
 }
