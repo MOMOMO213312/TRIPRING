@@ -109,7 +109,11 @@ export function HomePage() {
         </section>
 
         <div id="destinations">
-          <TravelToSection airports={catalog.airports} imageCache={catalog.imageCache} />
+          <TravelToSection
+            airports={catalog.airports}
+            imageCache={catalog.imageCache}
+            references={catalog.references}
+          />
         </div>
 
         <div id="budget">
