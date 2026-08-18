@@ -12,23 +12,31 @@ import { TrustStrip } from "../components/TrustStrip";
 import { WhyTripRing } from "../components/WhyTripRing";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { fetchBestOpportunities } from "../lib/api";
+import { fetchActiveDeals } from "../lib/api";
 import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
+
+const OPPORTUNITIES_LIMIT = 12;
 
 export function HomePage() {
   const navigate = useNavigate();
   const catalog = useCatalog();
-  const [opportunities, setOpportunities] = useState<DealRow[]>([]);
+  // Fetch every active deal once (sorted by deal_score) instead of only the
+  // top 12: the "best opportunities" cards still just take the first 12,
+  // but FareBoard/LiveDealsMap need the full live set or most routes show
+  // no price even though a live deal exists for them.
+  const [allActiveDeals, setAllActiveDeals] = useState<DealRow[]>([]);
   const [loadingDeals, setLoadingDeals] = useState(true);
   const [dealsError, setDealsError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchBestOpportunities(12)
-      .then(setOpportunities)
+    fetchActiveDeals({ sort: "deal_score", availableOnly: true })
+      .then(setAllActiveDeals)
       .catch((e) => setDealsError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoadingDeals(false));
   }, []);
+
+  const opportunities = allActiveDeals.slice(0, OPPORTUNITIES_LIMIT);
 
   function handleHeroSearch(params: {
     from: string;
@@ -67,7 +75,7 @@ export function HomePage() {
     <div>
       <HeroSection
         airports={catalog.airports}
-        deals={opportunities}
+        deals={allActiveDeals}
         references={catalog.references}
         onSearch={handleHeroSearch}
       />
