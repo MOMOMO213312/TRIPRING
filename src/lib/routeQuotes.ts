@@ -45,3 +45,48 @@ export function buildRouteQuotes(
     };
   });
 }
+
+export type RouteQuoteByTripType = {
+  key: string;
+  from: string;
+  to: string;
+  fromCity: string;
+  toCity: string;
+  /** Cheapest live one-way deal on this route (return_date is null), if any. */
+  oneWayDeal: DealRow | null;
+  /** Cheapest live round-trip deal on this route (return_date is set), if any. */
+  roundTripDeal: DealRow | null;
+};
+
+/**
+ * Same idea as buildRouteQuotes, but splits the live deals on each route into
+ * one-way (return_date === null) vs round-trip (return_date set) and returns
+ * the cheapest of each — so a route can surface an OW price, an RT price, or
+ * both, independently. Routes with neither are dropped, same as buildRouteQuotes.
+ */
+export function buildRouteQuotesByTripType(
+  references: RoutePriceReferenceRow[],
+  deals: DealRow[],
+  airports: AirportRow[],
+): RouteQuoteByTripType[] {
+  return references
+    .map((ref) => {
+      const routeDeals = deals.filter(
+        (d) => d.from_airport === ref.from_airport && d.to_airport === ref.to_airport,
+      );
+
+      const oneWayDeals = routeDeals.filter((d) => !d.return_date).sort((a, b) => a.price - b.price);
+      const roundTripDeals = routeDeals.filter((d) => d.return_date).sort((a, b) => a.price - b.price);
+
+      return {
+        key: ref.id,
+        from: ref.from_airport,
+        to: ref.to_airport,
+        fromCity: airportLabel(ref.from_airport, airports),
+        toCity: airportLabel(ref.to_airport, airports),
+        oneWayDeal: oneWayDeals[0] ?? null,
+        roundTripDeal: roundTripDeals[0] ?? null,
+      };
+    })
+    .filter((q) => q.oneWayDeal || q.roundTripDeal);
+}
