@@ -28,11 +28,6 @@ export function DealTicker({ deals, references, airports }: Props) {
         >
           {q.from} / {q.to}
           <span className="text-gray-500">${q.bestDeal!.price}</span>
-          {q.changePercent == null ? null : q.changePercent < 0 ? (
-            <span className="text-emerald-600">↓ {Math.abs(q.changePercent)}%</span>
-          ) : (
-            <span className="text-red-500">↑ {q.changePercent}%</span>
-          )}
         </Link>
       ))}
     </div>

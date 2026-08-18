@@ -10,10 +10,10 @@ type Props = {
   airports: AirportRow[];
 };
 
-/** Bloomberg-style ticker: one quote per route, live price vs market reference.
- *  Clicking a quote goes straight to its deal page (same destination as the
- *  LIVE DEALS ticker) — or to the route's search results when there's no
- *  live deal to link to yet. */
+/** Bloomberg-style ticker: one quote per route. Price is shown only when a real
+ *  live deal backs it — clicking goes straight to that deal page, so the price
+ *  in the ticker always matches the price on the page it links to. Routes with
+ *  no live deal yet show just the route name and link to search results. */
 export function FareBoard({ deals, references, airports }: Props) {
   const quotes = useMemo(() => buildRouteQuotes(references, deals, airports), [references, deals, airports]);
 
@@ -28,14 +28,7 @@ export function FareBoard({ deals, references, airports }: Props) {
           className="font-latin flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-white transition hover:opacity-80"
         >
           {q.from} / {q.to}
-          <span className="text-white/70">${q.bestDeal ? q.bestDeal.price : q.minPrice}</span>
-          {q.changePercent == null ? (
-            <span className="text-white/50">— MKT</span>
-          ) : q.changePercent < 0 ? (
-            <span className="text-emerald-400">↓ {Math.abs(q.changePercent)}%</span>
-          ) : (
-            <span className="text-red-400">↑ {q.changePercent}%</span>
-          )}
+          {q.bestDeal && <span className="text-white/70">${q.bestDeal.price}</span>}
         </Link>
       ))}
     </div>
