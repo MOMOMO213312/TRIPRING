@@ -10,12 +10,11 @@ import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
 import { createTicketResale, fetchActiveTicketResales, type TicketResaleRow } from "../lib/api";
+import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { useCatalog } from "../hooks/useCatalog";
 import { formatDate, formatPrice, whatsAppLink, WhatsAppIcon } from "../lib/utils";
 import type { ResaleReason } from "../types/database";
-
-const PLATFORM_WHATSAPP = "+201220534968";
 
 const REASON_LABEL: Record<ResaleReason, string> = {
   non_refundable: "غير قابلة للاسترداد",

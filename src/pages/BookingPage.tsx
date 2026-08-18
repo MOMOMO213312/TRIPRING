@@ -10,7 +10,9 @@ import {
   fetchAdditionalServices,
   fetchDealById,
 } from "../lib/api";
+import { PAYMENT_METHODS } from "../lib/payment-config";
 import { formatRoute } from "../lib/deal-utils";
+import { setLastBooking } from "../lib/session";
 import { formatPrice } from "../lib/utils";
 import type { AdditionalServiceRow, DealRow, PaymentMethod } from "../types/database";
 
@@ -21,24 +23,6 @@ type Traveler = {
   nationality: string;
   traveler_type: "adult" | "child" | "infant";
 };
-
-const PAYMENT_METHODS: { value: PaymentMethod; label: string; details: string }[] = [
-  {
-    value: "bank_transfer",
-    label: "تحويل بنكي",
-    details: "البنك: CIB · IBAN: EG000000000000000000000000 · اسم الحساب: TripRing Travel",
-  },
-  {
-    value: "instapay",
-    label: "InstaPay",
-    details: "معرّف InstaPay: tripring@instapay",
-  },
-  {
-    value: "vodafone_cash",
-    label: "Vodafone Cash",
-    details: "رقم المحفظة: 01000000000",
-  },
-];
 
 const STEPS = ["المسافرون", "خدمات إضافية", "المراجعة", "الدفع"];
 
@@ -63,6 +47,7 @@ export function BookingPage() {
     { full_name: "", date_of_birth: "", passport_number: "", nationality: "EG", traveler_type: "adult" },
   ]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
+  const [stepError, setStepError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!dealId) return;
@@ -76,17 +61,61 @@ export function BookingPage() {
       .finally(() => setLoading(false));
   }, [dealId]);
 
+  // Resize the travelers array to match adults/children/infants counts
+  // WITHOUT wiping names already typed for travelers that still exist —
+  // only append blank rows for newly added travelers, and trim from the
+  // end when a count goes down. Uses functional setState so this effect
+  // doesn't need `travelers` in its deps (avoids re-running on every
+  // keystroke) while still reading the latest travelers array.
   useEffect(() => {
-    const list: Traveler[] = [];
-    for (let i = 0; i < adults; i++)
-      list.push({ full_name: "", date_of_birth: "", passport_number: "", nationality: "EG", traveler_type: "adult" });
-    for (let i = 0; i < children; i++)
-      list.push({ full_name: "", date_of_birth: "", passport_number: "", nationality: "EG", traveler_type: "child" });
-    for (let i = 0; i < infants; i++)
-      list.push({ full_name: "", date_of_birth: "", passport_number: "", nationality: "EG", traveler_type: "infant" });
-    setTravelers(list.length ? list : travelers);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setTravelers((prev) => {
+      const blank = (traveler_type: Traveler["traveler_type"]): Traveler => ({
+        full_name: "",
+        date_of_birth: "",
+        passport_number: "",
+        nationality: "EG",
+        traveler_type,
+      });
+
+      const byType = (t: Traveler["traveler_type"]) => prev.filter((p) => p.traveler_type === t);
+      const resize = (existing: Traveler[], count: number, type: Traveler["traveler_type"]) => {
+        if (existing.length === count) return existing;
+        if (existing.length > count) return existing.slice(0, count);
+        return [...existing, ...Array.from({ length: count - existing.length }, () => blank(type))];
+      };
+
+      const next = [
+        ...resize(byType("adult"), adults, "adult"),
+        ...resize(byType("child"), children, "child"),
+        ...resize(byType("infant"), infants, "infant"),
+      ];
+      return next.length ? next : prev;
+    });
   }, [adults, children, infants]);
+
+  // Step buttons are type="button" (they must not trigger native form submit),
+  // which means the browser's built-in `required` validation never fires when
+  // moving between steps. This replicates that validation manually so a user
+  // can't reach payment with empty name/phone/traveler fields.
+  function validateStep(current: number): string | null {
+    if (current === 0) {
+      if (!customerName.trim()) return "من فضلك أدخل الاسم الكامل";
+      if (!customerPhone.trim()) return "من فضلك أدخل رقم الهاتف";
+      const emptyTraveler = travelers.findIndex((t) => !t.full_name.trim());
+      if (emptyTraveler !== -1) return `من فضلك أدخل اسم المسافر رقم ${emptyTraveler + 1} كما في الجواز`;
+    }
+    return null;
+  }
+
+  function goToStep(next: number) {
+    const err = validateStep(step);
+    if (err) {
+      setStepError(err);
+      return;
+    }
+    setStepError(null);
+    setStep(next);
+  }
 
   function servicesTotal(): number {
     return services.reduce((sum, s) => {
@@ -107,6 +136,10 @@ export function BookingPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!deal) return;
+    if (deal.available_seats <= 0) {
+      setError("عذراً، المقاعد المتاحة في هذا العرض نفدت.");
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -138,6 +171,7 @@ export function BookingPage() {
         travelers: travelerPayload,
         services: servicePayload,
       });
+      setLastBooking(result.booking_number, customerPhone || customerEmail || "");
       navigate("/confirmation", {
         state: {
           booking: result,
@@ -160,6 +194,13 @@ export function BookingPage() {
   if (!deal) {
     return (
       <Card className="text-center text-red-600">{error ?? "العرض غير موجود"}</Card>
+    );
+  }
+  if (deal.available_seats <= 0) {
+    return (
+      <Card className="text-center text-gray-700">
+        عذراً، المقاعد المتاحة في هذا العرض نفدت. جرّب البحث عن عرض آخر.
+      </Card>
     );
   }
 
@@ -232,7 +273,8 @@ export function BookingPage() {
                 />
               </div>
             ))}
-            <Button type="button" fullWidth onClick={() => setStep(1)}>
+            {stepError ? <p className="text-sm text-red-600">{stepError}</p> : null}
+            <Button type="button" fullWidth onClick={() => goToStep(1)}>
               التالي
             </Button>
           </Card>
@@ -263,10 +305,10 @@ export function BookingPage() {
               ))
             )}
             <div className="flex gap-3">
-              <Button type="button" variant="outline" fullWidth onClick={() => setStep(0)}>
+              <Button type="button" variant="outline" fullWidth onClick={() => goToStep(0)}>
                 السابق
               </Button>
-              <Button type="button" fullWidth onClick={() => setStep(2)}>
+              <Button type="button" fullWidth onClick={() => goToStep(2)}>
                 التالي
               </Button>
             </div>
@@ -287,10 +329,10 @@ export function BookingPage() {
               </div>
             </dl>
             <div className="flex gap-3">
-              <Button type="button" variant="outline" fullWidth onClick={() => setStep(1)}>
+              <Button type="button" variant="outline" fullWidth onClick={() => goToStep(1)}>
                 السابق
               </Button>
-              <Button type="button" fullWidth onClick={() => setStep(3)}>
+              <Button type="button" fullWidth onClick={() => goToStep(3)}>
                 التالي
               </Button>
             </div>

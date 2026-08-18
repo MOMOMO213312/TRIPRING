@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -11,6 +12,8 @@ import { formatDate, formatPrice } from "../lib/utils";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { useCatalog } from "../hooks/useCatalog";
 import type { BookingLookupResult } from "../types/database";
+
+type PrefillState = { bookingNumber?: string; contact?: string; autoSearch?: boolean };
 
 const STATUS_LABEL: Record<string, string> = {
   new: "جديد",
@@ -24,22 +27,23 @@ const STATUS_LABEL: Record<string, string> = {
 
 export function MyTripsPage() {
   const catalog = useCatalog();
-  const [bookingNumber, setBookingNumber] = useState("");
-  const [contact, setContact] = useState("");
+  const location = useLocation();
+  const prefill = (location.state as PrefillState | null) ?? null;
+  const [bookingNumber, setBookingNumber] = useState(prefill?.bookingNumber ?? "");
+  const [contact, setContact] = useState(prefill?.contact ?? "");
   const [booking, setBooking] = useState<BookingLookupResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
 
-  async function handleSearch(e: FormEvent) {
-    e.preventDefault();
+  async function runSearch(num: string, contactValue: string) {
     setLoading(true);
     setError(null);
     setSearched(true);
     try {
-      const result = await lookupBooking(bookingNumber, contact);
+      const result = await lookupBooking(num, contactValue);
       setBooking(result);
-      if (result) setSessionContact(contact);
+      if (result) setSessionContact(contactValue);
       if (!result) setError("لم يتم العثور على حجز بهذه البيانات");
     } catch (err) {
       setError(err instanceof Error ? err.message : "خطأ في البحث");
@@ -47,6 +51,20 @@ export function MyTripsPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  // Coming from ConfirmationPage after a page refresh: run the lookup
+  // automatically instead of making the user retype what they just entered.
+  useEffect(() => {
+    if (prefill?.autoSearch && prefill.bookingNumber && prefill.contact) {
+      runSearch(prefill.bookingNumber, prefill.contact);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function handleSearch(e: FormEvent) {
+    e.preventDefault();
+    await runSearch(bookingNumber, contact);
   }
 
   return (

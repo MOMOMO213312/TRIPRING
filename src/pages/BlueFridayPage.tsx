@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { DestinationCard } from "../components/DestinationCard";
 import { Button } from "../components/ui/Button";
 import { getTypicalPrice, fetchActiveDeals } from "../lib/api";
+import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { airportLabel, formatRouteCities, savingsPercent } from "../lib/deal-utils";
 import { hoursUntil } from "../lib/filters";
 import { whatsAppLink } from "../lib/utils";
@@ -276,7 +277,7 @@ export function BlueFridayPage() {
             كلّم فريق السفر بتاعنا لعروض الجمعة السماوي، تأكيد المقعد، والدفع. اذكر كود {PROMO_CODE}.
           </p>
           <a
-            href={whatsAppLink("201220534968", `عايز أعرف عروض الجمعة السماوي — كود ${PROMO_CODE}`)}
+            href={whatsAppLink(PLATFORM_WHATSAPP, `عايز أعرف عروض الجمعة السماوي — كود ${PROMO_CODE}`)}
             target="_blank"
             rel="noreferrer"
             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold transition hover:bg-blue-500"

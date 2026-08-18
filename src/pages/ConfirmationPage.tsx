@@ -5,6 +5,7 @@ import { Card } from "../components/ui/Card";
 import { useCatalog } from "../hooks/useCatalog";
 import { getAgencyWhatsApp } from "../lib/api";
 import { formatRoute } from "../lib/deal-utils";
+import { getLastBooking } from "../lib/session";
 import { formatPrice, whatsAppLink } from "../lib/utils";
 import type { CreateBookingResult } from "../lib/api";
 import type { DealRow, PaymentMethod } from "../types/database";
@@ -39,11 +40,24 @@ export function ConfirmationPage() {
   const catalog = useCatalog();
 
   if (!state?.booking) {
+    // location.state is lost on refresh — fall back to the last booking
+    // we remembered locally (set right after a successful booking) so the
+    // user can jump straight to their booking instead of typing it in again.
+    const lastBooking = getLastBooking();
     return (
       <Card className="text-center">
-        <p className="text-gray-600">لا توجد بيانات حجز. ابحث عن حجزك من صفحة رحلاتي.</p>
-        <Link to="/my-trips" className="mt-4 inline-block">
-          <Button>رحلاتي</Button>
+        <p className="text-gray-600">لا توجد بيانات حجز في هذه الصفحة (ربما بسبب تحديث الصفحة).</p>
+        {lastBooking ? (
+          <p className="mt-2 text-sm text-gray-500">
+            آخر حجز عندك: <span className="font-bold text-accent">{lastBooking.bookingNumber}</span>
+          </p>
+        ) : null}
+        <Link
+          to="/my-trips"
+          state={lastBooking ? { bookingNumber: lastBooking.bookingNumber, contact: lastBooking.contact, autoSearch: true } : undefined}
+          className="mt-4 inline-block"
+        >
+          <Button>عرض حجزي في رحلاتي</Button>
         </Link>
       </Card>
     );

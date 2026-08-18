@@ -199,9 +199,15 @@ export function DealDetailPage() {
 
       <div className="space-y-3 rounded-xl border border-gray-200 bg-white p-4 sm:sticky sm:bottom-4 sm:shadow-lg">
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link to={`/book/${deal.id}`} className="flex-1">
-            <Button fullWidth>احجز الآن</Button>
-          </Link>
+          {deal.available_seats > 0 ? (
+            <Link to={`/book/${deal.id}`} className="flex-1">
+              <Button fullWidth>احجز الآن</Button>
+            </Link>
+          ) : (
+            <Button fullWidth disabled className="flex-1">
+              نفدت المقاعد
+            </Button>
+          )}
           <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer" className="flex-1">
             <Button fullWidth variant="whatsapp">
               احجز عبر واتساب
