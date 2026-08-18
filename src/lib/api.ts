@@ -1,4 +1,5 @@
 import { getCurrentUser } from "./auth";
+import { PLATFORM_WHATSAPP } from "./constants";
 import { supabase } from "./supabase";
 import type {
   AdditionalServiceRow,
@@ -473,5 +474,5 @@ export function getDestinationImage(
 
 export function getAgencyWhatsApp(deal: DealRow, agencies: AgencyRow[]): string {
   const agency = agencies.find((a) => a.id === deal.agency_id);
-  return agency?.whatsapp ?? agency?.phone ?? "+201220534968";
+  return agency?.whatsapp ?? agency?.phone ?? PLATFORM_WHATSAPP;
 }
