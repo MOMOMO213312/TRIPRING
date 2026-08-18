@@ -1,41 +1,86 @@
 import { useMemo, useState } from "react";
 
 import { getDestinationImage } from "../lib/api";
-import type { AirportRow, ImageCacheRow } from "../types/database";
+import type { AirportRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
 import { DestinationCard } from "./DestinationCard";
 
 type Props = {
   airports: AirportRow[];
   imageCache: ImageCacheRow[];
+  references: RoutePriceReferenceRow[];
+  /** Optional initial "from" airport. Falls back to the busiest real origin
+   *  in `references` if omitted or if that origin has no routes on file. */
   fromAirport?: string;
 };
 
-/** Lets the traveler pick a country, browse every city TripRing flies to there,
- *  and jump straight into a prefilled search for the one they pick. */
-export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: Props) {
-  const fromCity = useMemo(
-    () => airports.find((a) => a.code === fromAirport)?.city ?? fromAirport,
-    [airports, fromAirport],
-  );
+type RouteDestination = {
+  airport: AirportRow;
+  minPrice: number | null;
+};
 
+/** Lets the traveler pick a "from" airport (mirroring the Hero search), then a
+ *  country and city — built only from real routes in `route_price_reference`,
+ *  never assumed. A destination only shows up here if TripRing actually has a
+ *  priced route for it from the selected origin. */
+export function TravelToSection({ airports, imageCache, references, fromAirport }: Props) {
+  const airportByCode = useMemo(() => new Map(airports.map((a) => [a.code, a])), [airports]);
+
+  // Real origins = airports that actually appear as `from_airport` in at
+  // least one route_price_reference row, ordered by how many routes they have.
+  const fromOptions = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const r of references) {
+      counts.set(r.from_airport, (counts.get(r.from_airport) ?? 0) + 1);
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([code]) => code)
+      .filter((code) => airportByCode.has(code));
+  }, [references, airportByCode]);
+
+  const [selectedFrom, setSelectedFrom] = useState<string | null>(null);
+  const effectiveFrom =
+    selectedFrom && fromOptions.includes(selectedFrom)
+      ? selectedFrom
+      : (fromAirport && fromOptions.includes(fromAirport) ? fromAirport : fromOptions[0]) ?? null;
+
+  const fromCity = effectiveFrom ? (airportByCode.get(effectiveFrom)?.city ?? effectiveFrom) : "";
+
+  // Destinations reachable from the selected origin, taken only from routes
+  // that actually exist in route_price_reference (never "every other airport").
   const byCountry = useMemo(() => {
-    const map = new Map<string, AirportRow[]>();
-    for (const airport of airports) {
-      if (airport.code === fromAirport) continue;
+    const map = new Map<string, RouteDestination[]>();
+    if (!effectiveFrom) return map;
+
+    // A route can have multiple reference rows (different flight types) —
+    // keep the lowest min_price_usd per destination.
+    const bestPriceByDest = new Map<string, number | null>();
+    for (const r of references) {
+      if (r.from_airport !== effectiveFrom || r.to_airport === effectiveFrom) continue;
+      const current = bestPriceByDest.get(r.to_airport);
+      if (current === undefined || (r.min_price_usd != null && (current == null || r.min_price_usd < current))) {
+        bestPriceByDest.set(r.to_airport, r.min_price_usd ?? current ?? null);
+      }
+    }
+
+    for (const [code, minPrice] of bestPriceByDest) {
+      const airport = airportByCode.get(code);
+      if (!airport) continue;
       const list = map.get(airport.country) ?? [];
-      list.push(airport);
+      list.push({ airport, minPrice });
       map.set(airport.country, list);
     }
     return map;
-  }, [airports, fromAirport]);
+  }, [references, effectiveFrom, airportByCode]);
 
   const countries = useMemo(
     () => [...byCountry.keys()].sort((a, b) => (byCountry.get(b)?.length ?? 0) - (byCountry.get(a)?.length ?? 0)),
     [byCountry],
   );
 
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(countries[0] ?? null);
-  const cities = selectedCountry ? (byCountry.get(selectedCountry) ?? []) : [];
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const effectiveCountry = selectedCountry && countries.includes(selectedCountry) ? selectedCountry : countries[0] ?? null;
+  const cities = effectiveCountry ? (byCountry.get(effectiveCountry) ?? []) : [];
 
   // Repeat the city list enough times to fill a wide row (not just enough for
   // the seamless-loop illusion) — a country with only 1-2 cities used to leave
@@ -51,13 +96,31 @@ export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: P
     [cities, repeatCount],
   );
 
-  if (countries.length === 0) return null;
+  if (fromOptions.length === 0 || countries.length === 0 || !effectiveFrom) return null;
 
   return (
     <section>
-      <div className="mb-5 px-4 sm:px-0">
-        <h2 className="text-2xl font-bold text-gray-900">✈️ سافر إلى</h2>
-        <p className="text-sm text-gray-600">اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول</p>
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-3 px-4 sm:px-0">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">✈️ سافر إلى</h2>
+          <p className="text-sm text-gray-600">اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول</p>
+        </div>
+        {fromOptions.length > 1 ? (
+          <label className="flex items-center gap-2 text-sm">
+            <span className="text-gray-500">من</span>
+            <select
+              value={effectiveFrom}
+              onChange={(e) => setSelectedFrom(e.target.value)}
+              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 font-semibold text-gray-800 outline-none"
+            >
+              {fromOptions.map((code) => (
+                <option key={code} value={code}>
+                  {airportByCode.get(code)?.city ?? code} ({code})
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
       </div>
 
       <div className="mb-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:px-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -67,7 +130,7 @@ export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: P
             type="button"
             onClick={() => setSelectedCountry(country)}
             className={
-              country === selectedCountry
+              country === effectiveCountry
                 ? "smart-chip smart-chip-active shrink-0"
                 : "smart-chip shrink-0"
             }
@@ -81,20 +144,20 @@ export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: P
       <div dir="ltr" className="group/marquee overflow-hidden">
         {displayCities.length > 0 ? (
           <div
-            key={selectedCountry}
+            key={`${effectiveFrom}-${effectiveCountry}`}
             className="marquee-track flex w-max gap-3 px-4 sm:px-0"
             style={{ animationDuration: `${Math.max(displayCities.length, 3) * 4.5}s` }}
           >
-            {displayCities.map((airport, idx) => {
+            {displayCities.map(({ airport, minPrice }, idx) => {
               const image = getDestinationImage(airport, imageCache, `${airport.code}-${idx}`);
               return (
                 <DestinationCard
                   key={`${airport.code}-${idx}`}
-                  to={`/search?from=${fromAirport}&to=${airport.code}`}
+                  to={`/search?from=${effectiveFrom}&to=${airport.code}`}
                   image={image}
                   title={airport.city}
                   subtitle={`من ${fromCity}`}
-                  price={null}
+                  price={minPrice}
                 />
               );
             })}
