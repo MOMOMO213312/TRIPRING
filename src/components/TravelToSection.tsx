@@ -32,6 +32,20 @@ export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: P
   const [selectedCountry, setSelectedCountry] = useState<string | null>(countries[0] ?? null);
   const cities = selectedCountry ? (byCountry.get(selectedCountry) ?? []) : [];
 
+  // Repeat the city list enough times to fill a wide row (not just enough for
+  // the seamless-loop illusion) — a country with only 1-2 cities used to leave
+  // a big blank gap after 2 cards on wide screens. Each repeat picks a
+  // different cached photo for the same city (we cache several per city) via
+  // a per-repeat seed, so it reads as more variety rather than the exact same
+  // photo copy-pasted.
+  const MIN_CARDS = 10;
+  const repeatCount = cities.length > 0 ? Math.max(2, Math.ceil(MIN_CARDS / cities.length)) : 0;
+  const displayCities = useMemo(
+    () => Array.from({ length: repeatCount }, () => cities).flat(),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cities, repeatCount],
+  );
+
   if (countries.length === 0) return null;
 
   return (
@@ -60,14 +74,14 @@ export function TravelToSection({ airports, imageCache, fromAirport = "CAI" }: P
       </div>
 
       <div dir="ltr" className="group/marquee overflow-hidden">
-        {cities.length > 0 ? (
+        {displayCities.length > 0 ? (
           <div
             key={selectedCountry}
             className="marquee-track flex w-max gap-3 px-4 sm:px-0"
-            style={{ animationDuration: `${Math.max(cities.length, 3) * 4.5}s` }}
+            style={{ animationDuration: `${Math.max(displayCities.length, 3) * 4.5}s` }}
           >
-            {[...cities, ...cities].map((airport, idx) => {
-              const image = getDestinationImage(airport, imageCache, airport.code);
+            {displayCities.map((airport, idx) => {
+              const image = getDestinationImage(airport, imageCache, `${airport.code}-${idx}`);
               return (
                 <DestinationCard
                   key={`${airport.code}-${idx}`}
