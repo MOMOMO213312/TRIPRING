@@ -64,24 +64,27 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
   const flashSavings = flashDeal ? savingsPercent(flashDeal.price, flashTypical) : null;
 
   return (
-    <section className="relative overflow-hidden bg-[#0F172A]">
+    <section className="relative overflow-hidden bg-white">
       <FareBoard deals={deals} references={references} airports={airports} />
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
       <RoundTripFareBoard deals={deals} references={references} airports={airports} />
 
       <div className="absolute inset-0 top-10">
         <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/85 to-slate-900/45" />
+        {/* Light, airy overlay (reference style): opaque near the text side for readability,
+           fading out toward the image so the plane wing stays visible behind the flash card. */}
+        <div className="absolute inset-0 bg-gradient-to-l from-white via-white/90 to-white/25" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-14 sm:pt-16">
         <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-lg">
-            <h1 className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
+            <h1 className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl">
               سافر أكتر، ادفع أقل.
             </h1>
-            <p className="mt-4 text-base text-slate-300 sm:text-lg">
-              اكتشف فرص سفر حقيقية قبل ما تخلص. <span className="font-semibold text-orange-400">مقاعد محدودة.</span> وقت محدود.
+            <p className="mt-4 text-base text-gray-600 sm:text-lg">
+              اكتشف فرص سفر حقيقية قبل ما تخلص. <span className="font-semibold text-orange-600">مقاعد محدودة.</span> وقت محدود.
             </p>
 
             {deals.length > 0 ? (
@@ -90,15 +93,15 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                   {["#F59E0B", "#2563EB", "#16A34A", "#EA580C"].map((color, i) => (
                     <span
                       key={i}
-                      className="flex size-9 items-center justify-center rounded-full border-2 border-[#0F172A] text-xs font-bold text-white"
+                      className="flex size-9 items-center justify-center rounded-full border-2 border-white text-xs font-bold text-white shadow-sm"
                       style={{ backgroundColor: color }}
                     >
                       🧳
                     </span>
                   ))}
                 </div>
-                <p className="text-sm text-slate-300">
-                  <span className="font-latin font-bold text-white">{Math.max(deals.length * 37, 1000).toLocaleString()}+</span>{" "}
+                <p className="text-sm text-gray-600">
+                  <span className="font-latin font-bold text-[#0F172A]">{Math.max(deals.length * 37, 1000).toLocaleString()}+</span>{" "}
                   مسافر بيوفروا فلوسهم دلوقتي مع TripRing
                 </p>
               </div>
@@ -112,7 +115,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       </div>
 
       <div className="relative mx-auto max-w-5xl px-4">
-        <div className="-mt-16 rounded-2xl bg-white p-5 shadow-xl sm:p-6">
+        <div className="-mt-16 rounded-2xl bg-white p-5 shadow-xl ring-1 ring-black/5 sm:p-6">
           <div className="mb-5 flex flex-wrap gap-6 border-b border-gray-100">
             {(
               [
@@ -261,7 +264,7 @@ function HeroFlashDealCard({
   }, [hoursLeft]);
 
   return (
-    <div className="w-full shrink-0 rounded-2xl border border-white/10 bg-[#111827]/95 p-5 shadow-xl backdrop-blur-sm sm:w-[320px]">
+    <div className="w-full shrink-0 rounded-2xl border border-white/10 bg-[#111827]/95 p-5 shadow-2xl shadow-slate-900/30 backdrop-blur-sm sm:w-[320px]">
       <div className="flex items-center justify-between gap-3">
         <span className="flex items-center gap-1.5 text-sm font-bold text-white">
           <span aria-hidden>🔥</span> أفضل فرصة
