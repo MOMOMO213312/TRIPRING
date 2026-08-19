@@ -6,6 +6,7 @@ import { DealCarousel } from "../components/DealCarousel";
 import { TravelToSection } from "../components/TravelToSection";
 import { EmptyState } from "../components/EmptyState";
 import { HeroSection } from "../components/HeroSection";
+import { BudgetTeaserCard, PriceAlertTeaserCard } from "../components/HomeSidebarCards";
 import { CardsSkeleton } from "../components/LoadingSkeleton";
 import { SmartFilterChips } from "../components/SmartFilterChips";
 import { TrustStrip } from "../components/TrustStrip";
@@ -83,38 +84,49 @@ export function HomePage() {
         <SmartFilterChips />
       </div>
 
-      <div className="mx-auto max-w-6xl space-y-12 px-4 py-12">
-        <section id="opportunities">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">أفضل الفرص اليوم</h2>
-              <p className="text-sm text-gray-600">
-                أعلى 5 عروض مع ترتيب واضح — الباقي مرتب حسب Deal Score
-              </p>
-            </div>
-            <Button variant="outline" onClick={() => navigate("/deals")}>
-              كل العروض
-            </Button>
-          </div>
+      <div className="mx-auto max-w-6xl px-4 pt-6">
+        <TrustStrip />
+      </div>
 
-          {loadingDeals ? (
-            <CardsSkeleton />
-          ) : dealsError ? (
-            <Card className="text-red-600">{dealsError}</Card>
-          ) : opportunities.length === 0 ? (
-            <EmptyState
-              icon="🧭"
-              title="لا توجد فرص نشطة حالياً"
-              subtitle="جرّب توسيع نطاق البحث أو راجع الصفحة بعد قليل — الفرص بتتحدث باستمرار"
-              suggestions={[
-                { label: "كل العروض", onClick: () => navigate("/deals") },
-                { label: "أي وجهة", onClick: () => navigate("/search?to=any") },
-              ]}
-            />
-          ) : (
-            <DealCarousel deals={opportunities} catalog={catalog} />
-          )}
-        </section>
+      <div className="mx-auto max-w-6xl space-y-12 px-4 py-12">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
+          <section id="opportunities">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">أفضل العروض اليوم</h2>
+                <p className="text-sm text-gray-600">
+                  عروض مختارة بعناية لك — الباقي مرتب حسب Deal Score
+                </p>
+              </div>
+              <Button variant="outline" onClick={() => navigate("/deals")}>
+                عرض كل العروض
+              </Button>
+            </div>
+
+            {loadingDeals ? (
+              <CardsSkeleton />
+            ) : dealsError ? (
+              <Card className="text-red-600">{dealsError}</Card>
+            ) : opportunities.length === 0 ? (
+              <EmptyState
+                icon="🧭"
+                title="لا توجد فرص نشطة حالياً"
+                subtitle="جرّب توسيع نطاق البحث أو راجع الصفحة بعد قليل — الفرص بتتحدث باستمرار"
+                suggestions={[
+                  { label: "كل العروض", onClick: () => navigate("/deals") },
+                  { label: "أي وجهة", onClick: () => navigate("/search?to=any") },
+                ]}
+              />
+            ) : (
+              <DealCarousel deals={opportunities} catalog={catalog} />
+            )}
+          </section>
+
+          <aside className="space-y-6">
+            <PriceAlertTeaserCard />
+            <BudgetTeaserCard />
+          </aside>
+        </div>
 
         <div id="destinations">
           <TravelToSection
@@ -127,8 +139,6 @@ export function HomePage() {
         <div id="budget">
           <BudgetExplorer />
         </div>
-
-        <TrustStrip />
 
         <WhyTripRing />
       </div>
