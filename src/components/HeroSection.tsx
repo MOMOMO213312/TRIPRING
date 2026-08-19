@@ -8,7 +8,7 @@ import type { TripType } from "../lib/api";
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 
 const HERO_IMAGE =
-  "https://images.pexels.com/photos/1911388/pexels-photo-1911388.jpeg?auto=compress&cs=tinysrgb&w=1600";
+  "https://images.pexels.com/photos/731217/pexels-photo-731217.jpeg?auto=compress&cs=tinysrgb&w=1600";
 
 const POPULAR = [
   { from: "CAI", to: "DXB", label: "القاهرة ← دبي" },
@@ -55,11 +55,11 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       <section className="relative overflow-hidden bg-[#F7F8FA]">
         <div className="absolute inset-0 h-[420px] sm:h-[480px]">
           <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-          {/* Warm sunset shot now carries real color, so the overlay's job is just
-             to guarantee the headline stays legible over it — a dark wash up top
-             that fades to nothing by mid-photo, then a soft handoff into the page
-             background at the very bottom so the photo still reads as a hero, not
-             a washed-out panel. */}
+          {/* Daytime wing-over-clouds shot carries bright natural color, so the
+             overlay's job is just to guarantee the headline stays legible over
+             it — a dark wash up top that fades to nothing by mid-photo, then a
+             soft handoff into the page background at the very bottom so the
+             photo still reads as a hero, not a washed-out panel. */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
         </div>
