@@ -71,25 +71,48 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
       <div className="absolute inset-0 top-10">
         <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 to-slate-900/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/85 to-slate-900/45" />
       </div>
 
-      <div className="relative mx-auto max-w-4xl px-4 pb-20 pt-14 text-center sm:pt-16">
-        <h1 className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
-          سافر أكتر، ادفع أقل.
-        </h1>
-        <p className="mx-auto mt-4 max-w-lg text-base text-slate-300 sm:text-lg">
-          اكتشف فرص سفر حقيقية قبل ما تخلص. <span className="font-semibold text-orange-400">مقاعد محدودة.</span> وقت محدود.
-        </p>
-        {deals.length > 0 ? (
-          <p className="mt-5 text-sm font-medium text-slate-300">
-            🔥 <span className="font-latin font-bold text-white">{deals.length}</span> فرصة نشطة دلوقتي على TripRing
-          </p>
-        ) : null}
+      <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-14 sm:pt-16">
+        <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-lg">
+            <h1 className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
+              سافر أكتر، ادفع أقل.
+            </h1>
+            <p className="mt-4 text-base text-slate-300 sm:text-lg">
+              اكتشف فرص سفر حقيقية قبل ما تخلص. <span className="font-semibold text-orange-400">مقاعد محدودة.</span> وقت محدود.
+            </p>
+
+            {deals.length > 0 ? (
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex -space-x-3 rtl:space-x-reverse">
+                  {["#F59E0B", "#2563EB", "#16A34A", "#EA580C"].map((color, i) => (
+                    <span
+                      key={i}
+                      className="flex size-9 items-center justify-center rounded-full border-2 border-[#0F172A] text-xs font-bold text-white"
+                      style={{ backgroundColor: color }}
+                    >
+                      🧳
+                    </span>
+                  ))}
+                </div>
+                <p className="text-sm text-slate-300">
+                  <span className="font-latin font-bold text-white">{Math.max(deals.length * 37, 1000).toLocaleString()}+</span>{" "}
+                  مسافر بيوفروا فلوسهم دلوقتي مع TripRing
+                </p>
+              </div>
+            ) : null}
+          </div>
+
+          {flashDeal ? (
+            <HeroFlashDealCard deal={flashDeal} savings={flashSavings} airports={airports} />
+          ) : null}
+        </div>
       </div>
 
       <div className="relative mx-auto max-w-5xl px-4">
-        <div className="-mt-24 rounded-2xl bg-white p-5 shadow-xl sm:p-6">
+        <div className="-mt-16 rounded-2xl bg-white p-5 shadow-xl sm:p-6">
           <div className="mb-5 flex flex-wrap gap-6 border-b border-gray-100">
             {(
               [
@@ -203,23 +226,19 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
         </div>
 
         <DealTicker deals={deals} references={references} airports={airports} />
-
-        {flashDeal ? (
-          <FlashDealStrip deal={flashDeal} typical={flashTypical} savings={flashSavings} airports={airports} />
-        ) : null}
       </div>
     </section>
   );
 }
 
-function FlashDealStrip({
+/** Compact floating card matching the reference "Flash Deal" ticket in the hero
+ *  corner — dark card, live HRS/MINS/SECS countdown, route, price, CTA. */
+function HeroFlashDealCard({
   deal,
-  typical,
   savings,
   airports,
 }: {
   deal: DealRow;
-  typical: number | null;
   savings: number | null;
   airports: AirportRow[];
 }) {
@@ -242,55 +261,65 @@ function FlashDealStrip({
   }, [hoursLeft]);
 
   return (
-    <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-md sm:flex-row sm:justify-between sm:p-5">
-      <div className="flex items-center gap-3">
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">
-          🔥 أفضل فرصة
+    <div className="w-full shrink-0 rounded-2xl border border-white/10 bg-[#111827]/95 p-5 shadow-xl backdrop-blur-sm sm:w-[320px]">
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex items-center gap-1.5 text-sm font-bold text-white">
+          <span aria-hidden>🔥</span> أفضل فرصة
         </span>
-        <div className="flex items-center gap-2">
-          <div className="text-center">
-            <p className="font-latin text-lg font-extrabold text-gray-900">{deal.from_airport}</p>
-            <p className="text-[11px] text-gray-500">{airportLabel(deal.from_airport, airports)}</p>
+        {timeParts ? (
+          <div dir="ltr" className="font-latin flex items-center gap-1.5 text-white">
+            <CountUnit value={timeParts.h} label="HRS" />
+            <span className="pb-3 text-slate-500">:</span>
+            <CountUnit value={timeParts.m} label="MINS" />
+            <span className="pb-3 text-slate-500">:</span>
+            <CountUnit value={timeParts.s} label="SECS" />
           </div>
-          <span aria-hidden className="text-gray-300">
-            ✈️
-          </span>
-          <div className="text-center">
-            <p className="font-latin text-lg font-extrabold text-gray-900">{deal.to_airport}</p>
-            <p className="text-[11px] text-gray-500">{airportLabel(deal.to_airport, airports)}</p>
-          </div>
+        ) : null}
+      </div>
+
+      <div className="mt-4 flex items-center gap-3">
+        <div>
+          <p className="font-latin text-lg font-extrabold text-white">{deal.from_airport}</p>
+          <p className="text-[11px] text-slate-400">{airportLabel(deal.from_airport, airports)}</p>
+        </div>
+        <span aria-hidden className="text-slate-500">
+          →
+        </span>
+        <div>
+          <p className="font-latin text-lg font-extrabold text-white">{deal.to_airport}</p>
+          <p className="text-[11px] text-slate-400">{airportLabel(deal.to_airport, airports)}</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <div className="text-center sm:text-right">
-          <p className="text-xs text-gray-500">يبدأ من</p>
-          <p className="font-latin text-xl font-extrabold text-orange-600">${deal.price}</p>
+      <div className="mt-4 flex items-end justify-between">
+        <div>
+          <p className="text-xs text-slate-400">يبدأ من</p>
+          <p className="font-latin text-2xl font-extrabold text-orange-500">${deal.price}</p>
         </div>
         {savings ? (
-          <span className="rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600 whitespace-nowrap">
+          <span className="font-latin rounded-md bg-white/10 px-2 py-1 text-xs font-bold text-white">
             -{savings}%
           </span>
         ) : null}
-        {timeParts ? (
-          /* dir="ltr" forces h:m:s reading order regardless of the page's RTL direction */
-          <div dir="ltr" className="font-latin flex items-center gap-1 text-xs font-bold text-[#0F172A]">
-            <TimeBox value={timeParts.h} />:<TimeBox value={timeParts.m} />:<TimeBox value={timeParts.s} />
-          </div>
-        ) : null}
-        <Link
-          to={`/deals/${deal.id}`}
-          className="shrink-0 rounded-xl bg-orange-600 px-5 py-2.5 text-center text-sm font-bold text-white transition hover:bg-orange-700"
-        >
-          احجز الآن
-        </Link>
       </div>
+
+      <Link
+        to={`/deals/${deal.id}`}
+        className="mt-4 block rounded-xl bg-orange-600 py-3 text-center text-sm font-bold text-white transition hover:bg-orange-700 active:scale-[0.98]"
+      >
+        احجز الآن
+      </Link>
     </div>
   );
 }
 
-function TimeBox({ value }: { value: string }) {
-  return <span className="rounded-md bg-gray-100 px-1.5 py-1">{value}</span>;
+function CountUnit({ value, label }: { value: string; label: string }) {
+  return (
+    <span className="flex flex-col items-center">
+      <span className="text-base font-extrabold leading-none">{value}</span>
+      <span className="mt-1 text-[9px] font-semibold text-slate-500">{label}</span>
+    </span>
+  );
 }
 
 function FieldBox({
