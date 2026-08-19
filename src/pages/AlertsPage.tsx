@@ -72,13 +72,13 @@ export function AlertsPage() {
     }
   }
 
-  if (catalog.loading) return <p className="text-gray-500">جاري التحميل...</p>;
+  if (catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">تنبيهات الأسعار</h1>
-        <p className="text-gray-600">احصل على إشعار عندما ينخفض السعر لمسار معيّن</p>
+        <p className="text-slate-600">احصل على إشعار عندما ينخفض السعر لمسار معيّن</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -102,7 +102,7 @@ export function AlertsPage() {
             />
             <Input label="رقم الهاتف" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
             <Input label="البريد الإلكتروني" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <p className="text-xs text-gray-500">أدخل هاتفاً أو بريداً على الأقل للمتابعة</p>
+            <p className="text-xs text-slate-500">أدخل هاتفاً أو بريداً على الأقل للمتابعة</p>
             <Button type="submit" fullWidth disabled={loading}>
               {loading ? "جاري الحفظ..." : "إنشاء التنبيه"}
             </Button>
@@ -125,12 +125,12 @@ export function AlertsPage() {
           {alerts.length > 0 ? (
             <ul className="mt-4 space-y-3">
               {alerts.map((a) => (
-                <li key={a.id} className="rounded-lg border border-gray-100 p-3 text-sm">
+                <li key={a.id} className="rounded-lg border border-slate-100 p-3 text-sm">
                   <p className="font-semibold">
                     {airportLabel(a.from_airport, catalog.airports)} →{" "}
                     {airportLabel(a.to_airport, catalog.airports)}
                   </p>
-                  <p className="text-gray-600">حد أقصى: {formatPrice(a.max_budget)}</p>
+                  <p className="text-slate-600">حد أقصى: {formatPrice(a.max_budget)}</p>
                 </li>
               ))}
             </ul>

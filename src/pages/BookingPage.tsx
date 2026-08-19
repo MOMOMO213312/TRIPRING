@@ -190,7 +190,7 @@ export function BookingPage() {
     }
   }
 
-  if (loading) return <p className="text-gray-500">جاري التحميل...</p>;
+  if (loading) return <p className="text-slate-500">جاري التحميل...</p>;
   if (!deal) {
     return (
       <Card className="text-center text-red-600">{error ?? "العرض غير موجود"}</Card>
@@ -198,7 +198,7 @@ export function BookingPage() {
   }
   if (deal.available_seats <= 0) {
     return (
-      <Card className="text-center text-gray-700">
+      <Card className="text-center text-slate-700">
         عذراً، المقاعد المتاحة في هذا العرض نفدت. جرّب البحث عن عرض آخر.
       </Card>
     );
@@ -208,7 +208,7 @@ export function BookingPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">إتمام الحجز</h1>
-        <p className="text-gray-600">{formatRoute(deal)} · {formatPrice(deal.price, deal.currency ?? "USD")}</p>
+        <p className="text-slate-600">{formatRoute(deal)} · {formatPrice(deal.price, deal.currency ?? "USD")}</p>
       </div>
 
       <div className="flex gap-2">
@@ -216,7 +216,7 @@ export function BookingPage() {
           <div
             key={label}
             className={`flex-1 rounded-lg px-2 py-2 text-center text-xs font-semibold sm:text-sm ${
-              i === step ? "bg-accent text-white" : i < step ? "bg-[#D2EEF9] text-[#155E7A]" : "bg-gray-100 text-gray-500"
+              i === step ? "bg-accent text-white" : i < step ? "bg-[#99F6E4] text-[#155E7A]" : "bg-slate-100 text-slate-500"
             }`}
           >
             {label}
@@ -238,8 +238,8 @@ export function BookingPage() {
             </div>
             <h3 className="pt-2 font-bold">بيانات المسافرين</h3>
             {travelers.map((t, i) => (
-              <div key={i} className="space-y-3 rounded-lg border border-gray-100 p-3">
-                <p className="text-sm font-medium text-gray-600">
+              <div key={i} className="space-y-3 rounded-lg border border-slate-100 p-3">
+                <p className="text-sm font-medium text-slate-600">
                   مسافر {i + 1} ({t.traveler_type === "adult" ? "بالغ" : t.traveler_type === "child" ? "طفل" : "رضيع"})
                 </p>
                 <Input
@@ -284,10 +284,10 @@ export function BookingPage() {
           <Card className="space-y-4">
             <h2 className="font-bold">خدمات إضافية</h2>
             {services.length === 0 ? (
-              <p className="text-gray-500">لا توجد خدمات إضافية متاحة حالياً</p>
+              <p className="text-slate-500">لا توجد خدمات إضافية متاحة حالياً</p>
             ) : (
               services.map((s) => (
-                <label key={s.id} className="flex items-center justify-between rounded-lg border border-gray-100 p-3">
+                <label key={s.id} className="flex items-center justify-between rounded-lg border border-slate-100 p-3">
                   <span>
                     {s.type} — {formatPrice(s.price, deal.currency ?? "USD")}
                   </span>
@@ -299,7 +299,7 @@ export function BookingPage() {
                     onChange={(e) =>
                       setSelectedServices({ ...selectedServices, [s.id]: Number(e.target.value) })
                     }
-                    className="w-16 rounded border border-gray-200 px-2 py-1 text-center"
+                    className="w-16 rounded border border-slate-200 px-2 py-1 text-center"
                   />
                 </label>
               ))
@@ -319,11 +319,11 @@ export function BookingPage() {
           <Card className="space-y-4">
             <h2 className="font-bold">مراجعة الحجز</h2>
             <dl className="space-y-2 text-sm">
-              <div className="flex justify-between"><dt className="text-gray-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">الاسم</dt><dd>{customerName}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">الهاتف</dt><dd>{customerPhone}</dd></div>
-              <div className="flex justify-between"><dt className="text-gray-500">المسافرون</dt><dd>{adults} بالغ · {children} طفل · {infants} رضيع</dd></div>
-              <div className="flex justify-between border-t border-gray-100 pt-2 font-bold">
+              <div className="flex justify-between"><dt className="text-slate-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
+              <div className="flex justify-between"><dt className="text-slate-500">الاسم</dt><dd>{customerName}</dd></div>
+              <div className="flex justify-between"><dt className="text-slate-500">الهاتف</dt><dd>{customerPhone}</dd></div>
+              <div className="flex justify-between"><dt className="text-slate-500">المسافرون</dt><dd>{adults} بالغ · {children} طفل · {infants} رضيع</dd></div>
+              <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
                 <dt>الإجمالي التقديري</dt>
                 <dd>{formatPrice(estimatedTotal(), deal.currency ?? "USD")}</dd>
               </div>
@@ -342,12 +342,12 @@ export function BookingPage() {
         {step === 3 ? (
           <Card className="space-y-4">
             <h2 className="font-bold">طريقة الدفع</h2>
-            <p className="text-sm text-gray-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب</p>
+            <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب</p>
             {PAYMENT_METHODS.map((pm) => (
               <label
                 key={pm.value}
                 className={`block cursor-pointer rounded-xl border p-4 ${
-                  paymentMethod === pm.value ? "border-accent bg-[#EAF6FC]" : "border-gray-200"
+                  paymentMethod === pm.value ? "border-accent bg-[#F0FDFA]" : "border-slate-200"
                 }`}
               >
                 <input
@@ -359,7 +359,7 @@ export function BookingPage() {
                   className="me-2"
                 />
                 <span className="font-semibold">{pm.label}</span>
-                <p className="mt-1 text-sm text-gray-600">{pm.details}</p>
+                <p className="mt-1 text-sm text-slate-600">{pm.details}</p>
               </label>
             ))}
             {error ? <p className="text-sm text-red-600">{error}</p> : null}

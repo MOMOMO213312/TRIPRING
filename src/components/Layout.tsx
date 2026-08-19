@@ -29,12 +29,12 @@ export function Layout() {
   }, [hash, pathname]);
 
   const linkClass = (active: boolean) =>
-    active ? "font-semibold text-white" : "text-slate-300 hover:text-white";
+    active ? "font-semibold text-white" : "text-white/80 hover:text-white";
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-[#0F172A] text-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-xs text-slate-300">
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-[#0D9488] text-white">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-xs text-white/80">
           <div className="flex items-center gap-4">
             <span className="hover:text-white">مساعدة ▾</span>
           </div>
@@ -53,44 +53,44 @@ export function Layout() {
           </div>
         </div>
 
-        <div className="border-t border-white/10">
+        <div className="border-t border-white/15">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3.5">
             <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
-              <span className="flex size-8 items-center justify-center rounded-full bg-[#DB2F2B] text-sm text-white">
+              <span className="flex size-8 items-center justify-center rounded-full bg-[#FF6B35] text-sm text-white">
                 ✈️
               </span>
               TripRing
             </Link>
 
             <nav className="flex flex-wrap items-center gap-6 text-sm font-medium">
-              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#DB2F2B]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
+              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#FF6B35]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
                 الرئيسية
               </Link>
               <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
                 العروض
-                <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
+                <span className="rounded-full bg-[#FF6B35] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
               </Link>
-              <Link to="/#opportunities" className="text-slate-300 hover:text-white">
+              <Link to="/#opportunities" className="text-white/80 hover:text-white">
                 اليوم
               </Link>
-              <Link to="/#destinations" className="text-slate-300 hover:text-white">
+              <Link to="/#destinations" className="text-white/80 hover:text-white">
                 الوجهات
               </Link>
-              <Link to="/alerts" className="text-slate-300 hover:text-white">
+              <Link to="/alerts" className="text-white/80 hover:text-white">
                 تنبيه الأسعار
               </Link>
-              <a href="#footer" className="text-slate-300 hover:text-white">
+              <a href="#footer" className="text-white/80 hover:text-white">
                 الدعم
               </a>
             </nav>
 
             <div className="flex items-center gap-3 text-sm font-semibold">
-              <Link to="/my-trips" className="flex items-center gap-1.5 text-slate-200 hover:text-white">
+              <Link to="/my-trips" className="flex items-center gap-1.5 text-white/90 hover:text-white">
                 <span aria-hidden>👤</span> سجل الدخول
               </Link>
               <Link
                 to="/my-trips"
-                className="rounded-full bg-[#DB2F2B] px-4 py-2 text-white transition hover:bg-[#B42723]"
+                className="rounded-full bg-[#FF6B35] px-4 py-2 text-white transition hover:bg-[#E8551F]"
               >
                 أنشئ حساب
               </Link>

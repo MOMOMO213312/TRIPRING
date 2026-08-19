@@ -13,10 +13,10 @@ type Props = SelectHTMLAttributes<HTMLSelectElement> & {
 export function Select({ label, options, placeholder, className, ...props }: Props) {
   return (
     <label className="block space-y-1.5">
-      {label ? <span className="text-sm font-medium text-gray-700">{label}</span> : null}
+      {label ? <span className="text-sm font-medium text-slate-700">{label}</span> : null}
       <select
         className={cn(
-          "w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-[#D2EEF9]",
+          "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-[#99F6E4]",
           className,
         )}
         {...props}

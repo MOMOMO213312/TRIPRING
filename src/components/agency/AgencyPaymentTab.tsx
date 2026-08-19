@@ -94,11 +94,11 @@ export function AgencyPaymentTab({
     }
   }
 
-  if (loading) return <div className="py-10 text-center text-sm text-gray-500">جاري التحميل...</div>;
+  if (loading) return <div className="py-10 text-center text-sm text-slate-500">جاري التحميل...</div>;
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-slate-500">
         راجع إثبات الدفع وحدّث الحالة النهائية للحجوزات — تظهر هنا الحجوزات بانتظار الدفع أو التي دفعت
         وتنتظر إصدار التذكرة.
       </p>
@@ -106,24 +106,24 @@ export function AgencyPaymentTab({
       {error ? <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
 
       {bookings.length === 0 ? (
-        <p className="py-8 text-center text-sm text-gray-500">لا توجد حجوزات تحتاج مراجعة الآن</p>
+        <p className="py-8 text-center text-sm text-slate-500">لا توجد حجوزات تحتاج مراجعة الآن</p>
       ) : (
         <div className="space-y-3">
           {bookings.map((b) => (
             <Card key={b.id} className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="font-bold text-gray-900">حجز #{b.booking_number}</span>{" "}
+                  <span className="font-bold text-slate-900">حجز #{b.booking_number}</span>{" "}
                   <Badge tone={b.status === "paid" ? "empty_seat" : "flash"}>
                     {BOOKING_STATUS_LABELS[b.status]}
                   </Badge>
                 </div>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-slate-600">
                   {b.total_price ?? b.unit_price ?? "—"} {b.currency ?? ""}
                 </span>
               </div>
 
-              <div className="grid gap-1 text-sm text-gray-700 sm:grid-cols-2">
+              <div className="grid gap-1 text-sm text-slate-700 sm:grid-cols-2">
                 <p>👤 {b.customer_name}</p>
                 <p dir="ltr" className="text-right">
                   📞 {b.customer_phone}
@@ -146,16 +146,16 @@ export function AgencyPaymentTab({
                   href={b.payment_proof_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-block text-sm font-semibold text-[#299FD1] underline"
+                  className="inline-block text-sm font-semibold text-[#0D9488] underline"
                 >
                   عرض إثبات الدفع المرفوع ↗
                 </a>
               ) : (
-                <p className="text-xs text-gray-400">لم يرفع العميل إثبات دفع بعد</p>
+                <p className="text-xs text-slate-400">لم يرفع العميل إثبات دفع بعد</p>
               )}
 
               {(b.status === "awaiting_payment" || b.status === "payment_uploaded") && (
-                <div className="flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3">
+                <div className="flex flex-wrap items-end gap-2 border-t border-slate-100 pt-3">
                   <Input
                     label="مرجع الدفع (رقم العملية)"
                     value={paymentRefDraft[b.id] ?? b.payment_ref ?? ""}
@@ -174,7 +174,7 @@ export function AgencyPaymentTab({
               )}
 
               {b.status === "paid" && (
-                <div className="flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3">
+                <div className="flex flex-wrap items-end gap-2 border-t border-slate-100 pt-3">
                   <Input
                     label="رابط التذكرة الصادرة"
                     value={ticketUrlDraft[b.id] ?? b.ticket_url ?? ""}

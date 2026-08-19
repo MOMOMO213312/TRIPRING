@@ -62,7 +62,7 @@ export function HomePage() {
   }
 
   if (catalog.loading) {
-    return <p className="py-20 text-center text-gray-500">جاري التحميل...</p>;
+    return <p className="py-20 text-center text-slate-500">جاري التحميل...</p>;
   }
 
   if (catalog.error) {
@@ -99,8 +99,8 @@ export function HomePage() {
           <section id="opportunities">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">أفضل العروض اليوم</h2>
-                <p className="text-sm text-gray-600">
+                <h2 className="text-2xl font-bold text-slate-900">أفضل العروض اليوم</h2>
+                <p className="text-sm text-slate-600">
                   عروض مختارة بعناية لك — الباقي مرتب حسب Deal Score
                 </p>
               </div>

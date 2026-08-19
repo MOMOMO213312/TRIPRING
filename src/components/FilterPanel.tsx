@@ -45,11 +45,11 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
   const content = (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold text-gray-900">الفلاتر المتقدمة</h3>
+        <h3 className="text-base font-bold text-slate-900">الفلاتر المتقدمة</h3>
         <button
           type="button"
           onClick={() => onChange(EMPTY_FILTERS)}
-          className="text-xs font-semibold text-[#299FD1] hover:underline"
+          className="text-xs font-semibold text-[#0D9488] hover:underline"
         >
           إعادة تعيين
         </button>
@@ -158,7 +158,7 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
     <>
       {/* Desktop sidebar */}
       <aside className="hidden shrink-0 lg:block lg:w-[260px]">
-        <div className="sticky top-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">{content}</div>
+        <div className="sticky top-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">{content}</div>
       </aside>
 
       {/* Mobile bottom sheet */}
@@ -167,7 +167,7 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
           <div className="absolute inset-0 bg-black/40" onClick={onClose} />
           <div className="relative max-h-[85vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl">
             {content}
-            <div className="sticky bottom-0 mt-6 flex gap-3 border-t border-gray-100 bg-white pt-4">
+            <div className="sticky bottom-0 mt-6 flex gap-3 border-t border-slate-100 bg-white pt-4">
               <Button variant="outline" fullWidth onClick={() => onChange(EMPTY_FILTERS)}>
                 إعادة تعيين
               </Button>
@@ -184,8 +184,8 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
 
 function FilterGroup({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-gray-100 pt-4 first:border-0 first:pt-0">
-      <p className="mb-2.5 text-sm font-semibold text-gray-800">{title}</p>
+    <div className="border-t border-slate-100 pt-4 first:border-0 first:pt-0">
+      <p className="mb-2.5 text-sm font-semibold text-slate-800">{title}</p>
       {children}
     </div>
   );
@@ -206,8 +206,8 @@ function ChipToggle({
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
         active
-          ? "border-[#299FD1] bg-[#EAF6FC] text-[#299FD1]"
-          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+          ? "border-[#0D9488] bg-[#F0FDFA] text-[#0D9488]"
+          : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
       }`}
     >
       {children}
@@ -225,8 +225,8 @@ function Checkbox({
   children: React.ReactNode;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700">
-      <input type="checkbox" checked={checked} onChange={onChange} className="size-4 rounded accent-[#299FD1]" />
+    <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+      <input type="checkbox" checked={checked} onChange={onChange} className="size-4 rounded accent-[#0D9488]" />
       {children}
     </label>
   );

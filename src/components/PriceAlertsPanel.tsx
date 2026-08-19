@@ -17,7 +17,7 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
   if (loading) {
     return (
       <Card>
-        <p className="text-sm text-gray-500">جاري تحميل التنبيهات...</p>
+        <p className="text-sm text-slate-500">جاري تحميل التنبيهات...</p>
       </Card>
     );
   }
@@ -26,8 +26,8 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
     return (
       <Card className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="font-bold text-gray-900">تنبيهات الأسعار</h3>
-          <p className="mt-1 text-sm text-gray-600">
+          <h3 className="font-bold text-slate-900">تنبيهات الأسعار</h3>
+          <p className="mt-1 text-sm text-slate-600">
             أنشئ تنبيهاً ونبلّغك عندما ينخفض السعر لمسارك
           </p>
         </div>
@@ -41,8 +41,8 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h3 className="font-bold text-gray-900">تنبيهاتك النشطة</h3>
-        <Link to="/alerts" className="text-sm font-semibold text-[#299FD1] hover:underline">
+        <h3 className="font-bold text-slate-900">تنبيهاتك النشطة</h3>
+        <Link to="/alerts" className="text-sm font-semibold text-[#0D9488] hover:underline">
           عرض الكل
         </Link>
       </div>
@@ -50,13 +50,13 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
         {alerts.slice(0, 4).map((a) => (
           <li
             key={a.id}
-            className="flex items-center justify-between rounded-lg border border-gray-100 px-3 py-2 text-sm"
+            className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2 text-sm"
           >
             <span>
               {airportLabel(a.from_airport, airports).split(" (")[0]} →{" "}
               {airportLabel(a.to_airport, airports).split(" (")[0]}
             </span>
-            <span className="font-latin font-semibold text-gray-700">
+            <span className="font-latin font-semibold text-slate-700">
               ≤ {formatPrice(a.max_budget)}
             </span>
           </li>

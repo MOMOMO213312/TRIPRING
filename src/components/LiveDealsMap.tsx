@@ -50,8 +50,8 @@ export function LiveDealsMap({ deals, airports }: Props) {
   return (
     <Card>
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-bold text-gray-900">خريطة العروض المباشرة</h3>
-        <div className="flex items-center gap-3 text-xs text-gray-500">
+        <h3 className="font-bold text-slate-900">خريطة العروض المباشرة</h3>
+        <div className="flex items-center gap-3 text-xs text-slate-500">
           <span className="inline-flex items-center gap-1">
             <span className="size-2 rounded-full bg-[#DC2626]" /> عروض ساخنة
           </span>
@@ -92,7 +92,7 @@ export function LiveDealsMap({ deals, airports }: Props) {
         )}
       </svg>
 
-      <p className="mt-3 text-xs text-gray-400">
+      <p className="mt-3 text-xs text-slate-400">
         مواقع تقريبية للوجهات ذات العروض النشطة حاليًا — النقطة الحمراء تعني فرصة قوية (Deal Score ≥ 90).
       </p>
     </Card>

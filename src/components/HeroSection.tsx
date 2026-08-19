@@ -86,7 +86,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
          used to be too tight and the card was covering the subheadline. */}
       <div className="relative z-10 mx-auto max-w-5xl px-4">
         <div className="-mt-32 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
-          <div className="mb-5 flex w-fit gap-1 rounded-full bg-gray-100 p-1">
+          <div className="mb-5 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
             {(
               [
                 ["round_trip", "↔️", "ذهاب وعودة"],
@@ -100,8 +100,8 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                 onClick={() => setTripType(key)}
                 className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${
                   tripType === key
-                    ? "bg-white text-[#299FD1] shadow-sm"
-                    : "text-gray-500 hover:text-gray-800"
+                    ? "bg-white text-[#0D9488] shadow-sm"
+                    : "text-slate-500 hover:text-slate-800"
                 }`}
               >
                 <span aria-hidden className="text-xs">
@@ -116,7 +116,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
             <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
               {/* One continuous bordered strip with hairline dividers between fields —
                  matches the reference instead of each field having its own separate box. */}
-              <div className="flex flex-1 flex-col divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
+              <div className="flex flex-1 flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
                 <FieldBox icon="📍" label="From" className="sm:flex-[1.3]">
                   <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
                     {airportOptions}
@@ -131,7 +131,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                       setTo(from);
                     }}
                     aria-label="تبديل الوجهتين"
-                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#299FD1] hover:text-[#299FD1] sm:rotate-0"
+                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#0D9488] hover:text-[#0D9488] sm:rotate-0"
                   >
                     ⇄
                   </button>
@@ -161,7 +161,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                     min={date || new Date().toISOString().slice(0, 10)}
                     disabled={tripType === "one_way"}
                     onChange={(e) => setReturnDate(e.target.value)}
-                    className="hero-field-input disabled:cursor-not-allowed disabled:text-gray-300"
+                    className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
                   />
                 </FieldBox>
                 <FieldBox icon="👤" label="Passengers" trailingIcon="▾" className="sm:flex-[1.3]">
@@ -181,7 +181,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
               <button
                 type="submit"
-                className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#DB2F2B] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#F6C6C4] transition hover:-translate-y-0.5 hover:bg-[#B42723] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#FF6B35] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#FFD9C2] transition hover:-translate-y-0.5 hover:bg-[#E8551F] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
               >
                 <span aria-hidden>🔍</span> ابحث عن رحلات
               </button>
@@ -189,12 +189,12 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           </form>
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-gray-500">عمليات بحث شائعة:</span>
+            <span className="text-xs font-medium text-slate-500">عمليات بحث شائعة:</span>
             {POPULAR.map((p) => (
               <Link
                 key={`${p.from}-${p.to}`}
                 to={`/search?from=${p.from}&to=${p.to}`}
-                className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 transition hover:border-[#299FD1] hover:text-[#299FD1]"
+                className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#0D9488] hover:bg-[#F0FDFA] hover:text-[#0D9488]"
               >
                 {p.label}
               </Link>
@@ -230,17 +230,17 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-[#EAF6FC]/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-[#F0FDFA]/40 ${className}`}
     >
-      <span className="shrink-0 text-gray-400" aria-hidden>
+      <span className="shrink-0 text-slate-400" aria-hidden>
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="font-latin text-[11px] text-gray-400">{label}</p>
+        <p className="font-latin text-[11px] text-slate-400">{label}</p>
         {children}
       </div>
       {trailingIcon ? (
-        <span className="shrink-0 text-gray-300" aria-hidden>
+        <span className="shrink-0 text-slate-300" aria-hidden>
           {trailingIcon}
         </span>
       ) : null}

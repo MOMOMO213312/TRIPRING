@@ -39,7 +39,7 @@ export function AgencyDashboardPage() {
   }, [user, authLoading]);
 
   if (authLoading || profileLoading) {
-    return <div className="py-16 text-center text-sm text-gray-500">جاري التحميل...</div>;
+    return <div className="py-16 text-center text-sm text-slate-500">جاري التحميل...</div>;
   }
 
   if (!user) {
@@ -70,8 +70,8 @@ export function AgencyDashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-extrabold text-gray-900">لوحة الوكالة</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-xl font-extrabold text-slate-900">لوحة الوكالة</h1>
+          <p className="text-sm text-slate-500">
             {profile.agency_name ?? "وكالتك"} — {profile.full_name ?? "مستخدم"}
           </p>
         </div>
@@ -80,14 +80,14 @@ export function AgencyDashboardPage() {
         </Button>
       </div>
 
-      <div className="flex gap-1 rounded-xl border border-gray-200 bg-white p-1">
+      <div className="flex gap-1 rounded-xl border border-slate-200 bg-white p-1">
         {tabs.map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
             className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
-              tab === t.key ? "bg-[#299FD1] text-white" : "text-gray-600 hover:bg-gray-50"
+              tab === t.key ? "bg-[#0D9488] text-white" : "text-slate-600 hover:bg-slate-50"
             }`}
           >
             {t.label}

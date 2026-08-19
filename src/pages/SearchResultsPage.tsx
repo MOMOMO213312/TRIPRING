@@ -64,13 +64,13 @@ export function SearchResultsPage() {
   const availableAirlines = useMemo(() => airlinesInDeals(deals, catalog.airlines), [deals, catalog.airlines]);
   const activeFilterCount = countActiveFilters(filters);
 
-  if (catalog.loading) return <p className="text-gray-500">جاري التحميل...</p>;
+  if (catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">أفضل الفرص من {airportLabel(from, catalog.airports)}</h1>
-        <p className="mt-1 text-gray-600">
+        <h1 className="text-2xl font-bold text-slate-900">أفضل الفرص من {airportLabel(from, catalog.airports)}</h1>
+        <p className="mt-1 text-slate-600">
           {to ? `→ ${airportLabel(effectiveTo || to, catalog.airports)}` : "كل الوجهات"}
           {date ? ` · ${date}` : ""}
           {tripType === "one_way" ? " · ذهاب فقط" : tripType === "round_trip" && returnDate ? ` · عودة ${returnDate}` : ""}
@@ -104,7 +104,7 @@ export function SearchResultsPage() {
             ]}
             className="max-w-xs"
           />
-          <span className="text-sm text-gray-500">{filtered.length} فرصة</span>
+          <span className="text-sm text-slate-500">{filtered.length} فرصة</span>
         </div>
         <button
           type="button"
@@ -135,8 +135,8 @@ export function SearchResultsPage() {
             <Card className="text-red-600">{error}</Card>
           ) : filtered.length === 0 ? (
             <Card className="space-y-3 text-center">
-              <p className="text-gray-700">لا توجد فرص مطابقة لاختياراتك الحالية.</p>
-              <p className="text-sm text-gray-500">جرّب زيادة الميزانية، تواريخ مرنة، أو إزالة بعض الفلاتر.</p>
+              <p className="text-slate-700">لا توجد فرص مطابقة لاختياراتك الحالية.</p>
+              <p className="text-sm text-slate-500">جرّب زيادة الميزانية، تواريخ مرنة، أو إزالة بعض الفلاتر.</p>
               <button
                 type="button"
                 onClick={() => setFilters(EMPTY_FILTERS)}

@@ -30,7 +30,7 @@ export function SmartFilterChips() {
       <button
         type="button"
         onClick={() => navigate("/deals")}
-        className="smart-chip border-dashed text-gray-500"
+        className="smart-chip border-dashed text-slate-500"
       >
         + كل الفلاتر
       </button>

@@ -50,11 +50,11 @@ export function DealCard({
   return (
     <article
       className={cn(
-        "deal-card-lift relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white",
+        "deal-card-lift relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white",
         compact && "min-w-[320px] shrink-0",
       )}
     >
-      <div className={cn("relative bg-gray-100", compact ? "h-[110px]" : "h-[160px]")}>
+      <div className={cn("relative bg-slate-100", compact ? "h-[110px]" : "h-[160px]")}>
         {rank && rankStyle ? (
           <div className="absolute start-3 top-3 z-10 flex items-center gap-2">
             <span
@@ -63,7 +63,7 @@ export function DealCard({
             >
               {rank}
             </span>
-            <span className="rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-semibold text-gray-800 shadow-sm backdrop-blur-sm">
+            <span className="rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-semibold text-slate-800 shadow-sm backdrop-blur-sm">
               {rankQualityLabel(rank)}
             </span>
           </div>
@@ -83,20 +83,20 @@ export function DealCard({
 
       <div className={cn("flex flex-1 flex-col gap-3", compact ? "p-3" : "p-4")}>
         <div>
-          <h3 className="text-lg font-bold text-gray-900">{formatRouteCities(deal, airports)}</h3>
+          <h3 className="text-lg font-bold text-slate-900">{formatRouteCities(deal, airports)}</h3>
           <div className="mt-2 flex items-center gap-2">
             {airline?.logo_url ? (
               <img src={airline.logo_url} alt="" className="size-6 rounded object-contain" />
             ) : (
-              <span className="font-latin flex size-6 items-center justify-center rounded bg-gray-100 text-[10px] font-bold text-gray-600">
+              <span className="font-latin flex size-6 items-center justify-center rounded bg-slate-100 text-[10px] font-bold text-slate-600">
                 {deal.airline_code ?? "—"}
               </span>
             )}
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-slate-700">
               {airlineName(deal.airline_code, airlines)}
             </span>
             {agency?.is_active ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#EAF6FC] px-2 py-0.5 text-[11px] font-semibold text-[#299FD1]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#F0FDFA] px-2 py-0.5 text-[11px] font-semibold text-[#0D9488]">
                 <VerifiedIcon className="size-3" />
                 موثّق
               </span>
@@ -106,11 +106,11 @@ export function DealCard({
 
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <p className="font-latin text-2xl font-extrabold text-gray-900">
+            <p className="font-latin text-2xl font-extrabold text-[#0D9488]">
               {formatPrice(deal.price, deal.currency ?? "USD")}
             </p>
             {typical && typical > deal.price ? (
-              <p className="font-latin mt-0.5 text-sm text-gray-400 line-through">
+              <p className="font-latin mt-0.5 text-sm text-slate-400 line-through">
                 Typical {formatPrice(typical, deal.currency ?? "USD")}
               </p>
             ) : null}
@@ -126,7 +126,7 @@ export function DealCard({
           {deal.deal_score != null ? <DealScoreRing score={deal.deal_score} showLabel /> : null}
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
           <span className="inline-flex items-center gap-1">
             <CalendarIcon className="size-3.5" />
             {departureTimingLabel(deal.departure_date)}
@@ -159,7 +159,7 @@ export function DealCard({
             </Button>
           )}
           <a href={whatsAppLink(waPhone, waMessage)} target="_blank" rel="noreferrer">
-            <Button fullWidth variant="outline" className="gap-2 border-gray-300 text-gray-800">
+            <Button fullWidth variant="outline" className="gap-2 border-slate-300 text-slate-800">
               <WhatsAppIcon className="size-4 text-[#25D366]" />
               احجز عبر واتساب
             </Button>

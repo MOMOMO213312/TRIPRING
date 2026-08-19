@@ -6,14 +6,14 @@ const ITEMS = [
 
 export function TrustStrip() {
   return (
-    <div className="flex flex-col items-stretch justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:gap-0">
+    <div className="flex flex-col items-stretch justify-between gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:gap-0">
       {ITEMS.map((item, i) => (
         <div key={item.text} className="flex flex-1 items-center gap-3 sm:justify-center">
-          {i > 0 ? <span className="hidden h-8 w-px bg-gray-200 sm:block" aria-hidden /> : null}
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#EAF6FC] text-[#299FD1]">
+          {i > 0 ? <span className="hidden h-8 w-px bg-slate-200 sm:block" aria-hidden /> : null}
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#F0FDFA] text-[#0D9488]">
             <item.icon className="size-4" />
           </span>
-          <span className="text-sm font-medium text-gray-700">{item.text}</span>
+          <span className="text-sm font-medium text-slate-700">{item.text}</span>
         </div>
       ))}
     </div>

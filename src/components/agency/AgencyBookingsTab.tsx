@@ -93,7 +93,7 @@ export function AgencyBookingsTab({
             type="button"
             onClick={() => setGroup(g.key)}
             className={`rounded-full px-3 py-1.5 text-sm font-semibold transition-colors ${
-              group === g.key ? "bg-[#299FD1] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              group === g.key ? "bg-[#0D9488] text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
             {g.label}
@@ -104,24 +104,24 @@ export function AgencyBookingsTab({
       {error ? <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
 
       {loading ? (
-        <div className="py-10 text-center text-sm text-gray-500">جاري التحميل...</div>
+        <div className="py-10 text-center text-sm text-slate-500">جاري التحميل...</div>
       ) : bookings.length === 0 ? (
-        <p className="py-8 text-center text-sm text-gray-500">لا توجد حجوزات في هذا التصنيف</p>
+        <p className="py-8 text-center text-sm text-slate-500">لا توجد حجوزات في هذا التصنيف</p>
       ) : (
         <div className="space-y-3">
           {bookings.map((b) => (
             <Card key={b.id} className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <span className="font-bold text-gray-900">حجز #{b.booking_number}</span>{" "}
+                  <span className="font-bold text-slate-900">حجز #{b.booking_number}</span>{" "}
                   <Badge tone={statusTone(b.status)}>{BOOKING_STATUS_LABELS[b.status]}</Badge>
                 </div>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-slate-400">
                   {new Date(b.created_at).toLocaleString("ar-EG")}
                 </span>
               </div>
 
-              <div className="grid gap-1 text-sm text-gray-700 sm:grid-cols-2">
+              <div className="grid gap-1 text-sm text-slate-700 sm:grid-cols-2">
                 <p>👤 {b.customer_name}</p>
                 <p dir="ltr" className="text-right">
                   📞 {b.customer_phone}
@@ -134,10 +134,10 @@ export function AgencyBookingsTab({
                 <p>
                   💰 {b.total_price ?? b.unit_price ?? "—"} {b.currency ?? ""}
                 </p>
-                {b.notes ? <p className="sm:col-span-2 text-gray-500">📝 {b.notes}</p> : null}
+                {b.notes ? <p className="sm:col-span-2 text-slate-500">📝 {b.notes}</p> : null}
               </div>
 
-              <div className="flex flex-wrap items-end gap-2 border-t border-gray-100 pt-3">
+              <div className="flex flex-wrap items-end gap-2 border-t border-slate-100 pt-3">
                 <Select
                   label="تغيير الحالة إلى"
                   options={NEXT_STATUS_OPTIONS[b.status].map((s) => ({

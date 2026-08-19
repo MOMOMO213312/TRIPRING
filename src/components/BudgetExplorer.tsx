@@ -8,8 +8,8 @@ export function BudgetExplorer() {
   return (
     <section>
       <div className="mb-5">
-        <h2 className="text-2xl font-bold text-gray-900">💵 سافر حسب ميزانيتك</h2>
-        <p className="text-sm text-gray-600">عندك $300؟ نوريك تقدر تروح فين</p>
+        <h2 className="text-2xl font-bold text-slate-900">💵 سافر حسب ميزانيتك</h2>
+        <p className="text-sm text-slate-600">عندك $300؟ نوريك تقدر تروح فين</p>
       </div>
       <div className="flex flex-wrap gap-3">
         {BUDGETS.map((amount) => (
@@ -17,18 +17,18 @@ export function BudgetExplorer() {
             key={amount}
             type="button"
             onClick={() => navigate(`/search?budget=${amount}`)}
-            className="font-latin flex min-w-[100px] flex-1 flex-col items-center gap-1 rounded-xl border border-gray-200 bg-white px-4 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#299FD1] hover:shadow-md sm:flex-none"
+            className="font-latin flex min-w-[100px] flex-1 flex-col items-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0D9488] hover:shadow-md sm:flex-none"
           >
-            <span className="text-xl font-extrabold text-gray-900">${amount}</span>
-            <span className="font-sans-ar text-[11px] font-medium text-gray-500">وأقل</span>
+            <span className="text-xl font-extrabold text-slate-900">${amount}</span>
+            <span className="font-sans-ar text-[11px] font-medium text-slate-500">وأقل</span>
           </button>
         ))}
         <button
           type="button"
           onClick={() => navigate("/search?budget=1000plus")}
-          className="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-xl border border-gray-200 bg-white px-4 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#299FD1] hover:shadow-md sm:flex-none"
+          className="flex min-w-[100px] flex-1 flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0D9488] hover:shadow-md sm:flex-none"
         >
-          <span className="font-latin text-xl font-extrabold text-gray-900">$1000+</span>
+          <span className="font-latin text-xl font-extrabold text-slate-900">$1000+</span>
         </button>
       </div>
     </section>

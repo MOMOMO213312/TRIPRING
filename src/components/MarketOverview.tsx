@@ -38,13 +38,13 @@ export function MarketOverview({ stats, airports }: Props) {
 
   return (
     <section>
-      <h2 className="mb-4 text-xl font-bold text-gray-900">نظرة على السوق</h2>
+      <h2 className="mb-4 text-xl font-bold text-slate-900">نظرة على السوق</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((m) => (
           <Card key={m.label} className="py-4">
-            <p className="text-xs font-medium text-gray-500">{m.label}</p>
-            <p className="font-latin mt-1 text-xl font-extrabold text-gray-900">{m.value}</p>
-            {m.sub ? <p className="font-latin mt-0.5 text-xs text-gray-500">{m.sub}</p> : null}
+            <p className="text-xs font-medium text-slate-500">{m.label}</p>
+            <p className="font-latin mt-1 text-xl font-extrabold text-slate-900">{m.value}</p>
+            {m.sub ? <p className="font-latin mt-0.5 text-xs text-slate-500">{m.sub}</p> : null}
           </Card>
         ))}
       </div>

@@ -10,8 +10,8 @@ export function AffiliateDashboardPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">لوحة الأفلييت</h1>
-        <p className="mt-1 text-gray-600">تابع عمولتك ورابط الإحالة الخاص بيك</p>
+        <h1 className="text-2xl font-bold text-slate-900">لوحة الأفلييت</h1>
+        <p className="mt-1 text-slate-600">تابع عمولتك ورابط الإحالة الخاص بيك</p>
       </div>
 
       <AuthGate title="سجّل الدخول عشان تشوف لوحة الأفلييت بتاعتك">
@@ -40,14 +40,14 @@ function AffiliateBody() {
     };
   }, []);
 
-  if (loading) return <p className="text-gray-500">جاري التحميل...</p>;
+  if (loading) return <p className="text-slate-500">جاري التحميل...</p>;
 
   if (!affiliate) {
     return (
       <Card className="text-center">
         <p className="text-3xl">🤝</p>
-        <h3 className="mt-3 font-bold text-gray-900">لسه مش مسجّل كأفلييت</h3>
-        <p className="mx-auto mt-2 max-w-sm text-sm text-gray-500">
+        <h3 className="mt-3 font-bold text-slate-900">لسه مش مسجّل كأفلييت</h3>
+        <p className="mx-auto mt-2 max-w-sm text-sm text-slate-500">
           حساب الأفلييت بيتفعّل من فريق TripRing. كلّمنا على واتساب أو الإيميل عشان نفعّله لحسابك.
         </p>
         <a
@@ -78,7 +78,7 @@ function AffiliateBody() {
     <div className="space-y-6">
       <Card>
         <div className="flex items-center justify-between">
-          <p className="text-sm font-bold text-gray-900">رابط الإحالة بتاعك</p>
+          <p className="text-sm font-bold text-slate-900">رابط الإحالة بتاعك</p>
           <span className="font-latin rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">
             {affiliateTierLabel(affiliate.tier)}
           </span>
@@ -87,7 +87,7 @@ function AffiliateBody() {
           <input
             readOnly
             value={link}
-            className="font-latin flex-1 truncate rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-700"
+            className="font-latin flex-1 truncate rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700"
           />
           <Button onClick={copyLink}>{copied ? "✓ اتنسخ" : "نسخ الرابط"}</Button>
         </div>
@@ -105,8 +105,8 @@ function AffiliateBody() {
       </div>
 
       <Card>
-        <h3 className="font-bold text-gray-900">إزاي تكسب أكتر؟</h3>
-        <ul className="mt-3 space-y-2 text-sm text-gray-600">
+        <h3 className="font-bold text-slate-900">إزاي تكسب أكتر؟</h3>
+        <ul className="mt-3 space-y-2 text-sm text-slate-600">
           <li>شارك رابطك مع أصحابك — كل حجز بيتم من خلاله بيديك عمولة.</li>
           <li>كل ما رصيدك يزيد، الـ tier بترقّى تلقائيًا وعمولتك تزيد معاها.</li>
         </ul>
@@ -117,9 +117,9 @@ function AffiliateBody() {
 
 function StatCard({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <Card className={highlight ? "border-[#299FD1] bg-[#EAF6FC] text-center" : "text-center"}>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className={`font-latin mt-1 text-xl font-extrabold ${highlight ? "text-[#299FD1]" : "text-gray-900"}`}>
+    <Card className={highlight ? "border-[#0D9488] bg-[#F0FDFA] text-center" : "text-center"}>
+      <p className="text-xs text-slate-500">{label}</p>
+      <p className={`font-latin mt-1 text-xl font-extrabold ${highlight ? "text-[#0D9488]" : "text-slate-900"}`}>
         {value}
       </p>
     </Card>

@@ -57,23 +57,23 @@ export function AuthGate({
   return (
     <Card className="space-y-4">
       <div>
-        <h3 className="font-bold text-gray-900">{title}</h3>
-        {description ? <p className="mt-1 text-sm text-gray-600">{description}</p> : null}
+        <h3 className="font-bold text-slate-900">{title}</h3>
+        {description ? <p className="mt-1 text-sm text-slate-600">{description}</p> : null}
       </div>
 
       <div className="flex gap-2 text-sm font-medium">
         <button
           type="button"
           onClick={() => setMode("signin")}
-          className={mode === "signin" ? "text-[#299FD1]" : "text-gray-400"}
+          className={mode === "signin" ? "text-[#0D9488]" : "text-slate-400"}
         >
           تسجيل الدخول
         </button>
-        <span className="text-gray-300">|</span>
+        <span className="text-slate-300">|</span>
         <button
           type="button"
           onClick={() => setMode("signup")}
-          className={mode === "signup" ? "text-[#299FD1]" : "text-gray-400"}
+          className={mode === "signup" ? "text-[#0D9488]" : "text-slate-400"}
         >
           حساب جديد
         </button>

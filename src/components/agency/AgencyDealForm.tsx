@@ -78,7 +78,7 @@ export function AgencyDealForm({
 
   return (
     <Card className="space-y-4">
-      <h3 className="font-bold text-gray-900">{initial ? "تعديل العرض" : "إضافة عرض جديد"}</h3>
+      <h3 className="font-bold text-slate-900">{initial ? "تعديل العرض" : "إضافة عرض جديد"}</h3>
       <form onSubmit={handleSubmit} className="grid gap-3 sm:grid-cols-2">
         <Select
           label="نوع العرض"

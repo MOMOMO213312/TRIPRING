@@ -44,17 +44,17 @@ const FAQS: { q: string; a: string }[] = [
 export function FaqPage() {
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-3xl font-extrabold text-gray-900">الأسئلة الشائعة</h1>
-      <p className="mt-3 text-gray-600">كل اللي محتاج تعرفه عن استخدام TripRing، الحجز، والدفع.</p>
+      <h1 className="text-3xl font-extrabold text-slate-900">الأسئلة الشائعة</h1>
+      <p className="mt-3 text-slate-600">كل اللي محتاج تعرفه عن استخدام TripRing، الحجز، والدفع.</p>
 
-      <div className="mt-8 divide-y divide-gray-200 rounded-xl border border-gray-200 bg-white">
+      <div className="mt-8 divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
         {FAQS.map((item) => (
-          <details key={item.q} className="group p-5 open:bg-gray-50">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-gray-900">
+          <details key={item.q} className="group p-5 open:bg-slate-50">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-slate-900">
               {item.q}
-              <span className="shrink-0 text-gray-400 transition group-open:rotate-45">+</span>
+              <span className="shrink-0 text-slate-400 transition group-open:rotate-45">+</span>
             </summary>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">{item.a}</p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.a}</p>
           </details>
         ))}
       </div>

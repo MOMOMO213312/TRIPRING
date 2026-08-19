@@ -46,9 +46,9 @@ export function ConfirmationPage() {
     const lastBooking = getLastBooking();
     return (
       <Card className="text-center">
-        <p className="text-gray-600">لا توجد بيانات حجز في هذه الصفحة (ربما بسبب تحديث الصفحة).</p>
+        <p className="text-slate-600">لا توجد بيانات حجز في هذه الصفحة (ربما بسبب تحديث الصفحة).</p>
         {lastBooking ? (
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-slate-500">
             آخر حجز عندك: <span className="font-bold text-accent">{lastBooking.bookingNumber}</span>
           </p>
         ) : null}
@@ -69,32 +69,32 @@ export function ConfirmationPage() {
   return (
     <div className="mx-auto max-w-lg space-y-6 text-center">
       <div className="rounded-full bg-green-100 p-4 text-4xl">✓</div>
-      <h1 className="text-2xl font-bold text-gray-900">تم إنشاء الحجز بنجاح</h1>
+      <h1 className="text-2xl font-bold text-slate-900">تم إنشاء الحجز بنجاح</h1>
       <Card className="text-start">
         <dl className="space-y-3">
           <div>
-            <dt className="text-sm text-gray-500">رقم الحجز</dt>
+            <dt className="text-sm text-slate-500">رقم الحجز</dt>
             <dd className="text-2xl font-extrabold text-accent">{booking.booking_number}</dd>
           </div>
           <div>
-            <dt className="text-sm text-gray-500">المسار</dt>
+            <dt className="text-sm text-slate-500">المسار</dt>
             <dd className="font-semibold">{formatRoute(deal)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-gray-500">المبلغ</dt>
+            <dt className="text-sm text-slate-500">المبلغ</dt>
             <dd className="font-semibold">{formatPrice(booking.total_price, booking.currency)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-gray-500">طريقة الدفع</dt>
+            <dt className="text-sm text-slate-500">طريقة الدفع</dt>
             <dd>{PAYMENT_LABELS[paymentMethod]}</dd>
           </div>
           <div>
-            <dt className="text-sm text-gray-500">الحالة</dt>
+            <dt className="text-sm text-slate-500">الحالة</dt>
             <dd className="font-semibold text-amber-700">{STATUS_LABELS[booking.status] ?? booking.status}</dd>
           </div>
         </dl>
       </Card>
-      <p className="text-sm text-gray-600">
+      <p className="text-sm text-slate-600">
         أكمل التحويل باستخدام طريقة الدفع المختارة، ثم أرسل إيصال التحويل عبر واتساب.
       </p>
       <div className="flex flex-col gap-3">
@@ -109,7 +109,7 @@ export function ConfirmationPage() {
           </Button>
         </Link>
       </div>
-      <p className="text-xs text-gray-500">
+      <p className="text-xs text-slate-500">
         احفظ رقم الحجز {booking.booking_number} ورقم هاتفك {customerPhone} للبحث لاحقاً
       </p>
     </div>

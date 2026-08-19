@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #299FD1;
-  --color-primary-hover: #2282AB;
-  --color-primary-light: #eaf6fc;
+  --color-primary: #0D9488;
+  --color-primary-hover: #0F766E;
+  --color-primary-light: #F0FDFA;
   --color-score-green: #16a34a;
   --color-score-bg: #f0fdf4;
   --color-score-amber: #d97706;
@@ -18,7 +18,7 @@
   --color-accent-teal: #0d9488;
   --color-navy: #0f172a;
   --color-navy-light: #1e293b;
-  --color-flash-orange: #DB2F2B;
+  --color-flash-orange: #FF6B35;
   --color-flash-orange-light: #F3A6A3;
   --font-sans-ar: "Cairo", system-ui, sans-serif;
   --font-sans-latin: "Inter", system-ui, sans-serif;
@@ -29,7 +29,7 @@ html {
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @apply bg-slate-50 text-slate-900 antialiased;
 }
 
 .font-latin {
@@ -42,7 +42,7 @@ body {
 }
 
 .field-input {
-  @apply w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-[#299FD1] focus:ring-2 focus:ring-[#D2EEF9];
+  @apply w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-3 py-2.5 text-sm text-[#334155] outline-none transition focus:border-[#0D9488] focus:ring-2 focus:ring-[#99F6E4];
 }
 
 .opportunity-card-lift {
@@ -75,19 +75,19 @@ body {
 }
 
 .smart-chip {
-  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-[#299FD1] hover:text-[#299FD1] hover:shadow-md active:scale-95;
+  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#0D9488] hover:bg-[#F0FDFA] hover:text-[#0D9488] hover:shadow-md active:scale-95;
 }
 
 .smart-chip-active {
-  @apply border-[#299FD1] bg-[#EAF6FC] text-[#299FD1];
+  @apply border-[#0D9488] bg-[#F0FDFA] text-[#0D9488];
 }
 
 .cta-primary {
-  @apply rounded-xl bg-[#299FD1] font-semibold text-white shadow-md shadow-[#A9DFF2] transition hover:bg-[#2282AB] hover:shadow-lg active:scale-[0.98];
+  @apply rounded-xl bg-[#0D9488] font-semibold text-white shadow-md shadow-[#5EEAD4] transition hover:bg-[#0F766E] hover:shadow-lg active:scale-[0.98];
 }
 
 .skeleton-pulse {
-  @apply animate-pulse rounded-xl bg-gray-200;
+  @apply animate-pulse rounded-xl bg-slate-200;
 }
 
 @keyframes ticker-scroll {
@@ -109,7 +109,7 @@ body {
 
 .hero-field-select,
 .hero-field-input {
-  @apply w-full border-0 bg-transparent p-0 text-sm font-semibold text-gray-800 outline-none;
+  @apply w-full border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none;
 }
 
 .hero-field-select {

@@ -30,8 +30,8 @@ export function AgencyLoginGate() {
     <div className="mx-auto max-w-sm">
       <Card className="space-y-4">
         <div>
-          <h1 className="text-lg font-bold text-gray-900">دخول لوحة الوكالة</h1>
-          <p className="mt-1 text-sm text-gray-600">هذه اللوحة مخصصة لموظفي الوكالات الشريكة فقط.</p>
+          <h1 className="text-lg font-bold text-slate-900">دخول لوحة الوكالة</h1>
+          <p className="mt-1 text-sm text-slate-600">هذه اللوحة مخصصة لموظفي الوكالات الشريكة فقط.</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-3">
           <Input

@@ -55,7 +55,7 @@ export function DealsCenterPage() {
   const availableAirlines = useMemo(() => airlinesInDeals(deals, catalog.airlines), [deals, catalog.airlines]);
   const activeFilterCount = countActiveFilters(filters);
 
-  if (catalog.loading) return <p className="text-gray-500">جاري التحميل...</p>;
+  if (catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
 
   const airportOptions = [
     { value: "", label: "الكل" },
@@ -66,7 +66,7 @@ export function DealsCenterPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">مركز الفرص</h1>
-        <p className="text-gray-600">تصفّح كل الفرص النشطة مع فلاتر حقيقية</p>
+        <p className="text-slate-600">تصفّح كل الفرص النشطة مع فلاتر حقيقية</p>
       </div>
 
       <Card className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -99,7 +99,7 @@ export function DealsCenterPage() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-gray-500">{filtered.length} فرصة نشطة</p>
+        <p className="text-sm text-slate-500">{filtered.length} فرصة نشطة</p>
         <button type="button" onClick={() => setMobileFiltersOpen(true)} className="smart-chip lg:hidden">
           🔧 الفلاتر {activeFilterCount ? `(${activeFilterCount})` : ""}
         </button>
@@ -125,8 +125,8 @@ export function DealsCenterPage() {
             <Card className="text-red-600">{error}</Card>
           ) : filtered.length === 0 ? (
             <Card className="space-y-3 text-center">
-              <p className="text-gray-700">لا توجد فرص مطابقة.</p>
-              <p className="text-sm text-gray-500">جرّب زيادة الميزانية أو إزالة بعض الفلاتر.</p>
+              <p className="text-slate-700">لا توجد فرص مطابقة.</p>
+              <p className="text-sm text-slate-500">جرّب زيادة الميزانية أو إزالة بعض الفلاتر.</p>
               <button
                 type="button"
                 onClick={() => setFilters(EMPTY_FILTERS)}

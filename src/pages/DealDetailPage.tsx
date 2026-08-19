@@ -48,12 +48,12 @@ export function DealDetailPage() {
 
   const imageUrl = useDealImage(deal?.to_airport ?? "", catalog, deal?.id);
 
-  if (loading || catalog.loading) return <p className="text-gray-500">جاري التحميل...</p>;
+  if (loading || catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
   if (error || !deal) {
     return (
       <Card className="text-center">
         <p className="text-red-600">{error ?? "العرض غير موجود"}</p>
-        <Link to="/" className="mt-4 inline-block text-[#299FD1]">
+        <Link to="/" className="mt-4 inline-block text-[#0D9488]">
           العودة للرئيسية
         </Link>
       </Card>
@@ -87,11 +87,11 @@ export function DealDetailPage() {
 
   return (
     <div className="space-y-6">
-      <div className="relative h-48 overflow-hidden rounded-xl bg-gray-100 sm:h-64">
+      <div className="relative h-48 overflow-hidden rounded-xl bg-slate-100 sm:h-64">
         {imageUrl ? (
           <img src={imageUrl} alt="" className="h-full w-full object-cover" />
         ) : (
-          <div className="flex h-full items-center justify-center text-5xl text-gray-300">✈</div>
+          <div className="flex h-full items-center justify-center text-5xl text-slate-300">✈</div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
         <p className="absolute bottom-3 start-3 text-xs font-semibold text-white/90">فرصة TripRing</p>
@@ -99,8 +99,8 @@ export function DealDetailPage() {
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-900">{formatRoute(deal)}</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-extrabold text-slate-900">{formatRoute(deal)}</h1>
+          <p className="mt-2 text-slate-600">
             {airlineName(deal.airline_code, catalog.airlines)} · {stopsLabel(deal.stops)}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -122,22 +122,22 @@ export function DealDetailPage() {
 
       {/* Price Analysis */}
       <Card className="space-y-4">
-        <h2 className="font-bold text-gray-900">تحليل السعر</h2>
+        <h2 className="font-bold text-slate-900">تحليل السعر</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl bg-[#EAF6FC] p-4 text-center">
-            <p className="text-xs font-medium text-gray-500">السعر الحالي</p>
-            <p className="font-latin mt-1 text-2xl font-extrabold text-[#299FD1]">
+          <div className="rounded-xl bg-[#F0FDFA] p-4 text-center">
+            <p className="text-xs font-medium text-slate-500">السعر الحالي</p>
+            <p className="font-latin mt-1 text-2xl font-extrabold text-[#0D9488]">
               {formatPrice(deal.price, currency)}
             </p>
           </div>
-          <div className="rounded-xl bg-gray-50 p-4 text-center">
-            <p className="text-xs font-medium text-gray-500">السعر المعتاد</p>
-            <p className="font-latin mt-1 text-2xl font-extrabold text-gray-400 line-through">
+          <div className="rounded-xl bg-slate-50 p-4 text-center">
+            <p className="text-xs font-medium text-slate-500">السعر المعتاد</p>
+            <p className="font-latin mt-1 text-2xl font-extrabold text-slate-400 line-through">
               {typical ? formatPrice(typical, currency) : "—"}
             </p>
           </div>
           <div className="rounded-xl bg-[#F0FDF4] p-4 text-center">
-            <p className="text-xs font-medium text-gray-500">أنت توفر</p>
+            <p className="text-xs font-medium text-slate-500">أنت توفر</p>
             <p className="font-latin mt-1 text-2xl font-extrabold text-[#16A34A]">
               {savingsAmount ? `${formatPrice(savingsAmount, currency)}` : "—"}
             </p>
@@ -152,10 +152,10 @@ export function DealDetailPage() {
 
       {deal.deal_score != null ? (
         <Card>
-          <h2 className="mb-3 font-bold text-gray-900">ليه دي فرصة كويسة؟</h2>
+          <h2 className="mb-3 font-bold text-slate-900">ليه دي فرصة كويسة؟</h2>
           <ul className="space-y-2.5">
             {dealReasons(deal, history).map((r) => (
-              <li key={r.text} className="flex items-center gap-2.5 text-sm text-gray-700">
+              <li key={r.text} className="flex items-center gap-2.5 text-sm text-slate-700">
                 <ReasonIcon type={r.icon} />
                 {r.text}
               </li>
@@ -166,21 +166,21 @@ export function DealDetailPage() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Card>
-          <p className="text-sm text-gray-500">المغادرة</p>
+          <p className="text-sm text-slate-500">المغادرة</p>
           <p className="font-bold">{formatDate(deal.departure_date)}</p>
-          <p className="text-gray-600">{formatTime(deal.departure_time)}</p>
+          <p className="text-slate-600">{formatTime(deal.departure_time)}</p>
           {deal.return_date ? (
             <>
-              <p className="mt-2 text-sm text-gray-500">العودة</p>
+              <p className="mt-2 text-sm text-slate-500">العودة</p>
               <p className="font-bold">{formatDate(deal.return_date)}</p>
             </>
           ) : null}
         </Card>
         <Card>
-          <p className="text-sm text-gray-500">المقاعد المتاحة</p>
+          <p className="text-sm text-slate-500">المقاعد المتاحة</p>
           <p className="text-3xl font-extrabold">{deal.available_seats}</p>
-          {deal.baggage_kg ? <p className="text-sm text-gray-600">أمتعة: {deal.baggage_kg} كجم</p> : null}
-          {deal.travel_class ? <p className="text-sm text-gray-600">الدرجة: {deal.travel_class}</p> : null}
+          {deal.baggage_kg ? <p className="text-sm text-slate-600">أمتعة: {deal.baggage_kg} كجم</p> : null}
+          {deal.travel_class ? <p className="text-sm text-slate-600">الدرجة: {deal.travel_class}</p> : null}
         </Card>
       </div>
 
@@ -191,13 +191,13 @@ export function DealDetailPage() {
       {deal.notes ? (
         <Card>
           <h2 className="mb-2 font-bold">ملاحظات</h2>
-          <p className="text-gray-600">{deal.notes}</p>
+          <p className="text-slate-600">{deal.notes}</p>
         </Card>
       ) : null}
 
       {agency ? <AgencyReviewsPanel agency={agency} /> : null}
 
-      <div className="space-y-3 rounded-xl border border-gray-200 bg-white p-4 sm:sticky sm:bottom-4 sm:shadow-lg">
+      <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:sticky sm:bottom-4 sm:shadow-lg">
         <div className="flex flex-col gap-3 sm:flex-row">
           {deal.available_seats > 0 ? (
             <Link to={`/book/${deal.id}`} className="flex-1">
@@ -218,14 +218,14 @@ export function DealDetailPage() {
           <button
             type="button"
             onClick={handleShare}
-            className="flex-1 rounded-lg border border-gray-200 py-2 font-semibold text-gray-600 transition hover:border-[#299FD1] hover:text-[#299FD1]"
+            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0D9488] hover:text-[#0D9488]"
           >
             {shareCopied ? "تم نسخ الرابط ✓" : "🔗 مشاركة"}
           </button>
           <button
             type="button"
             onClick={() => setAlertOpen(true)}
-            className="flex-1 rounded-lg border border-gray-200 py-2 font-semibold text-gray-600 transition hover:border-[#299FD1] hover:text-[#299FD1]"
+            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0D9488] hover:text-[#0D9488]"
           >
             🔔 تنبيه سعر
           </button>
@@ -276,9 +276,9 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
         </p>
       ) : (
         <div className="space-y-3">
-          <p className="text-sm text-gray-600">هنبعتلك تنبيه لما سعر {formatRoute(deal)} ينزل عن الميزانية دي.</p>
+          <p className="text-sm text-slate-600">هنبعتلك تنبيه لما سعر {formatRoute(deal)} ينزل عن الميزانية دي.</p>
           <label className="block space-y-1.5">
-            <span className="text-sm font-medium text-gray-700">رقم تليفون أو إيميل</span>
+            <span className="text-sm font-medium text-slate-700">رقم تليفون أو إيميل</span>
             <input
               value={contact}
               onChange={(e) => setContact(e.target.value)}
@@ -287,7 +287,7 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
             />
           </label>
           <label className="block space-y-1.5">
-            <span className="text-sm font-medium text-gray-700">الميزانية القصوى (USD)</span>
+            <span className="text-sm font-medium text-slate-700">الميزانية القصوى (USD)</span>
             <input
               type="number"
               value={budget}

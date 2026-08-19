@@ -38,8 +38,8 @@ export function DestinationDiscovery({ opportunities, airports, imageCache }: Pr
   return (
     <section>
       <div className="mb-5 px-4 sm:px-0">
-        <h2 className="text-2xl font-bold text-gray-900">🌍 أكثر الوجهات بحثًا من القاهرة</h2>
-        <p className="text-sm text-gray-600">وجهات مبنية على الفرص المتاحة فعليًا دلوقتي</p>
+        <h2 className="text-2xl font-bold text-slate-900">🌍 أكثر الوجهات بحثًا من القاهرة</h2>
+        <p className="text-sm text-slate-600">وجهات مبنية على الفرص المتاحة فعليًا دلوقتي</p>
       </div>
 
       <div dir="ltr" className="group/marquee overflow-hidden">

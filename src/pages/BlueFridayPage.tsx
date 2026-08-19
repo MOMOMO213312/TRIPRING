@@ -118,12 +118,12 @@ export function BlueFridayPage() {
         <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
           ✨ عروض الجمعة السماوي
         </span>
-        <h1 className="mt-5 text-3xl font-extrabold leading-tight text-gray-900 sm:text-4xl md:text-5xl">
+        <h1 className="mt-5 text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl md:text-5xl">
           24 ساعة. جمعة سماوي واحدة.
           <br />
           <span className="text-blue-600">خصومات لحد 33% على الطيران.</span>
         </h1>
-        <p className="mx-auto mt-4 max-w-lg text-gray-600">
+        <p className="mx-auto mt-4 max-w-lg text-slate-600">
           أعمق خصومات السنة بتظهر دلوقتي وبتختفي في نص الليل. استخدم كود{" "}
           <span className="font-latin font-bold text-blue-600">{PROMO_CODE}</span> لخصم إضافي.
         </p>
@@ -133,7 +133,7 @@ export function BlueFridayPage() {
           <TimeBox value={timeParts.m} label="دقيقة" />
           <TimeBox value={timeParts.s} label="ثانية" />
         </div>
-        <p className="mt-2 text-sm text-gray-500">العرض بينتهي في نص الليل — متستناش.</p>
+        <p className="mt-2 text-sm text-slate-500">العرض بينتهي في نص الليل — متستناش.</p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a href="#deals">
@@ -157,13 +157,13 @@ export function BlueFridayPage() {
           </span>
           <span>
             <span className="block text-xs font-semibold text-blue-600">كود خصم إضافي</span>
-            <span className="font-latin block text-lg font-extrabold text-gray-900">{PROMO_CODE}</span>
-            <span className="block text-xs text-gray-400">{copied ? "✓ اتنسخ" : "دوس عشان تنسخ"}</span>
+            <span className="font-latin block text-lg font-extrabold text-slate-900">{PROMO_CODE}</span>
+            <span className="block text-xs text-slate-400">{copied ? "✓ اتنسخ" : "دوس عشان تنسخ"}</span>
           </span>
         </button>
         <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-4">
           {["أفضل سعر", "حجز آمن", "دعم 24/7", "دفع بالواتساب"].map((label) => (
-            <div key={label} className="flex flex-col items-center justify-center gap-1 rounded-xl border border-gray-200 bg-white p-3 text-center text-xs font-semibold text-gray-700">
+            <div key={label} className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white p-3 text-center text-xs font-semibold text-slate-700">
               {label}
             </div>
           ))}
@@ -174,11 +174,11 @@ export function BlueFridayPage() {
       <section id="deals" className="mx-auto mt-14 max-w-6xl px-4">
         <div className="mb-5 flex items-center gap-2">
           <span aria-hidden>⚡</span>
-          <h2 className="text-2xl font-bold text-gray-900">أفضل عروض النهاردة</h2>
+          <h2 className="text-2xl font-bold text-slate-900">أفضل عروض النهاردة</h2>
           <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">لحد 33% خصم</span>
         </div>
         {loading ? (
-          <p className="text-gray-500">جاري التحميل...</p>
+          <p className="text-slate-500">جاري التحميل...</p>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {bestFlightDeals.map((deal) => (
@@ -190,17 +190,17 @@ export function BlueFridayPage() {
 
       {/* Mystery Fare */}
       <section id="mystery" className="mx-auto mt-14 max-w-6xl px-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
             🎁 Mystery Fare
           </span>
-          <h2 className="mt-4 text-2xl font-bold text-gray-900">قوللنا ميزانيتك، وهنكشفلك وجهة مفاجئة.</h2>
-          <p className="mt-2 max-w-lg text-sm text-gray-600">
+          <h2 className="mt-4 text-2xl font-bold text-slate-900">قوللنا ميزانيتك، وهنكشفلك وجهة مفاجئة.</h2>
+          <p className="mt-2 max-w-lg text-sm text-slate-600">
             اكتب اللي تقدر تصرفه، وهنطابقلك لحد 3 رحلات مفاجئة جوه ميزانيتك — واكتشف فين الجمعة السماوي هتاخدك.
           </p>
           <form onSubmit={revealMysteryFares} className="mt-5 flex flex-wrap gap-3">
-            <div className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2.5">
-              <span className="text-gray-400">$</span>
+            <div className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5">
+              <span className="text-slate-400">$</span>
               <input
                 type="number"
                 min={1}
@@ -223,7 +223,7 @@ export function BlueFridayPage() {
                 ))}
               </div>
             ) : (
-              <p className="mt-5 text-sm text-gray-500">مفيش عروض جوه الميزانية دي دلوقتي — جرب رقم أكبر.</p>
+              <p className="mt-5 text-sm text-slate-500">مفيش عروض جوه الميزانية دي دلوقتي — جرب رقم أكبر.</p>
             )
           ) : null}
         </div>
@@ -234,7 +234,7 @@ export function BlueFridayPage() {
         <section className="mx-auto mt-14 max-w-6xl px-4">
           <div className="mb-5 flex items-center gap-2">
             <span aria-hidden>⏰</span>
-            <h2 className="text-2xl font-bold text-gray-900">ساعات الفلاش</h2>
+            <h2 className="text-2xl font-bold text-slate-900">ساعات الفلاش</h2>
             <span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600">قربت تخلص</span>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -250,17 +250,17 @@ export function BlueFridayPage() {
         <section className="mx-auto mt-14 max-w-6xl px-4">
           <div className="mb-5 flex items-center gap-2">
             <span aria-hidden>🛫</span>
-            <h2 className="text-2xl font-bold text-gray-900">وجهات الجمعة السماوي من القاهرة</h2>
+            <h2 className="text-2xl font-bold text-slate-900">وجهات الجمعة السماوي من القاهرة</h2>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {destinations.map(({ airport, minPrice }) => (
               <Link
                 key={airport.code}
                 to={`/search?from=CAI&to=${airport.code}`}
-                className="rounded-xl border border-gray-200 bg-white p-4 text-center transition hover:border-blue-400 hover:shadow-md"
+                className="rounded-xl border border-slate-200 bg-white p-4 text-center transition hover:border-blue-400 hover:shadow-md"
               >
-                <p className="font-bold text-gray-900">{airport.city}</p>
-                <p className="text-xs text-gray-400">{airport.country}</p>
+                <p className="font-bold text-slate-900">{airport.city}</p>
+                <p className="text-xs text-slate-400">{airport.country}</p>
                 <p className="font-latin mt-2 text-sm font-bold text-blue-600">من ${minPrice}</p>
               </Link>
             ))}
@@ -287,7 +287,7 @@ export function BlueFridayPage() {
         </div>
       </section>
 
-      <p className="mt-10 text-center text-xs text-gray-400">
+      <p className="mt-10 text-center text-xs text-slate-400">
         TripRing الجمعة السماوي · عروض طيران 24 ساعة ·{" "}
         <Link to="/" className="text-blue-600 hover:underline">
           الرجوع للرئيسية
@@ -303,7 +303,7 @@ function TimeBox({ value, label }: { value: string; label: string }) {
       <div className="font-latin flex size-16 items-center justify-center rounded-xl bg-[#0F172A] text-2xl font-extrabold text-white">
         {value}
       </div>
-      <span className="mt-1 text-xs text-gray-500">{label}</span>
+      <span className="mt-1 text-xs text-slate-500">{label}</span>
     </div>
   );
 }
@@ -327,9 +327,9 @@ function BlueFridayDealCard({
   return (
     <Link
       to={`/deals/${deal.id}`}
-      className="group overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:shadow-lg"
+      className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:shadow-lg"
     >
-      <div className="relative h-[110px] bg-gray-100">
+      <div className="relative h-[110px] bg-slate-100">
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -347,13 +347,13 @@ function BlueFridayDealCard({
         ) : null}
       </div>
       <div className="p-3">
-        <p className="text-xs text-gray-500">{blurred ? "وجهة مفاجئة" : formatRouteCities(deal, catalog.airports)}</p>
-        <p className="mt-0.5 text-[11px] text-gray-400">
+        <p className="text-xs text-slate-500">{blurred ? "وجهة مفاجئة" : formatRouteCities(deal, catalog.airports)}</p>
+        <p className="mt-0.5 text-[11px] text-slate-400">
           {airportLabel(deal.from_airport, catalog.airports)} ← {blurred ? "؟؟؟" : airportLabel(deal.to_airport, catalog.airports)}
         </p>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="font-latin text-lg font-extrabold text-gray-900">${deal.price}</span>
-          {typical ? <span className="font-latin text-xs text-gray-400 line-through">${typical}</span> : null}
+          <span className="font-latin text-lg font-extrabold text-[#0D9488]">${deal.price}</span>
+          {typical ? <span className="font-latin text-xs text-slate-400 line-through">${typical}</span> : null}
         </div>
         {savings ? <p className="mt-1 text-xs font-bold text-emerald-600">-{savings}%</p> : null}
       </div>

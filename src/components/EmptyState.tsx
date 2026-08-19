@@ -14,12 +14,12 @@ type Props = {
 /** Shared empty-state used across search/deals/trips/alerts pages instead of a plain "no results" line. */
 export function EmptyState({ icon = "🔍", title, subtitle, suggestions, action, children }: Props) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-white px-6 py-14 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-slate-200 bg-white px-6 py-14 text-center">
       <span className="text-4xl" aria-hidden>
         {icon}
       </span>
-      <p className="text-base font-bold text-gray-800">{title}</p>
-      {subtitle ? <p className="max-w-md text-sm text-gray-500">{subtitle}</p> : null}
+      <p className="text-base font-bold text-slate-800">{title}</p>
+      {subtitle ? <p className="max-w-md text-sm text-slate-500">{subtitle}</p> : null}
 
       {suggestions?.length ? (
         <ul className="mt-1 flex flex-wrap justify-center gap-2">

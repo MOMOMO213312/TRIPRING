@@ -20,7 +20,7 @@ export function TrustedAirlinesRow({ deals, airlines }: Props) {
   return (
     <section>
       <div className="mb-4 flex items-end justify-between gap-4">
-        <h2 className="text-xl font-bold text-gray-900">شركاؤنا الموثوقون</h2>
+        <h2 className="text-xl font-bold text-slate-900">شركاؤنا الموثوقون</h2>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {featured.map((code) => {
@@ -28,19 +28,19 @@ export function TrustedAirlinesRow({ deals, airlines }: Props) {
           return (
             <div
               key={code}
-              className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-4 text-center"
+              className="flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-4 text-center"
             >
               {airline?.logo_url ? (
                 <img src={airline.logo_url} alt="" className="h-8 object-contain" />
               ) : (
-                <span className="font-latin flex size-10 items-center justify-center rounded-lg bg-gray-100 text-xs font-bold text-gray-600">
+                <span className="font-latin flex size-10 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold text-slate-600">
                   {code}
                 </span>
               )}
-              <span className="text-sm font-semibold text-gray-800">
+              <span className="text-sm font-semibold text-slate-800">
                 {airlineName(code, airlines)}
               </span>
-              <span className="font-latin text-xs text-gray-500">
+              <span className="font-latin text-xs text-slate-500">
                 {formatLatinNumber(counts.get(code) ?? 0)} عروض نشطة
               </span>
             </div>

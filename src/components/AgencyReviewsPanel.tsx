@@ -16,7 +16,7 @@ function StarRow({ value }: { value: number }) {
   return (
     <span className="font-latin text-amber-500" aria-hidden="true">
       {"★".repeat(Math.round(value))}
-      <span className="text-gray-300">{"★".repeat(5 - Math.round(value))}</span>
+      <span className="text-slate-300">{"★".repeat(5 - Math.round(value))}</span>
     </span>
   );
 }
@@ -71,16 +71,16 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
     <Card>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-bold text-gray-900">{agency.name}</h2>
+          <h2 className="font-bold text-slate-900">{agency.name}</h2>
           {!loading ? (
             summary.count > 0 ? (
-              <p className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+              <p className="mt-1 flex items-center gap-2 text-sm text-slate-600">
                 <StarRow value={summary.average ?? 0} />
-                <span className="font-latin font-semibold text-gray-800">{summary.average}</span>
+                <span className="font-latin font-semibold text-slate-800">{summary.average}</span>
                 <span>({summary.count} تقييم)</span>
               </p>
             ) : (
-              <p className="mt-1 text-sm text-gray-500">لا توجد تقييمات بعد</p>
+              <p className="mt-1 text-sm text-slate-500">لا توجد تقييمات بعد</p>
             )
           ) : null}
         </div>
@@ -101,9 +101,9 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
           description="نحتاج تسجيل دخولك حتى نربط تقييمك باسمك ونمنع التقييمات الوهمية"
         >
           {() => (
-            <form onSubmit={handleSubmit} className="mt-4 space-y-3 border-t border-gray-100 pt-4">
+            <form onSubmit={handleSubmit} className="mt-4 space-y-3 border-t border-slate-100 pt-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">تقييمك</span>
+                <span className="text-sm font-medium text-slate-700">تقييمك</span>
                 <div className="flex gap-1 font-latin text-lg text-amber-500" role="radiogroup" aria-label="التقييم">
                   {[1, 2, 3, 4, 5].map((n) => (
                     <button
@@ -113,7 +113,7 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
                       aria-pressed={n <= rating}
                       className="leading-none"
                     >
-                      {n <= rating ? "★" : <span className="text-gray-300">★</span>}
+                      {n <= rating ? "★" : <span className="text-slate-300">★</span>}
                     </button>
                   ))}
                 </div>
@@ -123,7 +123,7 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="تعليقك (اختياري)"
                 rows={3}
-                className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-[#D2EEF9]"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-[#99F6E4]"
               />
               {submitError ? <p className="text-xs text-red-600">{submitError}</p> : null}
               <div className="flex gap-3">
@@ -140,16 +140,16 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
       ) : null}
 
       {reviews.length > 0 ? (
-        <ul className="mt-4 space-y-3 border-t border-gray-100 pt-4">
+        <ul className="mt-4 space-y-3 border-t border-slate-100 pt-4">
           {reviews.slice(0, 5).map((r) => (
             <li key={r.id} className="text-sm">
               <div className="flex items-center gap-2">
                 <StarRow value={r.rating} />
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-slate-400">
                   {new Date(r.created_at).toLocaleDateString("ar-EG")}
                 </span>
               </div>
-              {r.comment ? <p className="mt-1 text-gray-700">{r.comment}</p> : null}
+              {r.comment ? <p className="mt-1 text-slate-700">{r.comment}</p> : null}
             </li>
           ))}
         </ul>

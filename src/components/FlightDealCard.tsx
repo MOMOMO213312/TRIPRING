@@ -20,10 +20,10 @@ import type { DealRow, DealType } from "../types/database";
 /** Badge color per deal type — mirrors the "Flash Deal / Hot Deal / Last Minute /
  *  Best Value" ribbon colors in the reference design. */
 const TYPE_BADGE_STYLE: Record<DealType, string> = {
-  flash: "bg-[#DB2F2B]",
+  flash: "bg-[#FF6B35]",
   last_minute: "bg-[#0F172A]",
   empty_seat: "bg-[#9F1246]",
-  special_fare: "bg-[#299FD1]",
+  special_fare: "bg-[#0D9488]",
 };
 
 /**
@@ -42,7 +42,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
   return (
     <Link
       to={`/deals/${deal.id}`}
-      className="deal-card-lift group block w-[250px] shrink-0 overflow-hidden rounded-3xl border border-gray-200 bg-white sm:w-[280px]"
+      className="deal-card-lift group block w-[250px] shrink-0 overflow-hidden rounded-3xl border border-slate-200 bg-white sm:w-[280px]"
     >
       <div className="relative h-[130px] w-full overflow-hidden sm:h-[145px]">
         {imageUrl ? (
@@ -69,32 +69,32 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
 
       <div className="p-3.5">
         <div className="flex items-center gap-2">
-          <span className="font-latin text-base font-extrabold text-gray-900">{deal.from_airport}</span>
-          <span aria-hidden className="text-gray-300">
+          <span className="font-latin text-base font-extrabold text-slate-900">{deal.from_airport}</span>
+          <span aria-hidden className="text-slate-300">
             →
           </span>
-          <span className="font-latin text-base font-extrabold text-gray-900">{deal.to_airport}</span>
+          <span className="font-latin text-base font-extrabold text-slate-900">{deal.to_airport}</span>
         </div>
-        <p className="mt-0.5 truncate text-xs text-gray-500">
+        <p className="mt-0.5 truncate text-xs text-slate-500">
           {airportLabel(deal.from_airport, catalog.airports)} → {airportLabel(deal.to_airport, catalog.airports)}
         </p>
 
-        <p className="mt-2 text-xs text-gray-600">
+        <p className="mt-2 text-xs text-slate-600">
           {departureTimingLabel(deal.departure_date)}
-          <span className="mx-1.5 text-gray-300">•</span>
+          <span className="mx-1.5 text-slate-300">•</span>
           {stopsMetaLabel(deal.stops)}
         </p>
 
-        <p className="mt-1 flex items-center gap-1 text-xs text-gray-500">
+        <p className="mt-1 flex items-center gap-1 text-xs text-slate-500">
           <span aria-hidden>✈️</span>
           {airlineName(deal.airline_code, catalog.airlines)}
         </p>
 
-        <div className="mt-3 flex items-end justify-between gap-2 border-t border-gray-100 pt-3">
+        <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-latin text-lg font-extrabold text-gray-900">${deal.price}</span>
+            <span className="font-latin text-lg font-extrabold text-[#0D9488]">${deal.price}</span>
             {strikePrice ? (
-              <span className="font-latin text-xs text-gray-400 line-through">${strikePrice}</span>
+              <span className="font-latin text-xs text-slate-400 line-through">${strikePrice}</span>
             ) : null}
             {savings ? (
               <span className="font-latin rounded-full bg-green-50 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
@@ -103,7 +103,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
             ) : null}
           </div>
           <span
-            className={`shrink-0 text-[11px] font-semibold whitespace-nowrap ${lowSeats ? "text-red-600" : "text-gray-400"}`}
+            className={`shrink-0 text-[11px] font-semibold whitespace-nowrap ${lowSeats ? "text-red-600" : "text-slate-400"}`}
           >
             {seatsLeftLabel(deal.available_seats)}
           </span>
@@ -136,7 +136,7 @@ function CardCountdown({ expiresAt }: { expiresAt: string }) {
   return (
     <span
       dir="ltr"
-      className="font-latin absolute end-2.5 top-2.5 flex items-center gap-1 rounded-md bg-white/90 px-1.5 py-1 text-[10px] font-bold text-gray-800 shadow-sm backdrop-blur-sm"
+      className="font-latin absolute end-2.5 top-2.5 flex items-center gap-1 rounded-md bg-white/90 px-1.5 py-1 text-[10px] font-bold text-slate-800 shadow-sm backdrop-blur-sm"
     >
       <span aria-hidden>⏱</span>
       {label}

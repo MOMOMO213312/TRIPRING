@@ -9,9 +9,9 @@ type Props = {
 export function PriceHistoryChart({ title, points }: Props) {
   if (points.length < 2) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <h3 className="font-bold text-gray-900">{title}</h3>
-        <p className="mt-2 text-sm text-gray-500">لا توجد بيانات كافية لعرض الرسم البياني</p>
+      <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <h3 className="font-bold text-slate-900">{title}</h3>
+        <p className="mt-2 text-sm text-slate-500">لا توجد بيانات كافية لعرض الرسم البياني</p>
       </div>
     );
   }
@@ -33,8 +33,8 @@ export function PriceHistoryChart({ title, points }: Props) {
   const line = coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x} ${c.y}`).join(" ");
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5">
-      <h3 className="font-bold text-gray-900">{title}</h3>
+    <div className="rounded-xl border border-slate-200 bg-white p-5">
+      <h3 className="font-bold text-slate-900">{title}</h3>
       <svg viewBox={`0 0 ${width} ${height}`} className="mt-3 w-full max-w-lg" aria-label={title}>
         {[0, 0.5, 1].map((t) => {
           const y = height - pad - t * (height - pad * 2);
@@ -42,22 +42,22 @@ export function PriceHistoryChart({ title, points }: Props) {
           return (
             <g key={t}>
               <line x1={pad} x2={width - pad} y1={y} y2={y} stroke="#E5E7EB" strokeWidth={1} />
-              <text x={4} y={y + 4} className="fill-gray-400 text-[10px]">
+              <text x={4} y={y + 4} className="fill-slate-400 text-[10px]">
                 {formatLatinNumber(Math.round(price))}
               </text>
             </g>
           );
         })}
-        <path d={line} fill="none" stroke="#299FD1" strokeWidth={2.5} strokeLinecap="round" />
+        <path d={line} fill="none" stroke="#0D9488" strokeWidth={2.5} strokeLinecap="round" />
         {coords.map((c) => (
-          <circle key={c.date} cx={c.x} cy={c.y} r={3} fill="#299FD1" />
+          <circle key={c.date} cx={c.x} cy={c.y} r={3} fill="#0D9488" />
         ))}
       </svg>
-      <div className="mt-2 flex justify-between text-[10px] text-gray-400">
+      <div className="mt-2 flex justify-between text-[10px] text-slate-400">
         <span>{points[0]?.date}</span>
         <span>{points[points.length - 1]?.date}</span>
       </div>
-      <p className="font-latin mt-1 text-xs text-gray-500">
+      <p className="font-latin mt-1 text-xs text-slate-500">
         أدنى سعر حالي: {formatPrice(points[points.length - 1]?.price ?? 0)}
       </p>
     </div>

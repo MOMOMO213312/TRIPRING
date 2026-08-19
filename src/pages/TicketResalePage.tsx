@@ -35,22 +35,22 @@ function ResaleCard({ resale, catalog }: { resale: TicketResaleRow; catalog: Ret
     <Card className="space-y-3">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="font-bold text-gray-900">
+          <p className="font-bold text-slate-900">
             {airportLabel(resale.from_airport, catalog.airports)} → {airportLabel(resale.to_airport, catalog.airports)}
           </p>
-          <p className="text-sm text-gray-600">{formatDate(resale.departure_date)}</p>
+          <p className="text-sm text-slate-600">{formatDate(resale.departure_date)}</p>
         </div>
         <Badge tone="savings">تذكرة موثّقة</Badge>
       </div>
 
       {resale.airline_code ? (
-        <p className="text-sm text-gray-600">{airlineName(resale.airline_code, catalog.airlines)}</p>
+        <p className="text-sm text-slate-600">{airlineName(resale.airline_code, catalog.airlines)}</p>
       ) : null}
 
       <div className="flex items-baseline gap-2">
-        <p className="text-2xl font-extrabold text-gray-900">{formatPrice(resale.asking_price, resale.currency)}</p>
+        <p className="text-2xl font-extrabold text-slate-900">{formatPrice(resale.asking_price, resale.currency)}</p>
         {resale.original_price > resale.asking_price ? (
-          <p className="text-sm text-gray-400 line-through">{formatPrice(resale.original_price, resale.currency)}</p>
+          <p className="text-sm text-slate-400 line-through">{formatPrice(resale.original_price, resale.currency)}</p>
         ) : null}
       </div>
 
@@ -194,7 +194,7 @@ function ListTicketForm({ onPosted }: { onPosted: () => void }) {
           value={askingPrice || ""}
           onChange={(e) => setAskingPrice(Number(e.target.value))}
         />
-        <p className="sm:col-span-2 text-xs text-gray-500">
+        <p className="sm:col-span-2 text-xs text-slate-500">
           سيتم مراجعة التذكرة والتحقق منها قبل ظهورها للمسافرين الآخرين
         </p>
         {submitError ? <p className="sm:col-span-2 text-sm text-red-600">{submitError}</p> : null}
@@ -237,8 +237,8 @@ export function TicketResalePage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">سوق إعادة بيع التذاكر</h1>
-          <p className="text-gray-600">تذاكر مؤكدة معروضة من مسافرين آخرين — تواصل معنا للاستفسار</p>
+          <h1 className="text-2xl font-bold text-slate-900">سوق إعادة بيع التذاكر</h1>
+          <p className="text-slate-600">تذاكر مؤكدة معروضة من مسافرين آخرين — تواصل معنا للاستفسار</p>
         </div>
         <Button onClick={() => setShowForm((v) => !v)}>{showForm ? "إغلاق" : "أعرض تذكرتك"}</Button>
       </div>

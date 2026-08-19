@@ -71,7 +71,7 @@ export function MyTripsPage() {
     <div className="mx-auto max-w-lg space-y-6">
       <div>
         <h1 className="text-2xl font-bold">رحلاتي</h1>
-        <p className="text-gray-600">ابحث برقم الحجز ورقم الهاتف أو البريد الإلكتروني — بدون تسجيل دخول</p>
+        <p className="text-slate-600">ابحث برقم الحجز ورقم الهاتف أو البريد الإلكتروني — بدون تسجيل دخول</p>
       </div>
 
       <Card>
@@ -102,16 +102,16 @@ export function MyTripsPage() {
           <h2 className="mb-4 font-bold">تفاصيل الحجز</h2>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <dt className="text-gray-500">رقم الحجز</dt>
+              <dt className="text-slate-500">رقم الحجز</dt>
               <dd className="font-bold">{booking.booking_number}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-gray-500">الحالة</dt>
+              <dt className="text-slate-500">الحالة</dt>
               <dd>{STATUS_LABEL[booking.status] ?? booking.status}</dd>
             </div>
             {booking.deal ? (
               <div className="flex justify-between">
-                <dt className="text-gray-500">الرحلة</dt>
+                <dt className="text-slate-500">الرحلة</dt>
                 <dd>
                   {!catalog.loading
                     ? `${airportLabel(booking.deal.from_airport, catalog.airports)} → ${airportLabel(booking.deal.to_airport, catalog.airports)}`
@@ -121,33 +121,33 @@ export function MyTripsPage() {
             ) : null}
             {booking.deal ? (
               <div className="flex justify-between">
-                <dt className="text-gray-500">تاريخ السفر</dt>
+                <dt className="text-slate-500">تاريخ السفر</dt>
                 <dd>{formatDate(booking.deal.departure_date)}</dd>
               </div>
             ) : null}
             {booking.deal?.airline_code ? (
               <div className="flex justify-between">
-                <dt className="text-gray-500">شركة الطيران</dt>
+                <dt className="text-slate-500">شركة الطيران</dt>
                 <dd>{!catalog.loading ? airlineName(booking.deal.airline_code, catalog.airlines) : booking.deal.airline_code}</dd>
               </div>
             ) : null}
             {booking.total_price ? (
               <div className="flex justify-between">
-                <dt className="text-gray-500">المبلغ</dt>
+                <dt className="text-slate-500">المبلغ</dt>
                 <dd>{formatPrice(booking.total_price, booking.currency)}</dd>
               </div>
             ) : null}
             {booking.payment_method ? (
               <div className="flex justify-between">
-                <dt className="text-gray-500">طريقة الدفع</dt>
+                <dt className="text-slate-500">طريقة الدفع</dt>
                 <dd>{booking.payment_method}</dd>
               </div>
             ) : null}
           </dl>
           {booking.travelers.length > 0 ? (
-            <div className="mt-4 border-t border-gray-100 pt-4">
-              <p className="mb-2 text-sm font-medium text-gray-700">المسافرون</p>
-              <ul className="space-y-1 text-sm text-gray-600">
+            <div className="mt-4 border-t border-slate-100 pt-4">
+              <p className="mb-2 text-sm font-medium text-slate-700">المسافرون</p>
+              <ul className="space-y-1 text-sm text-slate-600">
                 {booking.travelers.map((t, i) => (
                   <li key={i}>{t.full_name}</li>
                 ))}

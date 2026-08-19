@@ -102,16 +102,16 @@ export function TravelToSection({ airports, imageCache, references, fromAirport 
     <section>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3 px-4 sm:px-0">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">✈️ سافر إلى</h2>
-          <p className="text-sm text-gray-600">اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول</p>
+          <h2 className="text-2xl font-bold text-slate-900">✈️ سافر إلى</h2>
+          <p className="text-sm text-slate-600">اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول</p>
         </div>
         {fromOptions.length > 1 ? (
           <label className="flex items-center gap-2 text-sm">
-            <span className="text-gray-500">من</span>
+            <span className="text-slate-500">من</span>
             <select
               value={effectiveFrom}
               onChange={(e) => setSelectedFrom(e.target.value)}
-              className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 font-semibold text-gray-800 outline-none"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-semibold text-slate-800 outline-none"
             >
               {fromOptions.map((code) => (
                 <option key={code} value={code}>
@@ -136,7 +136,7 @@ export function TravelToSection({ airports, imageCache, references, fromAirport 
             }
           >
             {country}
-            <span className="font-latin text-xs text-gray-400">{byCountry.get(country)?.length}</span>
+            <span className="font-latin text-xs text-slate-400">{byCountry.get(country)?.length}</span>
           </button>
         ))}
       </div>

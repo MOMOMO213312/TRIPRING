@@ -14,11 +14,11 @@ export function Modal({ open, onClose, title, children }: Props) {
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
         <div className="mb-4 flex items-start justify-between gap-4">
-          {title ? <h3 className="text-lg font-bold text-gray-900">{title}</h3> : <span />}
+          {title ? <h3 className="text-lg font-bold text-slate-900">{title}</h3> : <span />}
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="shrink-0 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
             aria-label="إغلاق"
           >
             ✕
