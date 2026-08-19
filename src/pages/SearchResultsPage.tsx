@@ -6,6 +6,7 @@ import { FilterPanel } from "../components/FilterPanel";
 import { Select } from "../components/ui/Select";
 import { Card } from "../components/ui/Card";
 import { getTypicalPrice, fetchActiveDeals } from "../lib/api";
+import type { TripType } from "../lib/api";
 import { airportLabel, savingsPercent } from "../lib/deal-utils";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
@@ -22,6 +23,8 @@ export function SearchResultsPage() {
   const to = params.get("to") ?? "";
   const effectiveTo = to === "any" ? "" : to;
   const date = params.get("date") ?? "";
+  const returnDate = params.get("returnDate") ?? "";
+  const tripType = (params.get("tripType") as TripType | null) ?? "round_trip";
   const budget = params.get("budget") ?? "";
   const [sort, setSort] = useState<SortKey>("deal_score");
   const [deals, setDeals] = useState<DealRow[]>([]);
@@ -39,11 +42,12 @@ export function SearchResultsPage() {
       maxPrice: budget && budget !== "1000plus" ? Number(budget) : undefined,
       sort: sort === "savings" ? "deal_score" : sort,
       availableOnly: true,
+      tripType,
     })
       .then(setDeals)
       .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoading(false));
-  }, [from, effectiveTo, date, budget, sort]);
+  }, [from, effectiveTo, date, budget, sort, tripType]);
 
   const filtered = useMemo(() => {
     let result = applyAdvancedFilters(deals, filters, catalog.references);
@@ -69,6 +73,7 @@ export function SearchResultsPage() {
         <p className="mt-1 text-gray-600">
           {to ? `→ ${airportLabel(effectiveTo || to, catalog.airports)}` : "كل الوجهات"}
           {date ? ` · ${date}` : ""}
+          {tripType === "one_way" ? " · ذهاب فقط" : tripType === "round_trip" && returnDate ? ` · عودة ${returnDate}` : ""}
         </p>
       </div>
 

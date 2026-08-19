@@ -29,6 +29,8 @@ export const DEAL_COLUMNS =
 /** Anonymous/guest-facing feeds only show free-tier deals until membership auth exists. */
 export const PUBLIC_MEMBERSHIP_TIER = "free" as const;
 
+export type TripType = "round_trip" | "one_way" | "multi_city";
+
 export type DealSearchParams = {
   from?: string;
   to?: string;
@@ -37,6 +39,10 @@ export type DealSearchParams = {
   sort?: "price_asc" | "price_desc" | "deal_score";
   dealType?: DealType | "any";
   availableOnly?: boolean;
+  /** one_way → only deals with no return_date; round_trip → only deals WITH a
+   *  return_date; multi_city isn't modeled in the deals table yet, so it's a
+   *  no-op filter for now (shows everything, same as not passing tripType). */
+  tripType?: TripType;
 };
 
 export type CreateBookingInput = {
@@ -134,6 +140,12 @@ export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<D
 
   if (params.availableOnly) {
     deals = deals.filter((d) => d.available_seats > 0);
+  }
+
+  if (params.tripType === "one_way") {
+    deals = deals.filter((d) => !d.return_date);
+  } else if (params.tripType === "round_trip") {
+    deals = deals.filter((d) => !!d.return_date);
   }
 
   switch (params.sort) {

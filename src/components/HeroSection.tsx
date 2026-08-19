@@ -3,11 +3,11 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { DealTicker } from "./DealTicker";
-import { FareBoard } from "./FareBoard";
 import { OneWayFareBoard } from "./OneWayFareBoard";
 import { RoundTripFareBoard } from "./RoundTripFareBoard";
 import { getTypicalPrice } from "../lib/api";
-import { airportLabel, savingsPercent } from "../lib/deal-utils";
+import type { TripType } from "../lib/api";
+import { airportLabel, savingsPercent, scoreTier, SCORE_TIER_LABEL, SCORE_TIER_COLORS } from "../lib/deal-utils";
 import { hoursUntil } from "../lib/filters";
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 
@@ -22,17 +22,15 @@ const POPULAR = [
   { from: "CAI", to: "SSH", label: "القاهرة ← شرم الشيخ" },
 ];
 
-type TripTab = "round_trip" | "one_way" | "multi_city";
-
 type Props = {
   airports: AirportRow[];
   deals: DealRow[];
   references: RoutePriceReferenceRow[];
-  onSearch: (params: { from: string; to: string; date: string; returnDate: string; passengers: number; tripType: TripTab }) => void;
+  onSearch: (params: { from: string; to: string; date: string; returnDate: string; passengers: number; tripType: TripType }) => void;
 };
 
 export function HeroSection({ airports, deals, references, onSearch }: Props) {
-  const [tripType, setTripType] = useState<TripTab>("round_trip");
+  const [tripType, setTripType] = useState<TripType>("round_trip");
   const [from, setFrom] = useState("CAI");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
@@ -64,18 +62,27 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
   const flashSavings = flashDeal ? savingsPercent(flashDeal.price, flashTypical) : null;
 
   return (
-    <section className="relative overflow-hidden bg-[#F7F8FA]">
-      <FareBoard deals={deals} references={references} airports={airports} />
-      <OneWayFareBoard deals={deals} references={references} airports={airports} />
-      <RoundTripFareBoard deals={deals} references={references} airports={airports} />
-
-      <div className="absolute inset-0 top-10">
-        <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-        {/* Minimal overlay now — just enough to blend the seam into the page below.
-           The photo itself stays visible instead of being washed out in flat white;
-           the text block below gets its own small readable panel instead. */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F7F8FA]" />
+    <>
+      {/* Tickers live in normal document flow, stacked one under the other —
+         kept OUTSIDE the hero photo's relatively-positioned section below so
+         the absolutely-positioned photo layer can never overlap or cover them.
+         (Previously a 3rd, older generic FareBoard rendered here too, and the
+         photo layer's fixed top-offset only ever accounted for one ticker's
+         height — together that produced the garbled overlapping ticker text
+         customers were seeing. Two clearly-labeled boards is enough.) */}
+      <div className="flex flex-col divide-y divide-white/5">
+        <OneWayFareBoard deals={deals} references={references} airports={airports} />
+        <RoundTripFareBoard deals={deals} references={references} airports={airports} />
       </div>
+
+      <section className="relative overflow-hidden bg-[#F7F8FA]">
+        <div className="absolute inset-0">
+          <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
+          {/* Minimal overlay now — just enough to blend the seam into the page below.
+             The photo itself stays visible instead of being washed out in flat white;
+             the text block below gets its own small readable panel instead. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F7F8FA]" />
+        </div>
 
       <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-14 sm:pt-16">
         <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-start lg:justify-between">
@@ -119,7 +126,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
       <div className="relative mx-auto max-w-5xl px-4">
         <div className="-mt-16 rounded-2xl bg-white p-5 shadow-xl ring-1 ring-black/5 sm:p-6">
-          <div className="mb-5 flex flex-wrap gap-6 border-b border-gray-100">
+          <div className="mb-5 flex w-fit gap-1 rounded-full bg-gray-100 p-1">
             {(
               [
                 ["round_trip", "↔️", "ذهاب وعودة"],
@@ -131,10 +138,10 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                 key={key}
                 type="button"
                 onClick={() => setTripType(key)}
-                className={`-mb-px flex items-center gap-1.5 border-b-2 pb-3 text-sm font-semibold transition ${
+                className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${
                   tripType === key
-                    ? "border-[#2563EB] text-[#2563EB]"
-                    : "border-transparent text-gray-500 hover:text-gray-800"
+                    ? "bg-white text-[#2563EB] shadow-sm"
+                    : "text-gray-500 hover:text-gray-800"
                 }`}
               >
                 <span aria-hidden className="text-xs">
@@ -216,7 +223,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                 type="submit"
                 className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#EA580C] px-8 py-3.5 text-sm font-bold text-white shadow-md shadow-orange-200 transition hover:bg-orange-700 active:scale-[0.98] lg:py-0"
               >
-                Search Flights
+                <span aria-hidden>🔍</span> ابحث عن رحلات
               </button>
             </div>
           </form>
@@ -237,7 +244,8 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
         <DealTicker deals={deals} references={references} airports={airports} />
       </div>
-    </section>
+      </section>
+    </>
   );
 }
 
@@ -312,6 +320,20 @@ function HeroFlashDealCard({
           </span>
         ) : null}
       </div>
+
+      {/* Ties the hero straight into the Deal Score / "why this deal" system
+         already built out on the deal-detail page, instead of the hero only
+         ever showing a price — reinforces the discovery-engine positioning
+         from the very first thing a visitor sees. */}
+      {deal.deal_score != null ? (
+        <p
+          className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold"
+          style={{ color: SCORE_TIER_COLORS[scoreTier(deal.deal_score)].fg }}
+        >
+          <span aria-hidden>⭐</span>
+          {SCORE_TIER_LABEL[scoreTier(deal.deal_score)]} · Deal Score {Math.round(deal.deal_score)}
+        </p>
+      ) : null}
 
       <Link
         to={`/deals/${deal.id}`}

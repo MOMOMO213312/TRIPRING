@@ -14,6 +14,7 @@ import { WhyTripRing } from "../components/WhyTripRing";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { fetchActiveDeals } from "../lib/api";
+import type { TripType } from "../lib/api";
 import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
@@ -45,12 +46,17 @@ export function HomePage() {
     date: string;
     returnDate: string;
     passengers: number;
+    tripType: TripType;
   }) {
     const q = new URLSearchParams();
     if (params.from) q.set("from", params.from);
     if (params.to) q.set("to", params.to);
     if (params.date) q.set("date", params.date);
-    if (params.returnDate) q.set("returnDate", params.returnDate);
+    // Round-trip is the default lookup, so only stamp tripType on the URL when
+    // it actually narrows the search — keeps existing bookmarked/shared links
+    // (from before tripType existed) behaving exactly as before.
+    if (params.tripType !== "round_trip") q.set("tripType", params.tripType);
+    if (params.tripType !== "one_way" && params.returnDate) q.set("returnDate", params.returnDate);
     if (params.passengers > 1) q.set("passengers", String(params.passengers));
     navigate(`/search?${q.toString()}`);
   }
