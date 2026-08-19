@@ -29,58 +29,72 @@ export function Layout() {
   }, [hash, pathname]);
 
   const linkClass = (active: boolean) =>
-    active ? "font-semibold text-[#2563EB]" : "hover:text-[#2563EB]";
+    active ? "font-semibold text-white" : "text-slate-300 hover:text-white";
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4">
-          <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-[#2563EB]">
-            <span className="flex size-7 items-center justify-center rounded-full bg-[#2563EB] text-sm text-white">
-              ✈️
-            </span>
-            TripRing
-          </Link>
-
-          <nav className="flex flex-wrap items-center gap-5 text-sm font-medium text-gray-700">
-            <Link to="/" className={linkClass(isHome && !hash)}>
-              الرئيسية
+      <header className="bg-[#0F172A] text-white">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-xs text-slate-300">
+          <div className="flex items-center gap-4">
+            <span className="hover:text-white">مساعدة ▾</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link to="/my-trips" className="hover:text-white">
+              تتبع رحلتك
             </Link>
-            <Link to="/deals" className={linkClass(pathname.startsWith("/deals"))}>
-              العروض
-              <span className="ms-1 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                Hot
-              </span>
-            </Link>
-            <Link to="/#opportunities" className="hover:text-[#2563EB]">
-              أفضل رحلات اليوم
-            </Link>
-            <Link to="/#budget" className="hover:text-[#2563EB]">
-              ميزانيتي
-            </Link>
-            <Link to="/my-trips" className={linkClass(pathname === "/my-trips")}>
-              رحلاتي
-            </Link>
-            <Link
-              to="/blue-friday"
-              className="flex items-center gap-1.5 rounded-full bg-blue-600 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-blue-700"
-            >
-              ✨ الجمعة السماوي
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-3 text-sm font-medium text-gray-600">
-            <span className="font-latin rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-semibold">
-              EGP
-            </span>
             <button
               type="button"
               onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-              className="font-latin rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-semibold hover:border-[#2563EB] hover:text-[#2563EB]"
-              title="اللغة (قريباً: ترجمة كاملة)"
+              className="font-latin hover:text-white"
             >
-              {lang} ▾
+              {lang === "AR" ? "عربية" : "English"}
             </button>
+            <span className="font-latin">EGP ▾</span>
+          </div>
+        </div>
+
+        <div className="border-t border-white/10">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3.5">
+            <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
+              <span className="flex size-8 items-center justify-center rounded-full bg-[#EA580C] text-sm text-white">
+                ✈️
+              </span>
+              TripRing
+            </Link>
+
+            <nav className="flex flex-wrap items-center gap-6 text-sm font-medium">
+              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#EA580C]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
+                الرئيسية
+              </Link>
+              <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
+                العروض
+                <span className="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
+              </Link>
+              <Link to="/#opportunities" className="text-slate-300 hover:text-white">
+                اليوم
+              </Link>
+              <Link to="/#destinations" className="text-slate-300 hover:text-white">
+                الوجهات
+              </Link>
+              <Link to="/alerts" className="text-slate-300 hover:text-white">
+                تنبيه الأسعار
+              </Link>
+              <a href="#footer" className="text-slate-300 hover:text-white">
+                الدعم
+              </a>
+            </nav>
+
+            <div className="flex items-center gap-3 text-sm font-semibold">
+              <Link to="/my-trips" className="flex items-center gap-1.5 text-slate-200 hover:text-white">
+                <span aria-hidden>👤</span> سجل الدخول
+              </Link>
+              <Link
+                to="/my-trips"
+                className="rounded-full bg-[#EA580C] px-4 py-2 text-white transition hover:bg-orange-700"
+              >
+                أنشئ حساب
+              </Link>
+            </div>
           </div>
         </div>
       </header>
