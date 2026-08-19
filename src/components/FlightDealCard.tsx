@@ -42,7 +42,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
   return (
     <Link
       to={`/deals/${deal.id}`}
-      className="deal-card-lift group block w-[240px] shrink-0 overflow-hidden rounded-2xl border border-gray-200 bg-white sm:w-[270px]"
+      className="deal-card-lift group block w-[250px] shrink-0 overflow-hidden rounded-3xl border border-gray-200 bg-white sm:w-[280px]"
     >
       <div className="relative h-[130px] w-full overflow-hidden sm:h-[145px]">
         {imageUrl ? (

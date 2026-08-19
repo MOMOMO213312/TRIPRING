@@ -63,17 +63,14 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
   return (
     <>
-      {/* Tickers live in normal document flow, stacked one under the other —
-         kept OUTSIDE the hero photo's relatively-positioned section below so
-         the absolutely-positioned photo layer can never overlap or cover them.
-         (Previously a 3rd, older generic FareBoard rendered here too, and the
-         photo layer's fixed top-offset only ever accounted for one ticker's
-         height — together that produced the garbled overlapping ticker text
-         customers were seeing. Two clearly-labeled boards is enough.) */}
-      <div className="flex flex-col divide-y divide-white/5">
-        <OneWayFareBoard deals={deals} references={references} airports={airports} />
-        <RoundTripFareBoard deals={deals} references={references} airports={airports} />
-      </div>
+      {/* One-way ticker stays pinned to the very top of the hero, in normal
+         document flow — kept OUTSIDE the hero photo's relatively-positioned
+         section below so the absolutely-positioned photo layer can never
+         overlap or cover it. The round-trip ticker is now anchored to the
+         BOTTOM of the hero instead (rendered inside the section, after the
+         search box) — both boards stay, neither was removed, only the
+         round-trip one changed position per the redesign brief. */}
+      <OneWayFareBoard deals={deals} references={references} airports={airports} />
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
         <div className="absolute inset-0">
@@ -91,10 +88,10 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
               className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl"
               style={{ textShadow: "0 2px 18px rgba(255,255,255,0.55)" }}
             >
-              سافر أكتر، ادفع أقل.
+              سافر كما تحب.
             </h1>
             <p className="mt-4 text-base text-gray-700 sm:text-lg" style={{ textShadow: "0 1px 12px rgba(255,255,255,0.55)" }}>
-              اكتشف فرص سفر حقيقية قبل ما تخلص. <span className="font-semibold text-orange-600">مقاعد محدودة.</span> وقت محدود.
+              اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-600">فريقنا في الانتظار</span>.
             </p>
 
             {deals.length > 0 ? (
@@ -125,7 +122,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       </div>
 
       <div className="relative mx-auto max-w-5xl px-4">
-        <div className="-mt-16 rounded-2xl bg-white p-5 shadow-xl ring-1 ring-black/5 sm:p-6">
+        <div className="-mt-20 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
           <div className="mb-5 flex w-fit gap-1 rounded-full bg-gray-100 p-1">
             {(
               [
@@ -156,7 +153,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
             <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
               {/* One continuous bordered strip with hairline dividers between fields —
                  matches the reference instead of each field having its own separate box. */}
-              <div className="flex flex-1 flex-col divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
+              <div className="flex flex-1 flex-col divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
                 <FieldBox icon="📍" label="From" className="sm:flex-[1.3]">
                   <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
                     {airportOptions}
@@ -212,7 +209,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                   >
                     {[1, 2, 3, 4, 5, 6].map((n) => (
                       <option key={n} value={n}>
-                        {n} Passenger(s), Economy
+                        {n} {n === 1 ? "مسافر" : "مسافرين"}، الدرجة الاقتصادية
                       </option>
                     ))}
                   </select>
@@ -221,7 +218,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
               <button
                 type="submit"
-                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#EA580C] px-8 py-3.5 text-sm font-bold text-white shadow-md shadow-orange-200 transition hover:bg-orange-700 active:scale-[0.98] lg:py-0"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#EA580C] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:bg-orange-700 hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
               >
                 <span aria-hidden>🔍</span> ابحث عن رحلات
               </button>
@@ -243,6 +240,13 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
         </div>
 
         <DealTicker deals={deals} references={references} airports={airports} />
+      </div>
+
+      {/* Round-trip ticker anchored to the bottom of the hero, as requested —
+         same board as before, just repositioned (one-way stays pinned to the
+         top of the hero, above). */}
+      <div className="relative mt-8">
+        <RoundTripFareBoard deals={deals} references={references} airports={airports} />
       </div>
       </section>
     </>
