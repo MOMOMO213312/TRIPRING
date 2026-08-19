@@ -33,23 +33,10 @@ export function Layout() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white text-[#0F172A]">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5 text-xs text-slate-500">
+      <header className="border-b border-[#FF6B35] bg-white text-[#0F172A]">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-[#FF6B35] px-4 py-2.5 text-xs text-slate-500">
           <div className="flex items-center gap-4">
             <span className="hover:text-[#0F172A]">مساعدة ▾</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/my-trips" className="hover:text-[#0F172A]">
-              تتبع رحلتك
-            </Link>
-            <button
-              type="button"
-              onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-              className="font-latin hover:text-[#0F172A]"
-            >
-              {lang === "AR" ? "عربية" : "English"}
-            </button>
-            <span className="font-latin">EGP ▾</span>
           </div>
         </div>
 
@@ -85,15 +72,19 @@ export function Layout() {
             </nav>
 
             <div className="flex items-center gap-3 text-sm font-semibold">
-              <Link to="/my-trips" className="flex items-center gap-1.5 text-slate-700 hover:text-[#0F172A]">
-                <span aria-hidden>👤</span> سجل الدخول
-              </Link>
-              <Link
-                to="/my-trips"
-                className="rounded-full bg-[#FF6B35] px-4 py-2 text-white transition hover:bg-[#E8551F]"
+              <button
+                type="button"
+                onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
+                className="font-latin rounded-full border border-[#FF6B35] px-3 py-1.5 text-[#FF6B35] transition hover:bg-[#FFEDE5]"
               >
-                أنشئ حساب
-              </Link>
+                {lang === "AR" ? "عربية" : "English"}
+              </button>
+              <button
+                type="button"
+                className="font-latin rounded-full border border-[#FF6B35] px-3 py-1.5 text-[#FF6B35] transition hover:bg-[#FFEDE5]"
+              >
+                EGP ▾
+              </button>
             </div>
           </div>
         </div>
