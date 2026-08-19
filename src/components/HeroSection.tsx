@@ -100,7 +100,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                 onClick={() => setTripType(key)}
                 className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${
                   tripType === key
-                    ? "bg-white text-[#0D9488] shadow-sm"
+                    ? "bg-white text-[#FF6B35] shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -131,7 +131,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                       setTo(from);
                     }}
                     aria-label="تبديل الوجهتين"
-                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#0D9488] hover:text-[#0D9488] sm:rotate-0"
+                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#FF6B35] hover:text-[#FF6B35] sm:rotate-0"
                   >
                     ⇄
                   </button>
@@ -194,7 +194,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
               <Link
                 key={`${p.from}-${p.to}`}
                 to={`/search?from=${p.from}&to=${p.to}`}
-                className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#0D9488] hover:bg-[#F0FDFA] hover:text-[#0D9488]"
+                className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#FF6B35] hover:bg-[#FFEDE5] hover:text-[#FF6B35]"
               >
                 {p.label}
               </Link>
@@ -230,7 +230,7 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-[#F0FDFA]/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-[#FFEDE5]/40 ${className}`}
     >
       <span className="shrink-0 text-slate-400" aria-hidden>
         {icon}

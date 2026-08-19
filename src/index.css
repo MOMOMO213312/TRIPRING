@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0D9488;
-  --color-primary-hover: #0F766E;
-  --color-primary-light: #F0FDFA;
+  --color-primary: #FF6B35;
+  --color-primary-hover: #E8551F;
+  --color-primary-light: #FFEDE5;
   --color-score-green: #16a34a;
   --color-score-bg: #f0fdf4;
   --color-score-amber: #d97706;
@@ -42,7 +42,7 @@ body {
 }
 
 .field-input {
-  @apply w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-3 py-2.5 text-sm text-[#334155] outline-none transition focus:border-[#0D9488] focus:ring-2 focus:ring-[#99F6E4];
+  @apply w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-3 py-2.5 text-sm text-[#334155] outline-none transition focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FFD9C2];
 }
 
 .opportunity-card-lift {
@@ -75,15 +75,15 @@ body {
 }
 
 .smart-chip {
-  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#0D9488] hover:bg-[#F0FDFA] hover:text-[#0D9488] hover:shadow-md active:scale-95;
+  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#FF6B35] hover:bg-[#FFEDE5] hover:text-[#FF6B35] hover:shadow-md active:scale-95;
 }
 
 .smart-chip-active {
-  @apply border-[#0D9488] bg-[#F0FDFA] text-[#0D9488];
+  @apply border-[#FF6B35] bg-[#FFEDE5] text-[#FF6B35];
 }
 
 .cta-primary {
-  @apply rounded-xl bg-[#0D9488] font-semibold text-white shadow-md shadow-[#5EEAD4] transition hover:bg-[#0F766E] hover:shadow-lg active:scale-[0.98];
+  @apply rounded-xl bg-[#FF6B35] font-semibold text-white shadow-md shadow-[#FFD9C2] transition hover:bg-[#E8551F] hover:shadow-lg active:scale-[0.98];
 }
 
 .skeleton-pulse {

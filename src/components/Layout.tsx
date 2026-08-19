@@ -29,23 +29,23 @@ export function Layout() {
   }, [hash, pathname]);
 
   const linkClass = (active: boolean) =>
-    active ? "font-semibold text-white" : "text-white/80 hover:text-white";
+    active ? "font-semibold text-[#FF6B35]" : "text-slate-600 hover:text-[#0F172A]";
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="bg-[#0D9488] text-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-2.5 text-xs text-white/80">
+      <header className="border-b border-slate-200 bg-white text-[#0F172A]">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5 text-xs text-slate-500">
           <div className="flex items-center gap-4">
-            <span className="hover:text-white">مساعدة ▾</span>
+            <span className="hover:text-[#0F172A]">مساعدة ▾</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/my-trips" className="hover:text-white">
+            <Link to="/my-trips" className="hover:text-[#0F172A]">
               تتبع رحلتك
             </Link>
             <button
               type="button"
               onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-              className="font-latin hover:text-white"
+              className="font-latin hover:text-[#0F172A]"
             >
               {lang === "AR" ? "عربية" : "English"}
             </button>
@@ -53,9 +53,9 @@ export function Layout() {
           </div>
         </div>
 
-        <div className="border-t border-white/15">
+        <div>
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3.5">
-            <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
+            <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-[#0F172A]">
               <span className="flex size-8 items-center justify-center rounded-full bg-[#FF6B35] text-sm text-white">
                 ✈️
               </span>
@@ -70,22 +70,22 @@ export function Layout() {
                 العروض
                 <span className="rounded-full bg-[#FF6B35] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
               </Link>
-              <Link to="/#opportunities" className="text-white/80 hover:text-white">
+              <Link to="/#opportunities" className="text-slate-600 hover:text-[#0F172A]">
                 اليوم
               </Link>
-              <Link to="/#destinations" className="text-white/80 hover:text-white">
+              <Link to="/#destinations" className="text-slate-600 hover:text-[#0F172A]">
                 الوجهات
               </Link>
-              <Link to="/alerts" className="text-white/80 hover:text-white">
+              <Link to="/alerts" className="text-slate-600 hover:text-[#0F172A]">
                 تنبيه الأسعار
               </Link>
-              <a href="#footer" className="text-white/80 hover:text-white">
+              <a href="#footer" className="text-slate-600 hover:text-[#0F172A]">
                 الدعم
               </a>
             </nav>
 
             <div className="flex items-center gap-3 text-sm font-semibold">
-              <Link to="/my-trips" className="flex items-center gap-1.5 text-white/90 hover:text-white">
+              <Link to="/my-trips" className="flex items-center gap-1.5 text-slate-700 hover:text-[#0F172A]">
                 <span aria-hidden>👤</span> سجل الدخول
               </Link>
               <Link

@@ -65,7 +65,7 @@ export function AuthGate({
         <button
           type="button"
           onClick={() => setMode("signin")}
-          className={mode === "signin" ? "text-[#0D9488]" : "text-slate-400"}
+          className={mode === "signin" ? "text-[#FF6B35]" : "text-slate-400"}
         >
           تسجيل الدخول
         </button>
@@ -73,7 +73,7 @@ export function AuthGate({
         <button
           type="button"
           onClick={() => setMode("signup")}
-          className={mode === "signup" ? "text-[#0D9488]" : "text-slate-400"}
+          className={mode === "signup" ? "text-[#FF6B35]" : "text-slate-400"}
         >
           حساب جديد
         </button>

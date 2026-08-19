@@ -35,7 +35,7 @@ export function FareBoard({ deals, references, airports }: Props) {
   );
 
   return (
-    <div dir="ltr" className="ticker-viewport flex items-center overflow-hidden bg-[#0D9488]">
+    <div dir="ltr" className="ticker-viewport flex items-center overflow-hidden bg-[#0F172A]">
       <div className="flex shrink-0 items-center gap-1.5 bg-[#FF6B35] px-4 py-2.5 text-xs font-extrabold text-white">
         <span className="animate-pulse" aria-hidden>
           ●

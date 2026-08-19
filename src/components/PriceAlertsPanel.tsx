@@ -42,7 +42,7 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
     <Card>
       <div className="mb-4 flex items-center justify-between gap-3">
         <h3 className="font-bold text-slate-900">تنبيهاتك النشطة</h3>
-        <Link to="/alerts" className="text-sm font-semibold text-[#0D9488] hover:underline">
+        <Link to="/alerts" className="text-sm font-semibold text-[#FF6B35] hover:underline">
           عرض الكل
         </Link>
       </div>

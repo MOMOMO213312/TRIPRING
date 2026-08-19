@@ -96,7 +96,7 @@ export function DealCard({
               {airlineName(deal.airline_code, airlines)}
             </span>
             {agency?.is_active ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#F0FDFA] px-2 py-0.5 text-[11px] font-semibold text-[#0D9488]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#FFEDE5] px-2 py-0.5 text-[11px] font-semibold text-[#FF6B35]">
                 <VerifiedIcon className="size-3" />
                 موثّق
               </span>
@@ -106,7 +106,7 @@ export function DealCard({
 
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <p className="font-latin text-2xl font-extrabold text-[#0D9488]">
+            <p className="font-latin text-2xl font-extrabold text-[#FF6B35]">
               {formatPrice(deal.price, deal.currency ?? "USD")}
             </p>
             {typical && typical > deal.price ? (
