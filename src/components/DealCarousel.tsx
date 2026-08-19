@@ -1,9 +1,6 @@
-import { useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
-import { getTypicalPrice } from "../lib/api";
-import { formatRouteCities, savingsPercent } from "../lib/deal-utils";
 import type { DealRow } from "../types/database";
-import { DestinationCard } from "./DestinationCard";
+import { FlightDealCard } from "./FlightDealCard";
 
 export function DealCarousel({ deals, catalog }: { deals: DealRow[]; catalog: Catalog }) {
   if (deals.length === 0) return null;
@@ -17,41 +14,11 @@ export function DealCarousel({ deals, catalog }: { deals: DealRow[]; catalog: Ca
 
   return (
     <div dir="ltr" className="group/marquee overflow-hidden">
-      <div className="marquee-track flex w-max gap-3 px-4 sm:px-0" style={{ animationDuration: `${durationSeconds}s` }}>
+      <div className="marquee-track flex w-max gap-4 px-4 sm:px-0" style={{ animationDuration: `${durationSeconds}s` }}>
         {loopItems.map((deal, idx) => (
-          <OpportunityCard key={`${deal.id}-${idx}`} deal={deal} catalog={catalog} />
+          <FlightDealCard key={`${deal.id}-${idx}`} deal={deal} catalog={catalog} />
         ))}
       </div>
     </div>
-  );
-}
-
-function OpportunityCard({ deal, catalog }: { deal: DealRow; catalog: Catalog }) {
-  const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
-  const typical = getTypicalPrice(deal, catalog.references);
-  const savings = savingsPercent(deal.price, typical);
-
-  return (
-    <DestinationCard
-      to={`/deals/${deal.id}`}
-      image={imageUrl}
-      title={formatRouteCities(deal, catalog.airports)}
-      priceLabel="يبدأ من"
-      price={deal.price}
-      badge={
-        <div className="flex items-center gap-1.5">
-          {deal.deal_score != null ? (
-            <span className="font-latin rounded-full bg-white/95 px-2 py-0.5 text-xs font-extrabold text-gray-900 shadow-sm backdrop-blur-sm">
-              {deal.deal_score}
-            </span>
-          ) : null}
-          {savings ? (
-            <span className="font-latin rounded-full bg-green-500/95 px-2 py-0.5 text-xs font-bold text-white shadow-sm backdrop-blur-sm">
-              -{savings}%
-            </span>
-          ) : null}
-        </div>
-      }
-    />
   );
 }

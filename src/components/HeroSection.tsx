@@ -88,9 +88,9 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
         ) : null}
       </div>
 
-      <div className="relative mx-auto max-w-4xl px-4">
-        <div className="-mt-24 rounded-xl border border-gray-200 bg-white p-5 shadow-lg sm:p-6">
-          <div className="mb-4 flex flex-wrap gap-6 border-b border-gray-100">
+      <div className="relative mx-auto max-w-5xl px-4">
+        <div className="-mt-24 rounded-2xl bg-white p-5 shadow-xl sm:p-6">
+          <div className="mb-5 flex flex-wrap gap-6 border-b border-gray-100">
             {(
               [
                 ["round_trip", "↔️", "ذهاب وعودة"],
@@ -117,20 +117,36 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           </div>
 
           <form onSubmit={submit}>
-            <div className="flex flex-col divide-y divide-gray-200 overflow-hidden rounded-2xl border border-gray-200 lg:flex-row lg:divide-x lg:divide-y-0">
-              <FieldCell icon="📍" label="From">
-                <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
-                  {airportOptions}
-                </select>
-              </FieldCell>
-              <FieldCell icon="📍" label="To" trailingIcon="📌">
-                <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                  <option value="">اختر الوجهة</option>
-                  <option value="any">Anywhere — أي وجهة</option>
-                  {airportOptions}
-                </select>
-              </FieldCell>
-              <FieldCell icon="📅" label="Departure">
+            <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
+              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-stretch lg:flex-[1.7]">
+                <FieldBox icon="📍" label="From">
+                  <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
+                    {airportOptions}
+                  </select>
+                </FieldBox>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFrom(to);
+                    setTo(from);
+                  }}
+                  aria-label="تبديل الوجهتين"
+                  className="mx-auto flex size-9 shrink-0 rotate-90 items-center justify-center self-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#2563EB] hover:text-[#2563EB] sm:rotate-0"
+                >
+                  ⇄
+                </button>
+
+                <FieldBox icon="📍" label="To" trailingIcon="📌">
+                  <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
+                    <option value="">اختر الوجهة</option>
+                    <option value="any">Anywhere — أي وجهة</option>
+                    {airportOptions}
+                  </select>
+                </FieldBox>
+              </div>
+
+              <FieldBox icon="📅" label="Departure">
                 <input
                   type="date"
                   value={date}
@@ -138,8 +154,8 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                   onChange={(e) => setDate(e.target.value)}
                   className="hero-field-input"
                 />
-              </FieldCell>
-              <FieldCell icon="📅" label="Return">
+              </FieldBox>
+              <FieldBox icon="📅" label="Return">
                 <input
                   type="date"
                   value={returnDate}
@@ -148,8 +164,8 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                   onChange={(e) => setReturnDate(e.target.value)}
                   className="hero-field-input disabled:cursor-not-allowed disabled:text-gray-300"
                 />
-              </FieldCell>
-              <FieldCell icon="👤" label="Passengers">
+              </FieldBox>
+              <FieldBox icon="👤" label="Passengers" trailingIcon="▾">
                 <select
                   value={passengers}
                   onChange={(e) => setPassengers(Number(e.target.value))}
@@ -161,10 +177,11 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                     </option>
                   ))}
                 </select>
-              </FieldCell>
+              </FieldBox>
+
               <button
                 type="submit"
-                className="flex shrink-0 items-center justify-center bg-[#EA580C] px-8 py-4 text-sm font-bold text-white transition hover:bg-orange-700"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#EA580C] px-8 py-3.5 text-sm font-bold text-white shadow-md shadow-orange-200 transition hover:bg-orange-700 active:scale-[0.98] lg:py-0"
               >
                 Search Flights
               </button>
@@ -276,7 +293,7 @@ function TimeBox({ value }: { value: string }) {
   return <span className="rounded-md bg-gray-100 px-1.5 py-1">{value}</span>;
 }
 
-function FieldCell({
+function FieldBox({
   icon,
   label,
   trailingIcon,
@@ -288,7 +305,7 @@ function FieldCell({
   children: ReactNode;
 }) {
   return (
-    <div className="flex flex-1 items-center gap-2.5 px-4 py-3">
+    <div className="flex flex-1 items-center gap-2.5 rounded-xl border border-gray-200 bg-white px-4 py-3 transition focus-within:border-[#2563EB] focus-within:ring-2 focus-within:ring-blue-100">
       <span className="text-gray-400" aria-hidden>
         {icon}
       </span>
