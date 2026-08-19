@@ -71,20 +71,22 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
       <div className="absolute inset-0 top-10">
         <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-        {/* Soft, warm-neutral overlay (toned down from pure white so it's easier on the eyes):
-           opaque near the text side for readability, fading toward the image so the plane wing
-           stays visible behind the flash card. */}
-        <div className="absolute inset-0 bg-gradient-to-l from-[#F7F8FA] via-[#F7F8FA]/92 to-[#F7F8FA]/30" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F7F8FA]/25 via-transparent to-[#F7F8FA]" />
+        {/* Minimal overlay now — just enough to blend the seam into the page below.
+           The photo itself stays visible instead of being washed out in flat white;
+           the text block below gets its own small readable panel instead. */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F7F8FA]" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-14 sm:pt-16">
         <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-lg">
-            <h1 className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl">
+          <div className="max-w-lg rounded-2xl bg-white/55 p-4 backdrop-blur-[2px] sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+            <h1
+              className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl"
+              style={{ textShadow: "0 2px 18px rgba(255,255,255,0.55)" }}
+            >
               سافر أكتر، ادفع أقل.
             </h1>
-            <p className="mt-4 text-base text-gray-600 sm:text-lg">
+            <p className="mt-4 text-base text-gray-700 sm:text-lg" style={{ textShadow: "0 1px 12px rgba(255,255,255,0.55)" }}>
               اكتشف فرص سفر حقيقية قبل ما تخلص. <span className="font-semibold text-orange-600">مقاعد محدودة.</span> وقت محدود.
             </p>
 
@@ -101,7 +103,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                     </span>
                   ))}
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-700" style={{ textShadow: "0 1px 12px rgba(255,255,255,0.55)" }}>
                   <span className="font-latin font-bold text-[#0F172A]">{Math.max(deals.length * 37, 1000).toLocaleString()}+</span>{" "}
                   مسافر بيوفروا فلوسهم دلوقتي مع TripRing
                 </p>
@@ -148,13 +150,13 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
               {/* One continuous bordered strip with hairline dividers between fields —
                  matches the reference instead of each field having its own separate box. */}
               <div className="flex flex-1 flex-col divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
-                <FieldBox icon="📍" label="From" className="sm:flex-1">
+                <FieldBox icon="📍" label="From" className="sm:flex-[1.3]">
                   <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
                     {airportOptions}
                   </select>
                 </FieldBox>
 
-                <div className="relative flex h-0 items-center justify-center sm:h-auto sm:w-0">
+                <div className="flex h-8 shrink-0 items-center justify-center sm:h-auto sm:w-12">
                   <button
                     type="button"
                     onClick={() => {
@@ -162,13 +164,13 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                       setTo(from);
                     }}
                     aria-label="تبديل الوجهتين"
-                    className="absolute z-10 flex size-8 shrink-0 -translate-y-1/2 rotate-90 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#2563EB] hover:text-[#2563EB] sm:translate-y-0 sm:rotate-0"
+                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#2563EB] hover:text-[#2563EB] sm:rotate-0"
                   >
                     ⇄
                   </button>
                 </div>
 
-                <FieldBox icon="📍" label="To" trailingIcon="📌" className="sm:flex-1">
+                <FieldBox icon="📍" label="To" className="sm:flex-[1.3]">
                   <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
                     <option value="">اختر الوجهة</option>
                     <option value="any">Anywhere — أي وجهة</option>
@@ -345,9 +347,9 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex items-center gap-2.5 px-4 py-3 transition focus-within:bg-blue-50/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-blue-50/40 ${className}`}
     >
-      <span className="text-gray-400" aria-hidden>
+      <span className="shrink-0 text-gray-400" aria-hidden>
         {icon}
       </span>
       <div className="min-w-0 flex-1">
