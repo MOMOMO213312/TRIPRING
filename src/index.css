@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand */
+  --color-primary: #FF6B35;
+  --color-primary-hover: #E8551F;
+  --color-primary-light: #FFEDE5;
+  --color-primary-ring: #FFD9C2;
+  --color-primary-glow: #FFE8DC;
+  --color-flash-orange: #FF6B35;
+  --color-flash-orange-light: #F3A6A3;
+
+  /* Status / feedback (single source of truth — no duplicate green/gray tokens) */
+  --color-success: #16A34A;
+  --color-success-bg: #DCFCE7;
+  --color-score-green: var(--color-success);
+  --color-score-bg: #F0FDF4;
+  --color-savings: var(--color-success);
+  --color-score-amber: #D97706;
+  --color-score-amber-bg: #FFFBEB;
+  --color-danger: #DC2626;
+  --color-score-gray: #6B7280;
+  --color-rank-gray: var(--color-score-gray);
+  --color-score-gray-bg: #F9FAFB;
+
+  /* Accents */
+  --color-rank-gold: #F59E0B;
+  --color-rank-blue: #3B82F6;
+  --color-accent-coral: #F97362;
+  --color-accent-teal: #0D9488;
+  --color-magenta: #9F1246;
+  --color-sky: #0EA5E9;
+  --color-whatsapp: #25D366;
+  --color-whatsapp-hover: #1DA851;
+
+  /* Navy scale */
+  --color-navy: #0F172A;
+  --color-navy-light: #1E293B;
+  --color-navy-slate: #1E2A45;
+  --color-navy-steel: #28365A;
+  --color-navy-teal: #155E7A;
+  --color-navy-deep: #0B1220;
+
+  /* Surfaces / borders / text */
+  --color-surface: #F8FAFC;
+  --color-surface-alt: #F7F8FA;
+  --color-surface-muted: #F9FAFB;
+  --color-surface-warm: #FFFBF2;
+  --color-border-subtle: #E5E7EB;
+  --color-border-muted: #E2E8F0;
+  --color-text-muted: #334155;
+  --font-sans-ar: "Cairo", system-ui, sans-serif;
+  --font-sans-latin: "Inter", system-ui, sans-serif;
+}
+
+html {
+  font-family: var(--font-sans-ar);
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+.font-latin {
+  font-family: var(--font-sans-latin);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.deal-card-lift {
+  @apply shadow-sm transition-shadow duration-200 hover:shadow-lg;
+}
+
+.field-input {
+  @apply w-full rounded-xl border border-slate-200 bg-surface px-3 py-2.5 text-sm text-text-muted outline-none transition focus:border-primary focus:ring-2 focus:ring-primary-ring;
+}
+
+.opportunity-card-lift {
+  @apply shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
+}
+
+/* Continuous marquee: track is duplicated in JS, so translating by -50%
+   loops seamlessly back to an identical copy of the start. Pauses on
+   hover/focus so the customer can actually read a card. */
+.marquee-track {
+  animation-name: marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.group\/marquee:hover .marquee-track,
+.marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* RTL layout: the natural forward direction scrolls toward the left,
+       i.e. negative X. */
+    transform: translateX(-50%);
+  }
+}
+
+.smart-chip {
+  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-primary hover:bg-primary-light hover:text-primary hover:shadow-md active:scale-95;
+}
+
+.smart-chip-active {
+  @apply border-primary bg-primary-light text-primary;
+}
+
+.cta-primary {
+  @apply rounded-xl bg-primary font-semibold text-white shadow-md shadow-primary-ring transition hover:bg-primary-hover hover:shadow-lg active:scale-[0.98];
+}
+
+.skeleton-pulse {
+  @apply animate-pulse rounded-xl bg-slate-200;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-track {
+  animation: ticker-scroll 35s linear infinite;
+}
+
+.ticker-viewport:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+.hero-field-select,
+.hero-field-input {
+  @apply w-full border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none;
+}
+
+.hero-field-select {
+  @apply cursor-pointer appearance-none;
+}
