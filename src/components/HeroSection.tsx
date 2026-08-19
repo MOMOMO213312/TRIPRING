@@ -8,7 +8,7 @@ import type { TripType } from "../lib/api";
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 
 const HERO_IMAGE =
-  "https://images.pexels.com/photos/912050/pexels-photo-912050.jpeg?auto=compress&cs=tinysrgb&w=1600";
+  "https://images.pexels.com/photos/1911388/pexels-photo-1911388.jpeg?auto=compress&cs=tinysrgb&w=1600";
 
 const POPULAR = [
   { from: "CAI", to: "DXB", label: "القاهرة ← دبي" },
@@ -53,26 +53,29 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 h-[420px] sm:h-[480px]">
           <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-          {/* Minimal overlay now — just enough to blend the seam into the page below.
-             The photo itself stays visible instead of being washed out in flat white;
-             the text block below gets its own small readable panel instead. */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F7F8FA]" />
+          {/* Warm sunset shot now carries real color, so the overlay's job is just
+             to guarantee the headline stays legible over it — a dark wash up top
+             that fades to nothing by mid-photo, then a soft handoff into the page
+             background at the very bottom so the photo still reads as a hero, not
+             a washed-out panel. */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
         </div>
 
       <div className="relative mx-auto max-w-4xl px-4 pb-44 pt-10 text-center sm:pb-52 sm:pt-14">
         <h1
-          className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl"
-          style={{ textShadow: "0 2px 20px rgba(255,255,255,0.65)" }}
+          className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl"
+          style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
         >
           سافر كما تحب.
         </h1>
         <p
-          className="mx-auto mt-4 max-w-xl text-base text-gray-800 sm:text-lg"
-          style={{ textShadow: "0 1px 16px rgba(255,255,255,0.7)" }}
+          className="mx-auto mt-4 max-w-xl text-base text-white/90 sm:text-lg"
+          style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
         >
-          اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-600">فريقنا في الانتظار</span>.
+          اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-300">فريقنا في الانتظار</span>.
         </p>
       </div>
 
