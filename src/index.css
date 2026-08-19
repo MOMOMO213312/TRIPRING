@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-light: #eff6ff;
+  --color-primary: #299FD1;
+  --color-primary-hover: #2282AB;
+  --color-primary-light: #eaf6fc;
   --color-score-green: #16a34a;
   --color-score-bg: #f0fdf4;
   --color-score-amber: #d97706;
@@ -18,8 +18,8 @@
   --color-accent-teal: #0d9488;
   --color-navy: #0f172a;
   --color-navy-light: #1e293b;
-  --color-flash-orange: #ea580c;
-  --color-flash-orange-light: #f97316;
+  --color-flash-orange: #DB2F2B;
+  --color-flash-orange-light: #F3A6A3;
   --font-sans-ar: "Cairo", system-ui, sans-serif;
   --font-sans-latin: "Inter", system-ui, sans-serif;
 }
@@ -42,7 +42,7 @@ body {
 }
 
 .field-input {
-  @apply w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-blue-100;
+  @apply w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-[#299FD1] focus:ring-2 focus:ring-[#D2EEF9];
 }
 
 .opportunity-card-lift {
@@ -75,15 +75,15 @@ body {
 }
 
 .smart-chip {
-  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-[#2563EB] hover:text-[#2563EB] hover:shadow-md active:scale-95;
+  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:border-[#299FD1] hover:text-[#299FD1] hover:shadow-md active:scale-95;
 }
 
 .smart-chip-active {
-  @apply border-[#2563EB] bg-[#EFF6FF] text-[#2563EB];
+  @apply border-[#299FD1] bg-[#EAF6FC] text-[#299FD1];
 }
 
 .cta-primary {
-  @apply rounded-xl bg-[#2563EB] font-semibold text-white shadow-md shadow-blue-200 transition hover:bg-[#1D4ED8] hover:shadow-lg active:scale-[0.98];
+  @apply rounded-xl bg-[#299FD1] font-semibold text-white shadow-md shadow-[#A9DFF2] transition hover:bg-[#2282AB] hover:shadow-lg active:scale-[0.98];
 }
 
 .skeleton-pulse {

@@ -96,7 +96,7 @@ export function DealCard({
               {airlineName(deal.airline_code, airlines)}
             </span>
             {agency?.is_active ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-[#2563EB]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#EAF6FC] px-2 py-0.5 text-[11px] font-semibold text-[#299FD1]">
                 <VerifiedIcon className="size-3" />
                 موثّق
               </span>

@@ -49,7 +49,7 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
         <button
           type="button"
           onClick={() => onChange(EMPTY_FILTERS)}
-          className="text-xs font-semibold text-[#2563EB] hover:underline"
+          className="text-xs font-semibold text-[#299FD1] hover:underline"
         >
           إعادة تعيين
         </button>
@@ -206,7 +206,7 @@ function ChipToggle({
       onClick={onClick}
       className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
         active
-          ? "border-[#2563EB] bg-[#EFF6FF] text-[#2563EB]"
+          ? "border-[#299FD1] bg-[#EAF6FC] text-[#299FD1]"
           : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
       }`}
     >
@@ -226,7 +226,7 @@ function Checkbox({
 }) {
   return (
     <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700">
-      <input type="checkbox" checked={checked} onChange={onChange} className="size-4 rounded accent-[#2563EB]" />
+      <input type="checkbox" checked={checked} onChange={onChange} className="size-4 rounded accent-[#299FD1]" />
       {children}
     </label>
   );

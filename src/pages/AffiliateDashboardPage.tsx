@@ -117,9 +117,9 @@ function AffiliateBody() {
 
 function StatCard({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <Card className={highlight ? "border-[#2563EB] bg-[#EFF6FF] text-center" : "text-center"}>
+    <Card className={highlight ? "border-[#299FD1] bg-[#EAF6FC] text-center" : "text-center"}>
       <p className="text-xs text-gray-500">{label}</p>
-      <p className={`font-latin mt-1 text-xl font-extrabold ${highlight ? "text-[#2563EB]" : "text-gray-900"}`}>
+      <p className={`font-latin mt-1 text-xl font-extrabold ${highlight ? "text-[#299FD1]" : "text-gray-900"}`}>
         {value}
       </p>
     </Card>

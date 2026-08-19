@@ -6,7 +6,7 @@ type Tone = "default" | "flash" | "last_minute" | "empty_seat" | "special_fare" 
 
 const tones: Record<Tone, string> = {
   default: "bg-gray-100 text-gray-700",
-  flash: "bg-blue-100 text-blue-800",
+  flash: "bg-[#D2EEF9] text-[#155E7A]",
   last_minute: "bg-amber-100 text-amber-800",
   empty_seat: "bg-green-100 text-green-800",
   special_fare: "bg-purple-100 text-purple-800",

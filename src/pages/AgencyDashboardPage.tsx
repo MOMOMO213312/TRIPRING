@@ -87,7 +87,7 @@ export function AgencyDashboardPage() {
             type="button"
             onClick={() => setTab(t.key)}
             className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
-              tab === t.key ? "bg-[#2563EB] text-white" : "text-gray-600 hover:bg-gray-50"
+              tab === t.key ? "bg-[#299FD1] text-white" : "text-gray-600 hover:bg-gray-50"
             }`}
           >
             {t.label}

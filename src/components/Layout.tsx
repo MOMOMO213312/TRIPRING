@@ -56,14 +56,14 @@ export function Layout() {
         <div className="border-t border-white/10">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3.5">
             <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
-              <span className="flex size-8 items-center justify-center rounded-full bg-[#EA580C] text-sm text-white">
+              <span className="flex size-8 items-center justify-center rounded-full bg-[#DB2F2B] text-sm text-white">
                 ✈️
               </span>
               TripRing
             </Link>
 
             <nav className="flex flex-wrap items-center gap-6 text-sm font-medium">
-              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#EA580C]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
+              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#DB2F2B]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
                 الرئيسية
               </Link>
               <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
@@ -90,7 +90,7 @@ export function Layout() {
               </Link>
               <Link
                 to="/my-trips"
-                className="rounded-full bg-[#EA580C] px-4 py-2 text-white transition hover:bg-orange-700"
+                className="rounded-full bg-[#DB2F2B] px-4 py-2 text-white transition hover:bg-[#B42723]"
               >
                 أنشئ حساب
               </Link>

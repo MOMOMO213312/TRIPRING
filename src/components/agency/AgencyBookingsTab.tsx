@@ -93,7 +93,7 @@ export function AgencyBookingsTab({
             type="button"
             onClick={() => setGroup(g.key)}
             className={`rounded-full px-3 py-1.5 text-sm font-semibold transition-colors ${
-              group === g.key ? "bg-[#2563EB] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              group === g.key ? "bg-[#299FD1] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
             {g.label}

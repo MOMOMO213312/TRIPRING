@@ -75,7 +75,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           className="mx-auto mt-4 max-w-xl text-base text-white/90 sm:text-lg"
           style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
         >
-          اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-300">فريقنا في الانتظار</span>.
+          اكتشف، قارن، اختار — دومًا <span className="font-semibold text-[#F3A6A3]">فريقنا في الانتظار</span>.
         </p>
       </div>
 
@@ -100,7 +100,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                 onClick={() => setTripType(key)}
                 className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${
                   tripType === key
-                    ? "bg-white text-[#2563EB] shadow-sm"
+                    ? "bg-white text-[#299FD1] shadow-sm"
                     : "text-gray-500 hover:text-gray-800"
                 }`}
               >
@@ -131,7 +131,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                       setTo(from);
                     }}
                     aria-label="تبديل الوجهتين"
-                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#2563EB] hover:text-[#2563EB] sm:rotate-0"
+                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#299FD1] hover:text-[#299FD1] sm:rotate-0"
                   >
                     ⇄
                   </button>
@@ -181,7 +181,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
               <button
                 type="submit"
-                className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#EA580C] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-200 transition hover:-translate-y-0.5 hover:bg-orange-700 hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#DB2F2B] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#F6C6C4] transition hover:-translate-y-0.5 hover:bg-[#B42723] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
               >
                 <span aria-hidden>🔍</span> ابحث عن رحلات
               </button>
@@ -194,7 +194,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
               <Link
                 key={`${p.from}-${p.to}`}
                 to={`/search?from=${p.from}&to=${p.to}`}
-                className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 transition hover:border-[#2563EB] hover:text-[#2563EB]"
+                className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 transition hover:border-[#299FD1] hover:text-[#299FD1]"
               >
                 {p.label}
               </Link>
@@ -230,7 +230,7 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-blue-50/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-[#EAF6FC]/40 ${className}`}
     >
       <span className="shrink-0 text-gray-400" aria-hidden>
         {icon}

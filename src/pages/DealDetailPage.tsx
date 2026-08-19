@@ -53,7 +53,7 @@ export function DealDetailPage() {
     return (
       <Card className="text-center">
         <p className="text-red-600">{error ?? "العرض غير موجود"}</p>
-        <Link to="/" className="mt-4 inline-block text-[#2563EB]">
+        <Link to="/" className="mt-4 inline-block text-[#299FD1]">
           العودة للرئيسية
         </Link>
       </Card>
@@ -124,9 +124,9 @@ export function DealDetailPage() {
       <Card className="space-y-4">
         <h2 className="font-bold text-gray-900">تحليل السعر</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl bg-[#EFF6FF] p-4 text-center">
+          <div className="rounded-xl bg-[#EAF6FC] p-4 text-center">
             <p className="text-xs font-medium text-gray-500">السعر الحالي</p>
-            <p className="font-latin mt-1 text-2xl font-extrabold text-[#2563EB]">
+            <p className="font-latin mt-1 text-2xl font-extrabold text-[#299FD1]">
               {formatPrice(deal.price, currency)}
             </p>
           </div>
@@ -218,14 +218,14 @@ export function DealDetailPage() {
           <button
             type="button"
             onClick={handleShare}
-            className="flex-1 rounded-lg border border-gray-200 py-2 font-semibold text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
+            className="flex-1 rounded-lg border border-gray-200 py-2 font-semibold text-gray-600 transition hover:border-[#299FD1] hover:text-[#299FD1]"
           >
             {shareCopied ? "تم نسخ الرابط ✓" : "🔗 مشاركة"}
           </button>
           <button
             type="button"
             onClick={() => setAlertOpen(true)}
-            className="flex-1 rounded-lg border border-gray-200 py-2 font-semibold text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
+            className="flex-1 rounded-lg border border-gray-200 py-2 font-semibold text-gray-600 transition hover:border-[#299FD1] hover:text-[#299FD1]"
           >
             🔔 تنبيه سعر
           </button>

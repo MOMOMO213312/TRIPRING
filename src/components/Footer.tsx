@@ -5,8 +5,8 @@ export function Footer() {
     <footer className="border-t border-gray-200 bg-white">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
         <div>
-          <p className="flex items-center gap-2 text-lg font-extrabold text-[#2563EB]">
-            <span className="flex size-6 items-center justify-center rounded-full bg-[#2563EB] text-xs text-white">
+          <p className="flex items-center gap-2 text-lg font-extrabold text-[#299FD1]">
+            <span className="flex size-6 items-center justify-center rounded-full bg-[#299FD1] text-xs text-white">
               ✈️
             </span>
             TripRing
@@ -20,17 +20,17 @@ export function Footer() {
           <p className="text-sm font-bold text-gray-900">روابط مهمة</p>
           <ul className="mt-3 space-y-2 text-sm text-gray-500">
             <li>
-              <Link to="/faq" className="hover:text-[#2563EB]">
+              <Link to="/faq" className="hover:text-[#299FD1]">
                 الأسئلة الشائعة
               </Link>
             </li>
             <li>
-              <Link to="/terms" className="hover:text-[#2563EB]">
+              <Link to="/terms" className="hover:text-[#299FD1]">
                 الشروط والأحكام
               </Link>
             </li>
             <li>
-              <Link to="/privacy" className="hover:text-[#2563EB]">
+              <Link to="/privacy" className="hover:text-[#299FD1]">
                 سياسة الخصوصية
               </Link>
             </li>
@@ -41,22 +41,22 @@ export function Footer() {
           <p className="text-sm font-bold text-gray-900">المنصة</p>
           <ul className="mt-3 space-y-2 text-sm text-gray-500">
             <li>
-              <Link to="/deals" className="hover:text-[#2563EB]">
+              <Link to="/deals" className="hover:text-[#299FD1]">
                 العروض
               </Link>
             </li>
             <li>
-              <Link to="/resale" className="hover:text-[#2563EB]">
+              <Link to="/resale" className="hover:text-[#299FD1]">
                 بيع وشراء التذاكر
               </Link>
             </li>
             <li>
-              <Link to="/agency" className="hover:text-[#2563EB]">
+              <Link to="/agency" className="hover:text-[#299FD1]">
                 لوحة الوكالة
               </Link>
             </li>
             <li>
-              <Link to="/affiliate" className="hover:text-[#2563EB]">
+              <Link to="/affiliate" className="hover:text-[#299FD1]">
                 لوحة الأفلييت
               </Link>
             </li>

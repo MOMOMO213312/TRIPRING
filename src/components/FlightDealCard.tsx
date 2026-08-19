@@ -20,10 +20,10 @@ import type { DealRow, DealType } from "../types/database";
 /** Badge color per deal type — mirrors the "Flash Deal / Hot Deal / Last Minute /
  *  Best Value" ribbon colors in the reference design. */
 const TYPE_BADGE_STYLE: Record<DealType, string> = {
-  flash: "bg-[#EA580C]",
+  flash: "bg-[#DB2F2B]",
   last_minute: "bg-[#0F172A]",
-  empty_seat: "bg-[#DC2626]",
-  special_fare: "bg-[#2563EB]",
+  empty_seat: "bg-[#9F1246]",
+  special_fare: "bg-[#299FD1]",
 };
 
 /**

@@ -31,7 +31,7 @@ export function TripTypeFareBoard({ deals, references, airports }: Props) {
               to={`/deals/${q.oneWayDeal.id}`}
               className="font-latin flex items-center gap-1 text-xs font-bold text-white transition hover:opacity-80"
             >
-              <span className="rounded bg-white/15 px-1 py-0.5 text-[10px] font-extrabold text-orange-300">OW</span>
+              <span className="rounded bg-white/15 px-1 py-0.5 text-[10px] font-extrabold text-[#F3A6A3]">OW</span>
               <span className="text-white/70">${q.oneWayDeal.price}</span>
             </Link>
           )}
@@ -40,7 +40,7 @@ export function TripTypeFareBoard({ deals, references, airports }: Props) {
               to={`/deals/${q.roundTripDeal.id}`}
               className="font-latin flex items-center gap-1 text-xs font-bold text-white transition hover:opacity-80"
             >
-              <span className="rounded bg-white/15 px-1 py-0.5 text-[10px] font-extrabold text-orange-300">RT</span>
+              <span className="rounded bg-white/15 px-1 py-0.5 text-[10px] font-extrabold text-[#F3A6A3]">RT</span>
               <span className="text-white/70">${q.roundTripDeal.price}</span>
             </Link>
           )}
@@ -51,7 +51,7 @@ export function TripTypeFareBoard({ deals, references, airports }: Props) {
 
   return (
     <div dir="ltr" className="ticker-viewport flex items-center overflow-hidden bg-[#0f172a]">
-      <div className="flex shrink-0 items-center gap-1.5 bg-[#EA580C] px-4 py-2.5 text-xs font-extrabold text-white">
+      <div className="flex shrink-0 items-center gap-1.5 bg-[#DB2F2B] px-4 py-2.5 text-xs font-extrabold text-white">
         <span className="animate-pulse" aria-hidden>
           ●
         </span>

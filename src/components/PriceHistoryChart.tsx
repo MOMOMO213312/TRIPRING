@@ -48,9 +48,9 @@ export function PriceHistoryChart({ title, points }: Props) {
             </g>
           );
         })}
-        <path d={line} fill="none" stroke="#2563EB" strokeWidth={2.5} strokeLinecap="round" />
+        <path d={line} fill="none" stroke="#299FD1" strokeWidth={2.5} strokeLinecap="round" />
         {coords.map((c) => (
-          <circle key={c.date} cx={c.x} cy={c.y} r={3} fill="#2563EB" />
+          <circle key={c.date} cx={c.x} cy={c.y} r={3} fill="#299FD1" />
         ))}
       </svg>
       <div className="mt-2 flex justify-between text-[10px] text-gray-400">

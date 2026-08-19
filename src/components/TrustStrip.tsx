@@ -10,7 +10,7 @@ export function TrustStrip() {
       {ITEMS.map((item, i) => (
         <div key={item.text} className="flex flex-1 items-center gap-3 sm:justify-center">
           {i > 0 ? <span className="hidden h-8 w-px bg-gray-200 sm:block" aria-hidden /> : null}
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[#2563EB]">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#EAF6FC] text-[#299FD1]">
             <item.icon className="size-4" />
           </span>
           <span className="text-sm font-medium text-gray-700">{item.text}</span>

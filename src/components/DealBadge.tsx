@@ -4,7 +4,7 @@ export type DealBadgeTone = "excellent" | "good" | "savings" | "urgent" | "neutr
 
 const TONE_STYLES: Record<DealBadgeTone, string> = {
   excellent: "bg-[#F0FDF4] text-[#16A34A] border-[#DCFCE7]",
-  good: "bg-[#EFF6FF] text-[#2563EB] border-[#DBEAFE]",
+  good: "bg-[#EAF6FC] text-[#299FD1] border-[#D2EEF9]",
   savings: "bg-[#F0FDF4] text-[#16A34A] border-[#DCFCE7]",
   urgent: "bg-amber-50 text-amber-700 border-amber-100",
   neutral: "bg-gray-50 text-gray-600 border-gray-200",
