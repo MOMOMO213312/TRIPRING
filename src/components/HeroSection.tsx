@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 
 import { DealTicker } from "./DealTicker";
 import { FareBoard } from "./FareBoard";
-import { TripTypeFareBoard } from "./TripTypeFareBoard";
+import { OneWayFareBoard } from "./OneWayFareBoard";
+import { RoundTripFareBoard } from "./RoundTripFareBoard";
 import { getTypicalPrice } from "../lib/api";
 import { airportLabel, savingsPercent } from "../lib/deal-utils";
 import { hoursUntil } from "../lib/filters";
@@ -65,7 +66,8 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
   return (
     <section className="relative overflow-hidden bg-[#0F172A]">
       <FareBoard deals={deals} references={references} airports={airports} />
-      <TripTypeFareBoard deals={deals} references={references} airports={airports} />
+      <OneWayFareBoard deals={deals} references={references} airports={airports} />
+      <RoundTripFareBoard deals={deals} references={references} airports={airports} />
 
       <div className="absolute inset-0 top-10">
         <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
