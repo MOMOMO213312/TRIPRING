@@ -6,9 +6,9 @@ import { OneWayFareBoard } from "./OneWayFareBoard";
 import { RoundTripFareBoard } from "./RoundTripFareBoard";
 import type { TripType } from "../lib/api";
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
+import heroSky from "../assets/hero-sky.jpg";
 
-const HERO_IMAGE =
-  "https://images.pexels.com/photos/731217/pexels-photo-731217.jpeg?auto=compress&cs=tinysrgb&w=1600";
+const HERO_IMAGE = heroSky;
 
 const POPULAR = [
   { from: "CAI", to: "DXB", label: "القاهرة ← دبي" },
