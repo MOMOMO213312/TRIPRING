@@ -1,14 +1,10 @@
 import type { FormEvent, ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { DealTicker } from "./DealTicker";
 import { OneWayFareBoard } from "./OneWayFareBoard";
 import { RoundTripFareBoard } from "./RoundTripFareBoard";
-import { getTypicalPrice } from "../lib/api";
 import type { TripType } from "../lib/api";
-import { airportLabel, savingsPercent, scoreTier, SCORE_TIER_LABEL, SCORE_TIER_COLORS } from "../lib/deal-utils";
-import { hoursUntil } from "../lib/filters";
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 
 const HERO_IMAGE =
@@ -48,28 +44,12 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
     onSearch({ from, to, date, returnDate, passengers, tripType });
   }
 
-  // Pick the deal that's genuinely closest to expiring (not just the first row in the array).
-  const flashDeal = useMemo(() => {
-    const withHours = deals
-      .map((d) => ({ deal: d, hoursLeft: hoursUntil(d.expires_at) }))
-      .filter((d): d is { deal: DealRow; hoursLeft: number } => d.hoursLeft != null && d.hoursLeft > 0);
-    if (withHours.length === 0) return deals[0] ?? null;
-    withHours.sort((a, b) => a.hoursLeft - b.hoursLeft);
-    return withHours[0].deal;
-  }, [deals]);
-
-  const flashTypical = flashDeal ? getTypicalPrice(flashDeal, references) : null;
-  const flashSavings = flashDeal ? savingsPercent(flashDeal.price, flashTypical) : null;
-
   return (
     <>
       {/* One-way ticker stays pinned to the very top of the hero, in normal
          document flow — kept OUTSIDE the hero photo's relatively-positioned
          section below so the absolutely-positioned photo layer can never
-         overlap or cover it. The round-trip ticker is now anchored to the
-         BOTTOM of the hero instead (rendered inside the section, after the
-         search box) — both boards stay, neither was removed, only the
-         round-trip one changed position per the redesign brief. */}
+         overlap or cover it. */}
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
@@ -81,48 +61,26 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F7F8FA]" />
         </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-14 sm:pt-16">
-        <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <div className="max-w-lg rounded-2xl bg-white/55 p-4 backdrop-blur-[2px] sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
-            <h1
-              className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl"
-              style={{ textShadow: "0 2px 18px rgba(255,255,255,0.55)" }}
-            >
-              سافر كما تحب.
-            </h1>
-            <p className="mt-4 text-base text-gray-700 sm:text-lg" style={{ textShadow: "0 1px 12px rgba(255,255,255,0.55)" }}>
-              اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-600">فريقنا في الانتظار</span>.
-            </p>
-
-            {deals.length > 0 ? (
-              <div className="mt-6 flex items-center gap-3">
-                <div className="flex -space-x-3 rtl:space-x-reverse">
-                  {["#F59E0B", "#2563EB", "#16A34A", "#EA580C"].map((color, i) => (
-                    <span
-                      key={i}
-                      className="flex size-9 items-center justify-center rounded-full border-2 border-white text-xs font-bold text-white shadow-sm"
-                      style={{ backgroundColor: color }}
-                    >
-                      🧳
-                    </span>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-700" style={{ textShadow: "0 1px 12px rgba(255,255,255,0.55)" }}>
-                  <span className="font-latin font-bold text-[#0F172A]">{Math.max(deals.length * 37, 1000).toLocaleString()}+</span>{" "}
-                  مسافر بيوفروا فلوسهم دلوقتي مع TripRing
-                </p>
-              </div>
-            ) : null}
-          </div>
-
-          {flashDeal ? (
-            <HeroFlashDealCard deal={flashDeal} savings={flashSavings} airports={airports} />
-          ) : null}
+      <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-10 sm:pt-12">
+        <div className="max-w-lg rounded-2xl bg-white/55 p-4 backdrop-blur-[2px] sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+          <h1
+            className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl"
+            style={{ textShadow: "0 2px 18px rgba(255,255,255,0.55)" }}
+          >
+            سافر كما تحب.
+          </h1>
+          <p className="mt-4 text-base text-gray-700 sm:text-lg" style={{ textShadow: "0 1px 12px rgba(255,255,255,0.55)" }}>
+            اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-600">فريقنا في الانتظار</span>.
+          </p>
         </div>
       </div>
 
-      <div className="relative mx-auto max-w-5xl px-4">
-        <div className="-mt-20 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
+      {/* Search box pulled well up into the hero photo (larger negative
+         margin than before, and the hero text block above it is shorter now
+         that the flash-deal card and traveler-count line are gone), so it
+         reads as sitting ON the hero image instead of far below it. */}
+      <div className="relative z-10 mx-auto max-w-5xl px-4">
+        <div className="-mt-28 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
           <div className="mb-5 flex w-fit gap-1 rounded-full bg-gray-100 p-1">
             {(
               [
@@ -238,123 +196,17 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
             ))}
           </div>
         </div>
-
-        <DealTicker deals={deals} references={references} airports={airports} />
       </div>
 
-      {/* Round-trip ticker anchored to the bottom of the hero, as requested —
-         same board as before, just repositioned (one-way stays pinned to the
-         top of the hero, above). */}
-      <div className="relative mt-8">
+      {/* Round-trip ticker now takes the "LIVE DEALS" ticker's old spot,
+         directly under the search box — full-bleed like the one-way board
+         above, with a clear gap (mt-8) so it never visually crowds the trip-
+         type tabs or the search fields sitting right above it. */}
+      <div className="relative z-0 mt-8">
         <RoundTripFareBoard deals={deals} references={references} airports={airports} />
       </div>
       </section>
     </>
-  );
-}
-
-/** Compact floating card matching the reference "Flash Deal" ticket in the hero
- *  corner — dark card, live HRS/MINS/SECS countdown, route, price, CTA. */
-function HeroFlashDealCard({
-  deal,
-  savings,
-  airports,
-}: {
-  deal: DealRow;
-  savings: number | null;
-  airports: AirportRow[];
-}) {
-  const [hoursLeft, setHoursLeft] = useState(() => hoursUntil(deal.expires_at));
-
-  useEffect(() => {
-    setHoursLeft(hoursUntil(deal.expires_at));
-    const id = setInterval(() => setHoursLeft(hoursUntil(deal.expires_at)), 1000);
-    return () => clearInterval(id);
-  }, [deal.expires_at]);
-
-  const timeParts = useMemo(() => {
-    if (hoursLeft == null || hoursLeft <= 0) return null;
-    const totalSeconds = Math.floor(hoursLeft * 3600);
-    return {
-      h: String(Math.floor(totalSeconds / 3600)).padStart(2, "0"),
-      m: String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0"),
-      s: String(totalSeconds % 60).padStart(2, "0"),
-    };
-  }, [hoursLeft]);
-
-  return (
-    <div className="w-full shrink-0 rounded-2xl border border-white/10 bg-[#111827]/95 p-5 shadow-2xl shadow-slate-900/30 backdrop-blur-sm sm:w-[320px]">
-      <div className="flex items-center justify-between gap-3">
-        <span className="flex items-center gap-1.5 text-sm font-bold text-white">
-          <span aria-hidden>🔥</span> أفضل فرصة
-        </span>
-        {timeParts ? (
-          <div dir="ltr" className="font-latin flex items-center gap-1.5 text-white">
-            <CountUnit value={timeParts.h} label="HRS" />
-            <span className="pb-3 text-slate-500">:</span>
-            <CountUnit value={timeParts.m} label="MINS" />
-            <span className="pb-3 text-slate-500">:</span>
-            <CountUnit value={timeParts.s} label="SECS" />
-          </div>
-        ) : null}
-      </div>
-
-      <div className="mt-4 flex items-center gap-3">
-        <div>
-          <p className="font-latin text-lg font-extrabold text-white">{deal.from_airport}</p>
-          <p className="text-[11px] text-slate-400">{airportLabel(deal.from_airport, airports)}</p>
-        </div>
-        <span aria-hidden className="text-slate-500">
-          →
-        </span>
-        <div>
-          <p className="font-latin text-lg font-extrabold text-white">{deal.to_airport}</p>
-          <p className="text-[11px] text-slate-400">{airportLabel(deal.to_airport, airports)}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 flex items-end justify-between">
-        <div>
-          <p className="text-xs text-slate-400">يبدأ من</p>
-          <p className="font-latin text-2xl font-extrabold text-orange-500">${deal.price}</p>
-        </div>
-        {savings ? (
-          <span className="font-latin rounded-md bg-white/10 px-2 py-1 text-xs font-bold text-white">
-            -{savings}%
-          </span>
-        ) : null}
-      </div>
-
-      {/* Ties the hero straight into the Deal Score / "why this deal" system
-         already built out on the deal-detail page, instead of the hero only
-         ever showing a price — reinforces the discovery-engine positioning
-         from the very first thing a visitor sees. */}
-      {deal.deal_score != null ? (
-        <p
-          className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold"
-          style={{ color: SCORE_TIER_COLORS[scoreTier(deal.deal_score)].fg }}
-        >
-          <span aria-hidden>⭐</span>
-          {SCORE_TIER_LABEL[scoreTier(deal.deal_score)]} · Deal Score {Math.round(deal.deal_score)}
-        </p>
-      ) : null}
-
-      <Link
-        to={`/deals/${deal.id}`}
-        className="mt-4 block rounded-xl bg-orange-600 py-3 text-center text-sm font-bold text-white transition hover:bg-orange-700 active:scale-[0.98]"
-      >
-        احجز الآن
-      </Link>
-    </div>
-  );
-}
-
-function CountUnit({ value, label }: { value: string; label: string }) {
-  return (
-    <span className="flex flex-col items-center">
-      <span className="text-base font-extrabold leading-none">{value}</span>
-      <span className="mt-1 text-[9px] font-semibold text-slate-500">{label}</span>
-    </span>
   );
 }
 
