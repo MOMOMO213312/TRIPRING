@@ -206,8 +206,12 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       {/* Round-trip ticker now takes the "LIVE DEALS" ticker's old spot,
          directly under the search box — full-bleed like the one-way board
          above, with a clear gap (mt-8) so it never visually crowds the trip-
-         type tabs or the search fields sitting right above it. */}
-      <div className="relative z-0 mt-8 pb-8">
+         type tabs or the search fields sitting right above it. Its own
+         independent, overflow-clipped container keeps the scrolling marquee
+         (labels, prices, indicator dot) fully contained even if the section
+         above it changes height — nothing here can bleed into the header or
+         hero photo. */}
+      <div className="relative isolate z-0 mt-8 w-full overflow-hidden pb-8">
         <RoundTripFareBoard deals={deals} references={references} airports={airports} />
       </div>
       </section>

@@ -40,14 +40,17 @@ export function RoundTripFareBoard({ deals, references, airports }: Props) {
   );
 
   return (
-    <div dir="ltr" className="ticker-viewport flex items-stretch overflow-hidden bg-[#0F172A]">
-      <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/10 bg-[#FF6B35] px-4 py-2.5 text-xs font-extrabold text-white">
+    <div
+      dir="ltr"
+      className="ticker-viewport relative isolate flex h-10 w-full items-stretch overflow-hidden bg-[#0F172A] sm:h-11"
+    >
+      <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/10 bg-[#FF6B35] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
         <span className="animate-pulse" aria-hidden>
           ●
         </span>
         ذهاب وعودة · ROUND-TRIP
       </div>
-      <div className="ticker-track flex items-center py-2.5">
+      <div className="ticker-track relative z-0 flex min-w-0 flex-1 items-center overflow-hidden py-2.5 leading-none">
         {row("a")}
         {row("b")}
       </div>
