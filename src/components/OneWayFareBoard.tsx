@@ -25,12 +25,12 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
   if (quotes.length === 0) return null;
 
   const row = (suffix: string) => (
-    <div className="flex shrink-0 items-center gap-8 px-4">
+    <div className="flex shrink-0 items-center gap-10 px-6">
       {quotes.map((q) => (
         <Link
           key={q.key + suffix}
           to={`/deals/${q.oneWayDeal!.id}`}
-          className="font-latin flex items-center gap-1.5 whitespace-nowrap text-xs font-bold text-white transition hover:opacity-80"
+          className="font-latin flex shrink-0 items-center gap-2 whitespace-nowrap text-xs font-bold text-white transition hover:opacity-80"
         >
           {q.from} / {q.to}
           <span className="text-white/70">${q.oneWayDeal!.price}</span>
@@ -40,14 +40,14 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
   );
 
   return (
-    <div dir="ltr" className="ticker-viewport flex items-center overflow-hidden bg-[#0f172a]">
-      <div className="flex shrink-0 items-center gap-1.5 bg-[#0EA5E9] px-4 py-2.5 text-xs font-extrabold text-white">
+    <div dir="ltr" className="ticker-viewport flex items-stretch overflow-hidden bg-[#0f172a]">
+      <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/10 bg-[#0EA5E9] px-4 py-2.5 text-xs font-extrabold text-white">
         <span className="animate-pulse" aria-hidden>
           ●
         </span>
         ذهاب فقط · ONE-WAY
       </div>
-      <div className="ticker-track flex py-2.5">
+      <div className="ticker-track flex items-center py-2.5">
         {row("a")}
         {row("b")}
       </div>

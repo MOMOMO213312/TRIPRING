@@ -86,7 +86,7 @@ export function HomePage() {
         references={catalog.references}
         onSearch={handleHeroSearch}
       />
-      <div className="relative z-10 -mt-2">
+      <div className="relative z-10 mt-6">
         <SmartFilterChips />
       </div>
 

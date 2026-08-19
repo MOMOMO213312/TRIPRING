@@ -61,26 +61,28 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#F7F8FA]" />
         </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 pb-16 pt-10 sm:pt-12">
-        <div className="max-w-lg rounded-2xl bg-white/55 p-4 backdrop-blur-[2px] sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
-          <h1
-            className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl"
-            style={{ textShadow: "0 2px 18px rgba(255,255,255,0.55)" }}
-          >
-            سافر كما تحب.
-          </h1>
-          <p className="mt-4 text-base text-gray-700 sm:text-lg" style={{ textShadow: "0 1px 12px rgba(255,255,255,0.55)" }}>
-            اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-600">فريقنا في الانتظار</span>.
-          </p>
-        </div>
+      <div className="relative mx-auto max-w-4xl px-4 pb-44 pt-10 text-center sm:pb-52 sm:pt-14">
+        <h1
+          className="text-3xl font-extrabold leading-tight text-[#0F172A] sm:text-4xl md:text-5xl"
+          style={{ textShadow: "0 2px 20px rgba(255,255,255,0.65)" }}
+        >
+          سافر كما تحب.
+        </h1>
+        <p
+          className="mx-auto mt-4 max-w-xl text-base text-gray-800 sm:text-lg"
+          style={{ textShadow: "0 1px 16px rgba(255,255,255,0.7)" }}
+        >
+          اكتشف، قارن، اختار — دومًا <span className="font-semibold text-orange-600">فريقنا في الانتظار</span>.
+        </p>
       </div>
 
-      {/* Search box pulled well up into the hero photo (larger negative
-         margin than before, and the hero text block above it is shorter now
-         that the flash-deal card and traveler-count line are gone), so it
-         reads as sitting ON the hero image instead of far below it. */}
+      {/* Search box pulled up to overlap the bottom of the hero photo. The
+         headline block above now reserves generous, fixed bottom padding
+         (pb-44 / sm:pb-52) that comfortably exceeds this negative margin, so
+         the card can never cover the headline or subheadline text — that gap
+         used to be too tight and the card was covering the subheadline. */}
       <div className="relative z-10 mx-auto max-w-5xl px-4">
-        <div className="-mt-28 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
+        <div className="-mt-32 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
           <div className="mb-5 flex w-fit gap-1 rounded-full bg-gray-100 p-1">
             {(
               [
@@ -202,7 +204,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
          directly under the search box — full-bleed like the one-way board
          above, with a clear gap (mt-8) so it never visually crowds the trip-
          type tabs or the search fields sitting right above it. */}
-      <div className="relative z-0 mt-8">
+      <div className="relative z-0 mt-8 pb-8">
         <RoundTripFareBoard deals={deals} references={references} airports={airports} />
       </div>
       </section>
