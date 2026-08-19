@@ -64,17 +64,18 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
   const flashSavings = flashDeal ? savingsPercent(flashDeal.price, flashTypical) : null;
 
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section className="relative overflow-hidden bg-[#F7F8FA]">
       <FareBoard deals={deals} references={references} airports={airports} />
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
       <RoundTripFareBoard deals={deals} references={references} airports={airports} />
 
       <div className="absolute inset-0 top-10">
         <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-        {/* Light, airy overlay (reference style): opaque near the text side for readability,
-           fading out toward the image so the plane wing stays visible behind the flash card. */}
-        <div className="absolute inset-0 bg-gradient-to-l from-white via-white/90 to-white/25" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white" />
+        {/* Soft, warm-neutral overlay (toned down from pure white so it's easier on the eyes):
+           opaque near the text side for readability, fading toward the image so the plane wing
+           stays visible behind the flash card. */}
+        <div className="absolute inset-0 bg-gradient-to-l from-[#F7F8FA] via-[#F7F8FA]/92 to-[#F7F8FA]/30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F7F8FA]/25 via-transparent to-[#F7F8FA]" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-14 sm:pt-16">
@@ -144,66 +145,70 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
           <form onSubmit={submit}>
             <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
-              <div className="flex flex-col gap-2.5 sm:flex-row sm:items-stretch lg:flex-[1.7]">
-                <FieldBox icon="📍" label="From">
+              {/* One continuous bordered strip with hairline dividers between fields —
+                 matches the reference instead of each field having its own separate box. */}
+              <div className="flex flex-1 flex-col divide-y divide-gray-100 overflow-hidden rounded-xl border border-gray-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
+                <FieldBox icon="📍" label="From" className="sm:flex-1">
                   <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
                     {airportOptions}
                   </select>
                 </FieldBox>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFrom(to);
-                    setTo(from);
-                  }}
-                  aria-label="تبديل الوجهتين"
-                  className="mx-auto flex size-9 shrink-0 rotate-90 items-center justify-center self-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#2563EB] hover:text-[#2563EB] sm:rotate-0"
-                >
-                  ⇄
-                </button>
+                <div className="relative flex h-0 items-center justify-center sm:h-auto sm:w-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFrom(to);
+                      setTo(from);
+                    }}
+                    aria-label="تبديل الوجهتين"
+                    className="absolute z-10 flex size-8 shrink-0 -translate-y-1/2 rotate-90 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-400 shadow-sm transition hover:border-[#2563EB] hover:text-[#2563EB] sm:translate-y-0 sm:rotate-0"
+                  >
+                    ⇄
+                  </button>
+                </div>
 
-                <FieldBox icon="📍" label="To" trailingIcon="📌">
+                <FieldBox icon="📍" label="To" trailingIcon="📌" className="sm:flex-1">
                   <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
                     <option value="">اختر الوجهة</option>
                     <option value="any">Anywhere — أي وجهة</option>
                     {airportOptions}
                   </select>
                 </FieldBox>
-              </div>
 
-              <FieldBox icon="📅" label="Departure">
-                <input
-                  type="date"
-                  value={date}
-                  min={new Date().toISOString().slice(0, 10)}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="hero-field-input"
-                />
-              </FieldBox>
-              <FieldBox icon="📅" label="Return">
-                <input
-                  type="date"
-                  value={returnDate}
-                  min={date || new Date().toISOString().slice(0, 10)}
-                  disabled={tripType === "one_way"}
-                  onChange={(e) => setReturnDate(e.target.value)}
-                  className="hero-field-input disabled:cursor-not-allowed disabled:text-gray-300"
-                />
-              </FieldBox>
-              <FieldBox icon="👤" label="Passengers" trailingIcon="▾">
-                <select
-                  value={passengers}
-                  onChange={(e) => setPassengers(Number(e.target.value))}
-                  className="hero-field-select"
-                >
-                  {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <option key={n} value={n}>
-                      {n} Passenger(s), Economy
-                    </option>
-                  ))}
-                </select>
-              </FieldBox>
+                <FieldBox icon="📅" label="Departure" className="sm:flex-1">
+                  <input
+                    type="date"
+                    value={date}
+                    min={new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="hero-field-input"
+                  />
+                </FieldBox>
+                <FieldBox icon="📅" label="Return" className="sm:flex-1">
+                  <input
+                    type="date"
+                    value={returnDate}
+                    min={date || new Date().toISOString().slice(0, 10)}
+                    disabled={tripType === "one_way"}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                    className="hero-field-input disabled:cursor-not-allowed disabled:text-gray-300"
+                  />
+                </FieldBox>
+                <FieldBox icon="👤" label="Passengers" trailingIcon="▾" className="sm:flex-[1.3]">
+                  <select
+                    value={passengers}
+                    onChange={(e) => setPassengers(Number(e.target.value))}
+                    className="hero-field-select"
+                  >
+                    {[1, 2, 3, 4, 5, 6].map((n) => (
+                      <option key={n} value={n}>
+                        {n} Passenger(s), Economy
+                      </option>
+                    ))}
+                  </select>
+                </FieldBox>
+              </div>
 
               <button
                 type="submit"
@@ -330,14 +335,18 @@ function FieldBox({
   label,
   trailingIcon,
   children,
+  className = "",
 }: {
   icon: string;
   label: string;
   trailingIcon?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="flex flex-1 items-center gap-2.5 rounded-xl border border-gray-200 bg-white px-4 py-3 transition focus-within:border-[#2563EB] focus-within:ring-2 focus-within:ring-blue-100">
+    <div
+      className={`flex items-center gap-2.5 px-4 py-3 transition focus-within:bg-blue-50/40 ${className}`}
+    >
       <span className="text-gray-400" aria-hidden>
         {icon}
       </span>
