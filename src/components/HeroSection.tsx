@@ -90,42 +90,47 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
       <div className="relative mx-auto max-w-4xl px-4">
         <div className="-mt-24 rounded-xl border border-gray-200 bg-white p-5 shadow-lg sm:p-6">
-          <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-100 pb-4">
+          <div className="mb-4 flex flex-wrap gap-6 border-b border-gray-100">
             {(
               [
-                ["round_trip", "ذهاب وعودة"],
-                ["one_way", "ذهاب فقط"],
-                ["multi_city", "مدن متعددة"],
+                ["round_trip", "↔️", "ذهاب وعودة"],
+                ["one_way", "✈️", "ذهاب فقط"],
+                ["multi_city", "🧭", "مدن متعددة"],
               ] as const
-            ).map(([key, label]) => (
+            ).map(([key, icon, label]) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => setTripType(key)}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${
-                  tripType === key ? "bg-[#0F172A] text-white" : "text-gray-500 hover:text-gray-800"
+                className={`-mb-px flex items-center gap-1.5 border-b-2 pb-3 text-sm font-semibold transition ${
+                  tripType === key
+                    ? "border-[#2563EB] text-[#2563EB]"
+                    : "border-transparent text-gray-500 hover:text-gray-800"
                 }`}
               >
+                <span aria-hidden className="text-xs">
+                  {icon}
+                </span>
                 {label}
               </button>
             ))}
           </div>
 
-          <form onSubmit={submit} className="space-y-4">
+          <form onSubmit={submit}>
             <div className="flex flex-col divide-y divide-gray-200 overflow-hidden rounded-2xl border border-gray-200 lg:flex-row lg:divide-x lg:divide-y-0">
-              <FieldCell icon="📍" label="FROM">
+              <FieldCell icon="📍" label="From">
                 <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
                   {airportOptions}
                 </select>
               </FieldCell>
-              <FieldCell icon="📍" label="TO">
+              <FieldCell icon="📍" label="To" trailingIcon="📌">
                 <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
                   <option value="">اختر الوجهة</option>
                   <option value="any">Anywhere — أي وجهة</option>
                   {airportOptions}
                 </select>
               </FieldCell>
-              <FieldCell icon="📅" label="DEPARTURE">
+              <FieldCell icon="📅" label="Departure">
                 <input
                   type="date"
                   value={date}
@@ -134,7 +139,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                   className="hero-field-input"
                 />
               </FieldCell>
-              <FieldCell icon="📅" label="RETURN">
+              <FieldCell icon="📅" label="Return">
                 <input
                   type="date"
                   value={returnDate}
@@ -144,28 +149,26 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                   className="hero-field-input disabled:cursor-not-allowed disabled:text-gray-300"
                 />
               </FieldCell>
+              <FieldCell icon="👤" label="Passengers">
+                <select
+                  value={passengers}
+                  onChange={(e) => setPassengers(Number(e.target.value))}
+                  className="hero-field-select"
+                >
+                  {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <option key={n} value={n}>
+                      {n} Passenger(s), Economy
+                    </option>
+                  ))}
+                </select>
+              </FieldCell>
               <button
                 type="submit"
-                className="flex items-center justify-center gap-2 bg-[#EA580C] px-8 py-4 text-sm font-bold text-white transition hover:bg-orange-700"
+                className="flex shrink-0 items-center justify-center bg-[#EA580C] px-8 py-4 text-sm font-bold text-white transition hover:bg-orange-700"
               >
-                🔎 Search Flights
+                Search Flights
               </button>
             </div>
-
-            <label className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm">
-              <span aria-hidden>👤</span>
-              <select
-                value={passengers}
-                onChange={(e) => setPassengers(Number(e.target.value))}
-                className="font-latin bg-transparent font-semibold text-gray-800 outline-none"
-              >
-                {[1, 2, 3, 4, 5, 6].map((n) => (
-                  <option key={n} value={n}>
-                    {n} Passenger(s), Economy
-                  </option>
-                ))}
-              </select>
-            </label>
           </form>
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -273,16 +276,31 @@ function TimeBox({ value }: { value: string }) {
   return <span className="rounded-md bg-gray-100 px-1.5 py-1">{value}</span>;
 }
 
-function FieldCell({ icon, label, children }: { icon: string; label: string; children: ReactNode }) {
+function FieldCell({
+  icon,
+  label,
+  trailingIcon,
+  children,
+}: {
+  icon: string;
+  label: string;
+  trailingIcon?: string;
+  children: ReactNode;
+}) {
   return (
     <div className="flex flex-1 items-center gap-2.5 px-4 py-3">
       <span className="text-gray-400" aria-hidden>
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="font-latin text-[10px] font-bold tracking-wide text-gray-400">{label}</p>
+        <p className="font-latin text-[11px] text-gray-400">{label}</p>
         {children}
       </div>
+      {trailingIcon ? (
+        <span className="shrink-0 text-gray-300" aria-hidden>
+          {trailingIcon}
+        </span>
+      ) : null}
     </div>
   );
 }
