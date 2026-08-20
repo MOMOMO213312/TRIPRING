@@ -28,8 +28,9 @@ export function PriceAlertTeaserCard() {
   );
 }
 
-/** Compact "استكشف حسب الميزانية" teaser card — links down to the full budget
- *  explorer section already on the page instead of re-implementing it. */
+/** Compact "استكشف حسب الميزانية" teaser card — scrolls down to the full budget
+ *  explorer section already on the page (same #budget anchor the header nav
+ *  link uses) instead of duplicating one fixed budget option here. */
 export function BudgetTeaserCard() {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -41,10 +42,10 @@ export function BudgetTeaserCard() {
       </div>
       <p className="mb-4 text-sm text-slate-600">اختر ما يناسب ميزانيتك</p>
       <Link
-        to="/search?budget=100"
+        to="/#budget"
         className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
       >
-        <span>أقل من $100</span>
+        <span>كل خيارات الميزانية</span>
         <span aria-hidden>‹</span>
       </Link>
     </div>
