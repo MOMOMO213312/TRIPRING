@@ -130,6 +130,43 @@ export function stopsLabel(stops: StopType): string {
   return stopsMetaLabel(stops);
 }
 
+/** Formats layover_minutes as "س / د" — returns null when there's nothing to show. */
+export function layoverLabel(minutes: number | null): string | null {
+  if (!minutes || minutes <= 0) return null;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m} دقيقة`;
+  if (m === 0) return `${h} ساعة`;
+  return `${h} س ${m} د`;
+}
+
+/** True when a deal has any of the flight-identity fields worth their own card. */
+export function hasFlightIdentity(deal: DealRow): boolean {
+  return Boolean(
+    deal.flight_number || deal.aircraft_type || deal.arrival_date || deal.layover_minutes,
+  );
+}
+
+/** True when a deal has any fare-conditions fields (refund/change policy, fare family, rules). */
+export function hasFareConditions(deal: DealRow): boolean {
+  return Boolean(
+    deal.fare_family ||
+      deal.refundable != null ||
+      deal.changeable != null ||
+      deal.fare_rules,
+  );
+}
+
+/** True when a deal has richer baggage detail beyond the legacy single baggage_kg field. */
+export function hasBaggageDetail(deal: DealRow): boolean {
+  return Boolean(deal.cabin_baggage_kg || deal.checked_bags_count != null || deal.extra_baggage_price);
+}
+
+/** True when a deal has a base-fare/taxes breakdown worth showing under the headline price. */
+export function hasPriceBreakdown(deal: DealRow): boolean {
+  return Boolean(deal.base_fare != null && deal.taxes_fees != null);
+}
+
 export type DealReason = { icon: "down" | "seats" | "nonstop" | "fresh" | "score"; text: string };
 
 /**
