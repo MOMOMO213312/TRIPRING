@@ -414,6 +414,14 @@ export interface Database {
         };
         Returns: Tables<"price_alerts">[];
       };
+      submit_payment_proof: {
+        Args: {
+          p_booking_number: number;
+          p_contact: string;
+          p_proof_url: string;
+        };
+        Returns: Json;
+      };
     };
     Enums: {
       deal_type: DealType;

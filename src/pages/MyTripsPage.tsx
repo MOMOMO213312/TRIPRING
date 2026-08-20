@@ -6,6 +6,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/EmptyState";
 import { Input } from "../components/ui/Input";
+import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { lookupBooking } from "../lib/api";
 import { setSessionContact } from "../lib/session";
 import { formatDate, formatPrice } from "../lib/utils";
@@ -152,6 +153,15 @@ export function MyTripsPage() {
                   <li key={i}>{t.full_name}</li>
                 ))}
               </ul>
+            </div>
+          ) : null}
+          {!["paid", "ticket_issued", "cancelled"].includes(booking.status) ? (
+            <div className="mt-4 border-t border-slate-100 pt-4">
+              <PaymentProofUpload
+                bookingNumber={String(booking.booking_number)}
+                contact={contact}
+                onUploaded={() => runSearch(bookingNumber, contact)}
+              />
             </div>
           ) : null}
         </Card>

@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
+import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { useCatalog } from "../hooks/useCatalog";
 import { getAgencyWhatsApp } from "../lib/api";
 import { formatRoute } from "../lib/deal-utils";
@@ -115,7 +116,7 @@ export function ConfirmationPage() {
         ⚠️ هذا <strong>طلب حجز</strong> وليس تذكرة مؤكدة بعد. سيتواصل معك فريق الوكالة لتأكيد السعر وتوفر المقعد. لا ترسل التحويل البنكي إلا بعد تأكيد الوكالة للسعر النهائي.
       </div>
       <p className="text-sm text-slate-600">
-        بعد تأكيد الوكالة، أكمل التحويل باستخدام طريقة الدفع المختارة، ثم أرسل إيصال التحويل عبر واتساب.
+        بعد تأكيد الوكالة، أكمل التحويل باستخدام طريقة الدفع المختارة، ثم أرسل إيصال التحويل عبر واتساب أو ارفعه هنا مباشرة.
       </p>
       <div className="flex flex-col gap-3">
         <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer">
@@ -123,6 +124,7 @@ export function ConfirmationPage() {
             إرسال عبر واتساب
           </Button>
         </a>
+        <PaymentProofUpload bookingNumber={String(booking.booking_number)} contact={customerPhone} />
         <Link to="/my-trips">
           <Button fullWidth variant="outline">
             عرض في رحلاتي

@@ -318,6 +318,49 @@ export async function lookupBooking(
   return (data as BookingLookupResult | null) ?? null;
 }
 
+const PAYMENT_PROOF_MAX_BYTES = 5 * 1024 * 1024;
+const PAYMENT_PROOF_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+
+/**
+ * Uploads a payment proof file (receipt screenshot/PDF) to storage and links
+ * it to the booking. The upload alone doesn't touch any booking row — only
+ * the RPC does, and it re-validates booking_number + phone/email the same
+ * way lookup_booking() does, so this can't be used to tamper with someone
+ * else's booking.
+ */
+export async function uploadPaymentProof(
+  bookingNumber: string,
+  contact: string,
+  file: File,
+): Promise<{ status: string }> {
+  const num = parseInt(bookingNumber.replace(/\D/g, ""), 10);
+  if (Number.isNaN(num)) throw new Error("رقم الحجز غير صالح");
+  if (!PAYMENT_PROOF_ALLOWED_TYPES.includes(file.type)) {
+    throw new Error("الملف يجب أن يكون صورة (JPG/PNG/WebP) أو PDF");
+  }
+  if (file.size > PAYMENT_PROOF_MAX_BYTES) {
+    throw new Error("حجم الملف أكبر من 5 ميجابايت");
+  }
+
+  const ext = file.name.split(".").pop() ?? "bin";
+  const path = `${num}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("payment-proofs")
+    .upload(path, file, { contentType: file.type });
+  if (uploadError) throw new Error(uploadError.message);
+
+  const { data: publicUrlData } = supabase.storage.from("payment-proofs").getPublicUrl(path);
+
+  const { data, error } = await supabase.rpc("submit_payment_proof", {
+    p_booking_number: num,
+    p_contact: contact.trim(),
+    p_proof_url: publicUrlData.publicUrl,
+  } as never);
+  if (error) throw new Error(error.message);
+  return data as { status: string };
+}
+
 export async function lookupPriceAlerts(contact: string): Promise<Tables<"price_alerts">[]> {
   const { data, error } = await supabase.rpc("lookup_price_alerts", {
     p_contact: contact.trim(),
