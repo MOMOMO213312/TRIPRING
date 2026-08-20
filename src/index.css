@@ -98,8 +98,11 @@ body {
   }
   to {
     /* RTL layout: the natural forward direction scrolls toward the left,
-       i.e. negative X. */
-    transform: translateX(-50%);
+       i.e. negative X. Track can be duplicated more than twice (see
+       DealCarousel) when the real item count is small, so the loop point
+       is a CSS variable — each duplicated "set" is 1/N of the full width,
+       falling back to -50% for the classic two-copy case. */
+    transform: translateX(var(--marquee-loop-x, -50%));
   }
 }
 
