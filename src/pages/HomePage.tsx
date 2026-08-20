@@ -99,7 +99,7 @@ export function HomePage() {
           <section id="opportunities">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">أفضل العروض اليوم</h2>
+                <h2 className="font-display text-2xl text-slate-900">أفضل العروض اليوم</h2>
                 <p className="text-sm text-slate-600">
                   عروض مختارة بعناية لك — الباقي مرتب حسب Deal Score
                 </p>

@@ -48,12 +48,12 @@ export function Layout() {
   }, [hash, pathname]);
 
   const linkClass = (active: boolean) =>
-    active ? "font-semibold text-[#FF6B35]" : "text-slate-600 hover:text-[#0F172A]";
+    active ? "font-semibold text-[#0C7BB3]" : "text-slate-600 hover:text-[#0F172A]";
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-[#FF6B35] bg-white text-[#0F172A]">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-[#FF6B35] px-4 py-2.5 text-xs text-slate-500">
+      <header className="border-b border-[#0C7BB3] bg-white text-[#0F172A]">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-[#0C7BB3] px-4 py-2.5 text-xs text-slate-500">
           <div className="flex items-center gap-4">
             <span className="hover:text-[#0F172A]">مساعدة ▾</span>
           </div>
@@ -62,19 +62,17 @@ export function Layout() {
         <div>
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3.5">
             <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-[#0F172A]">
-              <span className="flex size-8 items-center justify-center rounded-full bg-[#FF6B35] text-sm text-white">
-                ✈️
-              </span>
-              TripRing
+              <img src="/logo.png" alt="TripRing" className="size-9 rounded-xl" />
+              <span className="font-display">TripRing</span>
             </Link>
 
             <nav className="flex flex-wrap items-center gap-6 text-sm font-medium">
-              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#FF6B35]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
+              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#0C7BB3]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
                 الرئيسية
               </Link>
               <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
                 العروض
-                <span className="rounded-full bg-[#FF6B35] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
+                <span className="rounded-full bg-[#0C7BB3] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
               </Link>
               <Link to="/my-trips" className={linkClass(pathname.startsWith("/my-trips"))}>
                 رحلاتي
@@ -113,13 +111,13 @@ export function Layout() {
               <button
                 type="button"
                 onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-                className="font-latin rounded-full border border-[#FF6B35] px-3 py-1.5 text-[#FF6B35] transition hover:bg-[#FFEDE5]"
+                className="font-latin rounded-full border border-[#0C7BB3] px-3 py-1.5 text-[#0C7BB3] transition hover:bg-[#E5F4FB]"
               >
                 {lang === "AR" ? "عربية" : "English"}
               </button>
               <button
                 type="button"
-                className="font-latin rounded-full border border-[#FF6B35] px-3 py-1.5 text-[#FF6B35] transition hover:bg-[#FFEDE5]"
+                className="font-latin rounded-full border border-[#0C7BB3] px-3 py-1.5 text-[#0C7BB3] transition hover:bg-[#E5F4FB]"
               >
                 EGP ▾
               </button>

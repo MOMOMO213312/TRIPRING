@@ -259,7 +259,7 @@ export function BookingPage() {
           <div
             key={label}
             className={`flex-1 rounded-lg px-2 py-2 text-center text-xs font-semibold sm:text-sm ${
-              i === step ? "bg-accent text-white" : i < step ? "bg-[#FFD9C2] text-[#155E7A]" : "bg-slate-100 text-slate-500"
+              i === step ? "bg-accent text-white" : i < step ? "bg-[#BFE3F6] text-[#155E7A]" : "bg-slate-100 text-slate-500"
             }`}
           >
             {label}
@@ -396,7 +396,7 @@ export function BookingPage() {
               <label
                 key={pm.value}
                 className={`block cursor-pointer rounded-xl border p-4 ${
-                  paymentMethod === pm.value ? "border-accent bg-[#FFEDE5]" : "border-slate-200"
+                  paymentMethod === pm.value ? "border-accent bg-[#E5F4FB]" : "border-slate-200"
                 }`}
               >
                 <input

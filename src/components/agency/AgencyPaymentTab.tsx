@@ -146,7 +146,7 @@ export function AgencyPaymentTab({
                   href={b.payment_proof_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-block text-sm font-semibold text-[#FF6B35] underline"
+                  className="inline-block text-sm font-semibold text-[#0C7BB3] underline"
                 >
                   عرض إثبات الدفع المرفوع ↗
                 </a>

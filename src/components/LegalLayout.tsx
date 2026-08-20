@@ -19,7 +19,7 @@ export function LegalLayout({ title, intro, sections }: Props) {
         {sections.map((s, i) => (
           <section key={s.heading}>
             <h2 className="flex items-baseline gap-2 text-lg font-bold text-slate-900">
-              <span className="font-latin text-[#FF6B35]">{i + 1}.</span>
+              <span className="font-latin text-[#0C7BB3]">{i + 1}.</span>
               {s.heading}
             </h2>
             <div className="mt-2 space-y-2 text-sm leading-relaxed text-slate-600">{s.body}</div>

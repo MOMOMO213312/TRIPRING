@@ -53,7 +53,7 @@ export function DealDetailPage() {
     return (
       <Card className="text-center">
         <p className="text-red-600">{error ?? "العرض غير موجود"}</p>
-        <Link to="/" className="mt-4 inline-block text-[#FF6B35]">
+        <Link to="/" className="mt-4 inline-block text-[#0C7BB3]">
           العودة للرئيسية
         </Link>
       </Card>
@@ -124,9 +124,9 @@ export function DealDetailPage() {
       <Card className="space-y-4">
         <h2 className="font-bold text-slate-900">تحليل السعر</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl bg-[#FFEDE5] p-4 text-center">
+          <div className="rounded-xl bg-[#E5F4FB] p-4 text-center">
             <p className="text-xs font-medium text-slate-500">السعر الحالي</p>
-            <p className="font-latin mt-1 text-2xl font-extrabold text-[#FF6B35]">
+            <p className="font-latin mt-1 text-2xl font-extrabold text-[#0C7BB3]">
               {formatPrice(deal.price, currency)}
             </p>
           </div>
@@ -218,14 +218,14 @@ export function DealDetailPage() {
           <button
             type="button"
             onClick={handleShare}
-            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#FF6B35] hover:text-[#FF6B35]"
+            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
           >
             {shareCopied ? "تم نسخ الرابط ✓" : "🔗 مشاركة"}
           </button>
           <button
             type="button"
             onClick={() => setAlertOpen(true)}
-            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#FF6B35] hover:text-[#FF6B35]"
+            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
           >
             🔔 تنبيه سعر
           </button>

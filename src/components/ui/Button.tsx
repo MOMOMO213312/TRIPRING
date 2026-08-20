@@ -5,7 +5,7 @@ import { cn } from "../../lib/utils";
 type Variant = "primary" | "secondary" | "outline" | "whatsapp";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-[#FF6B35] text-white hover:bg-[#E8551F]",
+  primary: "bg-[#0C7BB3] text-white hover:bg-[#095E8A]",
   secondary: "bg-slate-100 text-slate-900 hover:bg-slate-200",
   outline: "border border-slate-200 bg-white text-slate-900 hover:bg-slate-50",
   whatsapp: "bg-[#25D366] text-white hover:bg-[#1da851]",

@@ -20,10 +20,10 @@ import type { DealRow, DealType } from "../types/database";
 /** Badge color per deal type — mirrors the "Flash Deal / Hot Deal / Last Minute /
  *  Best Value" ribbon colors in the reference design. */
 const TYPE_BADGE_STYLE: Record<DealType, string> = {
-  flash: "bg-[#FF6B35]",
+  flash: "bg-[#0C7BB3]",
   last_minute: "bg-[#0F172A]",
   empty_seat: "bg-[#9F1246]",
-  special_fare: "bg-[#FF6B35]",
+  special_fare: "bg-[#0C7BB3]",
 };
 
 /**
@@ -92,7 +92,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
 
         <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-latin text-lg font-extrabold text-[#FF6B35]">${deal.price}</span>
+            <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">${deal.price}</span>
             {strikePrice ? (
               <span className="font-latin text-xs text-slate-400 line-through">${strikePrice}</span>
             ) : null}

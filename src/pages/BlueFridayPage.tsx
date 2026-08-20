@@ -352,7 +352,7 @@ function BlueFridayDealCard({
           {airportLabel(deal.from_airport, catalog.airports)} ← {blurred ? "؟؟؟" : airportLabel(deal.to_airport, catalog.airports)}
         </p>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="font-latin text-lg font-extrabold text-[#FF6B35]">${deal.price}</span>
+          <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">${deal.price}</span>
           {typical ? <span className="font-latin text-xs text-slate-400 line-through">${typical}</span> : null}
         </div>
         {savings ? <p className="mt-1 text-xs font-bold text-emerald-600">-{savings}%</p> : null}

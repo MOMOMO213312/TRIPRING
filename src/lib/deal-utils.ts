@@ -67,7 +67,7 @@ export const SCORE_TIER_LABEL: Record<ScoreTier, string> = {
 
 export const SCORE_TIER_COLORS: Record<ScoreTier, { fg: string; bg: string; ring: string }> = {
   excellent: { fg: "#16A34A", bg: "#F0FDF4", ring: "#DCFCE7" },
-  good: { fg: "#FF6B35", bg: "#FFEDE5", ring: "#FFD9C2" },
+  good: { fg: "#0C7BB3", bg: "#E5F4FB", ring: "#BFE3F6" },
   fair: { fg: "#6B7280", bg: "#F9FAFB", ring: "#E5E7EB" },
 };
 

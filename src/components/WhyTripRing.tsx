@@ -21,7 +21,7 @@ export function WhyTripRing() {
   return (
     <section className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 px-6 py-10 text-white sm:px-10">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-2xl font-bold sm:text-3xl">ليه TripRing؟</h2>
+        <h2 className="font-display text-2xl sm:text-3xl">ليه TripRing؟</h2>
         <p className="mt-2 text-slate-300">
           إحنا مش محرك بحث تقليدي. TripRing بيكتشفلك فرص سفر حقيقية تستاهل تتحجز، مش مجرد قائمة رحلات.
         </p>

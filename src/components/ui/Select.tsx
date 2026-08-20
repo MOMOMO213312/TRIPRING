@@ -16,7 +16,7 @@ export function Select({ label, options, placeholder, className, ...props }: Pro
       {label ? <span className="text-sm font-medium text-slate-700">{label}</span> : null}
       <select
         className={cn(
-          "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-[#FFD9C2]",
+          "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-[#BFE3F6]",
           className,
         )}
         {...props}

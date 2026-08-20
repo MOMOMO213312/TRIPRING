@@ -6,7 +6,7 @@ export function PriceAlertTeaserCard() {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-1 flex items-center gap-2">
-        <span className="flex size-8 items-center justify-center rounded-full bg-[#FFEDE5] text-[#FF6B35]" aria-hidden>
+        <span className="flex size-8 items-center justify-center rounded-full bg-[#E5F4FB] text-[#0C7BB3]" aria-hidden>
           🔔
         </span>
         <h3 className="font-bold text-slate-900">تنبيهات الأسعار</h3>
@@ -14,7 +14,7 @@ export function PriceAlertTeaserCard() {
       <p className="mb-4 text-sm text-slate-600">احصل على إشعار عند انخفاض الأسعار لمسارك</p>
       <Link
         to="/alerts"
-        className="mb-3 block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:border-[#FF6B35]"
+        className="mb-3 block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-500 transition hover:border-[#0C7BB3]"
       >
         CAI - DXB
       </Link>
@@ -34,7 +34,7 @@ export function BudgetTeaserCard() {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-1 flex items-center gap-2">
-        <span className="flex size-8 items-center justify-center rounded-full bg-[#FFE8DC] text-[#FF6B35]" aria-hidden>
+        <span className="flex size-8 items-center justify-center rounded-full bg-[#FFE8DC] text-[#0C7BB3]" aria-hidden>
           💰
         </span>
         <h3 className="font-bold text-slate-900">استكشف حسب الميزانية</h3>

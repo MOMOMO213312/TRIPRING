@@ -44,7 +44,7 @@ export function RoundTripFareBoard({ deals, references, airports }: Props) {
       dir="ltr"
       className="ticker-viewport relative isolate flex h-10 w-full items-stretch overflow-hidden bg-[#0F172A] sm:h-11"
     >
-      <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/10 bg-[#FF6B35] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
+      <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/10 bg-[#0C7BB3] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
         <span className="animate-pulse" aria-hidden>
           ●
         </span>

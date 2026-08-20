@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #FF6B35;
-  --color-primary-hover: #E8551F;
-  --color-primary-light: #FFEDE5;
+  --color-primary: #0C7BB3;
+  --color-primary-hover: #095E8A;
+  --color-primary-light: #E5F4FB;
+  --color-primary-bright: #299FD1;
+  --color-alert-red: #DB2F2B;
+  --color-alert-red-light: #FBE3E2;
   --color-score-green: #16a34a;
   --color-score-bg: #f0fdf4;
   --color-score-amber: #d97706;
@@ -18,9 +21,10 @@
   --color-accent-teal: #0d9488;
   --color-navy: #0f172a;
   --color-navy-light: #1e293b;
-  --color-flash-orange: #FF6B35;
+  --color-flash-orange: #0C7BB3;
   --color-flash-orange-light: #F3A6A3;
-  --font-sans-ar: "Cairo", system-ui, sans-serif;
+  --font-sans-ar: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display-ar: "El Messiri", "IBM Plex Sans Arabic", system-ui, sans-serif;
   --font-sans-latin: "Inter", system-ui, sans-serif;
 }
 
@@ -37,12 +41,17 @@ body {
   font-variant-numeric: lining-nums tabular-nums;
 }
 
+.font-display {
+  font-family: var(--font-display-ar);
+  font-weight: 700;
+}
+
 .deal-card-lift {
   @apply shadow-sm transition-shadow duration-200 hover:shadow-lg;
 }
 
 .field-input {
-  @apply w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-3 py-2.5 text-sm text-[#334155] outline-none transition focus:border-[#FF6B35] focus:ring-2 focus:ring-[#FFD9C2];
+  @apply w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-3 py-2.5 text-sm text-[#334155] outline-none transition focus:border-[#0C7BB3] focus:ring-2 focus:ring-[#BFE3F6];
 }
 
 .opportunity-card-lift {
@@ -75,15 +84,15 @@ body {
 }
 
 .smart-chip {
-  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#FF6B35] hover:bg-[#FFEDE5] hover:text-[#FF6B35] hover:shadow-md active:scale-95;
+  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#0C7BB3] hover:bg-[#E5F4FB] hover:text-[#0C7BB3] hover:shadow-md active:scale-95;
 }
 
 .smart-chip-active {
-  @apply border-[#FF6B35] bg-[#FFEDE5] text-[#FF6B35];
+  @apply border-[#0C7BB3] bg-[#E5F4FB] text-[#0C7BB3];
 }
 
 .cta-primary {
-  @apply rounded-xl bg-[#FF6B35] font-semibold text-white shadow-md shadow-[#FFD9C2] transition hover:bg-[#E8551F] hover:shadow-lg active:scale-[0.98];
+  @apply rounded-xl bg-[#0C7BB3] font-semibold text-white shadow-md shadow-[#BFE3F6] transition hover:bg-[#095E8A] hover:shadow-lg active:scale-[0.98];
 }
 
 .skeleton-pulse {

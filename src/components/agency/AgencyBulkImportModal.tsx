@@ -96,7 +96,7 @@ export function AgencyBulkImportModal({
           <Button type="button" variant="outline" onClick={downloadTemplate}>
             تحميل قالب Excel/CSV
           </Button>
-          <label className="cursor-pointer rounded-lg border border-dashed border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:border-[#FF6B35] hover:text-[#FF6B35]">
+          <label className="cursor-pointer rounded-lg border border-dashed border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 hover:border-[#0C7BB3] hover:text-[#0C7BB3]">
             {fileName ?? "اختر ملف xlsx أو csv"}
             <input
               type="file"
