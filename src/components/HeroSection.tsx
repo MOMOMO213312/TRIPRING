@@ -53,7 +53,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
-        <div className="absolute inset-0 h-[420px] sm:h-[480px]">
+        <div className="absolute inset-0 h-[340px] sm:h-[380px]">
           <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
           {/* Daytime wing-over-clouds shot carries bright natural color, so the
              overlay's job is just to guarantee the headline stays legible over
@@ -64,7 +64,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
         </div>
 
-      <div className="relative mx-auto max-w-4xl px-4 pb-44 pt-10 text-center sm:pb-52 sm:pt-14">
+      <div className="relative mx-auto max-w-4xl px-4 pb-32 pt-8 text-center sm:pb-36 sm:pt-10">
         <h1
           className="font-display text-3xl leading-tight text-white sm:text-4xl md:text-5xl"
           style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
@@ -72,7 +72,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           سافر كما تحب.
         </h1>
         <p
-          className="mx-auto mt-4 max-w-xl text-base text-white/90 sm:text-lg"
+          className="mx-auto mt-3 max-w-xl text-base text-white/90 sm:text-lg"
           style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
         >
           اكتشف، قارن، اختار — دومًا <span className="font-semibold text-[#F3A6A3]">فريقنا في الانتظار</span>.
@@ -80,13 +80,12 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       </div>
 
       {/* Search box pulled up to overlap the bottom of the hero photo. The
-         headline block above now reserves generous, fixed bottom padding
-         (pb-44 / sm:pb-52) that comfortably exceeds this negative margin, so
-         the card can never cover the headline or subheadline text — that gap
-         used to be too tight and the card was covering the subheadline. */}
+         headline block above now reserves fixed bottom padding (pb-32 /
+         sm:pb-36) that comfortably exceeds this negative margin, so the card
+         can never cover the headline or subheadline text. */}
       <div className="relative z-10 mx-auto max-w-5xl px-4">
-        <div className="-mt-32 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
-          <div className="mb-5 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
+        <div className="-mt-24 rounded-[24px] bg-white p-4 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-5">
+          <div className="mb-4 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
             {(
               [
                 ["round_trip", "↔️", "ذهاب وعودة"],
@@ -98,7 +97,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                 key={key}
                 type="button"
                 onClick={() => setTripType(key)}
-                className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition ${
                   tripType === key
                     ? "bg-white text-[#0C7BB3] shadow-sm"
                     : "text-slate-500 hover:text-slate-800"
@@ -188,7 +187,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
             </div>
           </form>
 
-          <div className="mt-5 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             <span className="text-xs font-medium text-slate-500">عمليات بحث شائعة:</span>
             {POPULAR.map((p) => (
               <Link
@@ -211,7 +210,7 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
          (labels, prices, indicator dot) fully contained even if the section
          above it changes height — nothing here can bleed into the header or
          hero photo. */}
-      <div className="relative isolate z-0 mt-8 w-full overflow-hidden pb-8">
+      <div className="relative isolate z-0 mt-6 w-full overflow-hidden pb-6">
         <RoundTripFareBoard deals={deals} references={references} airports={airports} />
       </div>
       </section>
@@ -234,7 +233,7 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-[#E5F4FB]/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 px-3.5 py-2.5 transition focus-within:bg-[#E5F4FB]/40 ${className}`}
     >
       <span className="shrink-0 text-slate-400" aria-hidden>
         {icon}

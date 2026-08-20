@@ -101,18 +101,18 @@ export function HomePage() {
         references={catalog.references}
         onSearch={handleHeroSearch}
       />
-      <div className="relative z-10 mt-6">
+      <div className="relative z-10 mt-4">
         <SmartFilterChips />
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 pt-6">
+      <div className="mx-auto max-w-6xl px-4 pt-5">
         <TrustStrip />
       </div>
 
-      <div className="mx-auto max-w-6xl space-y-12 px-4 py-12">
+      <div className="mx-auto max-w-6xl space-y-10 px-4 py-10">
         {opportunities.length > 0 ? (
           <section id="opportunities">
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
               <div>
                 <h2 className="font-display text-2xl text-slate-900">أفضل العروض اليوم</h2>
                 <p className="text-sm text-slate-600">
@@ -154,7 +154,7 @@ export function HomePage() {
 
         {lastMinuteDeals.length > 0 ? (
           <section id="last-minute">
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
               <div>
                 <h2 className="font-display text-2xl text-slate-900">🔥 فرص آخر لحظة</h2>
                 <p className="text-sm text-slate-600">عروض محدودة، مقاعد قليلة، ووقت مهم</p>

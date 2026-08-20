@@ -121,7 +121,7 @@ export function Layout() {
           </div>
         </div>
       </header>
-      <main className={isHome ? "" : "mx-auto max-w-6xl px-4 py-8"}>
+      <main className={isHome ? "" : "mx-auto max-w-6xl px-4 py-6"}>
         <Outlet />
       </main>
       <Footer />
