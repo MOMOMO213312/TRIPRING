@@ -90,264 +90,311 @@ export function DealDetailPage() {
     setTimeout(() => setShareCopied(false), 2000);
   }
 
+  const bookingRail = (
+    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-end justify-between gap-3">
+        <div>
+          <p className="text-xs font-medium text-slate-500">السعر الإجمالي</p>
+          <p className="font-latin text-3xl font-extrabold text-[#0C7BB3]">{formatPrice(deal.price, currency)}</p>
+          <p className="text-[11px] text-slate-400">لكل مسافر</p>
+        </div>
+        {typical ? (
+          <p className="font-latin text-sm text-slate-400 line-through">{formatPrice(typical, currency)}</p>
+        ) : null}
+      </div>
+
+      {savings ? (
+        <p className="rounded-lg bg-[#F0FDF4] px-3 py-2 text-center text-xs font-semibold text-[#16A34A]">
+          توفير {savingsAmount ? formatPrice(savingsAmount, currency) : ""} ({savings}%) عن السعر المعتاد
+        </p>
+      ) : null}
+
+      {hasPriceBreakdown(deal) ? (
+        <div className="space-y-1 border-t border-slate-100 pt-3 text-xs text-slate-500">
+          <div className="flex justify-between">
+            <span>السعر الأساسي</span>
+            <span className="font-latin">{formatPrice(deal.base_fare!, currency)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>ضرائب ورسوم</span>
+            <span className="font-latin">{formatPrice(deal.taxes_fees!, currency)}</span>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="flex flex-col gap-2.5 border-t border-slate-100 pt-3">
+        {deal.available_seats > 0 ? (
+          <Link to={`/book/${deal.id}`}>
+            <Button fullWidth>احجز الآن</Button>
+          </Link>
+        ) : (
+          <Button fullWidth disabled>
+            نفدت المقاعد
+          </Button>
+        )}
+        <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer">
+          <Button fullWidth variant="whatsapp">
+            احجز عبر واتساب
+          </Button>
+        </a>
+      </div>
+
+      <div className="flex gap-2 text-xs">
+        <button
+          type="button"
+          onClick={handleShare}
+          className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
+        >
+          {shareCopied ? "تم النسخ ✓" : "🔗 مشاركة"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setAlertOpen(true)}
+          className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
+        >
+          🔔 تنبيه سعر
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-6">
-      <div className="relative h-48 overflow-hidden rounded-xl bg-slate-100 sm:h-64">
+    <div>
+      {/* Hero — route + score live over the image, so the title block no longer needs its own row */}
+      <div className="relative h-44 overflow-hidden rounded-2xl bg-slate-100 sm:h-56">
         {imageUrl ? (
           <img src={imageUrl} alt="" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center text-5xl text-slate-300">✈</div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-        <p className="absolute bottom-3 start-3 text-xs font-semibold text-white/90">فرصة TripRing</p>
-      </div>
-
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold text-slate-900">{formatRoute(deal)}</h1>
-          <p className="mt-2 text-slate-600">
-            {airlineName(deal.airline_code, catalog.airlines)} · {stopsLabel(deal.stops)}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <DealBadge tone="good">{dealTypeLabel(deal.deal_type)}</DealBadge>
-            {savings ? (
-              <DealBadge tone="savings" icon="📉">
-                وفّر {savings}%
-              </DealBadge>
-            ) : null}
-            {isLowSeats(deal.available_seats) ? (
-              <DealBadge tone="urgent" icon="⏳">
-                {deal.available_seats} مقاعد متبقية
-              </DealBadge>
-            ) : null}
-          </div>
-        </div>
-        {deal.deal_score != null ? <DealScoreRing score={deal.deal_score} size={72} showLabel /> : null}
-      </div>
-
-      {/* Price Analysis */}
-      <Card className="space-y-4">
-        <h2 className="font-bold text-slate-900">تحليل السعر</h2>
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl bg-[#E5F4FB] p-4 text-center">
-            <p className="text-xs font-medium text-slate-500">السعر الحالي</p>
-            <p className="font-latin mt-1 text-2xl font-extrabold text-[#0C7BB3]">
-              {formatPrice(deal.price, currency)}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 sm:p-5">
+          <div>
+            <p className="text-[11px] font-semibold text-white/80">فرصة TripRing</p>
+            <h1 className="font-display text-2xl font-extrabold text-white sm:text-3xl">{formatRoute(deal)}</h1>
+            <p className="mt-0.5 text-sm text-white/85">
+              {airlineName(deal.airline_code, catalog.airlines)} · {stopsLabel(deal.stops)}
             </p>
           </div>
-          <div className="rounded-xl bg-slate-50 p-4 text-center">
-            <p className="text-xs font-medium text-slate-500">السعر المعتاد</p>
-            <p className="font-latin mt-1 text-2xl font-extrabold text-slate-400 line-through">
-              {typical ? formatPrice(typical, currency) : "—"}
-            </p>
-          </div>
-          <div className="rounded-xl bg-[#F0FDF4] p-4 text-center">
-            <p className="text-xs font-medium text-slate-500">أنت توفر</p>
-            <p className="font-latin mt-1 text-2xl font-extrabold text-[#16A34A]">
-              {savingsAmount ? `${formatPrice(savingsAmount, currency)}` : "—"}
-            </p>
-          </div>
-        </div>
-        {savings ? (
-          <p className="rounded-lg bg-[#F0FDF4] px-4 py-2.5 text-center text-sm font-semibold text-[#16A34A]">
-            هذا السعر أقل بـ {savings}% من السعر المعتاد على نفس المسار
-          </p>
-        ) : null}
-        {hasPriceBreakdown(deal) ? (
-          <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
-            <span>السعر الأساسي {formatPrice(deal.base_fare!, currency)}</span>
-            <span aria-hidden>+</span>
-            <span>ضرائب ورسوم {formatPrice(deal.taxes_fees!, currency)}</span>
-          </div>
-        ) : null}
-      </Card>
-
-      {deal.deal_score != null ? (
-        <Card>
-          <h2 className="mb-3 font-bold text-slate-900">ليه دي فرصة كويسة؟</h2>
-          <ul className="space-y-2.5">
-            {dealReasons(deal, history).map((r) => (
-              <li key={r.text} className="flex items-center gap-2.5 text-sm text-slate-700">
-                <ReasonIcon type={r.icon} />
-                {r.text}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      ) : null}
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Card>
-          <p className="text-sm text-slate-500">المغادرة</p>
-          <p className="font-bold">{formatDate(deal.departure_date)}</p>
-          <p className="text-slate-600">{formatTime(deal.departure_time)}</p>
-          {deal.return_date ? (
-            <>
-              <p className="mt-2 text-sm text-slate-500">العودة</p>
-              <p className="font-bold">{formatDate(deal.return_date)}</p>
-            </>
+          {deal.deal_score != null ? (
+            <div className="rounded-full bg-white/95 p-1 shadow-lg">
+              <DealScoreRing score={deal.deal_score} size={56} />
+            </div>
           ) : null}
-        </Card>
-        <Card>
-          <p className="text-sm text-slate-500">المقاعد المتاحة</p>
-          <p className="text-3xl font-extrabold">{deal.available_seats}</p>
-          {deal.baggage_kg ? <p className="text-sm text-slate-600">أمتعة: {deal.baggage_kg} كجم</p> : null}
-          {deal.travel_class ? <p className="text-sm text-slate-600">الدرجة: {deal.travel_class}</p> : null}
-        </Card>
+        </div>
       </div>
 
-      {hasFlightIdentity(deal) ? (
-        <Card>
-          <h2 className="mb-3 font-bold text-slate-900">تفاصيل الرحلة</h2>
-          <dl className="grid gap-3 sm:grid-cols-2">
-            {deal.flight_number ? (
-              <div>
-                <dt className="text-xs text-slate-500">رقم الرحلة</dt>
-                <dd className="font-latin font-semibold text-slate-800">{deal.flight_number}</dd>
-              </div>
-            ) : null}
-            {deal.aircraft_type ? (
-              <div>
-                <dt className="text-xs text-slate-500">نوع الطائرة</dt>
-                <dd className="font-semibold text-slate-800">{deal.aircraft_type}</dd>
-              </div>
-            ) : null}
-            {deal.operating_airline_code && deal.operating_airline_code !== deal.airline_code ? (
-              <div>
-                <dt className="text-xs text-slate-500">الناقل المشغّل للرحلة</dt>
-                <dd className="font-semibold text-slate-800">
-                  {airlineName(deal.operating_airline_code, catalog.airlines)}
-                </dd>
-              </div>
-            ) : null}
-            {deal.arrival_date ? (
-              <div>
-                <dt className="text-xs text-slate-500">تاريخ الوصول</dt>
-                <dd className="font-semibold text-slate-800">
-                  {formatDate(deal.arrival_date)}
-                  {deal.arrival_time ? ` · ${formatTime(deal.arrival_time)}` : ""}
-                </dd>
-              </div>
-            ) : null}
-            {layoverLabel(deal.layover_minutes) ? (
-              <div>
-                <dt className="text-xs text-slate-500">مدة التوقف</dt>
-                <dd className="font-semibold text-slate-800">{layoverLabel(deal.layover_minutes)}</dd>
-              </div>
-            ) : null}
-          </dl>
-        </Card>
-      ) : null}
+      <div className="mt-3 flex flex-wrap gap-2">
+        <DealBadge tone="good">{dealTypeLabel(deal.deal_type)}</DealBadge>
+        {savings ? (
+          <DealBadge tone="savings" icon="📉">
+            وفّر {savings}%
+          </DealBadge>
+        ) : null}
+        {isLowSeats(deal.available_seats) ? (
+          <DealBadge tone="urgent" icon="⏳">
+            {deal.available_seats} مقاعد متبقية
+          </DealBadge>
+        ) : null}
+      </div>
 
-      {hasFareConditions(deal) || hasBaggageDetail(deal) ? (
-        <Card>
-          <h2 className="mb-3 font-bold text-slate-900">شروط التذكرة والأمتعة</h2>
-          <div className="space-y-4">
-            {hasFareConditions(deal) ? (
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  {deal.fare_family ? <DealBadge tone="good">{deal.fare_family}</DealBadge> : null}
-                  {deal.refundable != null ? (
-                    <DealBadge tone={deal.refundable ? "excellent" : "neutral"}>
-                      {deal.refundable ? "قابلة للاسترداد" : "غير قابلة للاسترداد"}
-                    </DealBadge>
-                  ) : null}
-                  {deal.changeable != null ? (
-                    <DealBadge tone={deal.changeable ? "excellent" : "neutral"}>
-                      {deal.changeable ? "يمكن تغييرها" : "لا يمكن تغييرها"}
-                    </DealBadge>
-                  ) : null}
+      {/* Main grid: content on the right (RTL start), booking rail sticky on the left */}
+      <div className="mt-6 grid gap-6 lg:grid-cols-3 lg:items-start">
+        <div className="space-y-5 lg:col-span-2">
+          {/* Flight schedule — one compact strip instead of two separate cards */}
+          <Card className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-xs text-slate-500">المغادرة</p>
+              <p className="font-bold text-slate-900">{formatDate(deal.departure_date)}</p>
+              <p className="text-sm text-slate-600">{formatTime(deal.departure_time)}</p>
+            </div>
+            {deal.return_date ? (
+              <>
+                <span className="hidden text-slate-300 sm:inline" aria-hidden>↔</span>
+                <div>
+                  <p className="text-xs text-slate-500">العودة</p>
+                  <p className="font-bold text-slate-900">{formatDate(deal.return_date)}</p>
                 </div>
-                {deal.change_fee != null || deal.cancellation_fee != null ? (
-                  <p className="mt-2 text-sm text-slate-600">
-                    {deal.change_fee != null ? `رسوم التغيير: ${formatPrice(deal.change_fee, currency)}` : null}
-                    {deal.change_fee != null && deal.cancellation_fee != null ? " · " : null}
-                    {deal.cancellation_fee != null
-                      ? `رسوم الإلغاء: ${formatPrice(deal.cancellation_fee, currency)}`
-                      : null}
-                  </p>
-                ) : null}
-                {deal.fare_rules ? <p className="mt-2 text-sm text-slate-600">{deal.fare_rules}</p> : null}
+              </>
+            ) : null}
+            <div className="h-8 w-px bg-slate-100" aria-hidden />
+            <div>
+              <p className="text-xs text-slate-500">المقاعد المتاحة</p>
+              <p className="text-xl font-extrabold text-slate-900">{deal.available_seats}</p>
+            </div>
+            {deal.baggage_kg ? (
+              <div>
+                <p className="text-xs text-slate-500">الأمتعة</p>
+                <p className="font-semibold text-slate-800">{deal.baggage_kg} كجم</p>
               </div>
             ) : null}
-            {hasBaggageDetail(deal) ? (
-              <div className="grid gap-3 border-t border-slate-100 pt-3 sm:grid-cols-3">
-                {deal.cabin_baggage_kg ? (
+            {deal.travel_class ? (
+              <div>
+                <p className="text-xs text-slate-500">الدرجة</p>
+                <p className="font-semibold text-slate-800">{deal.travel_class}</p>
+              </div>
+            ) : null}
+          </Card>
+
+          {deal.deal_score != null ? (
+            <Card>
+              <h2 className="mb-3 font-bold text-slate-900">ليه دي فرصة كويسة؟</h2>
+              <ul className="grid gap-2.5 sm:grid-cols-2">
+                {dealReasons(deal, history).map((r) => (
+                  <li key={r.text} className="flex items-center gap-2.5 text-sm text-slate-700">
+                    <ReasonIcon type={r.icon} />
+                    {r.text}
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          ) : null}
+
+          {/* Secondary detail sections collapse by default to keep the page short — the data is
+              all still here, just not forced open for every visitor. */}
+          {hasFlightIdentity(deal) ? (
+            <DetailAccordion title="تفاصيل الرحلة">
+              <dl className="grid gap-3 sm:grid-cols-2">
+                {deal.flight_number ? (
                   <div>
-                    <dt className="text-xs text-slate-500">شنطة الكابينة</dt>
-                    <dd className="font-semibold text-slate-800">{deal.cabin_baggage_kg} كجم</dd>
+                    <dt className="text-xs text-slate-500">رقم الرحلة</dt>
+                    <dd className="font-latin font-semibold text-slate-800">{deal.flight_number}</dd>
                   </div>
                 ) : null}
-                {deal.checked_bags_count != null ? (
+                {deal.aircraft_type ? (
                   <div>
-                    <dt className="text-xs text-slate-500">عدد الشنط المسجّلة</dt>
-                    <dd className="font-semibold text-slate-800">{deal.checked_bags_count}</dd>
+                    <dt className="text-xs text-slate-500">نوع الطائرة</dt>
+                    <dd className="font-semibold text-slate-800">{deal.aircraft_type}</dd>
                   </div>
                 ) : null}
-                {deal.extra_baggage_price ? (
+                {deal.operating_airline_code && deal.operating_airline_code !== deal.airline_code ? (
                   <div>
-                    <dt className="text-xs text-slate-500">سعر الشنطة الإضافية</dt>
+                    <dt className="text-xs text-slate-500">الناقل المشغّل للرحلة</dt>
                     <dd className="font-semibold text-slate-800">
-                      {formatPrice(deal.extra_baggage_price, currency)}
+                      {airlineName(deal.operating_airline_code, catalog.airlines)}
                     </dd>
                   </div>
                 ) : null}
+                {deal.arrival_date ? (
+                  <div>
+                    <dt className="text-xs text-slate-500">تاريخ الوصول</dt>
+                    <dd className="font-semibold text-slate-800">
+                      {formatDate(deal.arrival_date)}
+                      {deal.arrival_time ? ` · ${formatTime(deal.arrival_time)}` : ""}
+                    </dd>
+                  </div>
+                ) : null}
+                {layoverLabel(deal.layover_minutes) ? (
+                  <div>
+                    <dt className="text-xs text-slate-500">مدة التوقف</dt>
+                    <dd className="font-semibold text-slate-800">{layoverLabel(deal.layover_minutes)}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            </DetailAccordion>
+          ) : null}
+
+          {hasFareConditions(deal) || hasBaggageDetail(deal) ? (
+            <DetailAccordion title="شروط التذكرة والأمتعة" defaultOpen>
+              <div className="space-y-4">
+                {hasFareConditions(deal) ? (
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {deal.fare_family ? <DealBadge tone="good">{deal.fare_family}</DealBadge> : null}
+                      {deal.refundable != null ? (
+                        <DealBadge tone={deal.refundable ? "excellent" : "neutral"}>
+                          {deal.refundable ? "قابلة للاسترداد" : "غير قابلة للاسترداد"}
+                        </DealBadge>
+                      ) : null}
+                      {deal.changeable != null ? (
+                        <DealBadge tone={deal.changeable ? "excellent" : "neutral"}>
+                          {deal.changeable ? "يمكن تغييرها" : "لا يمكن تغييرها"}
+                        </DealBadge>
+                      ) : null}
+                    </div>
+                    {deal.change_fee != null || deal.cancellation_fee != null ? (
+                      <p className="mt-2 text-sm text-slate-600">
+                        {deal.change_fee != null ? `رسوم التغيير: ${formatPrice(deal.change_fee, currency)}` : null}
+                        {deal.change_fee != null && deal.cancellation_fee != null ? " · " : null}
+                        {deal.cancellation_fee != null
+                          ? `رسوم الإلغاء: ${formatPrice(deal.cancellation_fee, currency)}`
+                          : null}
+                      </p>
+                    ) : null}
+                    {deal.fare_rules ? <p className="mt-2 text-sm text-slate-600">{deal.fare_rules}</p> : null}
+                  </div>
+                ) : null}
+                {hasBaggageDetail(deal) ? (
+                  <div className="grid gap-3 border-t border-slate-100 pt-3 sm:grid-cols-3">
+                    {deal.cabin_baggage_kg ? (
+                      <div>
+                        <dt className="text-xs text-slate-500">شنطة الكابينة</dt>
+                        <dd className="font-semibold text-slate-800">{deal.cabin_baggage_kg} كجم</dd>
+                      </div>
+                    ) : null}
+                    {deal.checked_bags_count != null ? (
+                      <div>
+                        <dt className="text-xs text-slate-500">عدد الشنط المسجّلة</dt>
+                        <dd className="font-semibold text-slate-800">{deal.checked_bags_count}</dd>
+                      </div>
+                    ) : null}
+                    {deal.extra_baggage_price ? (
+                      <div>
+                        <dt className="text-xs text-slate-500">سعر الشنطة الإضافية</dt>
+                        <dd className="font-semibold text-slate-800">
+                          {formatPrice(deal.extra_baggage_price, currency)}
+                        </dd>
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
-        </Card>
-      ) : null}
+            </DetailAccordion>
+          ) : null}
 
-      {trendPoints.length >= 2 ? (
-        <PriceHistoryChart title={`تاريخ سعر ${formatRoute(deal)}`} points={trendPoints} />
-      ) : null}
+          {trendPoints.length >= 2 ? (
+            <PriceHistoryChart title={`تاريخ سعر ${formatRoute(deal)}`} points={trendPoints} />
+          ) : null}
 
-      {deal.notes ? (
-        <Card>
-          <h2 className="mb-2 font-bold">ملاحظات</h2>
-          <p className="text-slate-600">{deal.notes}</p>
-        </Card>
-      ) : null}
+          {deal.notes ? (
+            <Card>
+              <h2 className="mb-2 font-bold">ملاحظات</h2>
+              <p className="text-slate-600">{deal.notes}</p>
+            </Card>
+          ) : null}
 
-      {agency ? <AgencyReviewsPanel agency={agency} /> : null}
-
-      <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:sticky sm:bottom-4 sm:shadow-lg">
-        <div className="flex flex-col gap-3 sm:flex-row">
-          {deal.available_seats > 0 ? (
-            <Link to={`/book/${deal.id}`} className="flex-1">
-              <Button fullWidth>احجز الآن</Button>
-            </Link>
-          ) : (
-            <Button fullWidth disabled className="flex-1">
-              نفدت المقاعد
-            </Button>
-          )}
-          <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer" className="flex-1">
-            <Button fullWidth variant="whatsapp">
-              احجز عبر واتساب
-            </Button>
-          </a>
+          {agency ? <AgencyReviewsPanel agency={agency} /> : null}
         </div>
-        <div className="flex gap-2 text-sm">
-          <button
-            type="button"
-            onClick={handleShare}
-            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
-          >
-            {shareCopied ? "تم نسخ الرابط ✓" : "🔗 مشاركة"}
-          </button>
-          <button
-            type="button"
-            onClick={() => setAlertOpen(true)}
-            className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
-          >
-            🔔 تنبيه سعر
-          </button>
-        </div>
+
+        {/* Sticky booking rail — replaces the old full-width bar pinned to the bottom of every card */}
+        <div className="lg:sticky lg:top-4">{bookingRail}</div>
       </div>
 
       <PriceAlertModal open={alertOpen} onClose={() => setAlertOpen(false)} deal={deal} />
     </div>
+  );
+}
+
+/** Collapsed-by-default section for secondary detail — keeps the page short without dropping any data. */
+function DetailAccordion({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  return (
+    <details className="group rounded-xl border border-slate-200 bg-white open:shadow-sm" open={defaultOpen}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 sm:p-5">
+        <h2 className="font-bold text-slate-900">{title}</h2>
+        <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+          ▾
+        </span>
+      </summary>
+      <div className="px-4 pb-4 sm:px-5 sm:pb-5">{children}</div>
+    </details>
   );
 }
 
