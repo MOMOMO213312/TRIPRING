@@ -15,7 +15,12 @@ import {
   dealReasons,
   dealTypeLabel,
   formatRoute,
+  hasBaggageDetail,
+  hasFareConditions,
+  hasFlightIdentity,
+  hasPriceBreakdown,
   isLowSeats,
+  layoverLabel,
   savingsPercent,
   stopsLabel,
 } from "../lib/deal-utils";
@@ -148,6 +153,13 @@ export function DealDetailPage() {
             هذا السعر أقل بـ {savings}% من السعر المعتاد على نفس المسار
           </p>
         ) : null}
+        {hasPriceBreakdown(deal) ? (
+          <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
+            <span>السعر الأساسي {formatPrice(deal.base_fare!, currency)}</span>
+            <span aria-hidden>+</span>
+            <span>ضرائب ورسوم {formatPrice(deal.taxes_fees!, currency)}</span>
+          </div>
+        ) : null}
       </Card>
 
       {deal.deal_score != null ? (
@@ -183,6 +195,108 @@ export function DealDetailPage() {
           {deal.travel_class ? <p className="text-sm text-slate-600">الدرجة: {deal.travel_class}</p> : null}
         </Card>
       </div>
+
+      {hasFlightIdentity(deal) ? (
+        <Card>
+          <h2 className="mb-3 font-bold text-slate-900">تفاصيل الرحلة</h2>
+          <dl className="grid gap-3 sm:grid-cols-2">
+            {deal.flight_number ? (
+              <div>
+                <dt className="text-xs text-slate-500">رقم الرحلة</dt>
+                <dd className="font-latin font-semibold text-slate-800">{deal.flight_number}</dd>
+              </div>
+            ) : null}
+            {deal.aircraft_type ? (
+              <div>
+                <dt className="text-xs text-slate-500">نوع الطائرة</dt>
+                <dd className="font-semibold text-slate-800">{deal.aircraft_type}</dd>
+              </div>
+            ) : null}
+            {deal.operating_airline_code && deal.operating_airline_code !== deal.airline_code ? (
+              <div>
+                <dt className="text-xs text-slate-500">الناقل المشغّل للرحلة</dt>
+                <dd className="font-semibold text-slate-800">
+                  {airlineName(deal.operating_airline_code, catalog.airlines)}
+                </dd>
+              </div>
+            ) : null}
+            {deal.arrival_date ? (
+              <div>
+                <dt className="text-xs text-slate-500">تاريخ الوصول</dt>
+                <dd className="font-semibold text-slate-800">
+                  {formatDate(deal.arrival_date)}
+                  {deal.arrival_time ? ` · ${formatTime(deal.arrival_time)}` : ""}
+                </dd>
+              </div>
+            ) : null}
+            {layoverLabel(deal.layover_minutes) ? (
+              <div>
+                <dt className="text-xs text-slate-500">مدة التوقف</dt>
+                <dd className="font-semibold text-slate-800">{layoverLabel(deal.layover_minutes)}</dd>
+              </div>
+            ) : null}
+          </dl>
+        </Card>
+      ) : null}
+
+      {hasFareConditions(deal) || hasBaggageDetail(deal) ? (
+        <Card>
+          <h2 className="mb-3 font-bold text-slate-900">شروط التذكرة والأمتعة</h2>
+          <div className="space-y-4">
+            {hasFareConditions(deal) ? (
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {deal.fare_family ? <DealBadge tone="good">{deal.fare_family}</DealBadge> : null}
+                  {deal.refundable != null ? (
+                    <DealBadge tone={deal.refundable ? "excellent" : "neutral"}>
+                      {deal.refundable ? "قابلة للاسترداد" : "غير قابلة للاسترداد"}
+                    </DealBadge>
+                  ) : null}
+                  {deal.changeable != null ? (
+                    <DealBadge tone={deal.changeable ? "excellent" : "neutral"}>
+                      {deal.changeable ? "يمكن تغييرها" : "لا يمكن تغييرها"}
+                    </DealBadge>
+                  ) : null}
+                </div>
+                {deal.change_fee != null || deal.cancellation_fee != null ? (
+                  <p className="mt-2 text-sm text-slate-600">
+                    {deal.change_fee != null ? `رسوم التغيير: ${formatPrice(deal.change_fee, currency)}` : null}
+                    {deal.change_fee != null && deal.cancellation_fee != null ? " · " : null}
+                    {deal.cancellation_fee != null
+                      ? `رسوم الإلغاء: ${formatPrice(deal.cancellation_fee, currency)}`
+                      : null}
+                  </p>
+                ) : null}
+                {deal.fare_rules ? <p className="mt-2 text-sm text-slate-600">{deal.fare_rules}</p> : null}
+              </div>
+            ) : null}
+            {hasBaggageDetail(deal) ? (
+              <div className="grid gap-3 border-t border-slate-100 pt-3 sm:grid-cols-3">
+                {deal.cabin_baggage_kg ? (
+                  <div>
+                    <dt className="text-xs text-slate-500">شنطة الكابينة</dt>
+                    <dd className="font-semibold text-slate-800">{deal.cabin_baggage_kg} كجم</dd>
+                  </div>
+                ) : null}
+                {deal.checked_bags_count != null ? (
+                  <div>
+                    <dt className="text-xs text-slate-500">عدد الشنط المسجّلة</dt>
+                    <dd className="font-semibold text-slate-800">{deal.checked_bags_count}</dd>
+                  </div>
+                ) : null}
+                {deal.extra_baggage_price ? (
+                  <div>
+                    <dt className="text-xs text-slate-500">سعر الشنطة الإضافية</dt>
+                    <dd className="font-semibold text-slate-800">
+                      {formatPrice(deal.extra_baggage_price, currency)}
+                    </dd>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </Card>
+      ) : null}
 
       {trendPoints.length >= 2 ? (
         <PriceHistoryChart title={`تاريخ سعر ${formatRoute(deal)}`} points={trendPoints} />
