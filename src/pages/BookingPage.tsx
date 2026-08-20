@@ -218,8 +218,12 @@ export function BookingPage() {
           paymentMethod,
           travelers,
           services: selectedServices,
+          customerName,
           customerPhone,
           customerEmail,
+          adults,
+          children,
+          infants,
         },
       });
     } catch (err) {
