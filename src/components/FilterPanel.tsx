@@ -119,6 +119,23 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
         </div>
       </FilterGroup>
 
+      <FilterGroup title="شروط التذكرة">
+        <div className="space-y-2">
+          <Checkbox
+            checked={filters.refundableOnly}
+            onChange={() => onChange({ ...filters, refundableOnly: !filters.refundableOnly })}
+          >
+            قابلة للاسترداد فقط
+          </Checkbox>
+          <Checkbox
+            checked={filters.changeableOnly}
+            onChange={() => onChange({ ...filters, changeableOnly: !filters.changeableOnly })}
+          >
+            يمكن تغييرها فقط
+          </Checkbox>
+        </div>
+      </FilterGroup>
+
       <FilterGroup title="ينتهي العرض">
         <div className="flex flex-wrap gap-2">
           {EXPIRY_OPTIONS.map((opt) => (

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getAgencyWhatsApp, getTypicalPrice } from "../lib/api";
 import {
   airlineName,
+  baggageBadgeLabel,
   departureTimingLabel,
   formatRouteCities,
   rankBadgeStyle,
@@ -121,6 +122,12 @@ export function DealCard({
                 </DealBadge>
               ) : null}
               {deal.stops === "direct" ? <DealBadge tone="good" icon="✈️">مباشرة</DealBadge> : null}
+              {deal.refundable ? <DealBadge tone="excellent">قابلة للاسترداد</DealBadge> : null}
+              {baggageBadgeLabel(deal) ? (
+                <DealBadge tone="neutral" icon="🧳">
+                  {baggageBadgeLabel(deal)}
+                </DealBadge>
+              ) : null}
             </div>
           </div>
           {deal.deal_score != null ? <DealScoreRing score={deal.deal_score} showLabel /> : null}

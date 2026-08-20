@@ -7,6 +7,7 @@ import { getTypicalPrice } from "../lib/api";
 import {
   airlineName,
   airportLabel,
+  baggageBadgeLabel,
   dealTypeLabel,
   departureTimingLabel,
   isLowSeats,
@@ -89,6 +90,22 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
           <span aria-hidden>✈️</span>
           {airlineName(deal.airline_code, catalog.airlines)}
         </p>
+
+        {deal.refundable || baggageBadgeLabel(deal) ? (
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {deal.refundable ? (
+              <span className="rounded-full bg-[#F0FDF4] px-1.5 py-0.5 text-[10px] font-semibold text-[#16A34A]">
+                قابلة للاسترداد
+              </span>
+            ) : null}
+            {baggageBadgeLabel(deal) ? (
+              <span className="flex items-center gap-0.5 text-[10px] font-medium text-slate-500">
+                <span aria-hidden>🧳</span>
+                {baggageBadgeLabel(deal)}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex items-baseline gap-1.5">
