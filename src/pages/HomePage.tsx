@@ -110,7 +110,7 @@ export function HomePage() {
       </div>
 
       <div className="mx-auto max-w-6xl space-y-12 px-4 py-12">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
+        {opportunities.length > 0 ? (
           <section id="opportunities">
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -123,30 +123,27 @@ export function HomePage() {
                 عرض كل العروض
               </Button>
             </div>
-
-            {loadingDeals ? (
-              <CardsSkeleton />
-            ) : dealsError ? (
-              <Card className="text-red-600">{dealsError}</Card>
-            ) : opportunities.length === 0 ? (
-              <EmptyState
-                icon="🧭"
-                title="لا توجد فرص نشطة حالياً"
-                subtitle="جرّب توسيع نطاق البحث أو راجع الصفحة بعد قليل — الفرص بتتحدث باستمرار"
-                suggestions={[
-                  { label: "كل العروض", onClick: () => navigate("/deals") },
-                  { label: "أي وجهة", onClick: () => navigate("/search?to=any") },
-                ]}
-              />
-            ) : (
-              <DealCarousel deals={opportunities} catalog={catalog} />
-            )}
+            <DealCarousel deals={opportunities} catalog={catalog} />
           </section>
+        ) : loadingDeals ? (
+          <CardsSkeleton />
+        ) : dealsError ? (
+          <Card className="text-red-600">{dealsError}</Card>
+        ) : (
+          <EmptyState
+            icon="🧭"
+            title="لا توجد فرص نشطة حالياً"
+            subtitle="جرّب توسيع نطاق البحث أو راجع الصفحة بعد قليل — الفرص بتتحدث باستمرار"
+            suggestions={[
+              { label: "كل العروض", onClick: () => navigate("/deals") },
+              { label: "أي وجهة", onClick: () => navigate("/search?to=any") },
+            ]}
+          />
+        )}
 
-          <aside className="space-y-6">
-            <PriceAlertTeaserCard />
-            <BudgetTeaserCard />
-          </aside>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <PriceAlertTeaserCard />
+          <BudgetTeaserCard />
         </div>
 
         {marketStats ? (
