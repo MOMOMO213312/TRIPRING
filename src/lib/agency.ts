@@ -1,6 +1,6 @@
 import { getCurrentUser } from "./auth";
 import { supabase } from "./supabase";
-import type { BookingRow, BookingStatus, DealRow, ProfileRow, Tables } from "../types/database";
+import type { AirlineRow, AirportRow, BookingRow, BookingStatus, DealRow, ProfileRow, Tables } from "../types/database";
 
 export type AgencyProfile = ProfileRow & { agency_name: string | null };
 
