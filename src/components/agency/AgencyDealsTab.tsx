@@ -13,6 +13,7 @@ import type { AirlineRow, AirportRow, DealRow } from "../../types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
+import { AgencyBulkImportModal } from "./AgencyBulkImportModal";
 import { AgencyDealForm } from "./AgencyDealForm";
 
 function statusTone(status: DealRow["status"]): "default" | "flash" | "empty_seat" | "urgent" {
@@ -31,6 +32,7 @@ export function AgencyDealsTab({ agencyId }: { agencyId: string }) {
   const [showForm, setShowForm] = useState(false);
   const [editingDeal, setEditingDeal] = useState<DealRow | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
   async function reload() {
     setLoading(true);
@@ -102,7 +104,22 @@ export function AgencyDealsTab({ agencyId }: { agencyId: string }) {
       {error ? <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p> : null}
 
       {!showForm && !editingDeal ? (
-        <Button onClick={() => setShowForm(true)}>+ إضافة عرض جديد</Button>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={() => setShowForm(true)}>+ إضافة عرض جديد</Button>
+          <Button variant="outline" onClick={() => setShowBulkImport(true)}>
+            📥 استيراد من إكسل
+          </Button>
+        </div>
+      ) : null}
+
+      {showBulkImport ? (
+        <AgencyBulkImportModal
+          agencyId={agencyId}
+          airports={airports}
+          airlines={airlines}
+          onClose={() => setShowBulkImport(false)}
+          onImported={reload}
+        />
       ) : null}
 
       {showForm ? (
