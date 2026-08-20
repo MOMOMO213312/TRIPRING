@@ -9,7 +9,7 @@ import { createPriceAlert, lookupPriceAlerts } from "../lib/api";
 import { setSessionContact } from "../lib/session";
 import { airportLabel } from "../lib/deal-utils";
 import { useCatalog } from "../hooks/useCatalog";
-import { formatPrice } from "../lib/utils";
+import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
 
 export function AlertsPage() {
   const catalog = useCatalog();
@@ -35,6 +35,20 @@ export function AlertsPage() {
       setError("اختر وجهة");
       return;
     }
+    const trimmedPhone = phone.trim();
+    const trimmedEmail = email.trim();
+    if (!trimmedPhone && !trimmedEmail) {
+      setError("أدخل رقم هاتف أو بريد إلكتروني على الأقل عشان نقدر نبلّغك");
+      return;
+    }
+    if (trimmedPhone && !isValidPhone(trimmedPhone)) {
+      setError("رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx");
+      return;
+    }
+    if (trimmedEmail && !isValidEmail(trimmedEmail)) {
+      setError("البريد الإلكتروني غير صالح");
+      return;
+    }
     setLoading(true);
     setError(null);
     setMessage(null);
@@ -43,10 +57,10 @@ export function AlertsPage() {
         fromAirport: from,
         toAirport: to,
         maxBudget,
-        phone: phone || undefined,
-        email: email || undefined,
+        phone: trimmedPhone || undefined,
+        email: trimmedEmail || undefined,
       });
-      const contact = phone || email;
+      const contact = trimmedPhone || trimmedEmail;
       if (contact) setSessionContact(contact);
       setMessage("تم إنشاء التنبيه بنجاح");
     } catch (err) {
@@ -100,7 +114,7 @@ export function AlertsPage() {
               value={maxBudget}
               onChange={(e) => setMaxBudget(Number(e.target.value))}
             />
-            <Input label="رقم الهاتف" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Input label="رقم الهاتف" type="tel" placeholder="+20xxxxxxxxxx" value={phone} onChange={(e) => setPhone(e.target.value)} />
             <Input label="البريد الإلكتروني" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <p className="text-xs text-slate-500">أدخل هاتفاً أو بريداً على الأقل للمتابعة</p>
             <Button type="submit" fullWidth disabled={loading}>

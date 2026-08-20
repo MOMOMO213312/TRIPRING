@@ -4,6 +4,8 @@ import { AuthGate } from "../components/AuthGate";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { affiliateReferralLink, affiliateTierLabel, fetchMyAffiliateProfile } from "../lib/affiliate";
+import { PLATFORM_WHATSAPP } from "../lib/constants";
+import { whatsAppLink } from "../lib/utils";
 import type { AffiliateRow } from "../types/database";
 
 export function AffiliateDashboardPage() {
@@ -51,7 +53,7 @@ function AffiliateBody() {
           حساب الأفلييت بيتفعّل من فريق TripRing. كلّمنا على واتساب أو الإيميل عشان نفعّله لحسابك.
         </p>
         <a
-          href={`https://wa.me/201234567890?text=${encodeURIComponent("عايز أنضم كأفلييت في TripRing")}`}
+          href={whatsAppLink(PLATFORM_WHATSAPP, "عايز أنضم كأفلييت في TripRing")}
           target="_blank"
           rel="noreferrer"
           className="mt-4 inline-flex"

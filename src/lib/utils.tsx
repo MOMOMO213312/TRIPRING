@@ -2,6 +2,22 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
+// International phone validation (not Egypt-specific — TripRing sells worldwide).
+// Accepts an optional leading "+", then 7-15 digits, with spaces/dashes/parens
+// allowed as separators — a loose E.164-style check, not a strict per-country one.
+const PHONE_RE = /^\+?[0-9](?:[0-9\s\-().]{5,17})[0-9]$/;
+export function isValidPhone(value: string): boolean {
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  const digitCount = trimmed.replace(/\D/g, "").length;
+  return PHONE_RE.test(trimmed) && digitCount >= 7 && digitCount <= 15;
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export function isValidEmail(value: string): boolean {
+  return EMAIL_RE.test(value.trim());
+}
+
 /** Prices always in Latin numerals per product convention */
 export function formatPrice(amount: number, currency = "USD"): string {
   return new Intl.NumberFormat("en-US", {

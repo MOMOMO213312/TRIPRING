@@ -13,7 +13,7 @@ import {
 import { PAYMENT_METHODS } from "../lib/payment-config";
 import { formatRoute } from "../lib/deal-utils";
 import { setLastBooking } from "../lib/session";
-import { formatPrice } from "../lib/utils";
+import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
 import type { AdditionalServiceRow, DealRow, PaymentMethod } from "../types/database";
 
 type Traveler = {
@@ -102,6 +102,8 @@ export function BookingPage() {
     if (current === 0) {
       if (!customerName.trim()) return "من فضلك أدخل الاسم الكامل";
       if (!customerPhone.trim()) return "من فضلك أدخل رقم الهاتف";
+      if (!isValidPhone(customerPhone)) return "رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx";
+      if (customerEmail.trim() && !isValidEmail(customerEmail)) return "البريد الإلكتروني غير صالح";
       const emptyTraveler = travelers.findIndex((t) => !t.full_name.trim());
       if (emptyTraveler !== -1) return `من فضلك أدخل اسم المسافر رقم ${emptyTraveler + 1} كما في الجواز`;
     }
@@ -272,7 +274,14 @@ export function BookingPage() {
           <Card className="space-y-4">
             <h2 className="font-bold">بيانات التواصل</h2>
             <Input label="الاسم الكامل" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
-            <Input label="رقم الهاتف" required type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} />
+            <Input
+              label="رقم الهاتف"
+              required
+              type="tel"
+              placeholder="+20xxxxxxxxxx"
+              value={customerPhone}
+              onChange={(e) => setCustomerPhone(e.target.value)}
+            />
             <Input label="البريد الإلكتروني (اختياري)" type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
             <div className="grid grid-cols-3 gap-3">
               <Input label="بالغين" type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
