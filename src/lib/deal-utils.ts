@@ -177,6 +177,24 @@ export function baggageBadgeLabel(deal: DealRow): string | null {
   return null;
 }
 
+/**
+ * Narrows a route's known departure dates to a ±windowDays span around the
+ * customer's chosen date. Only returns dates that actually have a deal on
+ * file — never fabricates days with no data, since the catalog is entered
+ * manually and has real gaps.
+ */
+export function flexibleDateWindow<T extends { date: string }>(
+  entries: T[],
+  centerDate: string,
+  windowDays = 3,
+): T[] {
+  const center = new Date(centerDate + "T00:00:00").getTime();
+  return entries.filter((e) => {
+    const diffDays = Math.abs((new Date(e.date + "T00:00:00").getTime() - center) / 86400000);
+    return diffDays <= windowDays;
+  });
+}
+
 export type DealReason = { icon: "down" | "seats" | "nonstop" | "fresh" | "score"; text: string };
 
 /**

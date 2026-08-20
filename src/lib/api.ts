@@ -282,6 +282,31 @@ export async function fetchRoutePriceTrend(
     .map(([date, price]) => ({ date, price }));
 }
 
+export type RouteDatePrice = { date: string; price: number; dealId: string; dealScore: number | null };
+
+/**
+ * Flexible Dates data source. Deliberately does NOT invent a full calendar —
+ * it only returns dates where a real active deal exists on this route today
+ * (deals are entered manually off Amadeus, so there's no live per-day
+ * availability to query). Cheapest deal wins when a date has more than one.
+ */
+export async function fetchRouteDatePrices(fromAirport: string, toAirport: string): Promise<RouteDatePrice[]> {
+  const deals = await fetchActiveDeals({ from: fromAirport, to: toAirport, availableOnly: true });
+  const byDate = new Map<string, RouteDatePrice>();
+  for (const d of deals) {
+    const existing = byDate.get(d.departure_date);
+    if (!existing || d.price < existing.price) {
+      byDate.set(d.departure_date, {
+        date: d.departure_date,
+        price: d.price,
+        dealId: d.id,
+        dealScore: d.deal_score,
+      });
+    }
+  }
+  return [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+}
+
 export async function createBooking(input: CreateBookingInput): Promise<CreateBookingResult> {
   type RpcArgs = Database["public"]["Functions"]["create_booking"]["Args"];
   // NOTE: the generated types/database.ts still calls this field

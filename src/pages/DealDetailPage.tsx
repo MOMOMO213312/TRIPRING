@@ -8,12 +8,20 @@ import { PriceHistoryChart } from "../components/PriceHistoryChart";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Modal } from "../components/ui/Modal";
-import { createPriceAlert, fetchDealById, fetchDealPriceHistory, getAgencyWhatsApp, getTypicalPrice } from "../lib/api";
-import type { PriceTrendPoint } from "../lib/api";
+import {
+  createPriceAlert,
+  fetchDealById,
+  fetchDealPriceHistory,
+  fetchRouteDatePrices,
+  getAgencyWhatsApp,
+  getTypicalPrice,
+} from "../lib/api";
+import type { PriceTrendPoint, RouteDatePrice } from "../lib/api";
 import {
   airlineName,
   dealReasons,
   dealTypeLabel,
+  flexibleDateWindow,
   formatRoute,
   hasBaggageDetail,
   hasFareConditions,
@@ -25,7 +33,7 @@ import {
   stopsLabel,
 } from "../lib/deal-utils";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
-import { formatDate, formatPrice, formatTime, whatsAppLink } from "../lib/utils";
+import { cn, formatDate, formatPrice, formatTime, whatsAppLink } from "../lib/utils";
 import type { DealPriceHistoryRow, DealRow } from "../types/database";
 
 export function DealDetailPage() {
@@ -33,6 +41,7 @@ export function DealDetailPage() {
   const catalog = useCatalog();
   const [deal, setDeal] = useState<DealRow | null>(null);
   const [history, setHistory] = useState<DealPriceHistoryRow[]>([]);
+  const [routeDates, setRouteDates] = useState<RouteDatePrice[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -45,7 +54,14 @@ export function DealDetailPage() {
       .then(([d, h]) => {
         setDeal(d);
         setHistory(h);
-        if (!d) setError("العرض غير متاح أو انتهت صلاحيته");
+        if (!d) {
+          setError("العرض غير متاح أو انتهت صلاحيته");
+          return;
+        }
+        // Flexible Dates — best-effort, never blocks the page.
+        fetchRouteDatePrices(d.from_airport, d.to_airport)
+          .then(setRouteDates)
+          .catch(() => setRouteDates([]));
       })
       .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoading(false));
@@ -74,6 +90,14 @@ export function DealDetailPage() {
   const trendPoints: PriceTrendPoint[] = history
     .map((h) => ({ date: h.changed_at, price: h.new_price }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  // Flexible Dates — only real dates on file within ±3 days, sorted for display.
+  const nearbyDates = flexibleDateWindow(routeDates, deal.departure_date, 3).sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
+  const cheaperAlternative = nearbyDates
+    .filter((d) => d.date !== deal.departure_date && d.price < deal.price)
+    .sort((a, b) => a.price - b.price)[0];
 
   async function handleShare() {
     const url = window.location.href;
@@ -235,6 +259,49 @@ export function DealDetailPage() {
               </div>
             ) : null}
           </Card>
+
+          {nearbyDates.length > 1 ? (
+            <Card>
+              <h2 className="mb-1 font-bold text-slate-900">تواريخ مرنة</h2>
+              <p className="mb-3 text-xs text-slate-500">أسعار نفس المسار في تواريخ قريبة من رحلتك</p>
+              {cheaperAlternative ? (
+                <p className="mb-3 rounded-lg bg-[#F0FDF4] px-3 py-2 text-xs font-semibold text-[#16A34A]">
+                  💡 وفّر {formatPrice(deal.price - cheaperAlternative.price, currency)} لو سافرت يوم{" "}
+                  {formatDate(cheaperAlternative.date)}
+                </p>
+              ) : null}
+              <div className="-mx-1 flex gap-2 overflow-x-auto pb-1">
+                {nearbyDates.map((d) => {
+                  const isCurrent = d.date === deal.departure_date;
+                  return (
+                    <Link
+                      key={d.date}
+                      to={isCurrent ? "#" : `/deals/${d.dealId}`}
+                      className={cn(
+                        "shrink-0 rounded-xl border px-3 py-2 text-center transition",
+                        isCurrent
+                          ? "border-[#0C7BB3] bg-[#E5F4FB]"
+                          : d.price < deal.price
+                            ? "border-[#DCFCE7] bg-[#F0FDF4] hover:border-[#16A34A]"
+                            : "border-slate-200 bg-white hover:border-slate-300",
+                      )}
+                    >
+                      <p className="text-[11px] font-medium text-slate-500">{formatDate(d.date)}</p>
+                      <p
+                        className={cn(
+                          "font-latin text-sm font-bold",
+                          isCurrent ? "text-[#0C7BB3]" : d.price < deal.price ? "text-[#16A34A]" : "text-slate-800",
+                        )}
+                      >
+                        {formatPrice(d.price, currency)}
+                      </p>
+                      {isCurrent ? <p className="text-[10px] font-semibold text-[#0C7BB3]">رحلتك</p> : null}
+                    </Link>
+                  );
+                })}
+              </div>
+            </Card>
+          ) : null}
 
           {deal.deal_score != null ? (
             <Card>
