@@ -284,6 +284,18 @@ export async function fetchRoutePriceTrend(
 
 export async function createBooking(input: CreateBookingInput): Promise<CreateBookingResult> {
   type RpcArgs = Database["public"]["Functions"]["create_booking"]["Args"];
+  // NOTE: the generated types/database.ts still calls this field
+  // "passport_number", but the live create_booking() SQL function (and the
+  // booking_travelers.passport_no column it inserts into) reads the JSON key
+  // "passport_no". Left as-is, every passport number a customer types is
+  // silently dropped — remap it here so the RPC actually receives it.
+  const travelers = input.travelers.map((t) => ({
+    full_name: t.full_name,
+    date_of_birth: t.date_of_birth,
+    nationality: t.nationality,
+    traveler_type: t.traveler_type,
+    passport_no: t.passport_number,
+  }));
   const args: RpcArgs = {
     p_deal_id: input.dealId,
     p_customer_name: input.customerName,
@@ -294,7 +306,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     p_infants_count: input.infantsCount,
     p_channel: "web",
     p_payment_method: input.paymentMethod,
-    p_travelers: input.travelers,
+    p_travelers: travelers as never,
     p_services: input.services,
   };
   const { data, error } = await supabase.rpc("create_booking", args as never);
