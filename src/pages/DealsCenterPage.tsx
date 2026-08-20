@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { DealImageWrapper } from "../components/DealImageWrapper";
 import { FilterPanel } from "../components/FilterPanel";
@@ -9,13 +10,15 @@ import { savingsPercent } from "../lib/deal-utils";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
 import { useCatalog } from "../hooks/useCatalog";
-import type { DealRow } from "../types/database";
+import type { DealRow, DealType } from "../types/database";
 
 const BUDGET_CHIPS = [100, 200, 300, 500, 700, 1000];
+const VALID_DEAL_TYPES: DealType[] = ["flash", "last_minute", "empty_seat", "special_fare"];
 type SortKey = "deal_score" | "price_asc" | "price_desc" | "savings";
 
 export function DealsCenterPage() {
   const catalog = useCatalog();
+  const [searchParams] = useSearchParams();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +26,14 @@ export function DealsCenterPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [budget, setBudget] = useState<number | null>(null);
-  const [filters, setFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
+  // Deep-link support: /deals?dealType=last_minute (used by the homepage
+  // "Last-Minute Opportunities" section's "عرض الكل" button) pre-applies
+  // the same dealType filter FilterPanel already knows how to render/clear.
+  const [filters, setFilters] = useState<AdvancedFilters>(() => {
+    const urlDealType = searchParams.get("dealType");
+    const dealType = VALID_DEAL_TYPES.includes(urlDealType as DealType) ? (urlDealType as DealType) : "any";
+    return { ...EMPTY_FILTERS, dealType };
+  });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   useEffect(() => {

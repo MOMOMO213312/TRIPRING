@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { BudgetExplorer } from "../components/BudgetExplorer";
@@ -8,17 +8,19 @@ import { EmptyState } from "../components/EmptyState";
 import { HeroSection } from "../components/HeroSection";
 import { BudgetTeaserCard, PriceAlertTeaserCard } from "../components/HomeSidebarCards";
 import { CardsSkeleton } from "../components/LoadingSkeleton";
+import { MarketOverview } from "../components/MarketOverview";
 import { SmartFilterChips } from "../components/SmartFilterChips";
 import { TrustStrip } from "../components/TrustStrip";
 import { WhyTripRing } from "../components/WhyTripRing";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { fetchActiveDeals } from "../lib/api";
-import type { TripType } from "../lib/api";
+import { fetchActiveDeals, fetchMarketStats } from "../lib/api";
+import type { MarketStats, TripType } from "../lib/api";
 import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
 const OPPORTUNITIES_LIMIT = 12;
+const LAST_MINUTE_LIMIT = 10;
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -30,15 +32,28 @@ export function HomePage() {
   const [allActiveDeals, setAllActiveDeals] = useState<DealRow[]>([]);
   const [loadingDeals, setLoadingDeals] = useState(true);
   const [dealsError, setDealsError] = useState<string | null>(null);
+  const [marketStats, setMarketStats] = useState<MarketStats | null>(null);
 
   useEffect(() => {
     fetchActiveDeals({ sort: "deal_score", availableOnly: true })
       .then(setAllActiveDeals)
       .catch((e) => setDealsError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoadingDeals(false));
+    // Market stats are computed entirely from real live data (deal_score,
+    // expires_at, view_count, deal_price_history) — no invented numbers —
+    // so they can load independently and fail silently without blocking
+    // the rest of the homepage.
+    fetchMarketStats()
+      .then(setMarketStats)
+      .catch(() => setMarketStats(null));
   }, []);
 
   const opportunities = allActiveDeals.slice(0, OPPORTUNITIES_LIMIT);
+
+  const lastMinuteDeals = useMemo(
+    () => allActiveDeals.filter((d) => d.deal_type === "last_minute").slice(0, LAST_MINUTE_LIMIT),
+    [allActiveDeals],
+  );
 
   function handleHeroSearch(params: {
     from: string;
@@ -133,6 +148,27 @@ export function HomePage() {
             <BudgetTeaserCard />
           </aside>
         </div>
+
+        {marketStats ? (
+          <div id="market-overview">
+            <MarketOverview stats={marketStats} airports={catalog.airports} />
+          </div>
+        ) : null}
+
+        {lastMinuteDeals.length > 0 ? (
+          <section id="last-minute">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="font-display text-2xl text-slate-900">🔥 فرص آخر لحظة</h2>
+                <p className="text-sm text-slate-600">عروض محدودة، مقاعد قليلة، ووقت مهم</p>
+              </div>
+              <Button variant="outline" onClick={() => navigate("/deals?dealType=last_minute")}>
+                عرض الكل
+              </Button>
+            </div>
+            <DealCarousel deals={lastMinuteDeals} catalog={catalog} />
+          </section>
+        ) : null}
 
         <div id="destinations">
           <TravelToSection
