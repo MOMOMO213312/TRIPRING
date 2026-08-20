@@ -69,13 +69,13 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
             className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl"
             style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
           >
-            طيران أرخص، سفر أكتر.
+            طيران أرخص، ثقة أغلى.
           </h1>
           <p
             className="mt-4 text-base text-white/90 sm:text-lg"
             style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
           >
-            قارن <span className="font-semibold text-flash-orange-light">مئات عروض الطيران</span> في ثانية، واحجز بأفضل سعر متاح.
+            اكتشف مئات عروض الطيران واحجز بأفضل سعر متاح.
           </p>
         </div>
       </div>
