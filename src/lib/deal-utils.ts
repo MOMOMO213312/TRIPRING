@@ -29,6 +29,16 @@ export function airportLabel(code: string, airports: AirportRow[]): string {
   return ap ? `${ap.city} (${code})` : code;
 }
 
+export type TripScope = "domestic" | "international";
+
+const DOMESTIC_COUNTRY = "مصر";
+
+/** Whether a deal's destination is inside Egypt (domestic) or abroad (international). */
+export function dealTripScope(deal: DealRow, airports: AirportRow[]): TripScope {
+  const to = airports.find((a) => a.code === deal.to_airport);
+  return to?.country === DOMESTIC_COUNTRY ? "domestic" : "international";
+}
+
 export function airlineName(code: string | null, airlines: AirlineRow[]): string {
   if (!code) return "—";
   return airlines.find((a) => a.code === code)?.name ?? code;

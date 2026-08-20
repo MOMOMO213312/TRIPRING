@@ -7,7 +7,8 @@ import { Select } from "../components/ui/Select";
 import { Card } from "../components/ui/Card";
 import { getTypicalPrice, fetchActiveDeals } from "../lib/api";
 import type { TripType } from "../lib/api";
-import { airportLabel, savingsPercent } from "../lib/deal-utils";
+import { airportLabel, dealTripScope, savingsPercent } from "../lib/deal-utils";
+import type { TripScope } from "../lib/deal-utils";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
 import { useCatalog } from "../hooks/useCatalog";
@@ -26,6 +27,7 @@ export function SearchResultsPage() {
   const returnDate = params.get("returnDate") ?? "";
   const tripType = (params.get("tripType") as TripType | null) ?? "round_trip";
   const budget = params.get("budget") ?? "";
+  const scope = params.get("scope") as TripScope | null;
   const [sort, setSort] = useState<SortKey>("deal_score");
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +53,9 @@ export function SearchResultsPage() {
 
   const filtered = useMemo(() => {
     let result = applyAdvancedFilters(deals, filters, catalog.references);
+    if (scope) {
+      result = result.filter((deal) => dealTripScope(deal, catalog.airports) === scope);
+    }
     if (sort === "savings") {
       result = [...result].sort((a, b) => {
         const sa = savingsPercent(a.price, getTypicalPrice(a, catalog.references)) ?? 0;
@@ -59,7 +64,7 @@ export function SearchResultsPage() {
       });
     }
     return result;
-  }, [deals, filters, sort, catalog.references]);
+  }, [deals, filters, sort, catalog.references, scope, catalog.airports]);
 
   const availableAirlines = useMemo(() => airlinesInDeals(deals, catalog.airlines), [deals, catalog.airlines]);
   const activeFilterCount = countActiveFilters(filters);
@@ -69,7 +74,9 @@ export function SearchResultsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">أفضل الفرص من {airportLabel(from, catalog.airports)}</h1>
+        <h1 className="text-2xl font-bold text-slate-900">
+          {scope === "domestic" ? "رحلات داخلية" : scope === "international" ? "رحلات دولية" : "أفضل الفرص"} من {airportLabel(from, catalog.airports)}
+        </h1>
         <p className="mt-1 text-slate-600">
           {to ? `→ ${airportLabel(effectiveTo || to, catalog.airports)}` : "كل الوجهات"}
           {date ? ` · ${date}` : ""}
