@@ -14,8 +14,12 @@ type LocationState = {
   booking: CreateBookingResult;
   deal: DealRow;
   paymentMethod: PaymentMethod;
+  customerName: string;
   customerPhone: string;
   customerEmail?: string;
+  adults: number;
+  children: number;
+  infants: number;
 };
 
 const PAYMENT_LABELS: Record<PaymentMethod, string> = {
@@ -63,8 +67,21 @@ export function ConfirmationPage() {
     );
   }
 
-  const { booking, deal, paymentMethod, customerPhone } = state;
-  const waMessage = `مرحباً، أرسلت تحويلاً للحجز رقم ${booking.booking_number} — ${formatRoute(deal)} — ${formatPrice(booking.total_price, booking.currency)}`;
+  const { booking, deal, paymentMethod, customerName, customerPhone, adults, children, infants } = state;
+  const travelerSummary = [
+    `${adults} بالغ`,
+    children ? `${children} طفل` : null,
+    infants ? `${infants} رضيع` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+  const waMessage = [
+    `مرحباً، أرسلت تحويلاً للحجز رقم ${booking.booking_number}`,
+    `الاسم: ${customerName}`,
+    `المسار: ${formatRoute(deal)}`,
+    `المسافرون: ${travelerSummary}`,
+    `المبلغ: ${formatPrice(booking.total_price, booking.currency)}`,
+  ].join("\n");
 
   return (
     <div className="mx-auto max-w-lg space-y-6 text-center">
@@ -94,8 +111,11 @@ export function ConfirmationPage() {
           </div>
         </dl>
       </Card>
+      <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+        ⚠️ هذا <strong>طلب حجز</strong> وليس تذكرة مؤكدة بعد. سيتواصل معك فريق الوكالة لتأكيد السعر وتوفر المقعد. لا ترسل التحويل البنكي إلا بعد تأكيد الوكالة للسعر النهائي.
+      </div>
       <p className="text-sm text-slate-600">
-        أكمل التحويل باستخدام طريقة الدفع المختارة، ثم أرسل إيصال التحويل عبر واتساب.
+        بعد تأكيد الوكالة، أكمل التحويل باستخدام طريقة الدفع المختارة، ثم أرسل إيصال التحويل عبر واتساب.
       </p>
       <div className="flex flex-col gap-3">
         <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer">

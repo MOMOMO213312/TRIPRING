@@ -6,6 +6,7 @@ import {
   updateBookingStatus,
   type BookingStatusGroup,
 } from "../../lib/agency";
+import { whatsAppLink } from "../../lib/utils";
 import type { BookingRow, BookingStatus } from "../../types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
@@ -138,6 +139,18 @@ export function AgencyBookingsTab({
               </div>
 
               <div className="flex flex-wrap items-end gap-2 border-t border-slate-100 pt-3">
+                <a
+                  href={whatsAppLink(
+                    b.customer_phone,
+                    `مرحباً ${b.customer_name}، بخصوص حجزك رقم ${b.booking_number}`
+                  )}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button type="button" variant="whatsapp">
+                    تواصل عبر واتساب
+                  </Button>
+                </a>
                 <Select
                   label="تغيير الحالة إلى"
                   options={NEXT_STATUS_OPTIONS[b.status].map((s) => ({

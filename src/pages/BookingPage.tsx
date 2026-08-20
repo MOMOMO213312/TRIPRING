@@ -48,6 +48,7 @@ export function BookingPage() {
   ]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
   const [stepError, setStepError] = useState<string | null>(null);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
 
   useEffect(() => {
     if (!dealId) return;
@@ -107,13 +108,51 @@ export function BookingPage() {
     return null;
   }
 
-  function goToStep(next: number) {
+  async function goToStep(next: number) {
     const err = validateStep(step);
     if (err) {
       setStepError(err);
       return;
     }
     setStepError(null);
+
+    // Traveler details (name, DOB, passport) are the most effortful part of
+    // this form, and price/seat data here is only as fresh as whatever the
+    // agency last typed in manually off Amadeus — it can go stale between
+    // page load and this point. Re-check right as the customer leaves step 0
+    // (travelers) so a seat that's gone is caught here, before they spend any
+    // more time — instead of only at final submit on the payment step.
+    if (step === 0 && !dealId) return;
+    if (step === 0) {
+      setCheckingAvailability(true);
+      try {
+        const fresh = await fetchDealById(dealId!);
+        if (!fresh) {
+          setStepError("عذراً، هذا العرض لم يعد متاحاً.");
+          setCheckingAvailability(false);
+          return;
+        }
+        const seatsNeeded = adults + children;
+        if (fresh.available_seats < seatsNeeded) {
+          setStepError(
+            fresh.available_seats <= 0
+              ? "عذراً، المقاعد المتاحة في هذا العرض نفدت منذ قليل."
+              : `عدد المقاعد المتاحة الآن (${fresh.available_seats}) أقل من عدد المسافرين (${seatsNeeded}).`
+          );
+          setDeal(fresh);
+          setCheckingAvailability(false);
+          return;
+        }
+        setDeal(fresh);
+      } catch (e) {
+        // Network/availability check failure shouldn't trap the user — let
+        // them continue; the DB-level check on final submit is still the
+        // source of truth and will block an actually-unavailable booking.
+      } finally {
+        setCheckingAvailability(false);
+      }
+    }
+
     setStep(next);
   }
 
@@ -179,8 +218,12 @@ export function BookingPage() {
           paymentMethod,
           travelers,
           services: selectedServices,
+          customerName,
           customerPhone,
           customerEmail,
+          adults,
+          children,
+          infants,
         },
       });
     } catch (err) {
@@ -274,8 +317,8 @@ export function BookingPage() {
               </div>
             ))}
             {stepError ? <p className="text-sm text-red-600">{stepError}</p> : null}
-            <Button type="button" fullWidth onClick={() => goToStep(1)}>
-              التالي
+            <Button type="button" fullWidth onClick={() => goToStep(1)} disabled={checkingAvailability}>
+              {checkingAvailability ? "جاري التأكد من توفر المقعد..." : "التالي"}
             </Button>
           </Card>
         ) : null}
@@ -318,6 +361,9 @@ export function BookingPage() {
         {step === 2 ? (
           <Card className="space-y-4">
             <h2 className="font-bold">مراجعة الحجز</h2>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+              ⚠️ هذا السعر تقديري وغير نهائي. سيقوم فريق الوكالة بتأكيد السعر وتوفر المقعد فعلياً بعد إرسال طلبك، وقد يتغير السعر قبل التأكيد النهائي.
+            </div>
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between"><dt className="text-slate-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
               <div className="flex justify-between"><dt className="text-slate-500">الاسم</dt><dd>{customerName}</dd></div>
@@ -342,7 +388,10 @@ export function BookingPage() {
         {step === 3 ? (
           <Card className="space-y-4">
             <h2 className="font-bold">طريقة الدفع</h2>
-            <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب</p>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+              ⚠️ عند الضغط على "تأكيد الحجز" سيتم إرسال <strong>طلب حجز</strong> إلى الوكالة، وليس تذكرة مؤكدة. الوكالة ستتواصل معك لتأكيد السعر والمقعد قبل إتمام الدفع.
+            </div>
+            <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة</p>
             {PAYMENT_METHODS.map((pm) => (
               <label
                 key={pm.value}
