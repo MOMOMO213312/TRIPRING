@@ -81,6 +81,28 @@ export interface Database {
           search_vector: string | null;
           sale_event_id: string | null;
           min_membership_tier: MembershipTier;
+          // Fare Type — nullable, not yet backfilled for existing deals.
+          fare_family: string | null;
+          refundable: boolean | null;
+          changeable: boolean | null;
+          change_fee: number | null;
+          cancellation_fee: number | null;
+          fare_rules: string | null;
+          // Price breakdown — `price` remains the single total customers pay.
+          base_fare: number | null;
+          taxes_fees: number | null;
+          price_checked_at: string | null;
+          // Flight identity
+          flight_number: string | null;
+          aircraft_type: string | null;
+          operating_airline_code: string | null;
+          // Arrival date + layover
+          arrival_date: string | null;
+          layover_minutes: number | null;
+          // Baggage detail
+          cabin_baggage_kg: number | null;
+          checked_bags_count: number | null;
+          extra_baggage_price: number | null;
         };
         Insert: Partial<Database["public"]["Tables"]["deals"]["Row"]> & {
           from_airport: string;
@@ -128,6 +150,8 @@ export interface Database {
           flight_type: string | null;
           min_price_usd: number;
           max_price_usd: number;
+          avg_price_usd: number | null;
+          median_price_usd: number | null;
           notes: string | null;
           updated_at: string;
         };

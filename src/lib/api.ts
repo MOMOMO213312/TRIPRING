@@ -24,7 +24,7 @@ export type AgencyReviewRow = Tables<"agency_reviews">;
 export type TicketResaleRow = Tables<"ticket_resales">;
 
 export const DEAL_COLUMNS =
-  "id,agency_id,deal_type,airline_code,from_airport,to_airport,departure_date,departure_time,return_date,arrival_time,flight_duration_minutes,duration_hours,stops,stopover_airport,baggage_kg,travel_class,price,original_price,child_price,infant_price,available_seats,is_featured,status,expires_at,currency,notes,deal_score,view_count,min_membership_tier" as const;
+  "id,agency_id,deal_type,airline_code,from_airport,to_airport,departure_date,departure_time,return_date,arrival_time,flight_duration_minutes,duration_hours,stops,stopover_airport,baggage_kg,travel_class,price,original_price,child_price,infant_price,available_seats,is_featured,status,expires_at,currency,notes,deal_score,view_count,min_membership_tier,fare_family,refundable,changeable,change_fee,cancellation_fee,fare_rules,base_fare,taxes_fees,price_checked_at,flight_number,aircraft_type,operating_airline_code,arrival_date,layover_minutes,cabin_baggage_kg,checked_bags_count,extra_baggage_price" as const;
 
 /** Anonymous/guest-facing feeds only show free-tier deals until membership auth exists. */
 export const PUBLIC_MEMBERSHIP_TIER = "free" as const;
@@ -508,7 +508,15 @@ export function getTypicalPrice(
   const ref = references.find(
     (r) => r.from_airport === deal.from_airport && r.to_airport === deal.to_airport,
   );
-  if (ref) return Math.round((ref.min_price_usd + ref.max_price_usd) / 2);
+  if (ref) {
+    // Prefer a real average/median over the min/max midpoint — the midpoint
+    // can misrepresent "typical" price and skew the "X% below typical" claim
+    // shown to customers. Falls back to the midpoint only until these are
+    // backfilled for a given route.
+    if (ref.avg_price_usd != null) return Math.round(ref.avg_price_usd);
+    if (ref.median_price_usd != null) return Math.round(ref.median_price_usd);
+    return Math.round((ref.min_price_usd + ref.max_price_usd) / 2);
+  }
   return deal.original_price;
 }
 
