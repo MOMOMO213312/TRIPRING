@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
+import { DealComparisonModal } from "../components/DealComparisonModal";
 import { DealImageWrapper } from "../components/DealImageWrapper";
 import { FilterPanel } from "../components/FilterPanel";
 import { Select } from "../components/ui/Select";
+import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { fetchActiveDeals, getTypicalPrice } from "../lib/api";
 import { savingsPercent } from "../lib/deal-utils";
@@ -35,6 +37,17 @@ export function DealsCenterPage() {
     return { ...EMPTY_FILTERS, dealType };
   });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareOpen, setCompareOpen] = useState(false);
+  const MAX_COMPARE = 3;
+
+  function toggleCompare(dealId: string) {
+    setCompareIds((prev) => {
+      if (prev.includes(dealId)) return prev.filter((id) => id !== dealId);
+      if (prev.length >= MAX_COMPARE) return prev;
+      return [...prev, dealId];
+    });
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -153,12 +166,38 @@ export function DealsCenterPage() {
                   deal={deal}
                   catalog={catalog}
                   rank={sort === "deal_score" ? i + 1 : undefined}
+                  comparing={compareIds.includes(deal.id)}
+                  onToggleCompare={toggleCompare}
                 />
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {compareIds.length > 0 ? (
+        <div className="fixed inset-x-4 bottom-4 z-40 mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl">
+          <p className="text-sm font-semibold text-slate-700">
+            {compareIds.length} من {MAX_COMPARE} محدّدة للمقارنة
+          </p>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={() => setCompareIds([])} className="text-xs text-slate-500 hover:text-red-500">
+              مسح
+            </button>
+            <Button disabled={compareIds.length < 2} onClick={() => setCompareOpen(true)} className="text-sm">
+              قارن الآن
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      <DealComparisonModal
+        open={compareOpen}
+        onClose={() => setCompareOpen(false)}
+        deals={deals.filter((d) => compareIds.includes(d.id))}
+        catalog={catalog}
+        onRemove={toggleCompare}
+      />
     </div>
   );
 }

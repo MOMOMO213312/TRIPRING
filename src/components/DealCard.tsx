@@ -27,6 +27,9 @@ type Props = {
   imageUrl?: string | null;
   rank?: number;
   compact?: boolean;
+  /** Compare-checkbox: only rendered when a handler is passed (i.e. from a page that supports comparison). */
+  comparing?: boolean;
+  onToggleCompare?: (dealId: string) => void;
 };
 
 export function DealCard({
@@ -38,6 +41,8 @@ export function DealCard({
   imageUrl,
   rank,
   compact,
+  comparing,
+  onToggleCompare,
 }: Props) {
   const typical = getTypicalPrice(deal, references);
   const savings = savingsPercent(deal.price, typical);
@@ -68,6 +73,18 @@ export function DealCard({
               {rankQualityLabel(rank)}
             </span>
           </div>
+        ) : null}
+        {onToggleCompare ? (
+          <button
+            type="button"
+            onClick={() => onToggleCompare(deal.id)}
+            className={cn(
+              "absolute end-3 top-3 z-10 rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm backdrop-blur-sm transition",
+              comparing ? "bg-[#0C7BB3] text-white" : "bg-white/95 text-slate-700 hover:bg-white",
+            )}
+          >
+            {comparing ? "✓ في المقارنة" : "قارن"}
+          </button>
         ) : null}
         {imageUrl ? (
           <img

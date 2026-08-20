@@ -8,11 +8,15 @@ export function DealImageWrapper({
   catalog,
   rank,
   compact,
+  comparing,
+  onToggleCompare,
 }: {
   deal: DealRow;
   catalog: Catalog;
   rank?: number;
   compact?: boolean;
+  comparing?: boolean;
+  onToggleCompare?: (dealId: string) => void;
 }) {
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
   return (
@@ -25,6 +29,8 @@ export function DealImageWrapper({
       imageUrl={imageUrl}
       rank={rank}
       compact={compact}
+      comparing={comparing}
+      onToggleCompare={onToggleCompare}
     />
   );
 }
