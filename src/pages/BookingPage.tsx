@@ -318,6 +318,9 @@ export function BookingPage() {
         {step === 2 ? (
           <Card className="space-y-4">
             <h2 className="font-bold">مراجعة الحجز</h2>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+              ⚠️ هذا السعر تقديري وغير نهائي. سيقوم فريق الوكالة بتأكيد السعر وتوفر المقعد فعلياً بعد إرسال طلبك، وقد يتغير السعر قبل التأكيد النهائي.
+            </div>
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between"><dt className="text-slate-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
               <div className="flex justify-between"><dt className="text-slate-500">الاسم</dt><dd>{customerName}</dd></div>
@@ -342,7 +345,10 @@ export function BookingPage() {
         {step === 3 ? (
           <Card className="space-y-4">
             <h2 className="font-bold">طريقة الدفع</h2>
-            <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب</p>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+              ⚠️ عند الضغط على "تأكيد الحجز" سيتم إرسال <strong>طلب حجز</strong> إلى الوكالة، وليس تذكرة مؤكدة. الوكالة ستتواصل معك لتأكيد السعر والمقعد قبل إتمام الدفع.
+            </div>
+            <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة</p>
             {PAYMENT_METHODS.map((pm) => (
               <label
                 key={pm.value}
