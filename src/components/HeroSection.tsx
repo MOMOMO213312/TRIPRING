@@ -55,46 +55,28 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
         <div className="absolute inset-0 h-[360px] sm:h-[400px]">
           <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
           {/* Daytime wing-over-clouds shot carries bright natural color. Text now
-             sits on the RTL "start" edge (visually the right side), so the dark
-             wash sits over the right side of the photo and fades away to the
-             left — mirror of the reference's left-aligned-text/LTR treatment —
-             then a soft handoff into the page background at the very bottom. */}
-          <div className="absolute inset-0 bg-gradient-to-l from-black/60 via-black/15 to-transparent" />
+             sits on the RTL "end" edge (visually the left side), so the dark
+             wash sits over the left side of the photo and fades away to the
+             right, then a soft handoff into the page background at the
+             very bottom. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/15 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-surface-alt" />
         </div>
 
       <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-10 sm:pb-32 sm:pt-14">
-        <div className="max-w-lg">
+        <div className="max-w-lg ms-auto text-end">
           <h1
             className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl"
             style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
           >
-            سافر أكثر، وادفع أقل.
+            طيران أرخص، سفر أكتر.
           </h1>
           <p
             className="mt-4 text-base text-white/90 sm:text-lg"
             style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
           >
-            اكتشف عروض الطيران قبل ما تخلص. <span className="font-semibold text-flash-orange-light">مقاعد محدودة</span>. وقت محدود.
+            قارن <span className="font-semibold text-flash-orange-light">مئات عروض الطيران</span> في ثانية، واحجز بأفضل سعر متاح.
           </p>
-
-          <div className="mt-6 flex items-center gap-3">
-            <div className="flex -space-x-3 rtl:space-x-reverse">
-              {["أ", "س", "م", "ن"].map((initial, i) => (
-                <span
-                  key={i}
-                  className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-primary-light text-xs font-bold text-primary-hover"
-                  style={{ zIndex: 4 - i }}
-                >
-                  {initial}
-                </span>
-              ))}
-            </div>
-            <p className="text-sm text-white/90" style={{ textShadow: "0 1px 12px rgba(0,0,0,0.4)" }}>
-              <span className="block font-bold text-white">+10,000 مسافر</span>
-              بيوفروا بالفعل مع Tripring
-            </p>
-          </div>
         </div>
       </div>
 
