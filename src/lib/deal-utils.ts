@@ -167,6 +167,16 @@ export function hasPriceBreakdown(deal: DealRow): boolean {
   return Boolean(deal.base_fare != null && deal.taxes_fees != null);
 }
 
+/** Short baggage label for compact card display — prefers checked-bag detail, falls back to legacy baggage_kg. */
+export function baggageBadgeLabel(deal: DealRow): string | null {
+  if (deal.checked_bags_count != null && deal.baggage_kg) {
+    return `${deal.checked_bags_count}× ${deal.baggage_kg} كجم`;
+  }
+  if (deal.baggage_kg) return `${deal.baggage_kg} كجم`;
+  if (deal.cabin_baggage_kg) return `كابينة ${deal.cabin_baggage_kg} كجم`;
+  return null;
+}
+
 export type DealReason = { icon: "down" | "seats" | "nonstop" | "fresh" | "score"; text: string };
 
 /**
