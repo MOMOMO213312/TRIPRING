@@ -46,6 +46,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link to="/my-trips" className="hover:text-[#0C7BB3]">
+                رحلاتي
+              </Link>
+            </li>
+            <li>
               <Link to="/resale" className="hover:text-[#0C7BB3]">
                 بيع وشراء التذاكر
               </Link>

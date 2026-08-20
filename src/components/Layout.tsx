@@ -74,13 +74,6 @@ export function Layout() {
                 العروض
                 <span className="rounded-full bg-[#0C7BB3] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
               </Link>
-              <Link to="/my-trips" className={linkClass(pathname.startsWith("/my-trips"))}>
-                رحلاتي
-              </Link>
-              <Link to="/#budget" className="text-slate-600 hover:text-[#0F172A]">
-                الميزانية
-              </Link>
-
               <div ref={exploreRef} className="relative">
                 <button
                   type="button"
@@ -101,6 +94,9 @@ export function Layout() {
                     </Link>
                     <Link to="/search?scope=domestic" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
                       الرحلات الداخلية
+                    </Link>
+                    <Link to="/#budget" className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                      الميزانية
                     </Link>
                   </div>
                 )}
