@@ -155,6 +155,31 @@ export function MyTripsPage() {
               </ul>
             </div>
           ) : null}
+          {booking.services.length > 0 ? (
+            <div className="mt-4 border-t border-slate-100 pt-4">
+              <p className="mb-2 text-sm font-medium text-slate-700">خدمات إضافية</p>
+              <ul className="space-y-1 text-sm text-slate-600">
+                {booking.services.map((s, i) => (
+                  <li key={i} className="flex justify-between">
+                    <span>{s.type} × {s.quantity}</span>
+                    <span>{formatPrice(s.unit_price * s.quantity, booking.currency)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          {booking.status === "ticket_issued" && booking.ticket_url ? (
+            <div className="mt-4 border-t border-slate-100 pt-4">
+              <a
+                href={booking.ticket_url}
+                target="_blank"
+                rel="noreferrer"
+                className="block rounded-lg bg-[#0C7BB3] py-2.5 text-center text-sm font-semibold text-white"
+              >
+                🎫 عرض/تحميل التذكرة
+              </a>
+            </div>
+          ) : null}
           {!["paid", "ticket_issued", "cancelled"].includes(booking.status) ? (
             <div className="mt-4 border-t border-slate-100 pt-4">
               <PaymentProofUpload

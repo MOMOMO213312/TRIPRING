@@ -469,6 +469,8 @@ export type BookingLookupResult = {
     airline_code: string | null;
   } | null;
   travelers: { full_name: string; traveler_type: string }[];
+  ticket_url: string | null;
+  services: { type: string; quantity: number; unit_price: number }[];
 };
 
 export type BookingTravelerInput = Pick<
