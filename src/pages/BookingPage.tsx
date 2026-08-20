@@ -48,6 +48,7 @@ export function BookingPage() {
   ]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
   const [stepError, setStepError] = useState<string | null>(null);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
 
   useEffect(() => {
     if (!dealId) return;
@@ -107,13 +108,51 @@ export function BookingPage() {
     return null;
   }
 
-  function goToStep(next: number) {
+  async function goToStep(next: number) {
     const err = validateStep(step);
     if (err) {
       setStepError(err);
       return;
     }
     setStepError(null);
+
+    // Traveler details (name, DOB, passport) are the most effortful part of
+    // this form, and price/seat data here is only as fresh as whatever the
+    // agency last typed in manually off Amadeus — it can go stale between
+    // page load and this point. Re-check right as the customer leaves step 0
+    // (travelers) so a seat that's gone is caught here, before they spend any
+    // more time — instead of only at final submit on the payment step.
+    if (step === 0 && !dealId) return;
+    if (step === 0) {
+      setCheckingAvailability(true);
+      try {
+        const fresh = await fetchDealById(dealId!);
+        if (!fresh) {
+          setStepError("عذراً، هذا العرض لم يعد متاحاً.");
+          setCheckingAvailability(false);
+          return;
+        }
+        const seatsNeeded = adults + children;
+        if (fresh.available_seats < seatsNeeded) {
+          setStepError(
+            fresh.available_seats <= 0
+              ? "عذراً، المقاعد المتاحة في هذا العرض نفدت منذ قليل."
+              : `عدد المقاعد المتاحة الآن (${fresh.available_seats}) أقل من عدد المسافرين (${seatsNeeded}).`
+          );
+          setDeal(fresh);
+          setCheckingAvailability(false);
+          return;
+        }
+        setDeal(fresh);
+      } catch (e) {
+        // Network/availability check failure shouldn't trap the user — let
+        // them continue; the DB-level check on final submit is still the
+        // source of truth and will block an actually-unavailable booking.
+      } finally {
+        setCheckingAvailability(false);
+      }
+    }
+
     setStep(next);
   }
 
@@ -274,8 +313,8 @@ export function BookingPage() {
               </div>
             ))}
             {stepError ? <p className="text-sm text-red-600">{stepError}</p> : null}
-            <Button type="button" fullWidth onClick={() => goToStep(1)}>
-              التالي
+            <Button type="button" fullWidth onClick={() => goToStep(1)} disabled={checkingAvailability}>
+              {checkingAvailability ? "جاري التأكد من توفر المقعد..." : "التالي"}
             </Button>
           </Card>
         ) : null}
