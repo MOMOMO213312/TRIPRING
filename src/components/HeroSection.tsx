@@ -52,39 +52,58 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
       <FareBoard deals={deals} references={references} airports={airports} tripType="one-way" />
 
       <section className="relative overflow-hidden bg-surface-alt">
-        <div className="absolute inset-0 h-[420px] sm:h-[480px]">
+        <div className="absolute inset-0 h-[360px] sm:h-[400px]">
           <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-          {/* Daytime wing-over-clouds shot carries bright natural color, so the
-             overlay's job is just to guarantee the headline stays legible over
-             it — a dark wash up top that fades to nothing by mid-photo, then a
-             soft handoff into the page background at the very bottom so the
-             photo still reads as a hero, not a washed-out panel. */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-surface-alt" />
+          {/* Daytime wing-over-clouds shot carries bright natural color. Text now
+             sits on the RTL "start" edge (visually the right side), so the dark
+             wash sits over the right side of the photo and fades away to the
+             left — mirror of the reference's left-aligned-text/LTR treatment —
+             then a soft handoff into the page background at the very bottom. */}
+          <div className="absolute inset-0 bg-gradient-to-l from-black/60 via-black/15 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-b from-transparent to-surface-alt" />
         </div>
 
-      <div className="relative mx-auto max-w-4xl px-4 pb-44 pt-10 text-center sm:pb-52 sm:pt-14">
-        <h1
-          className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl"
-          style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
-        >
-          سافر كما تحب.
-        </h1>
-        <p
-          className="mx-auto mt-4 max-w-xl text-base text-white/90 sm:text-lg"
-          style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
-        >
-          اكتشف، قارن، اختار — دومًا <span className="font-semibold text-flash-orange-light">فريقنا في الانتظار</span>.
-        </p>
+      <div className="relative mx-auto max-w-6xl px-4 pb-28 pt-10 sm:pb-32 sm:pt-14">
+        <div className="max-w-lg">
+          <h1
+            className="text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl"
+            style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
+          >
+            سافر أكثر، وادفع أقل.
+          </h1>
+          <p
+            className="mt-4 text-base text-white/90 sm:text-lg"
+            style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
+          >
+            اكتشف عروض الطيران قبل ما تخلص. <span className="font-semibold text-flash-orange-light">مقاعد محدودة</span>. وقت محدود.
+          </p>
+
+          <div className="mt-6 flex items-center gap-3">
+            <div className="flex -space-x-3 rtl:space-x-reverse">
+              {["أ", "س", "م", "ن"].map((initial, i) => (
+                <span
+                  key={i}
+                  className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-primary-light text-xs font-bold text-primary-hover"
+                  style={{ zIndex: 4 - i }}
+                >
+                  {initial}
+                </span>
+              ))}
+            </div>
+            <p className="text-sm text-white/90" style={{ textShadow: "0 1px 12px rgba(0,0,0,0.4)" }}>
+              <span className="block font-bold text-white">+10,000 مسافر</span>
+              بيوفروا بالفعل مع Tripring
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Search box pulled up to overlap the bottom of the hero photo. The
-         headline block above now reserves generous, fixed bottom padding
-         (pb-44 / sm:pb-52) that comfortably exceeds this negative margin, so
-         the card can never cover the headline or subheadline text — that gap
-         used to be too tight and the card was covering the subheadline. */}
+      {/* Search box pulled up to overlap the bottom of the hero photo — the
+         headline block above reserves fixed bottom padding (pb-28 / sm:pb-32)
+         that comfortably exceeds this negative margin, so the card never
+         covers the headline/subheadline/trust row above it. */}
       <div className="relative z-10 mx-auto max-w-5xl px-4">
-        <div className="-mt-32 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
+        <div className="-mt-16 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-7">
           <div className="mb-5 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
             {(
               [
@@ -113,16 +132,16 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
           <form onSubmit={submit}>
             <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
-              {/* One continuous bordered strip with hairline dividers between fields —
-                 matches the reference instead of each field having its own separate box. */}
-              <div className="flex flex-1 flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
-                <FieldBox icon="📍" label="From" className="sm:flex-[1.3]">
-                  <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
-                    {airportOptions}
-                  </select>
-                </FieldBox>
-
-                <div className="flex h-8 shrink-0 items-center justify-center sm:h-auto sm:w-12">
+              {/* Each field now sits in its own bordered, rounded box with a
+                 visible gap between them (matches the reference), instead of
+                 one continuous strip with hairline dividers. */}
+              <div className="grid flex-1 grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-12">
+                <div className="relative lg:col-span-3">
+                  <FieldBox icon="📍" label="From">
+                    <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
+                      {airportOptions}
+                    </select>
+                  </FieldBox>
                   <button
                     type="button"
                     onClick={() => {
@@ -130,52 +149,60 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                       setTo(from);
                     }}
                     aria-label="تبديل الوجهتين"
-                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-primary hover:text-primary sm:rotate-0"
+                    className="absolute start-full top-1/2 z-10 flex size-7 -translate-x-1/2 -translate-y-1/2 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-primary hover:text-primary rtl:translate-x-1/2"
                   >
                     ⇄
                   </button>
                 </div>
 
-                <FieldBox icon="📍" label="To" className="sm:flex-[1.3]">
-                  <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                    <option value="">اختر الوجهة</option>
-                    <option value="any">Anywhere — أي وجهة</option>
-                    {airportOptions}
-                  </select>
-                </FieldBox>
+                <div className="lg:col-span-3">
+                  <FieldBox icon="📍" label="To">
+                    <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
+                      <option value="">اختر الوجهة</option>
+                      <option value="any">Anywhere — أي وجهة</option>
+                      {airportOptions}
+                    </select>
+                  </FieldBox>
+                </div>
 
-                <FieldBox icon="📅" label="Departure" className="sm:flex-1">
-                  <input
-                    type="date"
-                    value={date}
-                    min={new Date().toISOString().slice(0, 10)}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="hero-field-input"
-                  />
-                </FieldBox>
-                <FieldBox icon="📅" label="Return" className="sm:flex-1">
-                  <input
-                    type="date"
-                    value={returnDate}
-                    min={date || new Date().toISOString().slice(0, 10)}
-                    disabled={tripType === "one_way"}
-                    onChange={(e) => setReturnDate(e.target.value)}
-                    className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
-                  />
-                </FieldBox>
-                <FieldBox icon="👤" label="Passengers" trailingIcon="▾" className="sm:flex-[1.3]">
-                  <select
-                    value={passengers}
-                    onChange={(e) => setPassengers(Number(e.target.value))}
-                    className="hero-field-select"
-                  >
-                    {[1, 2, 3, 4, 5, 6].map((n) => (
-                      <option key={n} value={n}>
-                        {n} {n === 1 ? "مسافر" : "مسافرين"}، الدرجة الاقتصادية
-                      </option>
-                    ))}
-                  </select>
-                </FieldBox>
+                <div className="lg:col-span-2">
+                  <FieldBox icon="📅" label="Departure">
+                    <input
+                      type="date"
+                      value={date}
+                      min={new Date().toISOString().slice(0, 10)}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="hero-field-input"
+                    />
+                  </FieldBox>
+                </div>
+                <div className="lg:col-span-2">
+                  <FieldBox icon="📅" label="Return">
+                    <input
+                      type="date"
+                      value={returnDate}
+                      min={date || new Date().toISOString().slice(0, 10)}
+                      disabled={tripType === "one_way"}
+                      onChange={(e) => setReturnDate(e.target.value)}
+                      className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
+                    />
+                  </FieldBox>
+                </div>
+                <div className="lg:col-span-2">
+                  <FieldBox icon="👤" label="Passengers" trailingIcon="▾">
+                    <select
+                      value={passengers}
+                      onChange={(e) => setPassengers(Number(e.target.value))}
+                      className="hero-field-select"
+                    >
+                      {[1, 2, 3, 4, 5, 6].map((n) => (
+                        <option key={n} value={n}>
+                          {n} {n === 1 ? "مسافر" : "مسافرين"}، الدرجة الاقتصادية
+                        </option>
+                      ))}
+                    </select>
+                  </FieldBox>
+                </div>
               </div>
 
               <button
@@ -233,7 +260,7 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-3 transition focus-within:bg-primary-light/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-3 transition focus-within:border-primary focus-within:bg-primary-light/40 ${className}`}
     >
       <span className="shrink-0 text-slate-400" aria-hidden>
         {icon}
