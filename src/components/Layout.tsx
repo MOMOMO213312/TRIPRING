@@ -48,31 +48,34 @@ export function Layout() {
   }, [hash, pathname]);
 
   const linkClass = (active: boolean) =>
-    active ? "font-semibold text-[#0C7BB3]" : "text-slate-600 hover:text-[#0F172A]";
+    active ? "font-semibold text-white" : "text-white/80 hover:text-white";
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-[#0C7BB3] bg-white text-[#0F172A]">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-[#0C7BB3] px-4 py-2.5 text-xs text-slate-500">
+      <header
+        className="text-white shadow-md shadow-[#FF6A3D]/20"
+        style={{ background: "linear-gradient(90deg, #FF7A45 0%, #FF4D6D 100%)" }}
+      >
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-2.5 text-xs text-white/80">
           <div className="flex items-center gap-4">
-            <span className="hover:text-[#0F172A]">مساعدة ▾</span>
+            <span className="hover:text-white">مساعدة ▾</span>
           </div>
         </div>
 
         <div>
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3.5">
-            <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-[#0F172A]">
+            <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-white">
               <img src="/logo.png" alt="TripRing" className="size-9 rounded-xl" />
               <span className="font-display">TripRing</span>
             </Link>
 
             <nav className="flex flex-wrap items-center gap-6 text-sm font-medium">
-              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#0C7BB3]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
+              <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-white" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
                 الرئيسية
               </Link>
               <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
                 العروض
-                <span className="rounded-full bg-[#0C7BB3] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
+                <span className="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-bold text-[#FF4D6D]">Hot</span>
               </Link>
               <div ref={exploreRef} className="relative">
                 <button
@@ -107,13 +110,13 @@ export function Layout() {
               <button
                 type="button"
                 onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-                className="font-latin rounded-full border border-[#0C7BB3] px-3 py-1.5 text-[#0C7BB3] transition hover:bg-[#E5F4FB]"
+                className="font-latin rounded-full border border-white/60 px-3 py-1.5 text-white transition hover:bg-white/15"
               >
                 {lang === "AR" ? "عربية" : "English"}
               </button>
               <button
                 type="button"
-                className="font-latin rounded-full border border-[#0C7BB3] px-3 py-1.5 text-[#0C7BB3] transition hover:bg-[#E5F4FB]"
+                className="font-latin rounded-full border border-white/60 px-3 py-1.5 text-white transition hover:bg-white/15"
               >
                 EGP ▾
               </button>

@@ -66,16 +66,16 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
       <div className="relative mx-auto max-w-4xl px-4 pb-32 pt-8 text-center sm:pb-36 sm:pt-10">
         <h1
-          className="font-display text-3xl leading-tight text-white sm:text-4xl md:text-5xl"
-          style={{ textShadow: "0 2px 20px rgba(0,0,0,0.45)" }}
+          className="font-display text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl"
+          style={{ textShadow: "0 4px 28px rgba(0,0,0,0.5)" }}
         >
-          سافر كما تحب.
+          عروض حصرية، مش هتلاقيها في أي مكان تاني.
         </h1>
         <p
           className="mx-auto mt-3 max-w-xl text-base text-white/90 sm:text-lg"
           style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
         >
-          اكتشف، قارن، اختار — دومًا <span className="font-semibold text-[#F3A6A3]">فريقنا في الانتظار</span>.
+          نصطاد أفضل فرص السفر أول بأول — <span className="font-semibold text-[#F3A6A3]">فريقنا في الانتظار</span>.
         </p>
       </div>
 
