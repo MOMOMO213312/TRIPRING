@@ -53,10 +53,20 @@ export function Layout() {
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-[#FAFAFA] text-[#0F172A] shadow-sm">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-2.5 text-xs text-slate-500">
-          <div className="flex items-center gap-4">
-            <span className="hover:text-[#0F172A]">مساعدة ▾</span>
-          </div>
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-end gap-3 border-b border-slate-200 px-4 py-2 text-xs">
+          <button
+            type="button"
+            onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
+            className="font-latin rounded-full border border-[#1E3A8A]/40 px-3 py-1 text-[#1E3A8A] transition hover:bg-[#1E3A8A]/5"
+          >
+            {lang === "AR" ? "عربية" : "English"}
+          </button>
+          <button
+            type="button"
+            className="font-latin rounded-full border border-[#1E3A8A]/40 px-3 py-1 text-[#1E3A8A] transition hover:bg-[#1E3A8A]/5"
+          >
+            EGP ▾
+          </button>
         </div>
 
         <div>
@@ -102,22 +112,6 @@ export function Layout() {
                 )}
               </div>
             </nav>
-
-            <div className="flex items-center gap-3 text-sm font-semibold">
-              <button
-                type="button"
-                onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-                className="font-latin rounded-full border border-[#1E3A8A]/40 px-3 py-1.5 text-[#1E3A8A] transition hover:bg-[#1E3A8A]/5"
-              >
-                {lang === "AR" ? "عربية" : "English"}
-              </button>
-              <button
-                type="button"
-                className="font-latin rounded-full border border-[#1E3A8A]/40 px-3 py-1.5 text-[#1E3A8A] transition hover:bg-[#1E3A8A]/5"
-              >
-                EGP ▾
-              </button>
-            </div>
           </div>
         </div>
       </header>
