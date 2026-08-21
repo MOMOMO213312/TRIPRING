@@ -77,7 +77,17 @@ export function HomePage() {
   }
 
   if (catalog.loading) {
-    return <p className="py-20 text-center text-slate-500">جاري التحميل...</p>;
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-10">
+        <div className="skeleton-pulse h-14 w-full sm:h-16" />
+        <div className="skeleton-pulse mt-4 h-10 w-2/3 sm:mx-auto" />
+        <div className="skeleton-pulse mt-3 h-6 w-1/3 sm:mx-auto" />
+        <div className="skeleton-pulse mt-8 h-28 w-full rounded-[24px]" />
+        <div className="mt-10">
+          <CardsSkeleton />
+        </div>
+      </div>
+    );
   }
 
   if (catalog.error) {
@@ -101,7 +111,7 @@ export function HomePage() {
         references={catalog.references}
         onSearch={handleHeroSearch}
       />
-      <div className="relative z-10 mt-4">
+      <div className="relative z-10 mt-8">
         <SmartFilterChips />
       </div>
 

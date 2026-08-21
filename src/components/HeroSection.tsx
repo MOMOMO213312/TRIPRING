@@ -145,29 +145,54 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                 </FieldBox>
 
                 <FieldBox icon="📅" label="Departure" className="sm:flex-1">
-                  <input
-                    type="date"
-                    value={date}
-                    min={new Date().toISOString().slice(0, 10)}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="hero-field-input"
-                  />
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={date}
+                      min={new Date().toISOString().slice(0, 10)}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="hero-field-input"
+                    />
+                    {/* Native date inputs render their empty state in the
+                       browser's own locale (often "mm/dd"), which reads as
+                       English inside an otherwise Arabic form. Cover it with
+                       an Arabic label until a date is actually picked —
+                       pointer-events-none so the click still opens the native
+                       picker underneath. */}
+                    {!date && (
+                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
+                        اختر التاريخ
+                      </span>
+                    )}
+                  </div>
                 </FieldBox>
                 <FieldBox icon="📅" label="Return" className="sm:flex-1">
-                  <input
-                    type="date"
-                    value={returnDate}
-                    min={date || new Date().toISOString().slice(0, 10)}
-                    disabled={tripType === "one_way"}
-                    onChange={(e) => setReturnDate(e.target.value)}
-                    className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
-                  />
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={returnDate}
+                      min={date || new Date().toISOString().slice(0, 10)}
+                      disabled={tripType === "one_way"}
+                      onChange={(e) => setReturnDate(e.target.value)}
+                      className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
+                    />
+                    {!returnDate && tripType !== "one_way" && (
+                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
+                        اختر التاريخ
+                      </span>
+                    )}
+                  </div>
                 </FieldBox>
-                <FieldBox icon="👤" label="Passengers" trailingIcon="▾" className="sm:flex-[1.3]">
+                <FieldBox
+                  icon="👤"
+                  label="Passengers"
+                  trailingIcon="▾"
+                  className="sm:flex-[1.3] cursor-pointer hover:bg-[#E5F4FB]/40"
+                >
                   <select
                     value={passengers}
                     onChange={(e) => setPassengers(Number(e.target.value))}
-                    className="hero-field-select"
+                    className="hero-field-select cursor-pointer"
                   >
                     {[1, 2, 3, 4, 5, 6].map((n) => (
                       <option key={n} value={n}>
@@ -243,7 +268,7 @@ function FieldBox({
         {children}
       </div>
       {trailingIcon ? (
-        <span className="shrink-0 text-slate-300" aria-hidden>
+        <span className="shrink-0 text-sm font-bold text-slate-400" aria-hidden>
           {trailingIcon}
         </span>
       ) : null}
