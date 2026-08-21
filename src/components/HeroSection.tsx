@@ -69,13 +69,13 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           className="font-display text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl"
           style={{ textShadow: "0 4px 28px rgba(0,0,0,0.5)" }}
         >
-          عروض حصرية، مش هتلاقيها في أي مكان تاني.
+          اكتشف افضل فرص السفر يوميا
         </h1>
         <p
           className="mx-auto mt-3 max-w-xl text-base text-white/90 sm:text-lg"
           style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
         >
-          نصطاد أفضل فرص السفر أول بأول — <span className="font-semibold text-[#F3A6A3]">فريقنا في الانتظار</span>.
+          تجربة تستحق البحث
         </p>
       </div>
 
