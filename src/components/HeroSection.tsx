@@ -112,11 +112,14 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
           </div>
 
           <form onSubmit={submit}>
-            <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
-              {/* One continuous bordered strip with hairline dividers between fields —
-                 matches the reference instead of each field having its own separate box. */}
+            <div className="flex flex-col gap-2.5">
+              {/* Two stacked rows instead of cramming all 5 fields + swap button
+                 into one strip — From/To (the widest values) get their own row,
+                 and the three shorter fields (date/date/passengers) share a
+                 second row, so every field gets enough width for its label,
+                 icon and value to stop colliding or truncating. */}
               <div className="flex flex-1 flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
-                <FieldBox icon="📍" label="From" className="sm:flex-[1.3]">
+                <FieldBox icon="📍" label="From" className="sm:flex-1">
                   <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
                     {airportOptions}
                   </select>
@@ -136,79 +139,83 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
                   </button>
                 </div>
 
-                <FieldBox icon="📍" label="To" className="sm:flex-[1.3]">
+                <FieldBox icon="📍" label="To" className="sm:flex-1">
                   <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
                     <option value="">اختر الوجهة</option>
                     <option value="any">Anywhere — أي وجهة</option>
                     {airportOptions}
                   </select>
                 </FieldBox>
-
-                <FieldBox icon="📅" label="Departure" className="sm:flex-1">
-                  <div className="relative">
-                    <input
-                      type="date"
-                      value={date}
-                      min={new Date().toISOString().slice(0, 10)}
-                      onChange={(e) => setDate(e.target.value)}
-                      className="hero-field-input"
-                    />
-                    {/* Native date inputs render their empty state in the
-                       browser's own locale (often "mm/dd"), which reads as
-                       English inside an otherwise Arabic form. Cover it with
-                       an Arabic label until a date is actually picked —
-                       pointer-events-none so the click still opens the native
-                       picker underneath. */}
-                    {!date && (
-                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                        اختر التاريخ
-                      </span>
-                    )}
-                  </div>
-                </FieldBox>
-                <FieldBox icon="📅" label="Return" className="sm:flex-1">
-                  <div className="relative">
-                    <input
-                      type="date"
-                      value={returnDate}
-                      min={date || new Date().toISOString().slice(0, 10)}
-                      disabled={tripType === "one_way"}
-                      onChange={(e) => setReturnDate(e.target.value)}
-                      className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
-                    />
-                    {!returnDate && tripType !== "one_way" && (
-                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                        اختر التاريخ
-                      </span>
-                    )}
-                  </div>
-                </FieldBox>
-                <FieldBox
-                  icon="👤"
-                  label="Passengers"
-                  trailingIcon="▾"
-                  className="sm:flex-[1.3] cursor-pointer hover:bg-[#E5F4FB]/40"
-                >
-                  <select
-                    value={passengers}
-                    onChange={(e) => setPassengers(Number(e.target.value))}
-                    className="hero-field-select cursor-pointer"
-                  >
-                    {[1, 2, 3, 4, 5, 6].map((n) => (
-                      <option key={n} value={n}>
-                        {n} {n === 1 ? "مسافر" : "مسافرين"}، الدرجة الاقتصادية
-                      </option>
-                    ))}
-                  </select>
-                </FieldBox>
               </div>
 
-              <button
-                type="submit"
-                className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#0C7BB3] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#BFE3F6] transition hover:-translate-y-0.5 hover:bg-[#095E8A] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
-              >
-                <span aria-hidden>🔍</span> ابحث عن رحلات
-              </button>
+              <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
+                <div className="flex flex-1 flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
+                  <FieldBox icon="📅" label="Departure" className="sm:flex-1">
+                    <div className="relative">
+                      <input
+                        type="date"
+                        value={date}
+                        min={new Date().toISOString().slice(0, 10)}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="hero-field-input"
+                      />
+                      {/* Native date inputs render their empty state in the
+                         browser's own locale (often "mm/dd"), which reads as
+                         English inside an otherwise Arabic form. Cover it with
+                         an Arabic label until a date is actually picked —
+                         pointer-events-none so the click still opens the native
+                         picker underneath. */}
+                      {!date && (
+                        <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
+                          اختر التاريخ
+                        </span>
+                      )}
+                    </div>
+                  </FieldBox>
+                  <FieldBox icon="📅" label="Return" className="sm:flex-1">
+                    <div className="relative">
+                      <input
+                        type="date"
+                        value={returnDate}
+                        min={date || new Date().toISOString().slice(0, 10)}
+                        disabled={tripType === "one_way"}
+                        onChange={(e) => setReturnDate(e.target.value)}
+                        className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
+                      />
+                      {!returnDate && tripType !== "one_way" && (
+                        <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
+                          اختر التاريخ
+                        </span>
+                      )}
+                    </div>
+                  </FieldBox>
+                  <FieldBox
+                    icon="👤"
+                    label="Passengers"
+                    trailingIcon="▾"
+                    className="sm:flex-1 cursor-pointer hover:bg-[#E5F4FB]/40"
+                  >
+                    <select
+                      value={passengers}
+                      onChange={(e) => setPassengers(Number(e.target.value))}
+                      className="hero-field-select cursor-pointer"
+                    >
+                      {[1, 2, 3, 4, 5, 6].map((n) => (
+                        <option key={n} value={n}>
+                          {n} {n === 1 ? "مسافر" : "مسافرين"}، الدرجة الاقتصادية
+                        </option>
+                      ))}
+                    </select>
+                  </FieldBox>
+                </div>
+
+                <button
+                  type="submit"
+                  className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#0C7BB3] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#BFE3F6] transition hover:-translate-y-0.5 hover:bg-[#095E8A] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
+                >
+                  <span aria-hidden>🔍</span> ابحث عن رحلات
+                </button>
+              </div>
             </div>
           </form>
 
