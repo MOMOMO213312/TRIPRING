@@ -44,9 +44,9 @@ export function RoundTripFareBoard({ deals, references, airports }: Props) {
   return (
     <div
       dir="ltr"
-      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-gradient-to-r from-[#8C2A3A] to-[#6E1B28] sm:h-14"
+      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-gradient-to-r from-[#E8940A] to-[#B5680A] sm:h-14"
     >
-      <div className="relative z-10 flex shrink-0 items-center gap-2 whitespace-nowrap border-e border-white/30 bg-[#5A1620] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
+      <div className="relative z-10 flex shrink-0 items-center gap-2 whitespace-nowrap border-e border-white/30 bg-[#A85A08] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
         <span aria-hidden className="text-base">
           ↔️
         </span>
@@ -56,8 +56,8 @@ export function RoundTripFareBoard({ deals, references, airports }: Props) {
         {row("a")}
         {row("b")}
       </div>
-      <div className="pointer-events-none absolute inset-y-0 left-14 z-10 w-8 bg-gradient-to-r from-[#8C2A3A] to-transparent sm:left-16" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-[#6E1B28] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-14 z-10 w-8 bg-gradient-to-r from-[#E8940A] to-transparent sm:left-16" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-[#B5680A] to-transparent" />
     </div>
   );
 }

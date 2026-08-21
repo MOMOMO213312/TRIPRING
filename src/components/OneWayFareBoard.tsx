@@ -44,9 +44,9 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
   return (
     <div
       dir="ltr"
-      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-[#7A1F2B] sm:h-14"
+      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-[#D9770F] sm:h-14"
     >
-      <div className="relative z-10 flex shrink-0 items-center gap-2 whitespace-nowrap border-e border-white/30 bg-[#5A1620] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
+      <div className="relative z-10 flex shrink-0 items-center gap-2 whitespace-nowrap border-e border-white/30 bg-[#A85A08] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
         <span aria-hidden className="text-base">
           ✈️
         </span>
@@ -58,8 +58,8 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
       </div>
       {/* Edge fades so the marquee reads as continuously scrolling content
          rather than text that's abruptly cut off at the viewport edge. */}
-      <div className="pointer-events-none absolute inset-y-0 left-14 z-10 w-8 bg-gradient-to-r from-[#7A1F2B] to-transparent sm:left-16" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-[#7A1F2B] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-14 z-10 w-8 bg-gradient-to-r from-[#D9770F] to-transparent sm:left-16" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-[#D9770F] to-transparent" />
     </div>
   );
 }
