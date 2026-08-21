@@ -30,10 +30,12 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
         <Link
           key={q.key + suffix}
           to={`/deals/${q.oneWayDeal!.id}`}
-          className="font-latin flex shrink-0 items-center gap-2 whitespace-nowrap text-xs font-bold text-white transition hover:opacity-80"
+          className="font-latin flex shrink-0 flex-col items-start gap-0.5 whitespace-nowrap leading-none transition hover:opacity-80"
         >
-          {q.from} / {q.to}
-          <span className="text-white/70">${q.oneWayDeal!.price}</span>
+          <span className="text-xs font-bold text-white">
+            {q.from} / {q.to}
+          </span>
+          <span className="text-sm font-extrabold text-white">${q.oneWayDeal!.price}</span>
         </Link>
       ))}
     </div>
@@ -42,15 +44,13 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
   return (
     <div
       dir="ltr"
-      className="ticker-viewport relative isolate flex h-10 w-full items-stretch overflow-hidden bg-[#0F172A] sm:h-11"
+      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-[#0F172A] sm:h-14"
     >
       <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/10 bg-[#DB2F2B] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
-        <span className="animate-pulse" aria-hidden>
-          ●
-        </span>
+        <span aria-hidden>✈️</span>
         ذهاب فقط · ONE-WAY
       </div>
-      <div className="ticker-track relative z-0 flex min-w-0 flex-1 items-center overflow-hidden py-2.5 leading-none">
+      <div className="ticker-track relative z-0 flex min-w-0 flex-1 items-center overflow-hidden py-2 leading-none">
         {row("a")}
         {row("b")}
       </div>
