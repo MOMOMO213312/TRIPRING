@@ -53,8 +53,8 @@ export function Layout() {
   return (
     <div className="min-h-screen bg-slate-50">
       <header
-        className="text-white shadow-md shadow-[#FF6A3D]/20"
-        style={{ background: "linear-gradient(90deg, #FF7A45 0%, #FF4D6D 100%)" }}
+        className="text-white shadow-md shadow-[#1E3A8A]/25"
+        style={{ background: "linear-gradient(90deg, #1E3A8A 0%, #2563EB 100%)" }}
       >
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-2.5 text-xs text-white/80">
           <div className="flex items-center gap-4">
@@ -75,7 +75,7 @@ export function Layout() {
               </Link>
               <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
                 العروض
-                <span className="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-bold text-[#FF4D6D]">Hot</span>
+                <span className="rounded-full bg-white px-1.5 py-0.5 text-[10px] font-bold text-[#1E3A8A]">Hot</span>
               </Link>
               <div ref={exploreRef} className="relative">
                 <button
