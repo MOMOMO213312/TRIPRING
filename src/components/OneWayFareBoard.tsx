@@ -32,10 +32,10 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
           to={`/deals/${q.oneWayDeal!.id}`}
           className="font-latin flex shrink-0 flex-col items-start gap-0.5 whitespace-nowrap leading-none transition hover:opacity-70"
         >
-          <span className="text-xs font-bold text-[#7C2D12]">
+          <span className="text-xs font-bold text-white">
             {q.from} / {q.to}
           </span>
-          <span className="text-sm font-extrabold text-[#9A3412]">${q.oneWayDeal!.price}</span>
+          <span className="text-sm font-extrabold text-white">${q.oneWayDeal!.price}</span>
         </Link>
       ))}
     </div>
@@ -44,9 +44,9 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
   return (
     <div
       dir="ltr"
-      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-[#FDE7C7] sm:h-14"
+      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-[#2CA9D5] sm:h-14"
     >
-      <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/40 bg-[#D97706] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
+      <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/30 bg-[#1C8AB0] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
         <span aria-hidden>✈️</span>
         ذهاب فقط · ONE-WAY
       </div>
