@@ -70,8 +70,8 @@ export function Layout() {
         </div>
 
         <div>
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3.5">
-            <Link to="/" className="flex items-center gap-2 text-xl font-extrabold text-[#0F172A]">
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-start gap-8 px-4 py-3.5">
+            <Link to="/" className="flex shrink-0 items-center gap-2 text-xl font-extrabold text-[#0F172A]">
               <img src="/logo.png" alt="TripRing" className="size-9 rounded-xl" />
               <span className="font-display">TripRing</span>
             </Link>
