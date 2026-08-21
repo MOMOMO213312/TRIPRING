@@ -7,7 +7,7 @@ import { FilterPanel } from "../components/FilterPanel";
 import { Select } from "../components/ui/Select";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { fetchActiveDeals, getTypicalPrice } from "../lib/api";
+import { fetchActiveDealsPage, getTypicalPrice } from "../lib/api";
 import { savingsPercent } from "../lib/deal-utils";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
@@ -16,13 +16,17 @@ import type { DealRow, DealType } from "../types/database";
 
 const BUDGET_CHIPS = [100, 200, 300, 500, 700, 1000];
 const VALID_DEAL_TYPES: DealType[] = ["flash", "last_minute", "empty_seat", "special_fare"];
+const PAGE_SIZE = 30;
 type SortKey = "deal_score" | "price_asc" | "price_desc" | "savings";
 
 export function DealsCenterPage() {
   const catalog = useCatalog();
   const [searchParams] = useSearchParams();
   const [deals, setDeals] = useState<DealRow[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sort, setSort] = useState<SortKey>("deal_score");
   const [from, setFrom] = useState("");
@@ -49,19 +53,50 @@ export function DealsCenterPage() {
     });
   }
 
+  // Base filters (from/to/budget/sort) hit the server and reset back to
+  // page 0 — each combination is its own result set, fetched fresh so the
+  // "X من Y" count and the deals shown always match what's actually being
+  // asked for instead of stacking pages from a previous filter combo.
   useEffect(() => {
     setLoading(true);
-    fetchActiveDeals({
+    setPage(0);
+    fetchActiveDealsPage({
       sort: sort === "savings" ? "deal_score" : sort,
       from: from || undefined,
       to: to || undefined,
       maxPrice: budget ?? undefined,
       availableOnly: true,
+      page: 0,
+      pageSize: PAGE_SIZE,
     })
-      .then(setDeals)
+      .then(({ deals: rows, total: count }) => {
+        setDeals(rows);
+        setTotal(count);
+      })
       .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoading(false));
   }, [sort, from, to, budget]);
+
+  function loadMore() {
+    const nextPage = page + 1;
+    setLoadingMore(true);
+    fetchActiveDealsPage({
+      sort: sort === "savings" ? "deal_score" : sort,
+      from: from || undefined,
+      to: to || undefined,
+      maxPrice: budget ?? undefined,
+      availableOnly: true,
+      page: nextPage,
+      pageSize: PAGE_SIZE,
+    })
+      .then(({ deals: rows, total: count }) => {
+        setDeals((prev) => [...prev, ...rows]);
+        setTotal(count);
+        setPage(nextPage);
+      })
+      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .finally(() => setLoadingMore(false));
+  }
 
   const filtered = useMemo(() => {
     let result = applyAdvancedFilters(deals, filters, catalog.references);
@@ -122,7 +157,9 @@ export function DealsCenterPage() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-slate-500">{filtered.length} فرصة نشطة</p>
+        <p className="text-sm text-slate-500">
+          {deals.length < total ? `${deals.length} من ${total} فرصة نشطة` : `${total} فرصة نشطة`}
+        </p>
         <button type="button" onClick={() => setMobileFiltersOpen(true)} className="smart-chip lg:hidden">
           🔧 الفلاتر {activeFilterCount ? `(${activeFilterCount})` : ""}
         </button>
@@ -159,18 +196,27 @@ export function DealsCenterPage() {
               </button>
             </Card>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((deal, i) => (
-                <DealImageWrapper
-                  key={deal.id}
-                  deal={deal}
-                  catalog={catalog}
-                  rank={sort === "deal_score" ? i + 1 : undefined}
-                  comparing={compareIds.includes(deal.id)}
-                  onToggleCompare={toggleCompare}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((deal, i) => (
+                  <DealImageWrapper
+                    key={deal.id}
+                    deal={deal}
+                    catalog={catalog}
+                    rank={sort === "deal_score" ? i + 1 : undefined}
+                    comparing={compareIds.includes(deal.id)}
+                    onToggleCompare={toggleCompare}
+                  />
+                ))}
+              </div>
+              {deals.length < total ? (
+                <div className="mt-6 flex justify-center">
+                  <Button variant="outline" onClick={loadMore} disabled={loadingMore}>
+                    {loadingMore ? "جاري التحميل..." : `عرض المزيد (${total - deals.length} فرصة متبقية)`}
+                  </Button>
+                </div>
+              ) : null}
+            </>
           )}
         </div>
       </div>

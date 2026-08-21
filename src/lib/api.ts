@@ -43,6 +43,19 @@ export type DealSearchParams = {
    *  return_date; multi_city isn't modeled in the deals table yet, so it's a
    *  no-op filter for now (shows everything, same as not passing tripType). */
   tripType?: TripType;
+  /** Zero-based page index. Combined with pageSize to page results server-side
+   *  via Supabase's .range(), so large result sets don't rely on (and get
+   *  silently truncated by) PostgREST's default 1000-row cap. Omit both to
+   *  get the old "fetch everything matching" behaviour. */
+  page?: number;
+  pageSize?: number;
+};
+
+export type DealSearchResult = {
+  deals: DealRow[];
+  /** Total rows matching the filters server-side (via Supabase's exact
+   *  count), independent of how many were actually returned for this page. */
+  total: number;
 };
 
 export type CreateBookingInput = {
@@ -119,10 +132,10 @@ export async function fetchImageCache(): Promise<ImageCacheRow[]> {
   return data ?? [];
 }
 
-export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<DealRow[]> {
+function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean) {
   let query = supabase
     .from("deals")
-    .select(DEAL_COLUMNS)
+    .select(DEAL_COLUMNS, withCount ? { count: "exact" } : undefined)
     .eq("status", "active")
     .eq("min_membership_tier", PUBLIC_MEMBERSHIP_TIER)
     .gt("expires_at", new Date().toISOString());
@@ -132,36 +145,52 @@ export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<D
   if (params.departureDate) query = query.eq("departure_date", params.departureDate);
   if (params.maxPrice != null) query = query.lte("price", params.maxPrice);
   if (params.dealType && params.dealType !== "any") query = query.eq("deal_type", params.dealType);
-
-  const { data, error } = await query;
-  if (error) throw new Error(error.message);
-
-  let deals = (data ?? []) as DealRow[];
-
-  if (params.availableOnly) {
-    deals = deals.filter((d) => d.available_seats > 0);
-  }
-
-  if (params.tripType === "one_way") {
-    deals = deals.filter((d) => !d.return_date);
-  } else if (params.tripType === "round_trip") {
-    deals = deals.filter((d) => !!d.return_date);
-  }
+  // Filtered server-side (rather than with a post-fetch .filter() in JS) so
+  // pagination/.range() and the returned "total" count are both accurate —
+  // a client-side filter after a page has already been cut down by
+  // .range() would silently drop rows instead of reflecting the true total.
+  if (params.availableOnly) query = query.gt("available_seats", 0);
+  if (params.tripType === "one_way") query = query.is("return_date", null);
+  else if (params.tripType === "round_trip") query = query.not("return_date", "is", null);
 
   switch (params.sort) {
     case "price_desc":
-      deals = [...deals].sort((a, b) => b.price - a.price);
+      query = query.order("price", { ascending: false });
       break;
     case "deal_score":
-      deals = [...deals].sort((a, b) => (b.deal_score ?? 0) - (a.deal_score ?? 0));
+      query = query.order("deal_score", { ascending: false, nullsFirst: false });
       break;
     case "price_asc":
     default:
-      deals = [...deals].sort((a, b) => a.price - b.price);
+      query = query.order("price", { ascending: true });
       break;
   }
 
-  return deals;
+  if (params.page != null && params.pageSize != null) {
+    const from = params.page * params.pageSize;
+    const to = from + params.pageSize - 1;
+    query = query.range(from, to);
+  }
+
+  return query;
+}
+
+export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<DealRow[]> {
+  const { data, error } = await buildActiveDealsQuery(params, false);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as DealRow[];
+}
+
+/** Paginated variant for listing pages with a "load more" / page control —
+ *  returns the true total match count alongside just this page's rows, so
+ *  the UI can show "X من Y" and know when it's fetched everything instead
+ *  of guessing from PostgREST's default 1000-row response cap. */
+export async function fetchActiveDealsPage(
+  params: DealSearchParams & { page: number; pageSize: number },
+): Promise<DealSearchResult> {
+  const { data, error, count } = await buildActiveDealsQuery(params, true);
+  if (error) throw new Error(error.message);
+  return { deals: (data ?? []) as DealRow[], total: count ?? (data ?? []).length };
 }
 
 export async function fetchBestOpportunities(limit = 12): Promise<DealRow[]> {
