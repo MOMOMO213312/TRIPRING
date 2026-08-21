@@ -44,9 +44,9 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
   return (
     <div
       dir="ltr"
-      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-[#2CA9D5] sm:h-14"
+      className="ticker-viewport relative isolate flex h-12 w-full items-stretch overflow-hidden bg-[#4EBA15] sm:h-14"
     >
-      <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/30 bg-[#1C8AB0] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
+      <div className="relative z-10 flex shrink-0 items-center gap-1.5 whitespace-nowrap border-e border-white/30 bg-[#3A8B10] px-4 py-2.5 text-xs font-extrabold leading-none text-white">
         <span aria-hidden>✈️</span>
         ذهاب فقط · ONE-WAY
       </div>
