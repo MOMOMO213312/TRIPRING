@@ -24,12 +24,9 @@ type Traveler = {
   traveler_type: "adult" | "child" | "infant";
 };
 
-const STEPS = ["المسافرون", "خدمات إضافية", "المراجعة", "الدفع"];
-
 export function BookingPage() {
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
   const [deal, setDeal] = useState<DealRow | null>(null);
   const [services, setServices] = useState<AdditionalServiceRow[]>([]);
   const [selectedServices, setSelectedServices] = useState<Record<string, number>>({});
@@ -47,8 +44,6 @@ export function BookingPage() {
     { full_name: "", date_of_birth: "", passport_number: "", nationality: "EG", traveler_type: "adult" },
   ]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
-  const [stepError, setStepError] = useState<string | null>(null);
-  const [checkingAvailability, setCheckingAvailability] = useState(false);
 
   useEffect(() => {
     if (!dealId) return;
@@ -94,68 +89,14 @@ export function BookingPage() {
     });
   }, [adults, children, infants]);
 
-  // Step buttons are type="button" (they must not trigger native form submit),
-  // which means the browser's built-in `required` validation never fires when
-  // moving between steps. This replicates that validation manually so a user
-  // can't reach payment with empty name/phone/traveler fields.
-  function validateStep(current: number): string | null {
-    if (current === 0) {
-      if (!customerName.trim()) return "من فضلك أدخل الاسم الكامل";
-      if (!customerPhone.trim()) return "من فضلك أدخل رقم الهاتف";
-      if (!isValidPhone(customerPhone)) return "رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx";
-      if (customerEmail.trim() && !isValidEmail(customerEmail)) return "البريد الإلكتروني غير صالح";
-      const emptyTraveler = travelers.findIndex((t) => !t.full_name.trim());
-      if (emptyTraveler !== -1) return `من فضلك أدخل اسم المسافر رقم ${emptyTraveler + 1} كما في الجواز`;
-    }
+  function validate(): string | null {
+    if (!customerName.trim()) return "من فضلك أدخل الاسم الكامل";
+    if (!customerPhone.trim()) return "من فضلك أدخل رقم الهاتف";
+    if (!isValidPhone(customerPhone)) return "رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx";
+    if (customerEmail.trim() && !isValidEmail(customerEmail)) return "البريد الإلكتروني غير صالح";
+    const emptyTraveler = travelers.findIndex((t) => !t.full_name.trim());
+    if (emptyTraveler !== -1) return `من فضلك أدخل اسم المسافر رقم ${emptyTraveler + 1} كما في الجواز`;
     return null;
-  }
-
-  async function goToStep(next: number) {
-    const err = validateStep(step);
-    if (err) {
-      setStepError(err);
-      return;
-    }
-    setStepError(null);
-
-    // Traveler details (name, DOB, passport) are the most effortful part of
-    // this form, and price/seat data here is only as fresh as whatever the
-    // agency last typed in manually off Amadeus — it can go stale between
-    // page load and this point. Re-check right as the customer leaves step 0
-    // (travelers) so a seat that's gone is caught here, before they spend any
-    // more time — instead of only at final submit on the payment step.
-    if (step === 0 && !dealId) return;
-    if (step === 0) {
-      setCheckingAvailability(true);
-      try {
-        const fresh = await fetchDealById(dealId!);
-        if (!fresh) {
-          setStepError("عذراً، هذا العرض لم يعد متاحاً.");
-          setCheckingAvailability(false);
-          return;
-        }
-        const seatsNeeded = adults + children;
-        if (fresh.available_seats < seatsNeeded) {
-          setStepError(
-            fresh.available_seats <= 0
-              ? "عذراً، المقاعد المتاحة في هذا العرض نفدت منذ قليل."
-              : `عدد المقاعد المتاحة الآن (${fresh.available_seats}) أقل من عدد المسافرين (${seatsNeeded}).`
-          );
-          setDeal(fresh);
-          setCheckingAvailability(false);
-          return;
-        }
-        setDeal(fresh);
-      } catch (e) {
-        // Network/availability check failure shouldn't trap the user — let
-        // them continue; the DB-level check on final submit is still the
-        // source of truth and will block an actually-unavailable booking.
-      } finally {
-        setCheckingAvailability(false);
-      }
-    }
-
-    setStep(next);
   }
 
   function servicesTotal(): number {
@@ -176,13 +117,49 @@ export function BookingPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!deal) return;
-    if (deal.available_seats <= 0) {
-      setError("عذراً، المقاعد المتاحة في هذا العرض نفدت.");
+    if (!deal || !dealId) return;
+
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
       return;
     }
+
     setSubmitting(true);
     setError(null);
+
+    // Traveler details (name, DOB, passport) are the most effortful part of
+    // this form, and price/seat data here is only as fresh as whatever the
+    // agency last typed in manually off Amadeus — it can go stale between
+    // page load and submit. Re-check right before creating the booking so a
+    // seat that's gone is caught here with a clear message, instead of only
+    // surfacing as a generic DB error.
+    try {
+      const fresh = await fetchDealById(dealId);
+      if (!fresh) {
+        setError("عذراً، هذا العرض لم يعد متاحاً.");
+        setSubmitting(false);
+        return;
+      }
+      const seatsNeeded = adults + children;
+      if (fresh.available_seats < seatsNeeded) {
+        setError(
+          fresh.available_seats <= 0
+            ? "عذراً، المقاعد المتاحة في هذا العرض نفدت منذ قليل."
+            : `عدد المقاعد المتاحة الآن (${fresh.available_seats}) أقل من عدد المسافرين (${seatsNeeded}).`,
+        );
+        setDeal(fresh);
+        setSubmitting(false);
+        return;
+      }
+      setDeal(fresh);
+    } catch {
+      // Network/availability check failure shouldn't trap the user — let
+      // the booking attempt continue; the DB-level check on submit below is
+      // still the source of truth and will block an actually-unavailable
+      // booking.
+    }
+
     try {
       const servicePayload = services
         .filter((s) => (selectedServices[s.id] ?? 0) > 0)
@@ -256,39 +233,29 @@ export function BookingPage() {
         <p className="text-slate-600">{formatRoute(deal)} · {formatPrice(deal.price, deal.currency ?? "USD")}</p>
       </div>
 
-      <div className="flex gap-2">
-        {STEPS.map((label, i) => (
-          <div
-            key={label}
-            className={`flex-1 rounded-lg px-2 py-2 text-center text-xs font-semibold sm:text-sm ${
-              i === step ? "bg-accent text-white" : i < step ? "bg-[#BFE3F6] text-[#155E7A]" : "bg-slate-100 text-slate-500"
-            }`}
-          >
-            {label}
+      {/* Single scrollable page instead of a multi-step wizard — every
+         section is visible and editable at once so related info (contact,
+         travelers, services, payment, totals) stays close together instead
+         of being hidden behind "next" clicks. */}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Card className="space-y-4">
+          <h2 className="font-bold">بيانات التواصل والمسافرين</h2>
+          <Input label="الاسم الكامل" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+          <Input
+            label="رقم الهاتف"
+            required
+            type="tel"
+            placeholder="+20xxxxxxxxxx"
+            value={customerPhone}
+            onChange={(e) => setCustomerPhone(e.target.value)}
+          />
+          <Input label="البريد الإلكتروني (اختياري)" type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
+          <div className="grid grid-cols-3 gap-3">
+            <Input label="بالغين" type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
+            <Input label="أطفال" type="number" min={0} value={children} onChange={(e) => setChildren(Number(e.target.value))} />
+            <Input label="رضّع" type="number" min={0} value={infants} onChange={(e) => setInfants(Number(e.target.value))} />
           </div>
-        ))}
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        {step === 0 ? (
-          <Card className="space-y-4">
-            <h2 className="font-bold">بيانات التواصل</h2>
-            <Input label="الاسم الكامل" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
-            <Input
-              label="رقم الهاتف"
-              required
-              type="tel"
-              placeholder="+20xxxxxxxxxx"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-            />
-            <Input label="البريد الإلكتروني (اختياري)" type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
-            <div className="grid grid-cols-3 gap-3">
-              <Input label="بالغين" type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
-              <Input label="أطفال" type="number" min={0} value={children} onChange={(e) => setChildren(Number(e.target.value))} />
-              <Input label="رضّع" type="number" min={0} value={infants} onChange={(e) => setInfants(Number(e.target.value))} />
-            </div>
-            <h3 className="pt-2 font-bold">بيانات المسافرين</h3>
+          <div className="space-y-3 border-t border-slate-100 pt-4">
             {travelers.map((t, i) => (
               <div key={i} className="space-y-3 rounded-lg border border-slate-100 p-3">
                 <p className="text-sm font-medium text-slate-600">
@@ -304,102 +271,70 @@ export function BookingPage() {
                     setTravelers(next);
                   }}
                 />
-                <Input
-                  label="تاريخ الميلاد"
-                  type="date"
-                  value={t.date_of_birth}
-                  onChange={(e) => {
-                    const next = [...travelers];
-                    next[i] = { ...next[i], date_of_birth: e.target.value };
-                    setTravelers(next);
-                  }}
-                />
-                <Input
-                  label="رقم الجواز"
-                  value={t.passport_number}
-                  onChange={(e) => {
-                    const next = [...travelers];
-                    next[i] = { ...next[i], passport_number: e.target.value };
-                    setTravelers(next);
-                  }}
-                />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Input
+                    label="تاريخ الميلاد"
+                    type="date"
+                    value={t.date_of_birth}
+                    onChange={(e) => {
+                      const next = [...travelers];
+                      next[i] = { ...next[i], date_of_birth: e.target.value };
+                      setTravelers(next);
+                    }}
+                  />
+                  <Input
+                    label="رقم الجواز"
+                    value={t.passport_number}
+                    onChange={(e) => {
+                      const next = [...travelers];
+                      next[i] = { ...next[i], passport_number: e.target.value };
+                      setTravelers(next);
+                    }}
+                  />
+                </div>
               </div>
             ))}
-            {stepError ? <p className="text-sm text-red-600">{stepError}</p> : null}
-            <Button type="button" fullWidth onClick={() => goToStep(1)} disabled={checkingAvailability}>
-              {checkingAvailability ? "جاري التأكد من توفر المقعد..." : "التالي"}
-            </Button>
+          </div>
+        </Card>
+
+        {services.length > 0 ? (
+          <Card className="space-y-3">
+            <h2 className="font-bold">خدمات إضافية (اختياري)</h2>
+            {services.map((s) => (
+              <label key={s.id} className="flex items-center justify-between rounded-lg border border-slate-100 p-3">
+                <span>
+                  {s.type} — {formatPrice(s.price, deal.currency ?? "USD")}
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  max={5}
+                  value={selectedServices[s.id] ?? 0}
+                  onChange={(e) =>
+                    setSelectedServices({ ...selectedServices, [s.id]: Number(e.target.value) })
+                  }
+                  className="w-16 rounded border border-slate-200 px-2 py-1 text-center"
+                />
+              </label>
+            ))}
           </Card>
         ) : null}
 
-        {step === 1 ? (
-          <Card className="space-y-4">
-            <h2 className="font-bold">خدمات إضافية</h2>
-            {services.length === 0 ? (
-              <p className="text-slate-500">لا توجد خدمات إضافية متاحة حالياً</p>
-            ) : (
-              services.map((s) => (
-                <label key={s.id} className="flex items-center justify-between rounded-lg border border-slate-100 p-3">
-                  <span>
-                    {s.type} — {formatPrice(s.price, deal.currency ?? "USD")}
-                  </span>
-                  <input
-                    type="number"
-                    min={0}
-                    max={5}
-                    value={selectedServices[s.id] ?? 0}
-                    onChange={(e) =>
-                      setSelectedServices({ ...selectedServices, [s.id]: Number(e.target.value) })
-                    }
-                    className="w-16 rounded border border-slate-200 px-2 py-1 text-center"
-                  />
-                </label>
-              ))
-            )}
-            <div className="flex gap-3">
-              <Button type="button" variant="outline" fullWidth onClick={() => goToStep(0)}>
-                السابق
-              </Button>
-              <Button type="button" fullWidth onClick={() => goToStep(2)}>
-                التالي
-              </Button>
+        <Card className="space-y-4">
+          <h2 className="font-bold">الملخص وطريقة الدفع</h2>
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+            ⚠️ السعر تقديري وغير نهائي، والضغط على "تأكيد الحجز" يرسل <strong>طلب حجز</strong> للوكالة وليس تذكرة
+            مؤكدة — هيتواصلوا معاك لتأكيد السعر والمقعد قبل الدفع الفعلي.
+          </div>
+          <dl className="space-y-2 text-sm">
+            <div className="flex justify-between"><dt className="text-slate-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
+            <div className="flex justify-between"><dt className="text-slate-500">المسافرون</dt><dd>{adults} بالغ · {children} طفل · {infants} رضيع</dd></div>
+            <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
+              <dt>الإجمالي التقديري</dt>
+              <dd>{formatPrice(estimatedTotal(), deal.currency ?? "USD")}</dd>
             </div>
-          </Card>
-        ) : null}
-
-        {step === 2 ? (
-          <Card className="space-y-4">
-            <h2 className="font-bold">مراجعة الحجز</h2>
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-              ⚠️ هذا السعر تقديري وغير نهائي. سيقوم فريق الوكالة بتأكيد السعر وتوفر المقعد فعلياً بعد إرسال طلبك، وقد يتغير السعر قبل التأكيد النهائي.
-            </div>
-            <dl className="space-y-2 text-sm">
-              <div className="flex justify-between"><dt className="text-slate-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
-              <div className="flex justify-between"><dt className="text-slate-500">الاسم</dt><dd>{customerName}</dd></div>
-              <div className="flex justify-between"><dt className="text-slate-500">الهاتف</dt><dd>{customerPhone}</dd></div>
-              <div className="flex justify-between"><dt className="text-slate-500">المسافرون</dt><dd>{adults} بالغ · {children} طفل · {infants} رضيع</dd></div>
-              <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
-                <dt>الإجمالي التقديري</dt>
-                <dd>{formatPrice(estimatedTotal(), deal.currency ?? "USD")}</dd>
-              </div>
-            </dl>
-            <div className="flex gap-3">
-              <Button type="button" variant="outline" fullWidth onClick={() => goToStep(1)}>
-                السابق
-              </Button>
-              <Button type="button" fullWidth onClick={() => goToStep(3)}>
-                التالي
-              </Button>
-            </div>
-          </Card>
-        ) : null}
-
-        {step === 3 ? (
-          <Card className="space-y-4">
-            <h2 className="font-bold">طريقة الدفع</h2>
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-              ⚠️ عند الضغط على "تأكيد الحجز" سيتم إرسال <strong>طلب حجز</strong> إلى الوكالة، وليس تذكرة مؤكدة. الوكالة ستتواصل معك لتأكيد السعر والمقعد قبل إتمام الدفع.
-            </div>
+          </dl>
+          <div className="space-y-2 border-t border-slate-100 pt-4">
             <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة</p>
             {PAYMENT_METHODS.map((pm) => (
               <label
@@ -420,17 +355,12 @@ export function BookingPage() {
                 <p className="mt-1 text-sm text-slate-600">{pm.details}</p>
               </label>
             ))}
-            {error ? <p className="text-sm text-red-600">{error}</p> : null}
-            <div className="flex gap-3">
-              <Button type="button" variant="outline" fullWidth onClick={() => setStep(2)}>
-                السابق
-              </Button>
-              <Button type="submit" fullWidth disabled={submitting}>
-                {submitting ? "جاري الحجز..." : "تأكيد الحجز"}
-              </Button>
-            </div>
-          </Card>
-        ) : null}
+          </div>
+          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          <Button type="submit" fullWidth disabled={submitting}>
+            {submitting ? "جاري التأكد من الحجز..." : "تأكيد الحجز"}
+          </Button>
+        </Card>
       </form>
     </div>
   );
