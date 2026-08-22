@@ -44,47 +44,7 @@ export function airlineName(code: string | null, airlines: AirlineRow[]): string
   return airlines.find((a) => a.code === code)?.name ?? code;
 }
 
-export function savingsPercent(price: number, typical: number | null): number | null {
-  if (!typical || typical <= price) return null;
-  return Math.round(((typical - price) / typical) * 100);
-}
-
-export type ScoreTier = "excellent" | "good" | "fair";
-
-/** Maps a raw deal_score (0-100) to a visual tier used by DealScoreRing/DealBadge. */
-export function scoreTier(score: number | null): ScoreTier {
-  if (score == null) return "fair";
-  if (score >= 85) return "excellent";
-  if (score >= 70) return "good";
-  return "fair";
-}
-
-export const SCORE_TIER_LABEL: Record<ScoreTier, string> = {
-  excellent: "صفقة استثنائية",
-  good: "صفقة ممتازة",
-  fair: "صفقة جيدة",
-};
-
-export const SCORE_TIER_COLORS: Record<ScoreTier, { fg: string; bg: string; ring: string }> = {
-  excellent: { fg: "#16A34A", bg: "#F0FDF4", ring: "#DCFCE7" },
-  good: { fg: "#0C7BB3", bg: "#E5F4FB", ring: "#BFE3F6" },
-  fair: { fg: "#6B7280", bg: "#F9FAFB", ring: "#E5E7EB" },
-};
-
-export function dealQualityLabel(score: number | null): string {
-  if (score == null) return "صفقة جيدة";
-  if (score >= 90) return "صفقة استثنائية";
-  if (score >= 80) return "صفقة ممتازة";
-  return "صفقة جيدة";
-}
-
-/** Quality label tied to on-page rank (used in the top-5 "Best Opportunities" row). */
-export function rankQualityLabel(rank: number): string {
-  if (rank === 1) return "صفقة استثنائية";
-  if (rank <= 3) return "صفقة رائعة";
-  return "صفقة جيدة";
-}
-
+/** Visual style for the plain rank-position number badge (#1, #2…) — no quality claim attached. */
 export function rankBadgeStyle(rank: number): { bg: string; text: string } {
   if (rank === 1) return { bg: "#F59E0B", text: "#ffffff" };
   return { bg: "#16A34A", text: "#ffffff" };

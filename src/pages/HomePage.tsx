@@ -25,7 +25,7 @@ const LAST_MINUTE_LIMIT = 10;
 export function HomePage() {
   const navigate = useNavigate();
   const catalog = useCatalog();
-  // Fetch every active deal once (sorted by deal_score) instead of only the
+  // Fetch every active deal once (sorted by price) instead of only the
   // top 12: the "best opportunities" cards still just take the first 12,
   // but FareBoard/LiveDealsMap need the full live set or most routes show
   // no price even though a live deal exists for them.
@@ -35,11 +35,11 @@ export function HomePage() {
   const [marketStats, setMarketStats] = useState<MarketStats | null>(null);
 
   useEffect(() => {
-    fetchActiveDeals({ sort: "deal_score", availableOnly: true })
+    fetchActiveDeals({ sort: "price_asc", availableOnly: true })
       .then(setAllActiveDeals)
       .catch((e) => setDealsError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoadingDeals(false));
-    // Market stats are computed entirely from real live data (deal_score,
+    // Market stats are computed entirely from real live data (active count,
     // expires_at, view_count, deal_price_history) — no invented numbers —
     // so they can load independently and fail silently without blocking
     // the rest of the homepage.

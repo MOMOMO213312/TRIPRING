@@ -5,9 +5,9 @@ import { DealImageWrapper } from "../components/DealImageWrapper";
 import { FilterPanel } from "../components/FilterPanel";
 import { Select } from "../components/ui/Select";
 import { Card } from "../components/ui/Card";
-import { getTypicalPrice, fetchActiveDeals } from "../lib/api";
+import { fetchActiveDeals } from "../lib/api";
 import type { TripType } from "../lib/api";
-import { airportLabel, dealTripScope, savingsPercent } from "../lib/deal-utils";
+import { airportLabel, dealTripScope } from "../lib/deal-utils";
 import type { TripScope } from "../lib/deal-utils";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
@@ -15,7 +15,7 @@ import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
 const BUDGET_CHIPS = [100, 200, 300, 500, 700, 1000];
-type SortKey = "deal_score" | "price_asc" | "price_desc" | "savings";
+type SortKey = "price_asc" | "price_desc";
 
 export function SearchResultsPage() {
   const [params, setParams] = useSearchParams();
@@ -28,7 +28,7 @@ export function SearchResultsPage() {
   const tripType = (params.get("tripType") as TripType | null) ?? "round_trip";
   const budget = params.get("budget") ?? "";
   const scope = params.get("scope") as TripScope | null;
-  const [sort, setSort] = useState<SortKey>("deal_score");
+  const [sort, setSort] = useState<SortKey>("price_asc");
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,7 +42,7 @@ export function SearchResultsPage() {
       to: effectiveTo || undefined,
       departureDate: date || undefined,
       maxPrice: budget && budget !== "1000plus" ? Number(budget) : undefined,
-      sort: sort === "savings" ? "deal_score" : sort,
+      sort,
       availableOnly: true,
       tripType,
     })
@@ -52,19 +52,12 @@ export function SearchResultsPage() {
   }, [from, effectiveTo, date, budget, sort, tripType]);
 
   const filtered = useMemo(() => {
-    let result = applyAdvancedFilters(deals, filters, catalog.references);
+    let result = applyAdvancedFilters(deals, filters);
     if (scope) {
       result = result.filter((deal) => dealTripScope(deal, catalog.airports) === scope);
     }
-    if (sort === "savings") {
-      result = [...result].sort((a, b) => {
-        const sa = savingsPercent(a.price, getTypicalPrice(a, catalog.references)) ?? 0;
-        const sb = savingsPercent(b.price, getTypicalPrice(b, catalog.references)) ?? 0;
-        return sb - sa;
-      });
-    }
     return result;
-  }, [deals, filters, sort, catalog.references, scope, catalog.airports]);
+  }, [deals, filters, scope, catalog.airports]);
 
   const availableAirlines = useMemo(() => airlinesInDeals(deals, catalog.airlines), [deals, catalog.airlines]);
   const activeFilterCount = countActiveFilters(filters);
@@ -104,8 +97,6 @@ export function SearchResultsPage() {
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
             options={[
-              { value: "deal_score", label: "أفضل فرصة" },
-              { value: "savings", label: "أعلى توفير" },
               { value: "price_asc", label: "السعر: الأقل أولاً" },
               { value: "price_desc", label: "السعر: الأعلى أولاً" },
             ]}
@@ -154,13 +145,8 @@ export function SearchResultsPage() {
             </Card>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {filtered.map((deal, i) => (
-                <DealImageWrapper
-                  key={deal.id}
-                  deal={deal}
-                  catalog={catalog}
-                  rank={sort === "deal_score" ? i + 1 : undefined}
-                />
+              {filtered.map((deal) => (
+                <DealImageWrapper key={deal.id} deal={deal} catalog={catalog} />
               ))}
             </div>
           )}

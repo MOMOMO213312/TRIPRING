@@ -36,7 +36,7 @@ export type DealSearchParams = {
   to?: string;
   departureDate?: string;
   maxPrice?: number;
-  sort?: "price_asc" | "price_desc" | "deal_score";
+  sort?: "price_asc" | "price_desc";
   dealType?: DealType | "any";
   availableOnly?: boolean;
   /** one_way → only deals with no return_date; round_trip → only deals WITH a
@@ -79,7 +79,7 @@ export type CreateBookingResult = {
 };
 
 export type MarketStats = {
-  topDealScore: number | null;
+  activeDealsCount: number;
   priceDropCount: number;
   endingSoonCount: number;
   mostViewedRoute: { from: string; to: string; views: number } | null;
@@ -157,9 +157,6 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean) {
     case "price_desc":
       query = query.order("price", { ascending: false });
       break;
-    case "deal_score":
-      query = query.order("deal_score", { ascending: false, nullsFirst: false });
-      break;
     case "price_asc":
     default:
       query = query.order("price", { ascending: true });
@@ -194,7 +191,7 @@ export async function fetchActiveDealsPage(
 }
 
 export async function fetchBestOpportunities(limit = 12): Promise<DealRow[]> {
-  const deals = await fetchActiveDeals({ sort: "deal_score", availableOnly: true });
+  const deals = await fetchActiveDeals({ sort: "price_asc", availableOnly: true });
   return deals.slice(0, limit);
 }
 
@@ -231,11 +228,8 @@ export async function fetchAdditionalServices(): Promise<AdditionalServiceRow[]>
 }
 
 export async function fetchMarketStats(): Promise<MarketStats> {
-  const deals = await fetchActiveDeals({ sort: "deal_score" });
-  const topDealScore = deals.reduce<number | null>(
-    (max, d) => (d.deal_score != null && (max == null || d.deal_score > max) ? d.deal_score : max),
-    null,
-  );
+  const deals = await fetchActiveDeals({ sort: "price_asc" });
+  const activeDealsCount = deals.length;
 
   const endingSoonCount = deals.filter((d) => {
     const hours = (new Date(d.expires_at).getTime() - Date.now()) / 3_600_000;
@@ -267,7 +261,7 @@ export async function fetchMarketStats(): Promise<MarketStats> {
     }
   }
 
-  return { topDealScore, priceDropCount, endingSoonCount, mostViewedRoute };
+  return { activeDealsCount, priceDropCount, endingSoonCount, mostViewedRoute };
 }
 
 export async function fetchRoutePriceTrend(
@@ -311,7 +305,7 @@ export async function fetchRoutePriceTrend(
     .map(([date, price]) => ({ date, price }));
 }
 
-export type RouteDatePrice = { date: string; price: number; dealId: string; dealScore: number | null };
+export type RouteDatePrice = { date: string; price: number; dealId: string };
 
 /**
  * Flexible Dates data source. Deliberately does NOT invent a full calendar —
@@ -329,7 +323,6 @@ export async function fetchRouteDatePrices(fromAirport: string, toAirport: strin
         date: d.departure_date,
         price: d.price,
         dealId: d.id,
-        dealScore: d.deal_score,
       });
     }
   }
@@ -553,25 +546,6 @@ export async function createTicketResale(input: {
     },
   ] as never);
   if (error) throw new Error(error.message);
-}
-
-export function getTypicalPrice(
-  deal: DealRow,
-  references: RoutePriceReferenceRow[],
-): number | null {
-  const ref = references.find(
-    (r) => r.from_airport === deal.from_airport && r.to_airport === deal.to_airport,
-  );
-  if (ref) {
-    // Prefer a real average/median over the min/max midpoint — the midpoint
-    // can misrepresent "typical" price and skew the "X% below typical" claim
-    // shown to customers. Falls back to the midpoint only until these are
-    // backfilled for a given route.
-    if (ref.avg_price_usd != null) return Math.round(ref.avg_price_usd);
-    if (ref.median_price_usd != null) return Math.round(ref.median_price_usd);
-    return Math.round((ref.min_price_usd + ref.max_price_usd) / 2);
-  }
-  return deal.original_price;
 }
 
 function seededPick<T>(items: T[], seed: string): T {

@@ -7,8 +7,7 @@ import { FilterPanel } from "../components/FilterPanel";
 import { Select } from "../components/ui/Select";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { fetchActiveDealsPage, getTypicalPrice } from "../lib/api";
-import { savingsPercent } from "../lib/deal-utils";
+import { fetchActiveDealsPage } from "../lib/api";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
 import { useCatalog } from "../hooks/useCatalog";
@@ -17,7 +16,7 @@ import type { DealRow, DealType } from "../types/database";
 const BUDGET_CHIPS = [100, 200, 300, 500, 700, 1000];
 const VALID_DEAL_TYPES: DealType[] = ["flash", "last_minute", "empty_seat", "special_fare"];
 const PAGE_SIZE = 30;
-type SortKey = "deal_score" | "price_asc" | "price_desc" | "savings";
+type SortKey = "price_asc" | "price_desc";
 
 export function DealsCenterPage() {
   const catalog = useCatalog();
@@ -28,7 +27,7 @@ export function DealsCenterPage() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [sort, setSort] = useState<SortKey>("deal_score");
+  const [sort, setSort] = useState<SortKey>("price_asc");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [budget, setBudget] = useState<number | null>(null);
@@ -61,7 +60,7 @@ export function DealsCenterPage() {
     setLoading(true);
     setPage(0);
     fetchActiveDealsPage({
-      sort: sort === "savings" ? "deal_score" : sort,
+      sort,
       from: from || undefined,
       to: to || undefined,
       maxPrice: budget ?? undefined,
@@ -81,7 +80,7 @@ export function DealsCenterPage() {
     const nextPage = page + 1;
     setLoadingMore(true);
     fetchActiveDealsPage({
-      sort: sort === "savings" ? "deal_score" : sort,
+      sort,
       from: from || undefined,
       to: to || undefined,
       maxPrice: budget ?? undefined,
@@ -98,17 +97,7 @@ export function DealsCenterPage() {
       .finally(() => setLoadingMore(false));
   }
 
-  const filtered = useMemo(() => {
-    let result = applyAdvancedFilters(deals, filters, catalog.references);
-    if (sort === "savings") {
-      result = [...result].sort((a, b) => {
-        const sa = savingsPercent(a.price, getTypicalPrice(a, catalog.references)) ?? 0;
-        const sb = savingsPercent(b.price, getTypicalPrice(b, catalog.references)) ?? 0;
-        return sb - sa;
-      });
-    }
-    return result;
-  }, [deals, filters, sort, catalog.references]);
+  const filtered = useMemo(() => applyAdvancedFilters(deals, filters), [deals, filters]);
 
   const availableAirlines = useMemo(() => airlinesInDeals(deals, catalog.airlines), [deals, catalog.airlines]);
   const activeFilterCount = countActiveFilters(filters);
@@ -135,8 +124,6 @@ export function DealsCenterPage() {
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
           options={[
-            { value: "deal_score", label: "أفضل فرصة" },
-            { value: "savings", label: "أعلى توفير" },
             { value: "price_asc", label: "السعر ↑" },
             { value: "price_desc", label: "السعر ↓" },
           ]}
@@ -203,7 +190,6 @@ export function DealsCenterPage() {
                     key={deal.id}
                     deal={deal}
                     catalog={catalog}
-                    rank={sort === "deal_score" ? i + 1 : undefined}
                     comparing={compareIds.includes(deal.id)}
                     onToggleCompare={toggleCompare}
                   />

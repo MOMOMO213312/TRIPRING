@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 
 import { AgencyReviewsPanel } from "../components/AgencyReviewsPanel";
 import { DealBadge } from "../components/DealBadge";
-import { DealScoreRing } from "../components/DealScoreRing";
 import { PriceHistoryChart } from "../components/PriceHistoryChart";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -14,7 +13,6 @@ import {
   fetchDealPriceHistory,
   fetchRouteDatePrices,
   getAgencyWhatsApp,
-  getTypicalPrice,
 } from "../lib/api";
 import type { PriceTrendPoint, RouteDatePrice } from "../lib/api";
 import {
@@ -27,7 +25,6 @@ import {
   hasPriceBreakdown,
   isLowSeats,
   layoverLabel,
-  savingsPercent,
   stopsLabel,
 } from "../lib/deal-utils";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
@@ -80,9 +77,6 @@ export function DealDetailPage() {
   }
 
   const currency = deal.currency ?? "USD";
-  const typical = getTypicalPrice(deal, catalog.references);
-  const savings = savingsPercent(deal.price, typical);
-  const savingsAmount = typical ? Math.max(0, Math.round(typical - deal.price)) : null;
   const waMessage = `مرحباً، أريد حجز العرض ${deal.id}: ${formatRoute(deal)} — ${deal.price} ${currency}`;
   const agency = catalog.agencies.find((a) => a.id === deal.agency_id);
   const trendPoints: PriceTrendPoint[] = history
@@ -120,16 +114,7 @@ export function DealDetailPage() {
           <p className="font-latin text-3xl font-extrabold text-[#0C7BB3]">{formatPrice(deal.price, currency)}</p>
           <p className="text-[11px] text-slate-400">لكل مسافر</p>
         </div>
-        {typical ? (
-          <p className="font-latin text-sm text-slate-400 line-through">{formatPrice(typical, currency)}</p>
-        ) : null}
       </div>
-
-      {savings ? (
-        <p className="rounded-lg bg-[#F0FDF4] px-3 py-2 text-center text-xs font-semibold text-[#16A34A]">
-          توفير {savingsAmount ? formatPrice(savingsAmount, currency) : ""} ({savings}%) عن السعر المعتاد
-        </p>
-      ) : null}
 
       {hasPriceBreakdown(deal) ? (
         <div className="space-y-1 border-t border-slate-100 pt-3 text-xs text-slate-500">
@@ -198,21 +183,11 @@ export function DealDetailPage() {
               {airlineName(deal.airline_code, catalog.airlines)} · {stopsLabel(deal.stops)}
             </p>
           </div>
-          {deal.deal_score != null ? (
-            <div className="rounded-full bg-white/95 p-1 shadow-lg">
-              <DealScoreRing score={deal.deal_score} size={56} />
-            </div>
-          ) : null}
         </div>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
         <DealBadge tone="good">{dealTypeLabel(deal.deal_type)}</DealBadge>
-        {savings ? (
-          <DealBadge tone="savings" icon="📉">
-            وفّر {savings}%
-          </DealBadge>
-        ) : null}
         {isLowSeats(deal.available_seats) ? (
           <DealBadge tone="urgent" icon="⏳">
             {deal.available_seats} مقاعد متبقية
@@ -382,7 +357,7 @@ export function DealDetailPage() {
             </Card>
           ) : null}
 
-          {deal.deal_score != null ? (
+          {dealReasons(deal, history).length > 0 ? (
             <Card>
               <h2 className="mb-3 font-bold text-slate-900">ليه دي فرصة كويسة؟</h2>
               <ul className="grid gap-2.5 sm:grid-cols-2">

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 import { DestinationCard } from "../components/DestinationCard";
 import { Button } from "../components/ui/Button";
-import { getTypicalPrice, fetchActiveDeals } from "../lib/api";
+import { fetchActiveDeals } from "../lib/api";
 import { PLATFORM_WHATSAPP } from "../lib/constants";
-import { airportLabel, formatRouteCities, savingsPercent } from "../lib/deal-utils";
+import { airportLabel, formatRouteCities } from "../lib/deal-utils";
 import { hoursUntil } from "../lib/filters";
 import { whatsAppLink } from "../lib/utils";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
@@ -27,7 +27,7 @@ export function BlueFridayPage() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    fetchActiveDeals({ availableOnly: true, sort: "deal_score" })
+    fetchActiveDeals({ availableOnly: true, sort: "price_asc" })
       .then(setDeals)
       .finally(() => setLoading(false));
   }, []);
@@ -44,14 +44,10 @@ export function BlueFridayPage() {
     s: String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, "0"),
   };
 
-  // Deepest discounts first — this is the whole point of the sale.
+  // Cheapest real prices first — this is the whole point of the sale.
   const bestFlightDeals = useMemo(() => {
-    return [...deals]
-      .map((d) => ({ deal: d, savings: savingsPercent(d.price, getTypicalPrice(d, catalog.references)) ?? 0 }))
-      .sort((a, b) => b.savings - a.savings)
-      .slice(0, 8)
-      .map((x) => x.deal);
-  }, [deals, catalog.references]);
+    return [...deals].sort((a, b) => a.price - b.price).slice(0, 8);
+  }, [deals]);
 
   // Deals closest to expiring — the actual "flash" hours.
   const flashHourDeals = useMemo(() => {
@@ -320,8 +316,6 @@ function BlueFridayDealCard({
   blurred?: boolean;
 }) {
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
-  const typical = getTypicalPrice(deal, catalog.references);
-  const savings = savingsPercent(deal.price, typical);
   const hoursLeft = hoursUntil(deal.expires_at);
 
   return (
@@ -353,9 +347,7 @@ function BlueFridayDealCard({
         </p>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">${deal.price}</span>
-          {typical ? <span className="font-latin text-xs text-slate-400 line-through">${typical}</span> : null}
         </div>
-        {savings ? <p className="mt-1 text-xs font-bold text-emerald-600">-{savings}%</p> : null}
       </div>
     </Link>
   );

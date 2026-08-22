@@ -1,10 +1,6 @@
-import { getTypicalPrice } from "./api";
-import { savingsPercent } from "./deal-utils";
-import type { AirlineRow, DealRow, DealType, RoutePriceReferenceRow, StopType } from "../types/database";
+import type { AirlineRow, DealRow, DealType, StopType } from "../types/database";
 
 export type AdvancedFilters = {
-  minScore: number | null; // 90 / 80 / 70 / null (any)
-  minSavings: number | null; // 10 / 20 / 30 / 40 / null
   stops: StopType[]; // empty = any
   airlines: string[]; // empty = any
   minBaggage: number | null; // 23 / 32 / null
@@ -15,8 +11,6 @@ export type AdvancedFilters = {
 };
 
 export const EMPTY_FILTERS: AdvancedFilters = {
-  minScore: null,
-  minSavings: null,
   stops: [],
   airlines: [],
   minBaggage: null,
@@ -28,8 +22,6 @@ export const EMPTY_FILTERS: AdvancedFilters = {
 
 export function countActiveFilters(f: AdvancedFilters): number {
   let n = 0;
-  if (f.minScore != null) n++;
-  if (f.minSavings != null) n++;
   if (f.stops.length) n++;
   if (f.airlines.length) n++;
   if (f.minBaggage != null) n++;
@@ -40,13 +32,8 @@ export function countActiveFilters(f: AdvancedFilters): number {
   return n;
 }
 
-export function applyAdvancedFilters(
-  deals: DealRow[],
-  filters: AdvancedFilters,
-  references: RoutePriceReferenceRow[],
-): DealRow[] {
+export function applyAdvancedFilters(deals: DealRow[], filters: AdvancedFilters): DealRow[] {
   return deals.filter((deal) => {
-    if (filters.minScore != null && (deal.deal_score ?? 0) < filters.minScore) return false;
     if (filters.stops.length && !filters.stops.includes(deal.stops)) return false;
     if (filters.airlines.length && !filters.airlines.includes(deal.airline_code ?? "")) return false;
     if (filters.minBaggage != null && (deal.baggage_kg ?? 0) < filters.minBaggage) return false;
@@ -56,11 +43,6 @@ export function applyAdvancedFilters(
     if (filters.expiresWithinHours != null) {
       const hoursLeft = hoursUntil(deal.expires_at);
       if (hoursLeft == null || hoursLeft < 0 || hoursLeft > filters.expiresWithinHours) return false;
-    }
-    if (filters.minSavings != null) {
-      const typical = getTypicalPrice(deal, references);
-      const savings = savingsPercent(deal.price, typical) ?? 0;
-      if (savings < filters.minSavings) return false;
     }
     return true;
   });
