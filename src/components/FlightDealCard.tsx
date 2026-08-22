@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 
 import { useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
-import { getTypicalPrice } from "../lib/api";
 import {
   airlineName,
   airportLabel,
@@ -11,7 +10,6 @@ import {
   dealTypeLabel,
   departureTimingLabel,
   isLowSeats,
-  savingsPercent,
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
@@ -35,9 +33,6 @@ const TYPE_BADGE_STYLE: Record<DealType, string> = {
  */
 export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Catalog }) {
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
-  const typical = getTypicalPrice(deal, catalog.references);
-  const strikePrice = deal.original_price ?? typical;
-  const savings = savingsPercent(deal.price, strikePrice);
   const lowSeats = isLowSeats(deal.available_seats);
 
   return (
@@ -110,14 +105,6 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
         <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex items-baseline gap-1.5">
             <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">${deal.price}</span>
-            {strikePrice ? (
-              <span className="font-latin text-xs text-slate-400 line-through">${strikePrice}</span>
-            ) : null}
-            {savings ? (
-              <span className="font-latin rounded-full bg-green-50 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
-                -{savings}%
-              </span>
-            ) : null}
           </div>
           <span
             className={`shrink-0 text-[11px] font-semibold whitespace-nowrap ${lowSeats ? "text-red-600" : "text-slate-400"}`}

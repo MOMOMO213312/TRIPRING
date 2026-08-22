@@ -4,8 +4,6 @@ import { dealTypeLabel } from "../lib/deal-utils";
 import type { AirlineRow, DealType, StopType } from "../types/database";
 import { Button } from "./ui/Button";
 
-const SCORE_OPTIONS = [90, 80, 70];
-const SAVINGS_OPTIONS = [10, 20, 30, 40];
 const STOP_OPTIONS: { value: StopType; label: string }[] = [
   { value: "direct", label: "بدون توقف" },
   { value: "one_stop", label: "توقف واحد" },
@@ -54,34 +52,6 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
           إعادة تعيين
         </button>
       </div>
-
-      <FilterGroup title="Deal Score">
-        <div className="flex flex-wrap gap-2">
-          {SCORE_OPTIONS.map((s) => (
-            <ChipToggle
-              key={s}
-              active={filters.minScore === s}
-              onClick={() => onChange({ ...filters, minScore: filters.minScore === s ? null : s })}
-            >
-              {s}+
-            </ChipToggle>
-          ))}
-        </div>
-      </FilterGroup>
-
-      <FilterGroup title="نسبة التوفير">
-        <div className="flex flex-wrap gap-2">
-          {SAVINGS_OPTIONS.map((s) => (
-            <ChipToggle
-              key={s}
-              active={filters.minSavings === s}
-              onClick={() => onChange({ ...filters, minSavings: filters.minSavings === s ? null : s })}
-            >
-              {s}%+
-            </ChipToggle>
-          ))}
-        </div>
-      </FilterGroup>
 
       <FilterGroup title="التوقفات">
         <div className="space-y-2">

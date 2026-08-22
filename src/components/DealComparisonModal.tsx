@@ -1,18 +1,15 @@
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 
-import { getTypicalPrice } from "../lib/api";
 import {
   airlineName,
   formatRouteCities,
-  savingsPercent,
   stopsMetaLabel,
 } from "../lib/deal-utils";
 import { cn, formatPrice } from "../lib/utils";
 import type { Catalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 import { Button } from "./ui/Button";
-import { DealScoreRing } from "./DealScoreRing";
 
 type Props = {
   open: boolean;
@@ -50,23 +47,6 @@ export function DealComparisonModal({ open, onClose, deals, catalog, onRemove }:
         </span>
       ),
       bestDealId: (ds) => ds.reduce((min, d) => (d.price < min.price ? d : min)).id,
-    },
-    {
-      label: "التوفير",
-      cell: (d) => {
-        const typical = getTypicalPrice(d, catalog.references);
-        const pct = savingsPercent(d.price, typical);
-        return pct ? <span className="font-semibold text-[#16A34A]">وفّر {pct}%</span> : <span className="text-slate-400">—</span>;
-      },
-    },
-    {
-      label: "Deal Score",
-      cell: (d) => (d.deal_score != null ? <DealScoreRing score={d.deal_score} size={44} /> : <span className="text-slate-400">—</span>),
-      bestDealId: (ds) => {
-        const withScore = ds.filter((d) => d.deal_score != null);
-        if (!withScore.length) return null;
-        return withScore.reduce((max, d) => ((d.deal_score ?? 0) > (max.deal_score ?? 0) ? d : max)).id;
-      },
     },
     {
       label: "شركة الطيران",

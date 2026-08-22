@@ -30,16 +30,15 @@ const CONTINENTS = [
 
 export function LiveDealsMap({ deals, airports }: Props) {
   const points = useMemo(() => {
-    const seen = new Map<string, { code: string; score: number; count: number; price: number }>();
+    const seen = new Map<string, { code: string; count: number; price: number }>();
     for (const d of deals) {
       const code = d.to_airport;
       const existing = seen.get(code);
       if (existing) {
         existing.count += 1;
-        existing.score = Math.max(existing.score, d.deal_score ?? 0);
         existing.price = Math.min(existing.price, d.price);
       } else {
-        seen.set(code, { code, score: d.deal_score ?? 0, count: 1, price: d.price });
+        seen.set(code, { code, count: 1, price: d.price });
       }
     }
     return [...seen.values()]
@@ -53,10 +52,10 @@ export function LiveDealsMap({ deals, airports }: Props) {
         <h3 className="font-bold text-slate-900">خريطة العروض المباشرة</h3>
         <div className="flex items-center gap-3 text-xs text-slate-500">
           <span className="inline-flex items-center gap-1">
-            <span className="size-2 rounded-full bg-[#DC2626]" /> عروض ساخنة
+            <span className="size-2 rounded-full bg-[#DC2626]" /> عدة عروض نشطة
           </span>
           <span className="inline-flex items-center gap-1">
-            <span className="size-2 rounded-full bg-[#16A34A]" /> عروض جيدة
+            <span className="size-2 rounded-full bg-[#16A34A]" /> عرض واحد نشط
           </span>
         </div>
       </div>
@@ -72,7 +71,7 @@ export function LiveDealsMap({ deals, airports }: Props) {
           </text>
         ) : (
           points.map((p) => {
-            const hot = p.score >= 90;
+            const hot = p.count >= 3;
             const color = hot ? "#DC2626" : "#16A34A";
             return (
               <g key={p.code}>
@@ -93,7 +92,7 @@ export function LiveDealsMap({ deals, airports }: Props) {
       </svg>
 
       <p className="mt-3 text-xs text-slate-400">
-        مواقع تقريبية للوجهات ذات العروض النشطة حاليًا — النقطة الحمراء تعني فرصة قوية (Deal Score ≥ 90).
+        مواقع تقريبية للوجهات ذات العروض النشطة حاليًا — النقطة الحمراء تعني 3 عروض نشطة أو أكثر على نفس الوجهة.
       </p>
     </Card>
   );

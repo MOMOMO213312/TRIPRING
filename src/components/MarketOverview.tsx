@@ -16,8 +16,8 @@ export function MarketOverview({ stats, airports }: Props) {
 
   const metrics = [
     {
-      label: "أعلى Deal Score اليوم",
-      value: stats.topDealScore != null ? formatLatinNumber(stats.topDealScore) : "—",
+      label: "عروض نشطة الآن",
+      value: formatLatinNumber(stats.activeDealsCount),
     },
     {
       label: "عروض بانخفاض سعر",

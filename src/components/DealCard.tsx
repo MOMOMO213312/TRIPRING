@@ -1,21 +1,18 @@
 import { Link } from "react-router-dom";
 
-import { getAgencyWhatsApp, getTypicalPrice } from "../lib/api";
+import { getAgencyWhatsApp } from "../lib/api";
 import {
   airlineName,
   baggageBadgeLabel,
   departureTimingLabel,
   formatRouteCities,
   rankBadgeStyle,
-  rankQualityLabel,
-  savingsPercent,
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
 import { cn, formatPrice, whatsAppLink, WhatsAppIcon } from "../lib/utils";
 import type { AgencyRow, AirlineRow, AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 import { DealBadge } from "./DealBadge";
-import { DealScoreRing } from "./DealScoreRing";
 import { Button } from "./ui/Button";
 
 type Props = {
@@ -44,8 +41,6 @@ export function DealCard({
   comparing,
   onToggleCompare,
 }: Props) {
-  const typical = getTypicalPrice(deal, references);
-  const savings = savingsPercent(deal.price, typical);
   const airline = airlines.find((a) => a.code === deal.airline_code);
   const toAirport = airports.find((a) => a.code === deal.to_airport);
   const agency = agencies.find((a) => a.id === deal.agency_id);
@@ -68,9 +63,6 @@ export function DealCard({
               style={{ backgroundColor: rankStyle.bg, color: rankStyle.text }}
             >
               {rank}
-            </span>
-            <span className="rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-semibold text-slate-800 shadow-sm backdrop-blur-sm">
-              {rankQualityLabel(rank)}
             </span>
           </div>
         ) : null}
@@ -127,17 +119,7 @@ export function DealCard({
             <p className="font-latin text-2xl font-extrabold text-[#0C7BB3]">
               {formatPrice(deal.price, deal.currency ?? "USD")}
             </p>
-            {typical && typical > deal.price ? (
-              <p className="font-latin mt-0.5 text-sm text-slate-400 line-through">
-                Typical {formatPrice(typical, deal.currency ?? "USD")}
-              </p>
-            ) : null}
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-              {savings ? (
-                <DealBadge tone="savings" icon="📉">
-                  وفّر {savings}%
-                </DealBadge>
-              ) : null}
               {deal.stops === "direct" ? <DealBadge tone="good" icon="✈️">مباشرة</DealBadge> : null}
               {deal.refundable ? <DealBadge tone="excellent">قابلة للاسترداد</DealBadge> : null}
               {baggageBadgeLabel(deal) ? (
@@ -147,7 +129,6 @@ export function DealCard({
               ) : null}
             </div>
           </div>
-          {deal.deal_score != null ? <DealScoreRing score={deal.deal_score} showLabel /> : null}
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">

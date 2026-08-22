@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 
 const CHIPS = [
   { icon: "💰", label: "أقل سعر", sort: "price_asc" },
-  { icon: "🔥", label: "أعلى توفير", sort: "deal_score" },
-  { icon: "⭐", label: "أعلى Deal Score", sort: "deal_score" },
   { icon: "✈️", label: "بدون توقف", stops: "direct" },
   { icon: "📅", label: "تواريخ مرنة", flexible: "1" },
 ] as const;
