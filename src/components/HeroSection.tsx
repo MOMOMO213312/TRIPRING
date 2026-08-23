@@ -21,12 +21,20 @@ const POPULAR = [
   { from: "CAI", to: "SSH", label: "القاهرة ← شرم الشيخ" },
 ];
 
+const BUDGET_OPTIONS = [
+  { value: "", label: "أي ميزانية" },
+  { value: "300", label: "حتى $300" },
+  { value: "500", label: "حتى $500" },
+  { value: "700", label: "حتى $700" },
+  { value: "1000", label: "حتى $1000" },
+];
+
 type Props = {
   airports: AirportRow[];
   deals: DealRow[];
   references: RoutePriceReferenceRow[];
   imageCache: ImageCacheRow[];
-  onSearch: (params: { from: string; to: string; date: string; returnDate: string; passengers: number; tripType: TripType }) => void;
+  onSearch: (params: { from: string; to: string; date: string; returnDate: string; passengers: number; tripType: TripType; budget: string }) => void;
 };
 
 type HeroDestinationImage = { code: string; city: string; url: string };
@@ -103,6 +111,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
   const [date, setDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
+  const [budget, setBudget] = useState("");
 
   const [heroImages, setHeroImages] = useState<HeroDestinationImage[]>([]);
   const [activeImage, setActiveImage] = useState(0);
@@ -132,7 +141,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    onSearch({ from, to, date, returnDate, passengers, tripType });
+    onSearch({ from, to, date, returnDate, passengers, tripType, budget });
   }
 
   return (
@@ -238,109 +247,122 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
             ))}
           </div>
 
+          {/* Single unified pill bar — From / To / When / Budget all in one row
+             with the search button docked at the end, instead of the fields
+             being split across two stacked rows. Wraps to a stacked column
+             below `lg` since 5 fields + button can't all fit narrower than
+             that without truncating. */}
           <form onSubmit={submit}>
-            <div className="flex flex-col gap-2.5">
-              {/* Two stacked rows instead of cramming all 5 fields + swap button
-                 into one strip — From/To (the widest values) get their own row,
-                 and the three shorter fields (date/date/passengers) share a
-                 second row, so every field gets enough width for its label,
-                 icon and value to stop colliding or truncating. */}
-              <div className="flex flex-1 flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
-                <FieldBox icon="📍" label="From" className="sm:flex-1">
-                  <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
-                    {airportOptions}
-                  </select>
-                </FieldBox>
+            <div className="flex flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:flex-row lg:items-stretch lg:divide-x lg:divide-y-0 rtl:lg:divide-x-reverse">
+              <FieldBox icon="📍" label="From" className="lg:flex-1">
+                <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
+                  {airportOptions}
+                </select>
+              </FieldBox>
 
-                <div className="flex h-8 shrink-0 items-center justify-center sm:h-auto sm:w-12">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFrom(to);
-                      setTo(from);
-                    }}
-                    aria-label="تبديل الوجهتين"
-                    className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#0C7BB3] hover:text-[#0C7BB3] sm:rotate-0"
-                  >
-                    ⇄
-                  </button>
-                </div>
-
-                <FieldBox icon="📍" label="To" className="sm:flex-1">
-                  <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                    <option value="">اختر الوجهة</option>
-                    <option value="any">Anywhere — أي وجهة</option>
-                    {airportOptions}
-                  </select>
-                </FieldBox>
+              <div className="flex h-8 shrink-0 items-center justify-center lg:h-auto lg:w-10">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFrom(to);
+                    setTo(from);
+                  }}
+                  aria-label="تبديل الوجهتين"
+                  className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#0C7BB3] hover:text-[#0C7BB3] lg:rotate-0"
+                >
+                  ⇄
+                </button>
               </div>
 
-              <div className="flex flex-col gap-2.5 lg:flex-row lg:items-stretch">
-                <div className="flex flex-1 flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row sm:divide-x sm:divide-y-0 rtl:sm:divide-x-reverse">
-                  <FieldBox icon="📅" label="Departure" className="sm:flex-1">
-                    <div className="relative">
-                      <input
-                        type="date"
-                        value={date}
-                        min={new Date().toISOString().slice(0, 10)}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="hero-field-input"
-                      />
-                      {/* Native date inputs render their empty state in the
-                         browser's own locale (often "mm/dd"), which reads as
-                         English inside an otherwise Arabic form. Cover it with
-                         an Arabic label until a date is actually picked —
-                         pointer-events-none so the click still opens the native
-                         picker underneath. */}
-                      {!date && (
-                        <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                          اختر التاريخ
-                        </span>
-                      )}
-                    </div>
-                  </FieldBox>
-                  <FieldBox icon="📅" label="Return" className="sm:flex-1">
-                    <div className="relative">
-                      <input
-                        type="date"
-                        value={returnDate}
-                        min={date || new Date().toISOString().slice(0, 10)}
-                        disabled={tripType === "one_way"}
-                        onChange={(e) => setReturnDate(e.target.value)}
-                        className="hero-field-input disabled:cursor-not-allowed disabled:text-slate-300"
-                      />
-                      {!returnDate && tripType !== "one_way" && (
-                        <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                          اختر التاريخ
-                        </span>
-                      )}
-                    </div>
-                  </FieldBox>
-                  <FieldBox
-                    icon="👤"
-                    label="Passengers"
-                    trailingIcon="▾"
-                    className="sm:flex-1 cursor-pointer hover:bg-[#E5F4FB]/40"
-                  >
-                    <select
-                      value={passengers}
-                      onChange={(e) => setPassengers(Number(e.target.value))}
-                      className="hero-field-select cursor-pointer"
-                    >
-                      {[1, 2, 3, 4, 5, 6].map((n) => (
-                        <option key={n} value={n}>
-                          {n} {n === 1 ? "مسافر" : "مسافرين"}، الدرجة الاقتصادية
-                        </option>
-                      ))}
-                    </select>
-                  </FieldBox>
-                </div>
+              <FieldBox icon="📍" label="To" className="lg:flex-1">
+                <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
+                  <option value="">اختر الوجهة</option>
+                  <option value="any">Anywhere — أي وجهة</option>
+                  {airportOptions}
+                </select>
+              </FieldBox>
 
+              <FieldBox icon="📅" label="When" className="lg:flex-1">
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={date}
+                    min={new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="hero-field-input"
+                  />
+                  {/* Native date inputs render their empty state in the
+                     browser's own locale (often "mm/dd"), which reads as
+                     English inside an otherwise Arabic form. Cover it with
+                     an Arabic label until a date is actually picked —
+                     pointer-events-none so the click still opens the native
+                     picker underneath. */}
+                  {!date && (
+                    <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
+                      تواريخ مرنة
+                    </span>
+                  )}
+                </div>
+              </FieldBox>
+
+              {tripType === "round_trip" ? (
+                <FieldBox icon="📅" label="Return" className="lg:flex-1">
+                  <div className="relative">
+                    <input
+                      type="date"
+                      value={returnDate}
+                      min={date || new Date().toISOString().slice(0, 10)}
+                      onChange={(e) => setReturnDate(e.target.value)}
+                      className="hero-field-input"
+                    />
+                    {!returnDate && (
+                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
+                        تواريخ مرنة
+                      </span>
+                    )}
+                  </div>
+                </FieldBox>
+              ) : null}
+
+              <FieldBox icon="💰" label="Budget" trailingIcon="▾" className="lg:flex-1 cursor-pointer hover:bg-[#E5F4FB]/40">
+                <select
+                  value={budget}
+                  onChange={(e) => setBudget(e.target.value)}
+                  className="hero-field-select cursor-pointer"
+                >
+                  {BUDGET_OPTIONS.map((b) => (
+                    <option key={b.value} value={b.value}>
+                      {b.label}
+                    </option>
+                  ))}
+                </select>
+              </FieldBox>
+
+              <FieldBox
+                icon="👤"
+                label="Passengers"
+                trailingIcon="▾"
+                className="lg:w-40 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#E5F4FB]/40"
+              >
+                <select
+                  value={passengers}
+                  onChange={(e) => setPassengers(Number(e.target.value))}
+                  className="hero-field-select cursor-pointer"
+                >
+                  {[1, 2, 3, 4, 5, 6].map((n) => (
+                    <option key={n} value={n}>
+                      {n} {n === 1 ? "مسافر" : "مسافرين"}
+                    </option>
+                  ))}
+                </select>
+              </FieldBox>
+
+              <div className="p-2 lg:flex lg:items-center lg:p-1.5">
                 <button
                   type="submit"
-                  className="flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#0C7BB3] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#BFE3F6] transition hover:-translate-y-0.5 hover:bg-[#095E8A] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:py-0"
+                  className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#0C7BB3] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#BFE3F6] transition hover:-translate-y-0.5 hover:bg-[#095E8A] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:w-auto lg:rounded-2xl"
                 >
-                  <span aria-hidden>🔍</span> ابحث عن رحلات
+                  <span aria-hidden>🔍</span> دوّر على أفضل عرض
                 </button>
               </div>
             </div>

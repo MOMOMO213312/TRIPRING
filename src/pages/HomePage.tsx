@@ -62,6 +62,7 @@ export function HomePage() {
     returnDate: string;
     passengers: number;
     tripType: TripType;
+    budget: string;
   }) {
     const q = new URLSearchParams();
     if (params.from) q.set("from", params.from);
@@ -73,6 +74,7 @@ export function HomePage() {
     if (params.tripType !== "round_trip") q.set("tripType", params.tripType);
     if (params.tripType !== "one_way" && params.returnDate) q.set("returnDate", params.returnDate);
     if (params.passengers > 1) q.set("passengers", String(params.passengers));
+    if (params.budget) q.set("budget", params.budget);
     navigate(`/search?${q.toString()}`);
   }
 
