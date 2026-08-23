@@ -104,6 +104,13 @@ body {
   @apply border-[#0C7BB3] bg-[#E5F4FB] text-[#0C7BB3];
 }
 
+/* Homepage-only orange variant — TravelToSection is only rendered on the
+   homepage, so this can follow the orange theme without affecting the
+   shared .smart-chip-active used on /search and /deals. */
+.smart-chip-active-home {
+  @apply border-[#FF7A45] bg-[#FFEDE3] text-[#FF7A45];
+}
+
 .cta-primary {
   @apply rounded-xl bg-[#0C7BB3] font-semibold text-white shadow-md shadow-[#BFE3F6] transition hover:bg-[#095E8A] hover:shadow-lg active:scale-[0.98];
 }

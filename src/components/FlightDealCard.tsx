@@ -13,8 +13,22 @@ import {
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import type { DealRow } from "../types/database";
+import type { DealRow, DealType } from "../types/database";
 import { DealCountdown } from "./DealCountdown";
+
+// Homepage-only badge color override: dealTypeBadgeClass is shared with
+// DealCard.tsx (used on /search and /deals, which stay on the blue theme),
+// so "flash"/"special_fare" can't be recolored there without affecting
+// those pages too. This card is only ever rendered on the homepage, so it
+// swaps just those two to the homepage's orange accent.
+const HOME_BADGE_OVERRIDE: Partial<Record<DealType, string>> = {
+  flash: "bg-[#FF7A45]",
+  special_fare: "bg-[#FF7A45]",
+};
+
+function homeBadgeClass(type: DealType): string {
+  return HOME_BADGE_OVERRIDE[type] ?? dealTypeBadgeClass(type);
+}
 
 /**
  * Flight/deal card matching the reference layout exactly:
@@ -45,7 +59,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
         )}
 
         <span
-          className={`font-latin absolute start-2.5 top-2.5 rounded-md px-2 py-1 text-[11px] font-bold text-white shadow-sm ${dealTypeBadgeClass(deal.deal_type)}`}
+          className={`font-latin absolute start-2.5 top-2.5 rounded-md px-2 py-1 text-[11px] font-bold text-white shadow-sm ${homeBadgeClass(deal.deal_type)}`}
         >
           {dealTypeLabel(deal.deal_type)}
         </span>
@@ -96,7 +110,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
 
         <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">${deal.price}</span>
+            <span className="font-latin text-lg font-extrabold text-[#FF7A45]">${deal.price}</span>
           </div>
           <span
             className={`shrink-0 text-[11px] font-semibold whitespace-nowrap ${lowSeats ? "text-red-600" : "text-slate-400"}`}

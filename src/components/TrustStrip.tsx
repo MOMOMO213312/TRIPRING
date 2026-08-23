@@ -13,7 +13,7 @@ export function TrustStrip() {
           key={item.title}
           className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm"
         >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#E5F4FB] text-[#0C7BB3]">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FFEDE3] text-[#FF7A45]">
             <item.icon className="size-5" />
           </span>
           <div className="min-w-0">

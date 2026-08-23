@@ -131,7 +131,7 @@ export function TravelToSection({ airports, imageCache, references, fromAirport 
             onClick={() => setSelectedCountry(country)}
             className={
               country === effectiveCountry
-                ? "smart-chip smart-chip-active shrink-0"
+                ? "smart-chip smart-chip-active-home shrink-0"
                 : "smart-chip shrink-0"
             }
           >
