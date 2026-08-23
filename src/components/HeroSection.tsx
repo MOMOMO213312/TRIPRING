@@ -23,11 +23,11 @@ const POPULAR = [
 ];
 
 const BUDGET_OPTIONS = [
-  { value: "", label: "أي ميزانية" },
-  { value: "300", label: "حتى $300" },
-  { value: "500", label: "حتى $500" },
-  { value: "700", label: "حتى $700" },
-  { value: "1000", label: "حتى $1000" },
+  { value: "", label: "Any budget" },
+  { value: "300", label: "Up to $300" },
+  { value: "500", label: "Up to $500" },
+  { value: "700", label: "Up to $700" },
+  { value: "1000", label: "Up to $1000" },
 ];
 
 type Props = {
@@ -136,7 +136,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
 
   const airportOptions = airports.map((a) => (
     <option key={a.code} value={a.code}>
-      {a.city} ({a.code})
+      {a.city_en ?? a.city} ({a.code})
     </option>
   ));
 
@@ -296,8 +296,8 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
 
               <FieldBox icon="📍" label="To" className="lg:flex-1">
                 <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                  <option value="">اختر الوجهة</option>
-                  <option value="any">Anywhere — أي وجهة</option>
+                  <option value="">Select destination</option>
+                  <option value="any">Anywhere</option>
                   {airportOptions}
                 </select>
               </FieldBox>
@@ -312,14 +312,13 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                     className="hero-field-input"
                   />
                   {/* Native date inputs render their empty state in the
-                     browser's own locale (often "mm/dd"), which reads as
-                     English inside an otherwise Arabic form. Cover it with
-                     an Arabic label until a date is actually picked —
+                     browser's own locale (often "mm/dd"). Cover it with a
+                     fixed English label until a date is actually picked —
                      pointer-events-none so the click still opens the native
                      picker underneath. */}
                   {!date && (
                     <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                      تواريخ مرنة
+                      Flexible dates
                     </span>
                   )}
                 </div>
@@ -337,7 +336,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                     />
                     {!returnDate && (
                       <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                        تواريخ مرنة
+                        Flexible dates
                       </span>
                     )}
                   </div>
@@ -371,7 +370,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                 >
                   {[1, 2, 3, 4, 5, 6].map((n) => (
                     <option key={n} value={n}>
-                      {n} {n === 1 ? "مسافر" : "مسافرين"}
+                      {n} {n === 1 ? "Passenger" : "Passengers"}
                     </option>
                   ))}
                 </select>
