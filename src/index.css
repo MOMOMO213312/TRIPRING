@@ -126,9 +126,13 @@ body {
 
 .hero-field-select,
 .hero-field-input {
-  @apply w-full border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none;
+  @apply w-full border-0 bg-transparent p-0 text-[15px] font-bold text-slate-900 outline-none;
 }
 
 .hero-field-select {
   @apply cursor-pointer appearance-none;
+}
+
+.hero-field-label {
+  @apply text-[11px] font-medium text-slate-400;
 }

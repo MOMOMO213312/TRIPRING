@@ -1,5 +1,5 @@
 import type { FormEvent, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { OneWayFareBoard } from "./OneWayFareBoard";
@@ -23,11 +23,17 @@ const POPULAR = [
 ];
 
 const BUDGET_OPTIONS = [
-  { value: "", label: "Any budget" },
-  { value: "300", label: "Up to $300" },
-  { value: "500", label: "Up to $500" },
-  { value: "700", label: "Up to $700" },
-  { value: "1000", label: "Up to $1000" },
+  { value: "", label: "بدون حد" },
+  { value: "300", label: "حتى $300" },
+  { value: "500", label: "حتى $500" },
+  { value: "700", label: "حتى $700" },
+  { value: "1000", label: "حتى $1000" },
+];
+
+const TRIP_TABS = [
+  { key: "round_trip" as const, label: "ذهاب وعودة", Icon: IconRoundTrip },
+  { key: "one_way" as const, label: "ذهاب فقط", Icon: IconOneWay },
+  { key: "multi_city" as const, label: "مدن متعددة", Icon: IconMultiCity },
 ];
 
 type Props = {
@@ -136,7 +142,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
 
   const airportOptions = airports.map((a) => (
     <option key={a.code} value={a.code}>
-      {a.city_en ?? a.city} ({a.code})
+      {a.city} ({a.code})
     </option>
   ));
 
@@ -240,15 +246,9 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
          sm:pb-44) that comfortably exceeds this negative margin, so the card
          can never cover the headline or subheadline text. */}
       <div className="relative z-10 mx-auto max-w-5xl px-4">
-        <div className="-mt-28 rounded-[24px] bg-white p-4 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:-mt-32 sm:p-5">
+        <div className="-mt-28 rounded-[28px] bg-white p-4 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:-mt-32 sm:p-6">
           <div className="mb-4 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
-            {(
-              [
-                ["round_trip", "↔️", "ذهاب وعودة"],
-                ["one_way", "✈️", "ذهاب فقط"],
-                ["multi_city", "🧭", "مدن متعددة"],
-              ] as const
-            ).map(([key, icon, label]) => (
+            {TRIP_TABS.map(({ key, Icon, label }) => (
               <button
                 key={key}
                 type="button"
@@ -259,8 +259,8 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                <span aria-hidden className="text-xs">
-                  {icon}
+                <span aria-hidden className={tripType === key ? "text-[#0C7BB3]" : "text-slate-400"}>
+                  <Icon />
                 </span>
                 {label}
               </button>
@@ -274,7 +274,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
              that without truncating. */}
           <form onSubmit={submit}>
             <div className="flex flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:flex-row lg:items-stretch lg:divide-x lg:divide-y-0 rtl:lg:divide-x-reverse">
-              <FieldBox icon="📍" label="From" className="lg:flex-1">
+              <FieldBox icon={<IconPin />} label="من" className="lg:flex-1">
                 <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
                   {airportOptions}
                 </select>
@@ -288,21 +288,21 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                     setTo(from);
                   }}
                   aria-label="تبديل الوجهتين"
-                  className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#0C7BB3] hover:text-[#0C7BB3] lg:rotate-0"
+                  className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0C7BB3] hover:text-[#0C7BB3] hover:shadow-md active:scale-95 lg:rotate-0"
                 >
-                  ⇄
+                  <IconSwap />
                 </button>
               </div>
 
-              <FieldBox icon="📍" label="To" className="lg:flex-1">
+              <FieldBox icon={<IconPin />} label="إلى" className="lg:flex-1">
                 <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                  <option value="">Select destination</option>
-                  <option value="any">Anywhere</option>
+                  <option value="">اختر الوجهة</option>
+                  <option value="any">أي مكان</option>
                   {airportOptions}
                 </select>
               </FieldBox>
 
-              <FieldBox icon="📅" label="When" className="lg:flex-1">
+              <FieldBox icon={<IconCalendar />} label="المغادرة" className="lg:flex-1">
                 <div className="relative">
                   <input
                     type="date"
@@ -312,20 +312,19 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                     className="hero-field-input"
                   />
                   {/* Native date inputs render their empty state in the
-                     browser's own locale (often "mm/dd"). Cover it with a
-                     fixed English label until a date is actually picked —
-                     pointer-events-none so the click still opens the native
-                     picker underneath. */}
+                     browser's own locale. Cover it with a fixed Arabic label
+                     until a date is actually picked — pointer-events-none so
+                     the click still opens the native picker underneath. */}
                   {!date && (
-                    <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                      Flexible dates
+                    <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
+                      تواريخ مرنة
                     </span>
                   )}
                 </div>
               </FieldBox>
 
               {tripType === "round_trip" ? (
-                <FieldBox icon="📅" label="Return" className="lg:flex-1">
+                <FieldBox icon={<IconCalendar />} label="العودة" className="lg:flex-1">
                   <div className="relative">
                     <input
                       type="date"
@@ -335,53 +334,27 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                       className="hero-field-input"
                     />
                     {!returnDate && (
-                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-800">
-                        Flexible dates
+                      <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
+                        تواريخ مرنة
                       </span>
                     )}
                   </div>
                 </FieldBox>
               ) : null}
 
-              <FieldBox icon="💰" label="Budget" trailingIcon="▾" className="lg:flex-1 cursor-pointer hover:bg-[#E5F4FB]/40">
-                <select
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                  className="hero-field-select cursor-pointer"
-                >
-                  {BUDGET_OPTIONS.map((b) => (
-                    <option key={b.value} value={b.value}>
-                      {b.label}
-                    </option>
-                  ))}
-                </select>
-              </FieldBox>
-
-              <FieldBox
-                icon="👤"
-                label="Passengers"
-                trailingIcon="▾"
-                className="lg:w-40 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#E5F4FB]/40"
-              >
-                <select
-                  value={passengers}
-                  onChange={(e) => setPassengers(Number(e.target.value))}
-                  className="hero-field-select cursor-pointer"
-                >
-                  {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <option key={n} value={n}>
-                      {n} {n === 1 ? "Passenger" : "Passengers"}
-                    </option>
-                  ))}
-                </select>
-              </FieldBox>
+              <PassengerBudgetField
+                passengers={passengers}
+                setPassengers={setPassengers}
+                budget={budget}
+                setBudget={setBudget}
+              />
 
               <div className="p-2 lg:flex lg:items-center lg:p-1.5">
                 <button
                   type="submit"
-                  className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF7A45] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:w-auto lg:rounded-2xl"
+                  className="flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#FF7A45] px-7 py-4 text-[15px] font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:w-auto"
                 >
-                  <span aria-hidden>🔍</span> دوّر على أفضل عرض
+                  <IconSearch /> اعثر على أفضل عرض
                 </button>
               </div>
             </div>
@@ -393,8 +366,11 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               <Link
                 key={`${p.from}-${p.to}`}
                 to={`/search?from=${p.from}&to=${p.to}`}
-                className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#0C7BB3] hover:bg-[#E5F4FB] hover:text-[#0C7BB3]"
+                className="flex items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#0C7BB3] hover:bg-[#E5F4FB] hover:text-[#0C7BB3]"
               >
+                <span aria-hidden className="text-slate-400">
+                  <IconOneWay />
+                </span>
                 {p.label}
               </Link>
             ))}
@@ -421,13 +397,11 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
 function FieldBox({
   icon,
   label,
-  trailingIcon,
   children,
   className = "",
 }: {
-  icon: string;
+  icon: ReactNode;
   label: string;
-  trailingIcon?: string;
   children: ReactNode;
   className?: string;
 }) {
@@ -439,14 +413,195 @@ function FieldBox({
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="font-latin text-[11px] text-slate-400">{label}</p>
+        <p className="hero-field-label">{label}</p>
         {children}
       </div>
-      {trailingIcon ? (
-        <span className="shrink-0 text-sm font-bold text-slate-400" aria-hidden>
-          {trailingIcon}
+    </div>
+  );
+}
+
+/** Combined "Passengers" field: a single button that opens a popover with a
+ *  +/- passenger-count stepper and the (pre-existing) max-budget filter,
+ *  rather than two separate dropdowns crowding the main row. Keeps the exact
+ *  same `passengers`/`budget` state and onSearch payload as before — this is
+ *  a presentation change only, no new search params. */
+function PassengerBudgetField({
+  passengers,
+  setPassengers,
+  budget,
+  setBudget,
+}: {
+  passengers: number;
+  setPassengers: (n: number) => void;
+  budget: string;
+  setBudget: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onPointerDown(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    return () => document.removeEventListener("mousedown", onPointerDown);
+  }, []);
+
+  const budgetLabel = BUDGET_OPTIONS.find((b) => b.value === budget)?.label;
+
+  return (
+    <div ref={ref} className="relative lg:w-52 lg:shrink-0 lg:flex-none">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={`flex w-full min-w-0 items-center gap-2 px-3.5 py-2.5 text-start transition hover:bg-[#E5F4FB]/40 ${
+          open ? "bg-[#E5F4FB]/40" : ""
+        }`}
+      >
+        <span className="shrink-0 text-slate-400" aria-hidden>
+          <IconUsers />
         </span>
+        <span className="min-w-0 flex-1">
+          <p className="hero-field-label">المسافرون</p>
+          <p className="hero-field-select truncate">
+            {passengers} {passengers === 1 ? "مسافر" : "مسافرين"}
+            {budgetLabel ? <span className="font-medium text-slate-400"> · {budgetLabel}</span> : null}
+          </p>
+        </span>
+        <span className={`shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden>
+          <IconChevronDown />
+        </span>
+      </button>
+
+      {open ? (
+        <div className="absolute end-0 top-full z-20 mt-2 w-72 rounded-2xl border border-slate-200 bg-white p-4 shadow-xl">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-bold text-slate-800">عدد المسافرين</p>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setPassengers(Math.max(1, passengers - 1))}
+                disabled={passengers <= 1}
+                aria-label="تقليل عدد المسافرين"
+                className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-lg leading-none text-slate-500 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3] disabled:opacity-30"
+              >
+                −
+              </button>
+              <span className="font-latin w-4 text-center text-sm font-bold text-slate-900">{passengers}</span>
+              <button
+                type="button"
+                onClick={() => setPassengers(Math.min(9, passengers + 1))}
+                disabled={passengers >= 9}
+                aria-label="زيادة عدد المسافرين"
+                className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-lg leading-none text-slate-500 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3] disabled:opacity-30"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 border-t border-slate-100 pt-4">
+            <p className="text-sm font-bold text-slate-800">أقصى ميزانية</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {BUDGET_OPTIONS.map((b) => (
+                <button
+                  key={b.value}
+                  type="button"
+                  onClick={() => setBudget(b.value)}
+                  className={`smart-chip !px-3 !py-1.5 !text-xs ${budget === b.value ? "smart-chip-active" : ""}`}
+                >
+                  {b.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button type="button" onClick={() => setOpen(false)} className="cta-primary mt-4 w-full py-2 text-sm">
+            تم
+          </button>
+        </div>
       ) : null}
     </div>
+  );
+}
+
+function IconPin() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 21s7-6.6 7-12a7 7 0 1 0-14 0c0 5.4 7 12 7 12Z" />
+      <circle cx="12" cy="9" r="2.5" />
+    </svg>
+  );
+}
+
+function IconCalendar() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3.5" y="5" width="17" height="16" rx="3" />
+      <path d="M3.5 10h17M8 3v4M16 3v4" />
+    </svg>
+  );
+}
+
+function IconUsers() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3.5 20c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6" />
+      <circle cx="17" cy="8.5" r="2.5" />
+      <path d="M20.5 20c0-2.8-1.6-5-4-5.7" />
+    </svg>
+  );
+}
+
+function IconSearch() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="M20 20l-4.3-4.3" />
+    </svg>
+  );
+}
+
+function IconSwap() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M7 7h11l-3.2-3.2M17 17H6l3.2 3.2" />
+    </svg>
+  );
+}
+
+function IconChevronDown() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
+function IconRoundTrip() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 8h13l-3-3M20 16H7l3 3" />
+    </svg>
+  );
+}
+
+function IconOneWay() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 12h17M14 5l6 7-6 7" />
+    </svg>
+  );
+}
+
+function IconMultiCity() {
+  return (
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="5" cy="7" r="2" />
+      <circle cx="19" cy="7" r="2" />
+      <circle cx="12" cy="18" r="2" />
+      <path d="M7 7h10M6.5 8.7L10.5 16M17.5 8.7L13.5 16" />
+    </svg>
   );
 }
