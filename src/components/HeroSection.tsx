@@ -241,143 +241,141 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
         </div>
       </div>
 
-      {/* Search box pulled up to overlap the bottom of the hero photo. The
-         headline block above now reserves fixed bottom padding (pb-40 /
-         sm:pb-44) that comfortably exceeds this negative margin, so the card
-         can never cover the headline or subheadline text. */}
-      <div className="relative z-10 mx-auto max-w-5xl px-4">
-        <div className="-mt-28 rounded-[28px] bg-white p-4 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:-mt-32 sm:p-6">
-          <div className="mb-4 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
-            {TRIP_TABS.map(({ key, Icon, label }) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setTripType(key)}
-                className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition ${
-                  tripType === key
-                    ? "bg-white text-[#0C7BB3] shadow-sm"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                <span aria-hidden className={tripType === key ? "text-[#0C7BB3]" : "text-slate-400"}>
-                  <Icon />
-                </span>
-                {label}
-              </button>
-            ))}
-          </div>
+      {/* Search panel: fixed box model per design spec (width/max-width,
+         padding, radius, shadow) with a translateY(50px) nudge to sit lower
+         than its normal flow position, layered above the hero photo via
+         z-10. */}
+      <div className="relative z-10 mx-auto w-[min(1240px,calc(100%_-_48px))] min-h-[140px] max-w-[1240px] translate-y-[50px] rounded-[24px] bg-white px-5 py-4 shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+        <div className="mb-4 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
+          {TRIP_TABS.map(({ key, Icon, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setTripType(key)}
+              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition ${
+                tripType === key
+                  ? "bg-white text-[#0C7BB3] shadow-sm"
+                  : "text-slate-500 hover:text-slate-800"
+              }`}
+            >
+              <span aria-hidden className={tripType === key ? "text-[#0C7BB3]" : "text-slate-400"}>
+                <Icon />
+              </span>
+              {label}
+            </button>
+          ))}
+        </div>
 
-          {/* Fields sit as individually-bordered white cards inside a tinted
-             tray (not one hairline-divided strip) — gives each field real
-             breathing room instead of a cramped continuous bar. The primary
-             CTA is now its own full-width row below the tray, so it never
-             has to compete with 6 fields for horizontal space. */}
-          <form onSubmit={submit} className="space-y-3">
-            <div className="rounded-[22px] bg-slate-50 p-2 sm:p-2.5">
-              <div className="flex flex-col gap-2 lg:flex-row lg:items-stretch">
-                <FieldBox icon={<IconPin />} label="من" className="lg:flex-[1.15]">
-                  <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
-                    {airportOptions}
-                  </select>
-                </FieldBox>
+        {/* Fields sit as individually-bordered white cards inside a tinted
+           tray (not one hairline-divided strip) — gives each field real
+           breathing room instead of a cramped continuous bar. The primary
+           CTA is now its own full-width row below the tray, so it never
+           has to compete with 6 fields for horizontal space. */}
+        <form onSubmit={submit} className="space-y-3">
+          <div className="rounded-[22px] bg-slate-50 p-2 sm:p-2.5">
+            <div className="flex flex-col gap-2 lg:flex-row lg:items-stretch">
+              <FieldBox icon={<IconPin />} label="من" className="lg:flex-[1.15]">
+                <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
+                  {airportOptions}
+                </select>
+              </FieldBox>
 
-                <div className="flex h-6 shrink-0 items-center justify-center lg:h-auto lg:w-6">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFrom(to);
-                      setTo(from);
-                    }}
-                    aria-label="تبديل الوجهتين"
-                    className="flex size-9 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0C7BB3] hover:text-[#0C7BB3] hover:shadow-md active:scale-95 lg:rotate-0"
-                  >
-                    <IconSwap />
-                  </button>
+              <div className="flex h-6 shrink-0 items-center justify-center lg:h-auto lg:w-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFrom(to);
+                    setTo(from);
+                  }}
+                  aria-label="تبديل الوجهتين"
+                  className="flex size-9 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0C7BB3] hover:text-[#0C7BB3] hover:shadow-md active:scale-95 lg:rotate-0"
+                >
+                  <IconSwap />
+                </button>
+              </div>
+
+              <FieldBox icon={<IconPin />} label="إلى" className="lg:flex-[1.15]">
+                <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
+                  <option value="">اختر الوجهة</option>
+                  <option value="any">أي مكان</option>
+                  {airportOptions}
+                </select>
+              </FieldBox>
+
+              <FieldBox icon={<IconCalendar />} label="المغادرة" className="lg:flex-1">
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={date}
+                    min={new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="hero-field-input"
+                  />
+                  {/* Native date inputs render their empty state in the
+                     browser's own locale. Cover it with a fixed Arabic
+                     label until a date is actually picked —
+                     pointer-events-none so the click still opens the
+                     native picker underneath. */}
+                  {!date && (
+                    <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
+                      اختر التاريخ
+                    </span>
+                  )}
                 </div>
+              </FieldBox>
 
-                <FieldBox icon={<IconPin />} label="إلى" className="lg:flex-[1.15]">
-                  <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                    <option value="">اختر الوجهة</option>
-                    <option value="any">أي مكان</option>
-                    {airportOptions}
-                  </select>
-                </FieldBox>
-
-                <FieldBox icon={<IconCalendar />} label="المغادرة" className="lg:flex-1">
+              {tripType === "round_trip" ? (
+                <FieldBox icon={<IconCalendar />} label="العودة" className="lg:flex-1">
                   <div className="relative">
                     <input
                       type="date"
-                      value={date}
-                      min={new Date().toISOString().slice(0, 10)}
-                      onChange={(e) => setDate(e.target.value)}
+                      value={returnDate}
+                      min={date || new Date().toISOString().slice(0, 10)}
+                      onChange={(e) => setReturnDate(e.target.value)}
                       className="hero-field-input"
                     />
-                    {/* Native date inputs render their empty state in the
-                       browser's own locale. Cover it with a fixed Arabic
-                       label until a date is actually picked —
-                       pointer-events-none so the click still opens the
-                       native picker underneath. */}
-                    {!date && (
+                    {!returnDate && (
                       <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
                         اختر التاريخ
                       </span>
                     )}
                   </div>
                 </FieldBox>
+              ) : null}
 
-                {tripType === "round_trip" ? (
-                  <FieldBox icon={<IconCalendar />} label="العودة" className="lg:flex-1">
-                    <div className="relative">
-                      <input
-                        type="date"
-                        value={returnDate}
-                        min={date || new Date().toISOString().slice(0, 10)}
-                        onChange={(e) => setReturnDate(e.target.value)}
-                        className="hero-field-input"
-                      />
-                      {!returnDate && (
-                        <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
-                          اختر التاريخ
-                        </span>
-                      )}
-                    </div>
-                  </FieldBox>
-                ) : null}
-
-                <PassengerBudgetField
-                  passengers={passengers}
-                  setPassengers={setPassengers}
-                  budget={budget}
-                  setBudget={setBudget}
-                />
-              </div>
+              <PassengerBudgetField
+                passengers={passengers}
+                setPassengers={setPassengers}
+                budget={budget}
+                setBudget={setBudget}
+              />
             </div>
-
-            <button
-              type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FF7A45] py-4 text-[15px] font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0"
-            >
-              <IconSearch /> اعثر على أفضل عرض
-            </button>
-          </form>
-
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-slate-500">عمليات بحث شائعة:</span>
-            {POPULAR.map((p) => (
-              <Link
-                key={`${p.from}-${p.to}`}
-                to={`/search?from=${p.from}&to=${p.to}`}
-                className="flex items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#0C7BB3] hover:bg-[#E5F4FB] hover:text-[#0C7BB3]"
-              >
-                <span aria-hidden className="text-slate-400">
-                  <IconOneWay />
-                </span>
-                {p.label}
-              </Link>
-            ))}
           </div>
+
+          <button
+            type="submit"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FF7A45] py-4 text-[15px] font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0"
+          >
+            <IconSearch /> اعثر على أفضل عرض
+          </button>
+        </form>
+
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="text-xs font-medium text-slate-500">عمليات بحث شائعة:</span>
+          {POPULAR.map((p) => (
+            <Link
+              key={`${p.from}-${p.to}`}
+              to={`/search?from=${p.from}&to=${p.to}`}
+              className="flex items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#0C7BB3] hover:bg-[#E5F4FB] hover:text-[#0C7BB3]"
+            >
+              <span aria-hidden className="text-slate-400">
+                <IconOneWay />
+              </span>
+              {p.label}
+            </Link>
+          ))}
         </div>
-      </div>
+        </div>
 
       {/* Round-trip ticker now takes the "LIVE DEALS" ticker's old spot,
          directly under the search box — full-bleed like the one-way board
