@@ -1,14 +1,17 @@
 import type { FormEvent, ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { OneWayFareBoard } from "./OneWayFareBoard";
 import { RoundTripFareBoard } from "./RoundTripFareBoard";
+import { getDestinationImage } from "../lib/api";
 import type { TripType } from "../lib/api";
-import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
+import type { AirportRow, DealRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
 import heroSky from "../assets/hero-sky.jpg";
 
 const HERO_IMAGE = heroSky;
+const MAX_ROTATING_IMAGES = 4;
+const ROTATE_INTERVAL_MS = 6000;
 
 const POPULAR = [
   { from: "CAI", to: "DXB", label: "القاهرة ← دبي" },
@@ -22,16 +25,75 @@ type Props = {
   airports: AirportRow[];
   deals: DealRow[];
   references: RoutePriceReferenceRow[];
+  imageCache: ImageCacheRow[];
   onSearch: (params: { from: string; to: string; date: string; returnDate: string; passengers: number; tripType: TripType }) => void;
 };
 
-export function HeroSection({ airports, deals, references, onSearch }: Props) {
+type HeroDestinationImage = { code: string; city: string; url: string };
+
+/**
+ * Picks real photos for the currently most in-demand destinations instead of one
+ * static stock photo. Ranked by deal_score, then booking/view counts, then price —
+ * so whichever routes are actually hot right now are what shows up in the hero.
+ * Only uses the same licensed `image_cache` table already used everywhere else in
+ * the app (deal cards, TravelToSection, etc.), so no new image licensing is introduced.
+ */
+function topDestinationImages(
+  deals: DealRow[],
+  airports: AirportRow[],
+  imageCache: ImageCacheRow[],
+  limit: number,
+): HeroDestinationImage[] {
+  const ranked = [...deals].sort((a, b) => {
+    const scoreDiff = (b.deal_score ?? 0) - (a.deal_score ?? 0);
+    if (scoreDiff !== 0) return scoreDiff;
+    const bookingDiff = (b.booking_count ?? 0) - (a.booking_count ?? 0);
+    if (bookingDiff !== 0) return bookingDiff;
+    const viewDiff = (b.view_count ?? 0) - (a.view_count ?? 0);
+    if (viewDiff !== 0) return viewDiff;
+    return a.price - b.price;
+  });
+
+  const seen = new Set<string>();
+  const result: HeroDestinationImage[] = [];
+  for (const deal of ranked) {
+    if (seen.has(deal.to_airport)) continue;
+    seen.add(deal.to_airport);
+    const airport = airports.find((a) => a.code === deal.to_airport);
+    const url = getDestinationImage(airport, imageCache, deal.to_airport);
+    if (url && airport) result.push({ code: deal.to_airport, city: airport.city, url });
+    if (result.length >= limit) break;
+  }
+  return result;
+}
+
+export function HeroSection({ airports, deals, references, imageCache, onSearch }: Props) {
   const [tripType, setTripType] = useState<TripType>("round_trip");
   const [from, setFrom] = useState("CAI");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
+
+  const [heroImages, setHeroImages] = useState<HeroDestinationImage[]>([]);
+  const [activeImage, setActiveImage] = useState(0);
+
+  // Re-rank whenever fresh deal/catalog data lands (deals arrive async after first paint).
+  useEffect(() => {
+    setHeroImages(topDestinationImages(deals, airports, imageCache, MAX_ROTATING_IMAGES));
+  }, [deals, airports, imageCache]);
+
+  // Auto-rotate between the top destinations. Respects prefers-reduced-motion,
+  // and simply does nothing (single static photo) if fewer than 2 real photos
+  // were found — e.g. an empty/dev image_cache.
+  useEffect(() => {
+    if (heroImages.length < 2) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => {
+      setActiveImage((i) => (i + 1) % heroImages.length);
+    }, ROTATE_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [heroImages]);
 
   const airportOptions = airports.map((a) => (
     <option key={a.code} value={a.code}>
@@ -54,14 +116,50 @@ export function HeroSection({ airports, deals, references, onSearch }: Props) {
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
         <div className="absolute inset-0 h-[340px] sm:h-[380px]">
-          <img src={HERO_IMAGE} alt="" className="h-full w-full object-cover" />
-          {/* Daytime wing-over-clouds shot carries bright natural color, so the
-             overlay's job is just to guarantee the headline stays legible over
-             it — a dark wash up top that fades to nothing by mid-photo, then a
-             soft handoff into the page background at the very bottom so the
-             photo still reads as a hero, not a washed-out panel. */}
+          {/* Static fallback stays as the base layer so there's never a blank
+             flash while the first real destination photo loads, and it's all
+             that renders if image_cache has nothing usable yet. */}
+          <img src={HERO_IMAGE} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          {heroImages.map((img, i) => (
+            <img
+              key={img.code}
+              src={img.url}
+              alt=""
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
+                i === activeImage ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
+          {/* Daytime wing-over-clouds shot (or whichever destination photo is
+             active) carries bright natural color, so the overlay's job is just
+             to guarantee the headline stays legible over it — a dark wash up
+             top that fades to nothing by mid-photo, then a soft handoff into
+             the page background at the very bottom so the photo still reads
+             as a hero, not a washed-out panel. */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
+
+          {heroImages.length > 0 ? (
+            <div className="absolute start-4 top-4 z-10 rounded-full bg-black/30 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+              ✈ {heroImages[activeImage]?.city}
+            </div>
+          ) : null}
+
+          {heroImages.length > 1 ? (
+            <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-1.5">
+              {heroImages.map((img, i) => (
+                <button
+                  key={img.code}
+                  type="button"
+                  aria-label={`عرض صورة ${img.city}`}
+                  onClick={() => setActiveImage(i)}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === activeImage ? "w-6 bg-white" : "w-1.5 bg-white/50"
+                  }`}
+                />
+              ))}
+            </div>
+          ) : null}
         </div>
 
       <div className="relative mx-auto max-w-4xl px-4 pb-32 pt-8 text-center sm:pb-36 sm:pt-10">

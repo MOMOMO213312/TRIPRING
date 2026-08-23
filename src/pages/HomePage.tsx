@@ -109,6 +109,7 @@ export function HomePage() {
         airports={catalog.airports}
         deals={allActiveDeals}
         references={catalog.references}
+        imageCache={catalog.imageCache}
         onSearch={handleHeroSearch}
       />
       <div className="relative z-10 mt-8">
