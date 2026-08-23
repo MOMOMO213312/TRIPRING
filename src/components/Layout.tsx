@@ -80,10 +80,6 @@ export function Layout() {
               <Link to="/" className={`border-b-2 pb-1 ${isHome && !hash ? "border-[#1E3A8A]" : "border-transparent"} ${linkClass(isHome && !hash)}`}>
                 الرئيسية
               </Link>
-              <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
-                العروض
-                <span className="rounded-full bg-[#1E3A8A] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
-              </Link>
               <div ref={exploreRef} className="relative">
                 <button
                   type="button"
@@ -91,7 +87,7 @@ export function Layout() {
                   className={`flex items-center gap-1 ${linkClass(pathname.startsWith("/search"))}`}
                   aria-expanded={exploreOpen}
                 >
-                  استكشف
+                  الرحلات
                   <span className={`text-[10px] transition-transform ${exploreOpen ? "rotate-180" : ""}`}>▾</span>
                 </button>
                 {exploreOpen && (
@@ -111,6 +107,13 @@ export function Layout() {
                   </div>
                 )}
               </div>
+              <Link to="/deals" className={`flex items-center gap-1.5 ${linkClass(pathname.startsWith("/deals"))}`}>
+                العروض
+                <span className="rounded-full bg-[#1E3A8A] px-1.5 py-0.5 text-[10px] font-bold text-white">Hot</span>
+              </Link>
+              <Link to="/explore" className={linkClass(pathname.startsWith("/explore"))}>
+                استكشف
+              </Link>
             </nav>
           </div>
         </div>

@@ -17,6 +17,7 @@ import type {
   PaymentMethod,
   ResaleReason,
   RoutePriceReferenceRow,
+  ServiceRequestRow,
   Tables,
 } from "../types/database";
 
@@ -221,10 +222,65 @@ export async function fetchDealPriceHistory(dealId: string): Promise<DealPriceHi
 export async function fetchAdditionalServices(): Promise<AdditionalServiceRow[]> {
   const { data, error } = await supabase
     .from("additional_services")
-    .select("id,type,price")
+    .select("id,type,name,description,price,category,is_active")
+    .eq("is_active", true)
     .order("price", { ascending: true });
   if (error) return [];
   return data ?? [];
+}
+
+export interface CreateServiceRequestInput {
+  serviceId: string;
+  serviceType: string;
+  serviceName: string;
+  unitPrice: number;
+  quantity: number;
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string | null;
+  airline?: string | null;
+  flightNumber?: string | null;
+  flightDate?: string | null;
+  arrivalTime?: string | null;
+  airport?: string | null;
+  destination?: string | null;
+  notes?: string | null;
+}
+
+/**
+ * Requests a standalone service (transfer/lounge/baggage/destination experience, etc.)
+ * independently of any TripRing deal or booking — the customer may have bought their
+ * ticket elsewhere and only needs the service itself.
+ */
+export async function createServiceRequest(
+  input: CreateServiceRequestInput,
+): Promise<ServiceRequestRow> {
+  const totalPrice = Math.round(input.unitPrice * input.quantity * 100) / 100;
+  const { data, error } = await supabase
+    .from("service_requests")
+    .insert([{
+      service_id: input.serviceId,
+      service_type: input.serviceType,
+      service_name: input.serviceName,
+      unit_price: input.unitPrice,
+      quantity: input.quantity,
+      currency: "USD",
+      total_price: totalPrice,
+      customer_name: input.customerName,
+      customer_phone: input.customerPhone,
+      customer_email: input.customerEmail ?? null,
+      airline: input.airline ?? null,
+      flight_number: input.flightNumber ?? null,
+      flight_date: input.flightDate ?? null,
+      arrival_time: input.arrivalTime ?? null,
+      airport: input.airport ?? null,
+      destination: input.destination ?? null,
+      notes: input.notes ?? null,
+    }] as never)
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return data as ServiceRequestRow;
 }
 
 export async function fetchMarketStats(): Promise<MarketStats> {

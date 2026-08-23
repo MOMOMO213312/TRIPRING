@@ -27,6 +27,9 @@ const DealDetailPage = lazy(() =>
 const DealsCenterPage = lazy(() =>
   import("./pages/DealsCenterPage").then((m) => ({ default: m.DealsCenterPage })),
 );
+const ExplorePage = lazy(() =>
+  import("./pages/ExplorePage").then((m) => ({ default: m.ExplorePage })),
+);
 const FaqPage = lazy(() =>
   import("./pages/FaqPage").then((m) => ({ default: m.FaqPage })),
 );
@@ -66,6 +69,7 @@ export default function App() {
             <Route index element={<HomePage />} />
             <Route path="search" element={<SearchResultsPage />} />
             <Route path="deals" element={<DealsCenterPage />} />
+            <Route path="explore" element={<ExplorePage />} />
             <Route path="blue-friday" element={<BlueFridayPage />} />
             <Route path="deals/:dealId" element={<DealDetailPage />} />
             <Route path="book/:dealId" element={<BookingPage />} />

@@ -37,6 +37,8 @@ export type ResaleReason =
   | "duplicate_booking"
   | "other";
 export type AppRole = "customer" | "agency" | "admin";
+/** The 4 standalone-service categories shown on the "استكشف" (Explore) page. */
+export type ServiceCategory = "transport" | "airport" | "baggage" | "destination";
 
 export interface Database {
   public: {
@@ -240,12 +242,44 @@ export interface Database {
         Row: {
           id: string;
           type: string;
+          name: string;
+          description: string | null;
           price: number;
+          category: ServiceCategory | null;
+          is_active: boolean;
         };
         Insert: Omit<Database["public"]["Tables"]["additional_services"]["Row"], "id"> & {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["additional_services"]["Row"]>;
+      };
+      service_requests: {
+        Row: {
+          id: string;
+          request_number: number;
+          service_id: string;
+          service_type: string;
+          service_name: string;
+          unit_price: number;
+          quantity: number;
+          currency: string | null;
+          total_price: number;
+          customer_name: string;
+          customer_phone: string;
+          customer_email: string | null;
+          airline: string | null;
+          flight_number: string | null;
+          flight_date: string | null;
+          arrival_time: string | null;
+          airport: string | null;
+          destination: string | null;
+          notes: string | null;
+          status: "new" | "contacted" | "confirmed" | "cancelled";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["service_requests"]["Row"]>;
+        Update: Partial<Database["public"]["Tables"]["service_requests"]["Row"]>;
       };
       bookings: {
         Row: {
@@ -473,6 +507,7 @@ export type AgencyRow = Tables<"agencies">;
 export type AffiliateRow = Tables<"affiliates">;
 export type BookingRow = Tables<"bookings">;
 export type AdditionalServiceRow = Tables<"additional_services">;
+export type ServiceRequestRow = Tables<"service_requests">;
 export type DealPriceHistoryRow = Tables<"deal_price_history">;
 export type RoutePriceReferenceRow = Tables<"route_price_reference">;
 export type BookingTravelerRow = Tables<"booking_travelers">;
