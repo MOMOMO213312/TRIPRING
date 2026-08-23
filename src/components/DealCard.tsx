@@ -174,9 +174,9 @@ export function DealCard({
 
         <div className="mt-auto flex flex-col gap-2">
           {deal.available_seats > 0 ? (
-            <Link to={`/book/${deal.id}`}>
+            <Link to={`/deals/${deal.id}`}>
               <Button fullWidth variant="primary">
-                احجز الآن
+                عرض التفاصيل
               </Button>
             </Link>
           ) : (

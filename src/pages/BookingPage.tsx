@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -12,9 +12,16 @@ import {
 } from "../lib/api";
 import { PAYMENT_METHODS } from "../lib/payment-config";
 import { formatRoute } from "../lib/deal-utils";
+import { PACKAGE_OPTIONS, packagePrice } from "../lib/packages";
+import type { PackageTier } from "../lib/packages";
 import { setLastBooking } from "../lib/session";
 import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
 import type { AdditionalServiceRow, DealRow, PaymentMethod } from "../types/database";
+
+type DealSelectionState = {
+  selectedPackage?: PackageTier;
+  selectedServiceIds?: string[];
+};
 
 type Traveler = {
   full_name: string;
@@ -27,9 +34,12 @@ type Traveler = {
 export function BookingPage() {
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const incomingSelection = (location.state as DealSelectionState | null) ?? null;
   const [deal, setDeal] = useState<DealRow | null>(null);
   const [services, setServices] = useState<AdditionalServiceRow[]>([]);
   const [selectedServices, setSelectedServices] = useState<Record<string, number>>({});
+  const [selectedPackage] = useState<PackageTier | null>(incomingSelection?.selectedPackage ?? null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,10 +61,25 @@ export function BookingPage() {
       .then(([d, s]) => {
         setDeal(d);
         setServices(s);
-        if (!d) setError("العرض غير متاح");
+        if (!d) {
+          setError("العرض غير متاح");
+          return;
+        }
+        // Pre-check the extra add-on services the customer picked on the deal-detail
+        // page. Services already bundled for free inside the chosen package are
+        // priced once via packageMarkup() below, not repeated here.
+        const carriedIds = incomingSelection?.selectedServiceIds ?? [];
+        if (carriedIds.length > 0) {
+          setSelectedServices((prev) => {
+            const next = { ...prev };
+            for (const id of carriedIds) next[id] = 1;
+            return next;
+          });
+        }
       })
       .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dealId]);
 
   // Resize the travelers array to match adults/children/infants counts
@@ -106,13 +131,20 @@ export function BookingPage() {
     }, 0);
   }
 
+  function packageMarkup(): number {
+    if (!deal || !selectedPackage) return 0;
+    const pkg = PACKAGE_OPTIONS.find((p) => p.id === selectedPackage);
+    if (!pkg) return 0;
+    return packagePrice(deal.price, pkg) - deal.price;
+  }
+
   function estimatedTotal(): number {
     if (!deal) return 0;
     const base =
       deal.price * adults +
       (deal.child_price ?? deal.price * 0.75) * children +
       (deal.infant_price ?? deal.price * 0.1) * infants;
-    return base + servicesTotal();
+    return base + packageMarkup() + servicesTotal();
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -328,6 +360,16 @@ export function BookingPage() {
           </div>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between"><dt className="text-slate-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
+            {selectedPackage ? (
+              <div className="flex justify-between">
+                <dt className="text-slate-500">الباقة</dt>
+                <dd className="font-semibold">
+                  {PACKAGE_OPTIONS.find((p) => p.id === selectedPackage)?.label}
+                  {" · "}
+                  {formatPrice(packagePrice(deal.price, PACKAGE_OPTIONS.find((p) => p.id === selectedPackage)!), deal.currency ?? "USD")}
+                </dd>
+              </div>
+            ) : null}
             <div className="flex justify-between"><dt className="text-slate-500">المسافرون</dt><dd>{adults} بالغ · {children} طفل · {infants} رضيع</dd></div>
             <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
               <dt>الإجمالي التقديري</dt>

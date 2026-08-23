@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { AgencyReviewsPanel } from "../components/AgencyReviewsPanel";
 import { DealBadge } from "../components/DealBadge";
+import { PackageAndServicesSelector, selectorTotal } from "../components/PackageAndServicesSelector";
 import { PriceHistoryChart } from "../components/PriceHistoryChart";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Modal } from "../components/ui/Modal";
 import {
   createPriceAlert,
+  fetchAdditionalServices,
   fetchDealById,
   fetchDealPriceHistory,
   fetchRouteDatePrices,
   getAgencyWhatsApp,
 } from "../lib/api";
 import type { PriceTrendPoint, RouteDatePrice } from "../lib/api";
+import type { PackageTier } from "../lib/packages";
 import {
   airlineName,
   dealReasons,
@@ -29,26 +32,40 @@ import {
 } from "../lib/deal-utils";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
 import { cn, formatDate, formatPrice, formatTime, whatsAppLink } from "../lib/utils";
-import type { DealPriceHistoryRow, DealRow } from "../types/database";
+import type { AdditionalServiceRow, DealPriceHistoryRow, DealRow } from "../types/database";
 
 export function DealDetailPage() {
   const { dealId } = useParams<{ dealId: string }>();
+  const navigate = useNavigate();
   const catalog = useCatalog();
   const [deal, setDeal] = useState<DealRow | null>(null);
   const [history, setHistory] = useState<DealPriceHistoryRow[]>([]);
   const [routeDates, setRouteDates] = useState<RouteDatePrice[]>([]);
+  const [services, setServices] = useState<AdditionalServiceRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [alertOpen, setAlertOpen] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<PackageTier>("smart");
+  const [checkedServiceIds, setCheckedServiceIds] = useState<Set<string>>(new Set());
+
+  function toggleService(serviceId: string) {
+    setCheckedServiceIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(serviceId)) next.delete(serviceId);
+      else next.add(serviceId);
+      return next;
+    });
+  }
 
   useEffect(() => {
     if (!dealId) return;
     setLoading(true);
-    Promise.all([fetchDealById(dealId), fetchDealPriceHistory(dealId)])
-      .then(([d, h]) => {
+    Promise.all([fetchDealById(dealId), fetchDealPriceHistory(dealId), fetchAdditionalServices()])
+      .then(([d, h, s]) => {
         setDeal(d);
         setHistory(h);
+        setServices(s);
         if (!d) {
           setError("العرض غير متاح أو انتهت صلاحيته");
           return;
@@ -106,18 +123,20 @@ export function DealDetailPage() {
     setTimeout(() => setShareCopied(false), 2000);
   }
 
+  function handleContinue() {
+    if (!deal) return;
+    navigate(`/book/${deal.id}`, {
+      state: {
+        selectedPackage,
+        selectedServiceIds: Array.from(checkedServiceIds),
+      },
+    });
+  }
+
   const bookingRail = (
     <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-end justify-between gap-3">
-        <div>
-          <p className="text-xs font-medium text-slate-500">السعر الإجمالي</p>
-          <p className="font-latin text-3xl font-extrabold text-[#0C7BB3]">{formatPrice(deal.price, currency)}</p>
-          <p className="text-[11px] text-slate-400">لكل مسافر</p>
-        </div>
-      </div>
-
       {hasPriceBreakdown(deal) ? (
-        <div className="space-y-1 border-t border-slate-100 pt-3 text-xs text-slate-500">
+        <div className="space-y-1 border-b border-slate-100 pb-3 text-xs text-slate-500">
           <div className="flex justify-between">
             <span>السعر الأساسي</span>
             <span className="font-latin">{formatPrice(deal.base_fare!, currency)}</span>
@@ -129,11 +148,25 @@ export function DealDetailPage() {
         </div>
       ) : null}
 
+      {/* Fare bundle (Basic / Smart Trip / Premium Trip) + optional add-on services,
+         same idea as the "اختر رحلتك" / "أضف خدماتك" panel from the opportunity
+         detail mockup — computed from the deal price and the real additional_services
+         catalog rather than a hardcoded price. */}
+      <PackageAndServicesSelector
+        basePrice={deal.price}
+        currency={currency}
+        services={services}
+        selectedPackage={selectedPackage}
+        onSelectPackage={setSelectedPackage}
+        checkedServiceIds={checkedServiceIds}
+        onToggleService={toggleService}
+      />
+
       <div className="flex flex-col gap-2.5 border-t border-slate-100 pt-3">
         {deal.available_seats > 0 ? (
-          <Link to={`/book/${deal.id}`}>
-            <Button fullWidth>احجز الآن</Button>
-          </Link>
+          <Button fullWidth onClick={handleContinue}>
+            متابعة
+          </Button>
         ) : (
           <Button fullWidth disabled>
             نفدت المقاعد
