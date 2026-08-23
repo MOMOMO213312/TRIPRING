@@ -12,6 +12,18 @@ export function dealTypeLabel(type: DealType): string {
   return DEAL_TYPE_LABELS[type] ?? type;
 }
 
+/** Badge color per deal type — shared between the homepage rail card and the main deal card. */
+const DEAL_TYPE_BADGE_STYLE: Record<DealType, string> = {
+  flash: "bg-[#0C7BB3]",
+  last_minute: "bg-[#0F172A]",
+  empty_seat: "bg-[#9F1246]",
+  special_fare: "bg-[#0C7BB3]",
+};
+
+export function dealTypeBadgeClass(type: DealType): string {
+  return DEAL_TYPE_BADGE_STYLE[type] ?? "bg-[#0C7BB3]";
+}
+
 export function formatRoute(deal: DealRow): string {
   return `${deal.from_airport} → ${deal.to_airport}`;
 }
