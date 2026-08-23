@@ -79,6 +79,9 @@ export function Layout() {
                   ⚡ متقدم
                 </span>
               </Link>
+              <Link to="/my-trips" className={linkClass(pathname.startsWith("/my-trips"))}>
+                رحلاتي
+              </Link>
             </nav>
           </div>
         </div>

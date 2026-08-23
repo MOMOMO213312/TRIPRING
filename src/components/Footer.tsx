@@ -51,6 +51,16 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link to="/alerts" className="hover:text-[#0C7BB3]">
+                تنبيهات الأسعار
+              </Link>
+            </li>
+            <li>
+              <Link to="/blue-friday" className="hover:text-[#0C7BB3]">
+                Blue Friday
+              </Link>
+            </li>
+            <li>
               <Link to="/resale" className="hover:text-[#0C7BB3]">
                 بيع وشراء التذاكر
               </Link>
