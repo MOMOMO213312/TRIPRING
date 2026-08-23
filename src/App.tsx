@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Layout } from "./components/Layout";
 
 const AffiliateDashboardPage = lazy(() =>
@@ -72,31 +73,33 @@ function PageLoader() {
 export default function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="search" element={<SearchResultsPage />} />
-            <Route path="deals" element={<DealsCenterPage />} />
-            <Route path="explore" element={<ExplorePage />} />
-            <Route path="tripgo" element={<TripGoPage />} />
-            <Route path="tripgo/results" element={<TripGoResultsPage />} />
-            <Route path="tripgo/:dealId" element={<TripGoDetailsPage />} />
-            <Route path="blue-friday" element={<BlueFridayPage />} />
-            <Route path="deals/:dealId" element={<DealDetailPage />} />
-            <Route path="book/:dealId" element={<BookingPage />} />
-            <Route path="confirmation" element={<ConfirmationPage />} />
-            <Route path="my-trips" element={<MyTripsPage />} />
-            <Route path="alerts" element={<AlertsPage />} />
-            <Route path="resale" element={<TicketResalePage />} />
-            <Route path="agency" element={<AgencyDashboardPage />} />
-            <Route path="affiliate" element={<AffiliateDashboardPage />} />
-            <Route path="faq" element={<FaqPage />} />
-            <Route path="terms" element={<TermsPage />} />
-            <Route path="privacy" element={<PrivacyPage />} />
-          </Route>
-        </Routes>
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="search" element={<SearchResultsPage />} />
+              <Route path="deals" element={<DealsCenterPage />} />
+              <Route path="explore" element={<ExplorePage />} />
+              <Route path="tripgo" element={<TripGoPage />} />
+              <Route path="tripgo/results" element={<TripGoResultsPage />} />
+              <Route path="tripgo/:dealId" element={<TripGoDetailsPage />} />
+              <Route path="blue-friday" element={<BlueFridayPage />} />
+              <Route path="deals/:dealId" element={<DealDetailPage />} />
+              <Route path="book/:dealId" element={<BookingPage />} />
+              <Route path="confirmation" element={<ConfirmationPage />} />
+              <Route path="my-trips" element={<MyTripsPage />} />
+              <Route path="alerts" element={<AlertsPage />} />
+              <Route path="resale" element={<TicketResalePage />} />
+              <Route path="agency" element={<AgencyDashboardPage />} />
+              <Route path="affiliate" element={<AffiliateDashboardPage />} />
+              <Route path="faq" element={<FaqPage />} />
+              <Route path="terms" element={<TermsPage />} />
+              <Route path="privacy" element={<PrivacyPage />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

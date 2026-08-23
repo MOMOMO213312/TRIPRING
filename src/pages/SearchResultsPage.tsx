@@ -28,11 +28,20 @@ export function SearchResultsPage() {
   const tripType = (params.get("tripType") as TripType | null) ?? "round_trip";
   const budget = params.get("budget") ?? "";
   const scope = params.get("scope") as TripScope | null;
-  const [sort, setSort] = useState<SortKey>("price_asc");
+  const stopsParam = params.get("stops");
+  const initialSort: SortKey = params.get("sort") === "price_desc" ? "price_desc" : "price_asc";
+  const [sort, setSort] = useState<SortKey>(initialSort);
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<AdvancedFilters>(EMPTY_FILTERS);
+  // Picks up ?stops=direct|one_stop|multi_stop coming from SmartFilterChips
+  // on the homepage (previously read from the URL and then silently
+  // ignored — the chip navigated here but nothing consumed the param).
+  const [filters, setFilters] = useState<AdvancedFilters>(() =>
+    stopsParam && ["direct", "one_stop", "multi_stop"].includes(stopsParam)
+      ? { ...EMPTY_FILTERS, stops: [stopsParam as AdvancedFilters["stops"][number]] }
+      : EMPTY_FILTERS
+  );
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   useEffect(() => {

@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
 
+// "تواريخ مرنة" (flexible dates) was removed from here — it linked to
+// /search?flexible=1 but SearchResultsPage never read or applied that
+// param, so the chip silently did nothing. Flexible-date search (widening
+// the query across a date range, not just the single-deal ±3-day view on
+// DealDetailPage) needs real implementation before this chip comes back.
 const CHIPS = [
   { icon: "💰", label: "أقل سعر", sort: "price_asc" },
   { icon: "✈️", label: "بدون توقف", stops: "direct" },
-  { icon: "📅", label: "تواريخ مرنة", flexible: "1" },
 ] as const;
 
 export function SmartFilterChips() {
@@ -13,7 +17,6 @@ export function SmartFilterChips() {
     const q = new URLSearchParams();
     if ("sort" in chip && chip.sort) q.set("sort", chip.sort);
     if ("stops" in chip && chip.stops) q.set("stops", chip.stops);
-    if ("flexible" in chip && chip.flexible) q.set("flexible", chip.flexible);
     navigate(`/search?${q.toString()}`);
   }
 
