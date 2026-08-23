@@ -267,97 +267,98 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
             ))}
           </div>
 
-          {/* Single unified pill bar — From / To / When / Budget all in one row
-             with the search button docked at the end, instead of the fields
-             being split across two stacked rows. Wraps to a stacked column
-             below `lg` since 5 fields + button can't all fit narrower than
-             that without truncating. */}
-          <form onSubmit={submit}>
-            <div className="flex flex-col divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white lg:flex-row lg:items-stretch lg:divide-x lg:divide-y-0 rtl:lg:divide-x-reverse">
-              <FieldBox icon={<IconPin />} label="من" className="lg:flex-1">
-                <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
-                  {airportOptions}
-                </select>
-              </FieldBox>
+          {/* Fields sit as individually-bordered white cards inside a tinted
+             tray (not one hairline-divided strip) — gives each field real
+             breathing room instead of a cramped continuous bar. The primary
+             CTA is now its own full-width row below the tray, so it never
+             has to compete with 6 fields for horizontal space. */}
+          <form onSubmit={submit} className="space-y-3">
+            <div className="rounded-[22px] bg-slate-50 p-2 sm:p-2.5">
+              <div className="flex flex-col gap-2 lg:flex-row lg:items-stretch">
+                <FieldBox icon={<IconPin />} label="من" className="lg:flex-[1.15]">
+                  <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
+                    {airportOptions}
+                  </select>
+                </FieldBox>
 
-              <div className="flex h-8 shrink-0 items-center justify-center lg:h-auto lg:w-10">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setFrom(to);
-                    setTo(from);
-                  }}
-                  aria-label="تبديل الوجهتين"
-                  className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0C7BB3] hover:text-[#0C7BB3] hover:shadow-md active:scale-95 lg:rotate-0"
-                >
-                  <IconSwap />
-                </button>
-              </div>
-
-              <FieldBox icon={<IconPin />} label="إلى" className="lg:flex-1">
-                <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                  <option value="">اختر الوجهة</option>
-                  <option value="any">أي مكان</option>
-                  {airportOptions}
-                </select>
-              </FieldBox>
-
-              <FieldBox icon={<IconCalendar />} label="المغادرة" className="lg:flex-1">
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={date}
-                    min={new Date().toISOString().slice(0, 10)}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="hero-field-input"
-                  />
-                  {/* Native date inputs render their empty state in the
-                     browser's own locale. Cover it with a fixed Arabic label
-                     until a date is actually picked — pointer-events-none so
-                     the click still opens the native picker underneath. */}
-                  {!date && (
-                    <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
-                      تواريخ مرنة
-                    </span>
-                  )}
+                <div className="flex h-6 shrink-0 items-center justify-center lg:h-auto lg:w-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFrom(to);
+                      setTo(from);
+                    }}
+                    aria-label="تبديل الوجهتين"
+                    className="flex size-9 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0C7BB3] hover:text-[#0C7BB3] hover:shadow-md active:scale-95 lg:rotate-0"
+                  >
+                    <IconSwap />
+                  </button>
                 </div>
-              </FieldBox>
 
-              {tripType === "round_trip" ? (
-                <FieldBox icon={<IconCalendar />} label="العودة" className="lg:flex-1">
+                <FieldBox icon={<IconPin />} label="إلى" className="lg:flex-[1.15]">
+                  <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
+                    <option value="">اختر الوجهة</option>
+                    <option value="any">أي مكان</option>
+                    {airportOptions}
+                  </select>
+                </FieldBox>
+
+                <FieldBox icon={<IconCalendar />} label="المغادرة" className="lg:flex-1">
                   <div className="relative">
                     <input
                       type="date"
-                      value={returnDate}
-                      min={date || new Date().toISOString().slice(0, 10)}
-                      onChange={(e) => setReturnDate(e.target.value)}
+                      value={date}
+                      min={new Date().toISOString().slice(0, 10)}
+                      onChange={(e) => setDate(e.target.value)}
                       className="hero-field-input"
                     />
-                    {!returnDate && (
+                    {/* Native date inputs render their empty state in the
+                       browser's own locale. Cover it with a fixed Arabic
+                       label until a date is actually picked —
+                       pointer-events-none so the click still opens the
+                       native picker underneath. */}
+                    {!date && (
                       <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
-                        تواريخ مرنة
+                        اختر التاريخ
                       </span>
                     )}
                   </div>
                 </FieldBox>
-              ) : null}
 
-              <PassengerBudgetField
-                passengers={passengers}
-                setPassengers={setPassengers}
-                budget={budget}
-                setBudget={setBudget}
-              />
+                {tripType === "round_trip" ? (
+                  <FieldBox icon={<IconCalendar />} label="العودة" className="lg:flex-1">
+                    <div className="relative">
+                      <input
+                        type="date"
+                        value={returnDate}
+                        min={date || new Date().toISOString().slice(0, 10)}
+                        onChange={(e) => setReturnDate(e.target.value)}
+                        className="hero-field-input"
+                      />
+                      {!returnDate && (
+                        <span className="hero-field-select pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white">
+                          اختر التاريخ
+                        </span>
+                      )}
+                    </div>
+                  </FieldBox>
+                ) : null}
 
-              <div className="p-2 lg:flex lg:items-center lg:p-1.5">
-                <button
-                  type="submit"
-                  className="flex w-full shrink-0 items-center justify-center gap-2 rounded-2xl bg-[#FF7A45] px-7 py-4 text-[15px] font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:w-auto"
-                >
-                  <IconSearch /> اعثر على أفضل عرض
-                </button>
+                <PassengerBudgetField
+                  passengers={passengers}
+                  setPassengers={setPassengers}
+                  budget={budget}
+                  setBudget={setBudget}
+                />
               </div>
             </div>
+
+            <button
+              type="submit"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#FF7A45] py-4 text-[15px] font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0"
+            >
+              <IconSearch /> اعثر على أفضل عرض
+            </button>
           </form>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -407,7 +408,7 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-2.5 transition focus-within:bg-[#E5F4FB]/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-3 transition focus-within:border-[#0C7BB3] focus-within:shadow-sm focus-within:shadow-[#BFE3F6] hover:border-[#0C7BB3]/50 ${className}`}
     >
       <span className="shrink-0 text-slate-400" aria-hidden>
         {icon}
@@ -450,12 +451,12 @@ function PassengerBudgetField({
   const budgetLabel = BUDGET_OPTIONS.find((b) => b.value === budget)?.label;
 
   return (
-    <div ref={ref} className="relative lg:w-52 lg:shrink-0 lg:flex-none">
+    <div ref={ref} className="relative lg:w-64 lg:shrink-0 lg:flex-none">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className={`flex w-full min-w-0 items-center gap-2 px-3.5 py-2.5 text-start transition hover:bg-[#E5F4FB]/40 ${
-          open ? "bg-[#E5F4FB]/40" : ""
+        className={`flex w-full min-w-0 items-center gap-2.5 rounded-2xl border bg-white px-4 py-3 text-start transition hover:border-[#0C7BB3]/50 ${
+          open ? "border-[#0C7BB3] shadow-sm shadow-[#BFE3F6]" : "border-slate-200"
         }`}
       >
         <span className="shrink-0 text-slate-400" aria-hidden>
