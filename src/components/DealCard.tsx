@@ -4,6 +4,8 @@ import { getAgencyWhatsApp } from "../lib/api";
 import {
   airlineName,
   baggageBadgeLabel,
+  dealTypeBadgeClass,
+  dealTypeLabel,
   departureTimingLabel,
   formatRouteCities,
   rankBadgeStyle,
@@ -13,6 +15,7 @@ import {
 import { cn, formatPrice, whatsAppLink, WhatsAppIcon } from "../lib/utils";
 import type { AgencyRow, AirlineRow, AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 import { DealBadge } from "./DealBadge";
+import { DealCountdown } from "./DealCountdown";
 import { Button } from "./ui/Button";
 
 type Props = {
@@ -56,28 +59,39 @@ export function DealCard({
       )}
     >
       <div className={cn("relative bg-slate-100", compact ? "h-[110px]" : "h-[160px]")}>
-        {rank && rankStyle ? (
-          <div className="absolute start-3 top-3 z-10 flex items-center gap-2">
+        <div className="absolute start-3 top-3 z-10 flex items-center gap-2">
+          {rank && rankStyle ? (
             <span
               className="font-latin flex size-7 items-center justify-center rounded-full text-xs font-bold shadow-sm"
               style={{ backgroundColor: rankStyle.bg, color: rankStyle.text }}
             >
               {rank}
             </span>
-          </div>
-        ) : null}
-        {onToggleCompare ? (
-          <button
-            type="button"
-            onClick={() => onToggleCompare(deal.id)}
+          ) : null}
+          <span
             className={cn(
-              "absolute end-3 top-3 z-10 rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm backdrop-blur-sm transition",
-              comparing ? "bg-[#0C7BB3] text-white" : "bg-white/95 text-slate-700 hover:bg-white",
+              "font-latin rounded-md px-2 py-1 text-[11px] font-bold text-white shadow-sm",
+              dealTypeBadgeClass(deal.deal_type),
             )}
           >
-            {comparing ? "✓ في المقارنة" : "قارن"}
-          </button>
-        ) : null}
+            {dealTypeLabel(deal.deal_type)}
+          </span>
+        </div>
+        <div className="absolute end-3 top-3 z-10 flex flex-col items-end gap-1.5">
+          {onToggleCompare ? (
+            <button
+              type="button"
+              onClick={() => onToggleCompare(deal.id)}
+              className={cn(
+                "rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm backdrop-blur-sm transition",
+                comparing ? "bg-[#0C7BB3] text-white" : "bg-white/95 text-slate-700 hover:bg-white",
+              )}
+            >
+              {comparing ? "✓ في المقارنة" : "قارن"}
+            </button>
+          ) : null}
+          <DealCountdown expiresAt={deal.expires_at} />
+        </div>
         {imageUrl ? (
           <img
             src={imageUrl}
@@ -93,7 +107,14 @@ export function DealCard({
 
       <div className={cn("flex flex-1 flex-col gap-3", compact ? "p-3" : "p-4")}>
         <div>
-          <h3 className="text-lg font-bold text-slate-900">{formatRouteCities(deal, airports)}</h3>
+          <div className="flex items-center gap-2">
+            <span className="font-latin text-lg font-extrabold text-slate-900">{deal.from_airport}</span>
+            <span aria-hidden className="text-slate-300">
+              →
+            </span>
+            <span className="font-latin text-lg font-extrabold text-slate-900">{deal.to_airport}</span>
+          </div>
+          <p className="mt-0.5 truncate text-xs text-slate-500">{formatRouteCities(deal, airports)}</p>
           <div className="mt-2 flex items-center gap-2">
             {airline?.logo_url ? (
               <img src={airline.logo_url} alt="" className="size-6 rounded object-contain" />

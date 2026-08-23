@@ -21,7 +21,7 @@ type Props = {
   filters: AdvancedFilters;
   onChange: (next: AdvancedFilters) => void;
   availableAirlines: AirlineRow[];
-  /** Mobile bottom-sheet mode. Desktop renders as a static sidebar regardless. */
+  /** Bottom-sheet on mobile, centered modal on larger screens — opened on demand from a "الفلاتر" button. */
   isOpen?: boolean;
   onClose?: () => void;
 };
@@ -143,16 +143,10 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
 
   return (
     <>
-      {/* Desktop sidebar */}
-      <aside className="hidden shrink-0 lg:block lg:w-[260px]">
-        <div className="sticky top-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">{content}</div>
-      </aside>
-
-      {/* Mobile bottom sheet */}
       {isOpen ? (
-        <div className="fixed inset-0 z-50 flex items-end lg:hidden">
+        <div className="fixed inset-0 z-50 flex items-end">
           <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-          <div className="relative max-h-[85vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl">
+          <div className="relative max-h-[85vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:mx-auto sm:max-w-md sm:rounded-2xl sm:self-center">
             {content}
             <div className="sticky bottom-0 mt-6 flex gap-3 border-t border-slate-100 bg-white pt-4">
               <Button variant="outline" fullWidth onClick={() => onChange(EMPTY_FILTERS)}>

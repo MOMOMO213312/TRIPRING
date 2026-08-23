@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useDealImage } from "../hooks/useCatalog";
@@ -7,29 +6,20 @@ import {
   airlineName,
   airportLabel,
   baggageBadgeLabel,
+  dealTypeBadgeClass,
   dealTypeLabel,
   departureTimingLabel,
   isLowSeats,
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { hoursUntil } from "../lib/filters";
-import type { DealRow, DealType } from "../types/database";
-
-/** Badge color per deal type — mirrors the "Flash Deal / Hot Deal / Last Minute /
- *  Best Value" ribbon colors in the reference design. */
-const TYPE_BADGE_STYLE: Record<DealType, string> = {
-  flash: "bg-[#0C7BB3]",
-  last_minute: "bg-[#0F172A]",
-  empty_seat: "bg-[#9F1246]",
-  special_fare: "bg-[#0C7BB3]",
-};
+import type { DealRow } from "../types/database";
+import { DealCountdown } from "./DealCountdown";
 
 /**
  * Flight/deal card matching the reference layout exactly:
  * image (badge top-start, live countdown top-end) → route codes → cities →
- * date · stops → airline → price row (price, strikethrough, savings badge,
- * seats-left) at the bottom.
+ * date · stops → airline → price row (price, seats-left) at the bottom.
  */
 export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Catalog }) {
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
@@ -55,12 +45,14 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
         )}
 
         <span
-          className={`font-latin absolute start-2.5 top-2.5 rounded-md px-2 py-1 text-[11px] font-bold text-white shadow-sm ${TYPE_BADGE_STYLE[deal.deal_type]}`}
+          className={`font-latin absolute start-2.5 top-2.5 rounded-md px-2 py-1 text-[11px] font-bold text-white shadow-sm ${dealTypeBadgeClass(deal.deal_type)}`}
         >
           {dealTypeLabel(deal.deal_type)}
         </span>
 
-        <CardCountdown expiresAt={deal.expires_at} />
+        <div className="absolute end-2.5 top-2.5">
+          <DealCountdown expiresAt={deal.expires_at} />
+        </div>
       </div>
 
       <div className="p-3.5">
@@ -114,36 +106,5 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
         </div>
       </div>
     </Link>
-  );
-}
-
-function CardCountdown({ expiresAt }: { expiresAt: string }) {
-  const [hoursLeft, setHoursLeft] = useState(() => hoursUntil(expiresAt));
-
-  useEffect(() => {
-    setHoursLeft(hoursUntil(expiresAt));
-    const id = setInterval(() => setHoursLeft(hoursUntil(expiresAt)), 1000);
-    return () => clearInterval(id);
-  }, [expiresAt]);
-
-  const label = useMemo(() => {
-    if (hoursLeft == null || hoursLeft <= 0) return null;
-    const totalSeconds = Math.floor(hoursLeft * 3600);
-    const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-    const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-    const s = String(totalSeconds % 60).padStart(2, "0");
-    return `${h}:${m}:${s}`;
-  }, [hoursLeft]);
-
-  if (!label) return null;
-
-  return (
-    <span
-      dir="ltr"
-      className="font-latin absolute end-2.5 top-2.5 flex items-center gap-1 rounded-md bg-white/90 px-1.5 py-1 text-[10px] font-bold text-slate-800 shadow-sm backdrop-blur-sm"
-    >
-      <span aria-hidden>⏱</span>
-      {label}
-    </span>
   );
 }
