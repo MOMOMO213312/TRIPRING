@@ -49,9 +49,6 @@ function ResaleCard({ resale, catalog }: { resale: TicketResaleRow; catalog: Ret
 
       <div className="flex items-baseline gap-2">
         <p className="text-2xl font-extrabold text-slate-900">{formatPrice(resale.asking_price, resale.currency)}</p>
-        {resale.original_price > resale.asking_price ? (
-          <p className="text-sm text-slate-400 line-through">{formatPrice(resale.original_price, resale.currency)}</p>
-        ) : null}
       </div>
 
       <a

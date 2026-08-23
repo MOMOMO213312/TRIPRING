@@ -97,22 +97,12 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
         <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex items-baseline gap-1.5">
             <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">${deal.price}</span>
-            {deal.original_price && deal.original_price > deal.price ? (
-              <span className="font-latin text-xs text-slate-400 line-through">${deal.original_price}</span>
-            ) : null}
           </div>
-          <div className="flex flex-col items-end gap-1">
-            {deal.original_price && deal.original_price > deal.price ? (
-              <span className="rounded-full bg-[#F0FDF4] px-1.5 py-0.5 text-[10px] font-bold text-[#16A34A]">
-                وفّر {Math.round((1 - deal.price / deal.original_price) * 100)}%
-              </span>
-            ) : null}
-            <span
-              className={`shrink-0 text-[11px] font-semibold whitespace-nowrap ${lowSeats ? "text-red-600" : "text-slate-400"}`}
-            >
-              {seatsLeftLabel(deal.available_seats)}
-            </span>
-          </div>
+          <span
+            className={`shrink-0 text-[11px] font-semibold whitespace-nowrap ${lowSeats ? "text-red-600" : "text-slate-400"}`}
+          >
+            {seatsLeftLabel(deal.available_seats)}
+          </span>
         </div>
       </div>
     </Link>

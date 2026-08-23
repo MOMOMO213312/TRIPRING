@@ -36,10 +36,6 @@ export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airpo
 
   const fromCity = airports.find((a) => a.code === deal.from_airport)?.city ?? deal.from_airport;
   const toCity = airports.find((a) => a.code === deal.to_airport)?.city ?? deal.to_airport;
-  const discountPct =
-    deal.original_price && deal.original_price > deal.price
-      ? Math.round((1 - deal.price / deal.original_price) * 100)
-      : null;
 
   return (
     <div className="w-[240px] rounded-2xl bg-[#0F172A]/95 p-4 text-white shadow-2xl backdrop-blur-sm sm:w-[260px]">
@@ -66,16 +62,9 @@ export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airpo
         <span>{toCity}</span>
       </p>
 
-      <div className="mt-3 flex items-end justify-between border-t border-white/10 pt-3">
-        <div>
-          <p className="text-[10px] text-white/50">يبدأ من</p>
-          <p className="font-latin text-xl font-extrabold text-white">{formatPrice(deal.price, deal.currency ?? "USD")}</p>
-        </div>
-        {discountPct ? (
-          <span className="rounded-full bg-[#FF7A45]/20 px-2 py-1 text-[11px] font-bold text-[#FF7A45]">
-            خصم {discountPct}%
-          </span>
-        ) : null}
+      <div className="mt-3 border-t border-white/10 pt-3">
+        <p className="text-[10px] text-white/50">يبدأ من</p>
+        <p className="font-latin text-xl font-extrabold text-white">{formatPrice(deal.price, deal.currency ?? "USD")}</p>
       </div>
 
       <Link
