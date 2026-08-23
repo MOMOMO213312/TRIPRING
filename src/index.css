@@ -5,6 +5,11 @@
   --color-primary-hover: #095E8A;
   --color-primary-light: #E5F4FB;
   --color-primary-bright: #299FD1;
+  /* Alias for --color-primary: several components (Input, Select, BookingPage
+     payment selection, ConfirmationPage booking number) reference `accent`
+     directly. Without this token those utilities (focus:border-accent,
+     text-accent, border-accent) silently no-op. */
+  --color-accent: #0C7BB3;
   --color-alert-red: #DB2F2B;
   --color-alert-red-light: #FBE3E2;
   --color-score-green: #16a34a;
