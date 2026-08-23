@@ -58,6 +58,14 @@ body {
   @apply shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
 }
 
+.tripgo-card-lift {
+  @apply shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-xl;
+}
+
+.tripgo-gradient-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #0c7bb3 100%);
+}
+
 /* Continuous marquee: track is duplicated in JS, so translating by -50%
    loops seamlessly back to an identical copy of the start. Pauses on
    hover/focus so the customer can actually read a card. */

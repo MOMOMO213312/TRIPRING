@@ -51,6 +51,15 @@ const TermsPage = lazy(() =>
 const TicketResalePage = lazy(() =>
   import("./pages/TicketResalePage").then((m) => ({ default: m.TicketResalePage })),
 );
+const TripGoPage = lazy(() =>
+  import("./pages/TripGoPage").then((m) => ({ default: m.TripGoPage })),
+);
+const TripGoResultsPage = lazy(() =>
+  import("./pages/TripGoResultsPage").then((m) => ({ default: m.TripGoResultsPage })),
+);
+const TripGoDetailsPage = lazy(() =>
+  import("./pages/TripGoDetailsPage").then((m) => ({ default: m.TripGoDetailsPage })),
+);
 
 function PageLoader() {
   return (
@@ -70,6 +79,9 @@ export default function App() {
             <Route path="search" element={<SearchResultsPage />} />
             <Route path="deals" element={<DealsCenterPage />} />
             <Route path="explore" element={<ExplorePage />} />
+            <Route path="tripgo" element={<TripGoPage />} />
+            <Route path="tripgo/results" element={<TripGoResultsPage />} />
+            <Route path="tripgo/:dealId" element={<TripGoDetailsPage />} />
             <Route path="blue-friday" element={<BlueFridayPage />} />
             <Route path="deals/:dealId" element={<DealDetailPage />} />
             <Route path="book/:dealId" element={<BookingPage />} />
