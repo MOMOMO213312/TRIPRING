@@ -15,7 +15,7 @@ import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
 const BUDGET_CHIPS = [100, 200, 300, 500, 700, 1000];
-type SortKey = "price_asc" | "price_desc";
+type SortKey = "recommended" | "price_asc" | "duration_asc" | "departure_asc";
 
 export function SearchResultsPage() {
   const [params, setParams] = useSearchParams();
@@ -28,7 +28,7 @@ export function SearchResultsPage() {
   const tripType = (params.get("tripType") as TripType | null) ?? "round_trip";
   const budget = params.get("budget") ?? "";
   const scope = params.get("scope") as TripScope | null;
-  const [sort, setSort] = useState<SortKey>("price_asc");
+  const [sort, setSort] = useState<SortKey>("recommended");
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -97,8 +97,10 @@ export function SearchResultsPage() {
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
             options={[
-              { value: "price_asc", label: "السعر: الأقل أولاً" },
-              { value: "price_desc", label: "السعر: الأعلى أولاً" },
+              { value: "recommended", label: "الأنسب (موصى به)" },
+              { value: "price_asc", label: "أقل سعر" },
+              { value: "duration_asc", label: "أقصر رحلة" },
+              { value: "departure_asc", label: "أقرب مغادرة" },
             ]}
             className="max-w-xs"
           />

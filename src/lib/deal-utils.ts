@@ -1,5 +1,6 @@
 import type { DealType, StopType } from "../types/database";
 import type { AirlineRow, AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
+import { dataStatuses, type DataStatus } from "./filters";
 
 const DEAL_TYPE_LABELS: Record<DealType, string> = {
   flash: "عرض سريع",
@@ -165,6 +166,17 @@ export function flexibleDateWindow<T extends { date: string }>(
     const diffDays = Math.abs((new Date(e.date + "T00:00:00").getTime() - center) / 86400000);
     return diffDays <= windowDays;
   });
+}
+
+const DATA_STATUS_META: Record<DataStatus, { icon: string; label: string }> = {
+  verified: { icon: "🟢", label: "تم التحقق مؤخرًا" },
+  needs_check: { icon: "🟡", label: "يحتاج تحقق" },
+  limited: { icon: "🔥", label: "فرصة محدودة" },
+};
+
+/** "🟢/🟡/🔥" data-status badges shown on a card — built only from real, checkable fields (price_checked_at, seats, expiry). */
+export function dataStatusBadges(deal: DealRow): { icon: string; label: string; status: DataStatus }[] {
+  return dataStatuses(deal).map((status) => ({ ...DATA_STATUS_META[status], status }));
 }
 
 export type DealReason = { icon: "down" | "seats" | "nonstop" | "fresh" | "score"; text: string };

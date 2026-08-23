@@ -35,8 +35,10 @@ export type DealSearchParams = {
   from?: string;
   to?: string;
   departureDate?: string;
+  /** ±days window around departureDate — used by the "مرن في الموعد" (flexible dates) priority instead of an exact-date match. */
+  departureDateWindowDays?: number;
   maxPrice?: number;
-  sort?: "price_asc" | "price_desc";
+  sort?: "recommended" | "price_asc" | "duration_asc" | "departure_asc";
   dealType?: DealType | "any";
   availableOnly?: boolean;
   /** one_way → only deals with no return_date; round_trip → only deals WITH a
@@ -142,7 +144,18 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean) {
 
   if (params.from) query = query.eq("from_airport", params.from);
   if (params.to) query = query.eq("to_airport", params.to);
-  if (params.departureDate) query = query.eq("departure_date", params.departureDate);
+  // Flexible dates: when a window is given, search a ±N day range around
+  // the chosen date instead of requiring an exact match.
+  if (params.departureDate && params.departureDateWindowDays) {
+    const center = new Date(params.departureDate + "T00:00:00");
+    const min = new Date(center);
+    min.setDate(min.getDate() - params.departureDateWindowDays);
+    const max = new Date(center);
+    max.setDate(max.getDate() + params.departureDateWindowDays);
+    query = query.gte("departure_date", min.toISOString().slice(0, 10)).lte("departure_date", max.toISOString().slice(0, 10));
+  } else if (params.departureDate) {
+    query = query.eq("departure_date", params.departureDate);
+  }
   if (params.maxPrice != null) query = query.lte("price", params.maxPrice);
   if (params.dealType && params.dealType !== "any") query = query.eq("deal_type", params.dealType);
   // Filtered server-side (rather than with a post-fetch .filter() in JS) so
@@ -153,13 +166,32 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean) {
   if (params.tripType === "one_way") query = query.is("return_date", null);
   else if (params.tripType === "round_trip") query = query.not("return_date", "is", null);
 
+  // All sort modes use only real, verifiable columns (price, real duration
+  // fields, real departure date/time, real price_checked_at timestamp) —
+  // never a fabricated score.
   switch (params.sort) {
-    case "price_desc":
-      query = query.order("price", { ascending: false });
-      break;
     case "price_asc":
-    default:
       query = query.order("price", { ascending: true });
+      break;
+    case "duration_asc":
+      query = query
+        .order("flight_duration_minutes", { ascending: true, nullsFirst: false })
+        .order("duration_hours", { ascending: true, nullsFirst: false })
+        .order("price", { ascending: true });
+      break;
+    case "departure_asc":
+      query = query
+        .order("departure_date", { ascending: true })
+        .order("departure_time", { ascending: true, nullsFirst: false })
+        .order("price", { ascending: true });
+      break;
+    case "recommended":
+    default:
+      // Recommended = recently price-checked first (real freshness signal),
+      // then cheapest — no invented "deal score".
+      query = query
+        .order("price_checked_at", { ascending: false, nullsFirst: false })
+        .order("price", { ascending: true });
       break;
   }
 

@@ -4,6 +4,7 @@ import { getAgencyWhatsApp } from "../lib/api";
 import {
   airlineName,
   baggageBadgeLabel,
+  dataStatusBadges,
   dealTypeBadgeClass,
   dealTypeLabel,
   departureTimingLabel,
@@ -148,6 +149,11 @@ export function DealCard({
                   {baggageBadgeLabel(deal)}
                 </DealBadge>
               ) : null}
+              {dataStatusBadges(deal).map((b) => (
+                <DealBadge key={b.status} tone={b.status === "limited" ? "urgent" : b.status === "verified" ? "good" : "neutral"} icon={b.icon}>
+                  {b.label}
+                </DealBadge>
+              ))}
             </div>
           </div>
         </div>
