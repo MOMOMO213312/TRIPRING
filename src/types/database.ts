@@ -310,6 +310,8 @@ export interface Database {
           infants_count: number;
           travelers_count: number | null;
           referred_by_affiliate_id: string | null;
+          commission_rate: number | null;
+          commission_amount: number | null;
         };
         Insert: Partial<Database["public"]["Tables"]["bookings"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["bookings"]["Row"]>;
