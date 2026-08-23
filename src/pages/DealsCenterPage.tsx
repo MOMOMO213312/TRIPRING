@@ -116,6 +116,40 @@ export function DealsCenterPage() {
         <p className="text-slate-600">تصفّح كل الفرص النشطة مع فلاتر حقيقية</p>
       </div>
 
+      <div>
+        <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
+          <span aria-hidden>✨</span> إيه الأهم بالنسبالك؟
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setSort("price_asc")}
+            className={`smart-chip ${sort === "price_asc" ? "smart-chip-active" : ""}`}
+          >
+            💰 أوفر سعر
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              setFilters((f) => ({
+                ...f,
+                stops: f.stops.length === 1 && f.stops[0] === "direct" ? [] : ["direct"],
+              }))
+            }
+            className={`smart-chip ${filters.stops.length === 1 && filters.stops[0] === "direct" ? "smart-chip-active" : ""}`}
+          >
+            ✈️ بدون توقف
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilters((f) => ({ ...f, minBaggage: f.minBaggage === 23 ? null : 23 }))}
+            className={`smart-chip ${filters.minBaggage != null ? "smart-chip-active" : ""}`}
+          >
+            🧳 شامل أمتعة
+          </button>
+        </div>
+      </div>
+
       <Card className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Select label="من" value={from} onChange={(e) => setFrom(e.target.value)} options={airportOptions} />
         <Select label="إلى" value={to} onChange={(e) => setTo(e.target.value)} options={airportOptions} />
@@ -147,64 +181,62 @@ export function DealsCenterPage() {
         <p className="text-sm text-slate-500">
           {deals.length < total ? `${deals.length} من ${total} فرصة نشطة` : `${total} فرصة نشطة`}
         </p>
-        <button type="button" onClick={() => setMobileFiltersOpen(true)} className="smart-chip lg:hidden">
+        <button type="button" onClick={() => setMobileFiltersOpen(true)} className="smart-chip">
           🔧 الفلاتر {activeFilterCount ? `(${activeFilterCount})` : ""}
         </button>
       </div>
 
-      <div className="flex items-start gap-6">
-        <FilterPanel
-          filters={filters}
-          onChange={setFilters}
-          availableAirlines={availableAirlines}
-          isOpen={mobileFiltersOpen}
-          onClose={() => setMobileFiltersOpen(false)}
-        />
+      <FilterPanel
+        filters={filters}
+        onChange={setFilters}
+        availableAirlines={availableAirlines}
+        isOpen={mobileFiltersOpen}
+        onClose={() => setMobileFiltersOpen(false)}
+      />
 
-        <div className="min-w-0 flex-1">
-          {loading ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="skeleton-pulse h-[360px]" />
+      <div className="min-w-0 flex-1">
+        {loading ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="skeleton-pulse h-[360px]" />
+            ))}
+          </div>
+        ) : error ? (
+          <Card className="text-red-600">{error}</Card>
+        ) : filtered.length === 0 ? (
+          <Card className="space-y-3 text-center">
+            <p className="text-slate-700">لا توجد فرص مطابقة.</p>
+            <p className="text-sm text-slate-500">جرّب زيادة الميزانية أو إزالة بعض الفلاتر.</p>
+            <button
+              type="button"
+              onClick={() => setFilters(EMPTY_FILTERS)}
+              className="cta-primary mx-auto px-5 py-2 text-sm"
+            >
+              إعادة تعيين الفلاتر
+            </button>
+          </Card>
+        ) : (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filtered.map((deal) => (
+                <DealImageWrapper
+                  key={deal.id}
+                  deal={deal}
+                  catalog={catalog}
+                  comparing={compareIds.includes(deal.id)}
+                  onToggleCompare={toggleCompare}
+                />
               ))}
             </div>
-          ) : error ? (
-            <Card className="text-red-600">{error}</Card>
-          ) : filtered.length === 0 ? (
-            <Card className="space-y-3 text-center">
-              <p className="text-slate-700">لا توجد فرص مطابقة.</p>
-              <p className="text-sm text-slate-500">جرّب زيادة الميزانية أو إزالة بعض الفلاتر.</p>
-              <button
-                type="button"
-                onClick={() => setFilters(EMPTY_FILTERS)}
-                className="cta-primary mx-auto px-5 py-2 text-sm"
-              >
-                إعادة تعيين الفلاتر
-              </button>
-            </Card>
-          ) : (
-            <>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filtered.map((deal, i) => (
-                  <DealImageWrapper
-                    key={deal.id}
-                    deal={deal}
-                    catalog={catalog}
-                    comparing={compareIds.includes(deal.id)}
-                    onToggleCompare={toggleCompare}
-                  />
-                ))}
+            {deals.length < total ? (
+              <div className="mt-6 flex justify-center">
+                <Button variant="outline" onClick={loadMore} disabled={loadingMore}>
+                  {loadingMore ? "جاري التحميل..." : `عرض المزيد (${total - deals.length} فرصة متبقية)`}
+                </Button>
               </div>
-              {deals.length < total ? (
-                <div className="mt-6 flex justify-center">
-                  <Button variant="outline" onClick={loadMore} disabled={loadingMore}>
-                    {loadingMore ? "جاري التحميل..." : `عرض المزيد (${total - deals.length} فرصة متبقية)`}
-                  </Button>
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
+            ) : null}
+          </>
+        )}
       </div>
 
       {compareIds.length > 0 ? (
