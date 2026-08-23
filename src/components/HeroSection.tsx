@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import { OneWayFareBoard } from "./OneWayFareBoard";
 import { RoundTripFareBoard } from "./RoundTripFareBoard";
+import { HeroFlashDealCard } from "./HeroFlashDealCard";
 import { getDestinationImage } from "../lib/api";
 import type { TripType } from "../lib/api";
 import type { AirportRow, DealRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
@@ -153,7 +154,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
-        <div className="absolute inset-0 h-[340px] sm:h-[380px]">
+        <div className="absolute inset-0 h-[400px] sm:h-[440px]">
           {/* Static fallback stays as the base layer so there's never a blank
              flash while the first real destination photo loads, and it's all
              that renders if image_cache has nothing usable yet. */}
@@ -170,11 +171,11 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
           ))}
           {/* Daytime wing-over-clouds shot (or whichever destination photo is
              active) carries bright natural color, so the overlay's job is just
-             to guarantee the headline stays legible over it — a dark wash up
-             top that fades to nothing by mid-photo, then a soft handoff into
-             the page background at the very bottom so the photo still reads
-             as a hero, not a washed-out panel. */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-transparent" />
+             to guarantee the headline stays legible over it — a dark wash on
+             the text side that fades to nothing by mid-photo, then a soft
+             handoff into the page background at the very bottom so the photo
+             still reads as a hero, not a washed-out panel. */}
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/10 to-black/60 rtl:bg-gradient-to-r" />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
 
           {heroImages.length > 0 ? (
@@ -182,6 +183,13 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               ✈ {heroImages[activeImage]?.city}
             </div>
           ) : null}
+
+          {/* Flash-deal corner card — mirrors the "end" side (opposite the
+             headline) so it works the same way in RTL as the reference's
+             top-right countdown card does in LTR. */}
+          <div className="absolute end-4 top-4 z-10 hidden sm:block">
+            <HeroFlashDealCard deals={deals} airports={airports} />
+          </div>
 
           {heroImages.length > 1 ? (
             <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-1.5">
@@ -200,27 +208,39 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
           ) : null}
         </div>
 
-      <div className="relative mx-auto max-w-4xl px-4 pb-32 pt-8 text-center sm:pb-36 sm:pt-10">
-        <h1
-          className="font-display text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl"
-          style={{ textShadow: "0 4px 28px rgba(0,0,0,0.5)" }}
-        >
-          اكتشف افضل فرص السفر يوميا
-        </h1>
-        <p
-          className="mx-auto mt-3 max-w-xl text-base text-white/90 sm:text-lg"
-          style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
-        >
-          تجربة تستحق البحث
-        </p>
+      <div className="relative mx-auto max-w-6xl px-4 pb-40 pt-10 sm:pb-44 sm:pt-14">
+        <div className="max-w-xl text-start">
+          <h1
+            className="font-display text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl"
+            style={{ textShadow: "0 4px 28px rgba(0,0,0,0.5)" }}
+          >
+            اكتشف افضل فرص السفر يوميا
+          </h1>
+          <p
+            className="mt-3 max-w-md text-base text-white/90 sm:text-lg"
+            style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
+          >
+            تجربة تستحق البحث
+          </p>
+          <p className="mt-2 text-sm font-semibold text-[#FF7A45]" style={{ textShadow: "0 1px 12px rgba(0,0,0,0.4)" }}>
+            مقاعد محدودة. وقت محدود.
+          </p>
+        </div>
+
+        {/* Compact flash-deal card for small screens, right under the
+           headline instead of floating in the corner (no room for that
+           there below `sm`). */}
+        <div className="mt-5 max-w-[260px] sm:hidden">
+          <HeroFlashDealCard deals={deals} airports={airports} />
+        </div>
       </div>
 
       {/* Search box pulled up to overlap the bottom of the hero photo. The
-         headline block above now reserves fixed bottom padding (pb-32 /
-         sm:pb-36) that comfortably exceeds this negative margin, so the card
+         headline block above now reserves fixed bottom padding (pb-40 /
+         sm:pb-44) that comfortably exceeds this negative margin, so the card
          can never cover the headline or subheadline text. */}
       <div className="relative z-10 mx-auto max-w-5xl px-4">
-        <div className="-mt-24 rounded-[24px] bg-white p-4 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:p-5">
+        <div className="-mt-28 rounded-[24px] bg-white p-4 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:-mt-32 sm:p-5">
           <div className="mb-4 flex w-fit gap-1 rounded-full bg-slate-100 p-1">
             {(
               [
@@ -360,7 +380,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               <div className="p-2 lg:flex lg:items-center lg:p-1.5">
                 <button
                   type="submit"
-                  className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#0C7BB3] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#BFE3F6] transition hover:-translate-y-0.5 hover:bg-[#095E8A] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:w-auto lg:rounded-2xl"
+                  className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF7A45] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:w-auto lg:rounded-2xl"
                 >
                   <span aria-hidden>🔍</span> دوّر على أفضل عرض
                 </button>
