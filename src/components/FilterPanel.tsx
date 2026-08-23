@@ -143,8 +143,16 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
 
   return (
     <>
+      {/* Persistent sidebar on large screens — desktop had no way to reach
+         the filters at all before this: the only trigger button was
+         lg:hidden and this component previously rendered nothing unless
+         isOpen was true. */}
+      <div className="hidden w-72 shrink-0 lg:block">
+        <div className="sticky top-6 rounded-2xl border border-slate-200 bg-white p-5">{content}</div>
+      </div>
+
       {isOpen ? (
-        <div className="fixed inset-0 z-50 flex items-end">
+        <div className="fixed inset-0 z-50 flex items-end lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={onClose} />
           <div className="relative max-h-[85vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:mx-auto sm:max-w-md sm:rounded-2xl sm:self-center">
             {content}

@@ -181,20 +181,21 @@ export function DealsCenterPage() {
         <p className="text-sm text-slate-500">
           {deals.length < total ? `${deals.length} من ${total} فرصة نشطة` : `${total} فرصة نشطة`}
         </p>
-        <button type="button" onClick={() => setMobileFiltersOpen(true)} className="smart-chip">
+        <button type="button" onClick={() => setMobileFiltersOpen(true)} className="smart-chip lg:hidden">
           🔧 الفلاتر {activeFilterCount ? `(${activeFilterCount})` : ""}
         </button>
       </div>
 
-      <FilterPanel
-        filters={filters}
-        onChange={setFilters}
-        availableAirlines={availableAirlines}
-        isOpen={mobileFiltersOpen}
-        onClose={() => setMobileFiltersOpen(false)}
-      />
+      <div className="flex items-start gap-6">
+        <FilterPanel
+          filters={filters}
+          onChange={setFilters}
+          availableAirlines={availableAirlines}
+          isOpen={mobileFiltersOpen}
+          onClose={() => setMobileFiltersOpen(false)}
+        />
 
-      <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1">
         {loading ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -237,6 +238,7 @@ export function DealsCenterPage() {
             ) : null}
           </>
         )}
+        </div>
       </div>
 
       {compareIds.length > 0 ? (
