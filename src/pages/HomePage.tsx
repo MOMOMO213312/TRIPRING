@@ -6,16 +6,14 @@ import { DealCarousel } from "../components/DealCarousel";
 import { TravelToSection } from "../components/TravelToSection";
 import { EmptyState } from "../components/EmptyState";
 import { HeroSection } from "../components/HeroSection";
-import { BudgetTeaserCard, PriceAlertTeaserCard } from "../components/HomeSidebarCards";
 import { CardsSkeleton } from "../components/LoadingSkeleton";
-import { MarketOverview } from "../components/MarketOverview";
 import { SmartFilterChips } from "../components/SmartFilterChips";
 import { TrustStrip } from "../components/TrustStrip";
 import { WhyTripRing } from "../components/WhyTripRing";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { fetchActiveDeals, fetchMarketStats } from "../lib/api";
-import type { MarketStats, TripType } from "../lib/api";
+import { fetchActiveDeals } from "../lib/api";
+import type { TripType } from "../lib/api";
 import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
@@ -32,20 +30,12 @@ export function HomePage() {
   const [allActiveDeals, setAllActiveDeals] = useState<DealRow[]>([]);
   const [loadingDeals, setLoadingDeals] = useState(true);
   const [dealsError, setDealsError] = useState<string | null>(null);
-  const [marketStats, setMarketStats] = useState<MarketStats | null>(null);
 
   useEffect(() => {
     fetchActiveDeals({ sort: "price_asc", availableOnly: true })
       .then(setAllActiveDeals)
       .catch((e) => setDealsError(e instanceof Error ? e.message : "خطأ"))
       .finally(() => setLoadingDeals(false));
-    // Market stats are computed entirely from real live data (active count,
-    // expires_at, view_count, deal_price_history) — no invented numbers —
-    // so they can load independently and fail silently without blocking
-    // the rest of the homepage.
-    fetchMarketStats()
-      .then(setMarketStats)
-      .catch(() => setMarketStats(null));
   }, []);
 
   const opportunities = allActiveDeals.slice(0, OPPORTUNITIES_LIMIT);
@@ -153,17 +143,6 @@ export function HomePage() {
             ]}
           />
         )}
-
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <PriceAlertTeaserCard />
-          <BudgetTeaserCard />
-        </div>
-
-        {marketStats ? (
-          <div id="market-overview">
-            <MarketOverview stats={marketStats} airports={catalog.airports} />
-          </div>
-        ) : null}
 
         {lastMinuteDeals.length > 0 ? (
           <section id="last-minute">
