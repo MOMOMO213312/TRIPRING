@@ -31,12 +31,39 @@ type Props = {
 
 type HeroDestinationImage = { code: string; city: string; url: string };
 
+// Hero rotation is intentionally limited to these four destinations (per request):
+// Saudi Arabia (any city), Dubai specifically, Istanbul specifically, and Egypt
+// (domestic — Sharm, Luxor, Aswan, Hurghada, etc.). Matched by both the airport's
+// country/city text AND a known IATA-code fallback, since exact Arabic spellings
+// in the live `airports` table can't be verified from here.
+const HERO_COUNTRY_MATCHES = ["السعودية", "المملكة العربية السعودية", "مصر"];
+const HERO_CITY_MATCHES = ["دبي", "إسطنبول", "اسطنبول"];
+const HERO_CODE_FALLBACK = new Set([
+  // Saudi Arabia
+  "JED", "RUH", "MED", "DMM", "TUU", "ELQ", "AHB", "TIF", "YNB", "GIZ", "HAS", "AJF", "ULH", "ABT",
+  // Dubai
+  "DXB",
+  // Istanbul
+  "IST", "SAW",
+  // Egypt (domestic)
+  "SSH", "HRG", "LXR", "ASW", "ALY", "HBE", "RMF", "ATZ",
+]);
+
+function isHeroEligibleDestination(airport: AirportRow | undefined): boolean {
+  if (!airport) return false;
+  if (HERO_COUNTRY_MATCHES.includes(airport.country)) return true;
+  if (HERO_CITY_MATCHES.includes(airport.city)) return true;
+  return HERO_CODE_FALLBACK.has(airport.code);
+}
+
 /**
- * Picks real photos for the currently most in-demand destinations instead of one
- * static stock photo. Ranked by deal_score, then booking/view counts, then price —
- * so whichever routes are actually hot right now are what shows up in the hero.
- * Only uses the same licensed `image_cache` table already used everywhere else in
- * the app (deal cards, TravelToSection, etc.), so no new image licensing is introduced.
+ * Picks real photos for the currently most in-demand destinations (within the
+ * curated Saudi Arabia / Dubai / Istanbul / Egypt set) instead of one static
+ * stock photo. Ranked by deal_score, then booking/view counts, then price — so
+ * whichever of those routes is actually hot right now shows up in the hero.
+ * Only uses the same licensed `image_cache` table already used everywhere else
+ * in the app (deal cards, TravelToSection, etc.), so no new image licensing is
+ * introduced.
  */
 function topDestinationImages(
   deals: DealRow[],
@@ -44,15 +71,17 @@ function topDestinationImages(
   imageCache: ImageCacheRow[],
   limit: number,
 ): HeroDestinationImage[] {
-  const ranked = [...deals].sort((a, b) => {
-    const scoreDiff = (b.deal_score ?? 0) - (a.deal_score ?? 0);
-    if (scoreDiff !== 0) return scoreDiff;
-    const bookingDiff = (b.booking_count ?? 0) - (a.booking_count ?? 0);
-    if (bookingDiff !== 0) return bookingDiff;
-    const viewDiff = (b.view_count ?? 0) - (a.view_count ?? 0);
-    if (viewDiff !== 0) return viewDiff;
-    return a.price - b.price;
-  });
+  const ranked = [...deals]
+    .filter((deal) => isHeroEligibleDestination(airports.find((a) => a.code === deal.to_airport)))
+    .sort((a, b) => {
+      const scoreDiff = (b.deal_score ?? 0) - (a.deal_score ?? 0);
+      if (scoreDiff !== 0) return scoreDiff;
+      const bookingDiff = (b.booking_count ?? 0) - (a.booking_count ?? 0);
+      if (bookingDiff !== 0) return bookingDiff;
+      const viewDiff = (b.view_count ?? 0) - (a.view_count ?? 0);
+      if (viewDiff !== 0) return viewDiff;
+      return a.price - b.price;
+    });
 
   const seen = new Set<string>();
   const result: HeroDestinationImage[] = [];
