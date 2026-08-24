@@ -258,7 +258,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                 type="button"
                 onClick={() => setTripType(key)}
                 className={`relative flex items-center gap-1.5 pb-2.5 pt-1 text-sm font-bold transition ${
-                  tripType === key ? "text-[#0C7BB3]" : "text-slate-400 hover:text-slate-600"
+                  tripType === key ? "text-[#FF7A45]" : "text-slate-400 hover:text-slate-600"
                 }`}
               >
                 <span aria-hidden className="text-xs">
@@ -294,7 +294,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                     setTo(from);
                   }}
                   aria-label="تبديل الوجهتين"
-                  className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#0C7BB3] hover:text-[#0C7BB3] lg:rotate-0"
+                  className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#FF7A45] hover:text-[#FF7A45] lg:rotate-0"
                 >
                   ⇄
                 </button>
@@ -372,7 +372,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                 icon="💰"
                 label="Budget"
                 trailingIcon="▾"
-                className="lg:w-56 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#E5F4FB]/40"
+                className="lg:w-56 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#FFEDE3]/40"
               >
                 <select
                   value={budget}
@@ -391,7 +391,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                 icon="👤"
                 label="Passengers"
                 trailingIcon="▾"
-                className="lg:w-56 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#E5F4FB]/40"
+                className="lg:w-56 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#FFEDE3]/40"
               >
                 <select
                   value={passengers}
@@ -427,7 +427,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               <Link
                 key={`${p.from}-${p.to}`}
                 to={`/search?from=${p.from}&to=${p.to}`}
-                className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#0C7BB3] hover:bg-[#E5F4FB] hover:text-[#0C7BB3]"
+                className="rounded-full border border-[#E2E8F0] bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-[#FF7A45] hover:bg-[#FFEDE3] hover:text-[#FF7A45]"
               >
                 {p.label}
               </Link>
@@ -467,7 +467,7 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-2.5 transition focus-within:bg-[#E5F4FB]/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 px-3.5 py-2.5 transition focus-within:bg-[#FFEDE3]/40 ${className}`}
     >
       <span className="shrink-0 text-slate-400" aria-hidden>
         {icon}
