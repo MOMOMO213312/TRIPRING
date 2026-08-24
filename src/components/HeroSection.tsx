@@ -250,9 +250,14 @@ function TravelersField({ value, onChange }: { value: number; onChange: (n: numb
   return (
     <div ref={wrapRef} className="relative min-w-0">
       <button type="button" onClick={() => setOpen((o) => !o)} className="w-full text-start">
-        <FieldBox icon="👤" label="المسافرون" trailingIcon="▾">
-          <span className="hero-field-input block truncate">
-            {value} {value === 1 ? "مسافر" : "مسافرين"}
+        <FieldBox icon="👤" label="المسافرون">
+          <span className="hero-field-input flex items-center justify-between gap-1">
+            <span className="truncate">
+              {value} {value === 1 ? "مسافر" : "مسافرين"}
+            </span>
+            <span aria-hidden className="shrink-0 text-xs font-bold text-slate-400">
+              ▾
+            </span>
           </span>
         </FieldBox>
       </button>
@@ -399,7 +404,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
             </div>
 
             <form onSubmit={submit}>
-              <div className="flex flex-col gap-2 lg:flex-row lg:items-stretch lg:gap-0 lg:divide-x lg:divide-slate-100 rtl:lg:divide-x-reverse lg:rounded-2xl lg:border lg:border-slate-100">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-0 lg:divide-x lg:divide-slate-100 rtl:lg:divide-x-reverse lg:rounded-2xl lg:border lg:border-slate-100">
                 <AirportField
                   icon="🛫"
                   label="من"
@@ -409,7 +414,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                   className="lg:flex-1"
                 />
 
-                <div className="flex h-6 shrink-0 items-center justify-center lg:h-auto lg:w-10">
+                <div className="flex h-9 shrink-0 items-center justify-center lg:h-auto lg:w-10">
                   <button
                     type="button"
                     onClick={() => {
@@ -437,43 +442,26 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                 />
 
                 <FieldBox icon="📅" label="تاريخ الذهاب" className="lg:flex-1">
-                  <div className="relative">
-                    <input
-                      type="date"
-                      value={date}
-                      min={new Date().toISOString().slice(0, 10)}
-                      onChange={(e) => setDate(e.target.value)}
-                      className="hero-field-input"
-                    />
-                    {/* Native date inputs render their empty state in the
-                       browser's own locale (often "mm/dd"). Cover it with a
-                       fixed label until a date is actually picked —
-                       pointer-events-none so the click still opens the
-                       native picker underneath. */}
-                    {!date && (
-                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-400">
-                        اختر تاريخًا
-                      </span>
-                    )}
-                  </div>
+                  <input
+                    type="date"
+                    dir="ltr"
+                    value={date}
+                    min={new Date().toISOString().slice(0, 10)}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="hero-field-input text-start"
+                  />
                 </FieldBox>
 
                 {tripType === "round_trip" ? (
                   <FieldBox icon="📅" label="تاريخ العودة" className="lg:flex-1">
-                    <div className="relative">
-                      <input
-                        type="date"
-                        value={returnDate}
-                        min={date || new Date().toISOString().slice(0, 10)}
-                        onChange={(e) => setReturnDate(e.target.value)}
-                        className="hero-field-input"
-                      />
-                      {!returnDate && (
-                        <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-400">
-                          اختر تاريخًا
-                        </span>
-                      )}
-                    </div>
+                    <input
+                      type="date"
+                      dir="ltr"
+                      value={returnDate}
+                      min={date || new Date().toISOString().slice(0, 10)}
+                      onChange={(e) => setReturnDate(e.target.value)}
+                      className="hero-field-input text-start"
+                    />
                   </FieldBox>
                 ) : null}
 
@@ -556,35 +544,34 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
   );
 }
 
+/** Two-line "label above value" field, the same pattern Google Flights /
+ *  Skyscanner use: a small muted eyebrow line (icon + label) on top, the
+ *  actual value large and bold underneath. Kept as one shared shell so every
+ *  field in the search card — airports, dates, travelers — lines up with
+ *  identical height, padding and rhythm instead of each one improvising its
+ *  own spacing. */
 function FieldBox({
   icon,
   label,
-  trailingIcon,
   children,
   className = "",
 }: {
   icon: ReactNode;
   label: string;
-  trailingIcon?: string;
   children: ReactNode;
   className?: string;
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 rounded-xl border border-slate-100 bg-white px-3.5 py-2.5 transition focus-within:border-[#FF7A45] focus-within:ring-2 focus-within:ring-[#FFEDE3] lg:rounded-none lg:border-0 ${className}`}
+      className={`min-w-0 rounded-xl border border-slate-100 bg-white px-4 py-3 transition focus-within:border-[#FF7A45] focus-within:ring-2 focus-within:ring-[#FFEDE3] lg:rounded-none lg:border-0 lg:py-3.5 ${className}`}
     >
-      <span className="shrink-0 text-slate-400" aria-hidden>
-        {icon}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">{label}</p>
-        {children}
-      </div>
-      {trailingIcon ? (
-        <span className="shrink-0 text-sm font-bold text-slate-400" aria-hidden>
-          {trailingIcon}
+      <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400">
+        <span aria-hidden className="text-[13px] leading-none">
+          {icon}
         </span>
-      ) : null}
+        {label}
+      </p>
+      <div className="mt-1.5 min-w-0">{children}</div>
     </div>
   );
 }
