@@ -250,7 +250,6 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               [
                 ["round_trip", "↔️", "ذهاب وعودة"],
                 ["one_way", "✈️", "ذهاب فقط"],
-                ["multi_city", "🧭", "مدن متعددة"],
               ] as const
             ).map(([key, icon, label]) => (
               <button

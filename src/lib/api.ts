@@ -30,7 +30,7 @@ export const DEAL_COLUMNS =
 /** Anonymous/guest-facing feeds only show free-tier deals until membership auth exists. */
 export const PUBLIC_MEMBERSHIP_TIER = "free" as const;
 
-export type TripType = "round_trip" | "one_way" | "multi_city";
+export type TripType = "round_trip" | "one_way";
 
 export type DealSearchParams = {
   from?: string;
@@ -41,8 +41,7 @@ export type DealSearchParams = {
   dealType?: DealType | "any";
   availableOnly?: boolean;
   /** one_way → only deals with no return_date; round_trip → only deals WITH a
-   *  return_date; multi_city isn't modeled in the deals table yet, so it's a
-   *  no-op filter for now (shows everything, same as not passing tripType). */
+   *  return_date. */
   tripType?: TripType;
   /** Zero-based page index. Combined with pageSize to page results server-side
    *  via Supabase's .range(), so large result sets don't rely on (and get
