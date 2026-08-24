@@ -8,7 +8,7 @@ import { HeroFlashDealCard } from "./HeroFlashDealCard";
 import { getDestinationImage } from "../lib/api";
 import type { TripType } from "../lib/api";
 import type { AirportRow, DealRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
-import heroSky from "../assets/hero-sky.jpg";
+import heroSky from "../assets/hero-sky.png";
 
 const HERO_IMAGE = heroSky;
 
