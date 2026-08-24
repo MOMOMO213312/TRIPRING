@@ -9,7 +9,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
-import { createTicketResale, fetchActiveTicketResales, type TicketResaleRow } from "../lib/api";
+import { createTicketResale, fetchActiveTicketResales, type PublicTicketResaleRow } from "../lib/api";
 import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
@@ -30,7 +30,7 @@ const REASON_OPTIONS = (Object.keys(REASON_LABEL) as ResaleReason[]).map((value)
   label: REASON_LABEL[value],
 }));
 
-function ResaleCard({ resale, catalog }: { resale: TicketResaleRow; catalog: ReturnType<typeof useCatalog> }) {
+function ResaleCard({ resale, catalog }: { resale: PublicTicketResaleRow; catalog: ReturnType<typeof useCatalog> }) {
   const waMessage = `مرحباً، أنا مهتم بتذكرة إعادة البيع: ${resale.from_airport} → ${resale.to_airport} بتاريخ ${resale.departure_date} (${formatPrice(resale.asking_price, resale.currency)})`;
   return (
     <Card className="space-y-3">
@@ -208,7 +208,7 @@ function ListTicketForm({ onPosted }: { onPosted: () => void }) {
 
 export function TicketResalePage() {
   const catalog = useCatalog();
-  const [resales, setResales] = useState<TicketResaleRow[]>([]);
+  const [resales, setResales] = useState<PublicTicketResaleRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [from, setFrom] = useState("");

@@ -117,6 +117,7 @@ export interface Database {
           deal_type: DealType;
         };
         Update: Partial<Database["public"]["Tables"]["deals"]["Row"]>;
+        Relationships: [];
       };
       airports: {
         Row: {
@@ -128,6 +129,7 @@ export interface Database {
         };
         Insert: Database["public"]["Tables"]["airports"]["Row"];
         Update: Partial<Database["public"]["Tables"]["airports"]["Row"]>;
+        Relationships: [];
       };
       airlines: {
         Row: {
@@ -143,6 +145,7 @@ export interface Database {
         Insert: Pick<Database["public"]["Tables"]["airlines"]["Row"], "code" | "name"> &
           Partial<Database["public"]["Tables"]["airlines"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["airlines"]["Row"]>;
+        Relationships: [];
       };
       route_price_reference: {
         Row: {
@@ -161,6 +164,7 @@ export interface Database {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["route_price_reference"]["Row"]>;
+        Relationships: [];
       };
       route_price_calendar: {
         Row: {
@@ -176,6 +180,7 @@ export interface Database {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["route_price_calendar"]["Row"]>;
+        Relationships: [];
       };
       deal_price_history: {
         Row: {
@@ -189,6 +194,7 @@ export interface Database {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["deal_price_history"]["Row"]>;
+        Relationships: [];
       };
       image_cache: {
         Row: {
@@ -200,6 +206,7 @@ export interface Database {
         };
         Insert: Omit<Database["public"]["Tables"]["image_cache"]["Row"], "id"> & { id?: string };
         Update: Partial<Database["public"]["Tables"]["image_cache"]["Row"]>;
+        Relationships: [];
       };
       agencies: {
         Row: {
@@ -217,6 +224,7 @@ export interface Database {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["agencies"]["Row"]>;
+        Relationships: [];
       };
       affiliates: {
         Row: {
@@ -237,6 +245,7 @@ export interface Database {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["affiliates"]["Row"]>;
+        Relationships: [];
       };
       additional_services: {
         Row: {
@@ -252,6 +261,32 @@ export interface Database {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["additional_services"]["Row"]>;
+        Relationships: [];
+      };
+      service_packages: {
+        Row: {
+          id: string;
+          tier: "basic" | "smart" | "premium";
+          name: string;
+          description: string | null;
+          price: number;
+          is_active: boolean;
+          sort_order: number;
+        };
+        Insert: Omit<Database["public"]["Tables"]["service_packages"]["Row"], "id"> & {
+          id?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["service_packages"]["Row"]>;
+        Relationships: [];
+      };
+      service_package_items: {
+        Row: {
+          package_id: string;
+          service_id: string;
+        };
+        Insert: Database["public"]["Tables"]["service_package_items"]["Row"];
+        Update: Partial<Database["public"]["Tables"]["service_package_items"]["Row"]>;
+        Relationships: [];
       };
       service_requests: {
         Row: {
@@ -280,6 +315,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["service_requests"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["service_requests"]["Row"]>;
+        Relationships: [];
       };
       bookings: {
         Row: {
@@ -315,6 +351,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["bookings"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["bookings"]["Row"]>;
+        Relationships: [];
       };
       booking_travelers: {
         Row: {
@@ -330,6 +367,7 @@ export interface Database {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["booking_travelers"]["Row"]>;
+        Relationships: [];
       };
       booking_services: {
         Row: {
@@ -343,6 +381,7 @@ export interface Database {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["booking_services"]["Row"]>;
+        Relationships: [];
       };
       price_alerts: {
         Row: {
@@ -357,6 +396,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["price_alerts"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["price_alerts"]["Row"]>;
+        Relationships: [];
       };
       saved_searches: {
         Row: {
@@ -370,6 +410,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["saved_searches"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["saved_searches"]["Row"]>;
+        Relationships: [];
       };
       ticket_resales: {
         Row: {
@@ -400,6 +441,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["ticket_resales"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["ticket_resales"]["Row"]>;
+        Relationships: [];
       };
       agency_reviews: {
         Row: {
@@ -413,6 +455,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["agency_reviews"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["agency_reviews"]["Row"]>;
+        Relationships: [];
       };
       profiles: {
         Row: {
@@ -427,6 +470,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
+        Relationships: [];
       };
       deal_views: {
         Row: {
@@ -436,6 +480,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["deal_views"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["deal_views"]["Row"]>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
@@ -509,6 +554,8 @@ export type AgencyRow = Tables<"agencies">;
 export type AffiliateRow = Tables<"affiliates">;
 export type BookingRow = Tables<"bookings">;
 export type AdditionalServiceRow = Tables<"additional_services">;
+export type ServicePackageRow = Tables<"service_packages">;
+export type ServicePackageItemRow = Tables<"service_package_items">;
 export type ServiceRequestRow = Tables<"service_requests">;
 export type DealPriceHistoryRow = Tables<"deal_price_history">;
 export type RoutePriceReferenceRow = Tables<"route_price_reference">;

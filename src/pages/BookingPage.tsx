@@ -9,10 +9,12 @@ import {
   createBooking,
   fetchAdditionalServices,
   fetchDealById,
+  fetchServicePackages,
 } from "../lib/api";
+import type { ServicePackageWithServices } from "../lib/api";
 import { PAYMENT_METHODS } from "../lib/payment-config";
 import { formatRoute } from "../lib/deal-utils";
-import { PACKAGE_OPTIONS, packagePrice } from "../lib/packages";
+import { packageLabel, packagePrice } from "../lib/packages";
 import type { PackageTier } from "../lib/packages";
 import { friendlyErrorMessage } from "../lib/errors";
 import { setLastBooking } from "../lib/session";
@@ -39,6 +41,7 @@ export function BookingPage() {
   const incomingSelection = (location.state as DealSelectionState | null) ?? null;
   const [deal, setDeal] = useState<DealRow | null>(null);
   const [services, setServices] = useState<AdditionalServiceRow[]>([]);
+  const [packages, setPackages] = useState<ServicePackageWithServices[]>([]);
   const [selectedServices, setSelectedServices] = useState<Record<string, number>>({});
   const [selectedPackage] = useState<PackageTier | null>(incomingSelection?.selectedPackage ?? null);
   const [loading, setLoading] = useState(true);
@@ -58,10 +61,11 @@ export function BookingPage() {
 
   useEffect(() => {
     if (!dealId) return;
-    Promise.all([fetchDealById(dealId), fetchAdditionalServices()])
-      .then(([d, s]) => {
+    Promise.all([fetchDealById(dealId), fetchAdditionalServices(), fetchServicePackages()])
+      .then(([d, s, pkgs]) => {
         setDeal(d);
         setServices(s);
+        setPackages(pkgs);
         if (!d) {
           setError("العرض غير متاح");
           return;
@@ -135,11 +139,12 @@ export function BookingPage() {
     }, 0);
   }
 
-  function packageMarkup(): number {
-    if (!deal || !selectedPackage) return 0;
-    const pkg = PACKAGE_OPTIONS.find((p) => p.id === selectedPackage);
-    if (!pkg) return 0;
-    return packagePrice(deal.price, pkg) - deal.price;
+  /** The selected package's flat add-on bundle price (service_packages.price) —
+   *  not a markup on the ticket, added once per booking regardless of traveler count. */
+  function packageAddOn(): number {
+    if (!selectedPackage) return 0;
+    const pkg = packages.find((p) => p.tier === selectedPackage);
+    return pkg ? packagePrice(pkg) : 0;
   }
 
   function estimatedTotal(): number {
@@ -148,7 +153,7 @@ export function BookingPage() {
       deal.price * adults +
       (deal.child_price ?? deal.price * 0.75) * children +
       (deal.infant_price ?? deal.price * 0.1) * infants;
-    return base + packageMarkup() + servicesTotal();
+    return base + packageAddOn() + servicesTotal();
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -339,7 +344,7 @@ export function BookingPage() {
             {services.map((s) => (
               <label key={s.id} className="flex items-center justify-between rounded-lg border border-slate-100 p-3">
                 <span>
-                  {s.type} — {formatPrice(s.price, deal.currency ?? "USD")}
+                  {s.name} — {formatPrice(s.price, deal.currency ?? "USD")}
                 </span>
                 <input
                   type="number"
@@ -364,13 +369,13 @@ export function BookingPage() {
           </div>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between"><dt className="text-slate-500">المسار</dt><dd>{formatRoute(deal)}</dd></div>
-            {selectedPackage ? (
+            {selectedPackage && packages.find((p) => p.tier === selectedPackage) ? (
               <div className="flex justify-between">
                 <dt className="text-slate-500">الباقة</dt>
                 <dd className="font-semibold">
-                  {PACKAGE_OPTIONS.find((p) => p.id === selectedPackage)?.label}
+                  {packageLabel(packages.find((p) => p.tier === selectedPackage)!)}
                   {" · "}
-                  {formatPrice(packagePrice(deal.price, PACKAGE_OPTIONS.find((p) => p.id === selectedPackage)!), deal.currency ?? "USD")}
+                  {formatPrice(packageAddOn(), deal.currency ?? "USD")}
                 </dd>
               </div>
             ) : null}

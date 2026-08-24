@@ -1,74 +1,47 @@
+import type { ServicePackageWithServices } from "./api";
 import type { AdditionalServiceRow } from "../types/database";
 
 /**
- * "Fare bundle" tiers shown on the deal-detail page (تذكرة فقط / Smart Trip / Premium Trip).
- * There's no dedicated bundles table in the schema, so each tier is expressed as:
- *  - a markup percentage over the deal's base ticket price (covers non-itemized
- *    perks like priority support), and
- *  - a set of real `additional_services` rows that come bundled for free.
- * This keeps everything else (booking payload, totals) working off the existing
- * `additional_services` table instead of inventing new backend concepts.
+ * "Fare bundle" tiers shown on the deal-detail/booking pages (تذكرة فقط / Smart Trip /
+ * Premium Trip). Backed by the real `service_packages` + `service_package_items` tables:
+ * each tier has a fixed flat price (NOT a markup on the ticket price) and a real,
+ * explicit set of bundled `additional_services` rows — no keyword guessing.
  */
 export type PackageTier = "basic" | "smart" | "premium";
-export type ServiceKey = "transfer" | "lounge" | "fast_track";
 
-export interface PackageOption {
-  id: PackageTier;
-  label: string;
-  badge?: string;
-  markupPercent: number;
-  includedServiceKeys: ServiceKey[];
-  perks: string[];
-}
-
-export const PACKAGE_OPTIONS: PackageOption[] = [
-  {
-    id: "basic",
-    label: "تذكرة فقط",
-    markupPercent: 0,
-    includedServiceKeys: [],
-    perks: ["تذكرة الطيران فقط"],
-  },
-  {
-    id: "smart",
-    label: "Smart Trip",
-    badge: "الأكثر اختياراً",
-    markupPercent: 0.076,
-    includedServiceKeys: ["transfer"],
-    perks: ["تذكرة الطيران", "حقيبة واحدة", "الانتقال من وإلى المطار", "دعم الرحلة"],
-  },
-  {
-    id: "premium",
-    label: "Premium Trip",
-    markupPercent: 0.238,
-    includedServiceKeys: ["transfer", "lounge", "fast_track"],
-    perks: ["تذكرة الطيران", "حقيبة واحدة", "الانتقال من وإلى المطار", "صالة المطار (Lounge)", "Fast Track", "دعم الرحلة"],
-  },
-];
-
-const SERVICE_KEYWORDS: Record<ServiceKey, string[]> = {
-  transfer: ["انتقال", "نقل", "transfer", "shuttle"],
-  lounge: ["صالة", "lounge"],
-  fast_track: ["fast track", "فاست تراك", "سريع"],
+/** Labels/badges are still UI-only concerns (not stored in the DB), keyed by tier. */
+const TIER_LABELS: Record<PackageTier, { label: string; badge?: string }> = {
+  basic: { label: "تذكرة فقط" },
+  smart: { label: "Smart Trip", badge: "الأكثر اختياراً" },
+  premium: { label: "Premium Trip" },
 };
 
-/** Best-effort mapping from a real additional_services row to one of the known service keys. */
-export function classifyService(service: AdditionalServiceRow): ServiceKey | null {
-  const text = service.type.toLowerCase();
-  for (const key of Object.keys(SERVICE_KEYWORDS) as ServiceKey[]) {
-    if (SERVICE_KEYWORDS[key].some((kw) => text.includes(kw.toLowerCase()))) return key;
-  }
-  return null;
+export function packageLabel(pkg: ServicePackageWithServices): string {
+  return TIER_LABELS[pkg.tier]?.label ?? pkg.name;
 }
 
-export function packagePrice(basePrice: number, pkg: PackageOption): number {
-  return Math.round(basePrice * (1 + pkg.markupPercent));
+export function packageBadge(pkg: ServicePackageWithServices): string | undefined {
+  return TIER_LABELS[pkg.tier]?.badge;
 }
 
-/** Services that come bundled for free with a given package (matched from the real catalog). */
-export function includedServicesFor(pkg: PackageOption, services: AdditionalServiceRow[]): AdditionalServiceRow[] {
-  return services.filter((s) => {
-    const key = classifyService(s);
-    return key ? pkg.includedServiceKeys.includes(key) : false;
-  });
+/** The package's price is its flat DB price (service_packages.price) — a fixed
+ *  add-on bundle cost, NOT a markup/percentage of the ticket price. Callers that need
+ *  a "ticket + bundle" total should add this to the deal's own price separately. */
+export function packagePrice(pkg: ServicePackageWithServices): number {
+  return pkg.price;
+}
+
+/** Services that come bundled for free with a given package (real DB relationship, not guessed). */
+export function includedServicesFor(
+  pkg: ServicePackageWithServices,
+  _allServices: AdditionalServiceRow[],
+): AdditionalServiceRow[] {
+  return pkg.services;
+}
+
+export function findPackage(
+  packages: ServicePackageWithServices[],
+  tier: PackageTier | null,
+): ServicePackageWithServices | undefined {
+  return packages.find((p) => p.tier === tier);
 }

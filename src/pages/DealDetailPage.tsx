@@ -14,9 +14,10 @@ import {
   fetchDealById,
   fetchDealPriceHistory,
   fetchRouteDatePrices,
+  fetchServicePackages,
   getAgencyWhatsApp,
 } from "../lib/api";
-import type { PriceTrendPoint, RouteDatePrice } from "../lib/api";
+import type { PriceTrendPoint, RouteDatePrice, ServicePackageWithServices } from "../lib/api";
 import type { PackageTier } from "../lib/packages";
 import {
   airlineName,
@@ -43,11 +44,12 @@ export function DealDetailPage() {
   const [history, setHistory] = useState<DealPriceHistoryRow[]>([]);
   const [routeDates, setRouteDates] = useState<RouteDatePrice[]>([]);
   const [services, setServices] = useState<AdditionalServiceRow[]>([]);
+  const [packages, setPackages] = useState<ServicePackageWithServices[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [alertOpen, setAlertOpen] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState<PackageTier>("smart");
+  const [selectedPackage, setSelectedPackage] = useState<PackageTier | null>("smart");
   const [checkedServiceIds, setCheckedServiceIds] = useState<Set<string>>(new Set());
 
   function toggleService(serviceId: string) {
@@ -62,11 +64,18 @@ export function DealDetailPage() {
   useEffect(() => {
     if (!dealId) return;
     setLoading(true);
-    Promise.all([fetchDealById(dealId), fetchDealPriceHistory(dealId), fetchAdditionalServices()])
-      .then(([d, h, s]) => {
+    Promise.all([
+      fetchDealById(dealId),
+      fetchDealPriceHistory(dealId),
+      fetchAdditionalServices(),
+      fetchServicePackages(),
+    ])
+      .then(([d, h, s, pkgs]) => {
         setDeal(d);
         setHistory(h);
         setServices(s);
+        setPackages(pkgs);
+        if (!selectedPackage && pkgs.length > 0) setSelectedPackage(pkgs[0].tier);
         if (!d) {
           setError("العرض غير متاح أو انتهت صلاحيته");
           return;
@@ -163,6 +172,7 @@ export function DealDetailPage() {
       <PackageAndServicesSelector
         basePrice={deal.price}
         currency={currency}
+        packages={packages}
         services={services}
         selectedPackage={selectedPackage}
         onSelectPackage={setSelectedPackage}

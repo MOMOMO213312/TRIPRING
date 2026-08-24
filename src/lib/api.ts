@@ -17,6 +17,7 @@ import type {
   PaymentMethod,
   ResaleReason,
   RoutePriceReferenceRow,
+  ServicePackageRow,
   ServiceRequestRow,
   Tables,
 } from "../types/database";
@@ -24,8 +25,17 @@ import type {
 export type AgencyReviewRow = Tables<"agency_reviews">;
 export type TicketResaleRow = Tables<"ticket_resales">;
 
+/** Public/anonymous-facing subset of a resale listing — deliberately excludes
+ *  seller/buyer PII and the airline PNR (a real booking reference that could be
+ *  used to look up or tamper with someone's actual reservation if it leaked
+ *  to anonymous visitors), plus internal review fields (verified_by, notes). */
+export type PublicTicketResaleRow = Pick<
+  TicketResaleRow,
+  "id" | "airline_code" | "from_airport" | "to_airport" | "departure_date" | "return_date" | "asking_price" | "currency" | "status"
+>;
+
 export const DEAL_COLUMNS =
-  "id,agency_id,deal_type,airline_code,from_airport,to_airport,departure_date,departure_time,return_date,arrival_time,flight_duration_minutes,duration_hours,stops,stopover_airport,baggage_kg,travel_class,price,original_price,child_price,infant_price,available_seats,is_featured,status,expires_at,currency,notes,deal_score,view_count,min_membership_tier,fare_family,refundable,changeable,change_fee,cancellation_fee,fare_rules,base_fare,taxes_fees,price_checked_at,flight_number,aircraft_type,operating_airline_code,arrival_date,layover_minutes,cabin_baggage_kg,checked_bags_count,extra_baggage_price" as const;
+  "id,agency_id,deal_type,airline_code,from_airport,to_airport,departure_date,departure_time,return_date,arrival_time,flight_duration_minutes,duration_hours,stops,stopover_airport,baggage_kg,travel_class,price,original_price,child_price,infant_price,available_seats,is_featured,status,expires_at,currency,notes,deal_score,view_count,click_count,favorite_count,booking_count,min_membership_tier,fare_family,refundable,changeable,change_fee,cancellation_fee,fare_rules,base_fare,taxes_fees,price_checked_at,flight_number,aircraft_type,operating_airline_code,arrival_date,layover_minutes,cabin_baggage_kg,checked_bags_count,extra_baggage_price,sale_event_id,trip_types,created_by,created_at,updated_at" as const;
 
 /** Anonymous/guest-facing feeds only show free-tier deals until membership auth exists. */
 export const PUBLIC_MEMBERSHIP_TIER = "free" as const;
@@ -102,7 +112,9 @@ export async function fetchAirports(): Promise<AirportRow[]> {
 export async function fetchAirlines(): Promise<AirlineRow[]> {
   const { data, error } = await supabase
     .from("airlines")
-    .select("code,name,logo_url")
+    .select(
+      "code,name,logo_url,allows_name_change,name_change_fee_usd,name_change_max_hours_before_departure,name_change_notes,name_change_verified_at",
+    )
     .order("name", { ascending: true });
   if (error) throw new Error(error.message);
   return data ?? [];
@@ -111,7 +123,7 @@ export async function fetchAirlines(): Promise<AirlineRow[]> {
 export async function fetchAgencies(): Promise<AgencyRow[]> {
   const { data, error } = await supabase
     .from("agencies")
-    .select("id,name,phone,email,whatsapp,logo_url,commission_rate");
+    .select("id,name,phone,email,whatsapp,logo_url,is_active,created_at,commission_rate");
   if (error) return [];
   return data ?? [];
 }
@@ -119,7 +131,9 @@ export async function fetchAgencies(): Promise<AgencyRow[]> {
 export async function fetchRoutePriceReferences(): Promise<RoutePriceReferenceRow[]> {
   const { data, error } = await supabase
     .from("route_price_reference")
-    .select("id,from_airport,to_airport,flight_type,min_price_usd,max_price_usd,notes,updated_at");
+    .select(
+      "id,from_airport,to_airport,flight_type,min_price_usd,max_price_usd,avg_price_usd,median_price_usd,notes,updated_at",
+    );
   if (error) throw new Error(error.message);
   return data ?? [];
 }
@@ -205,7 +219,7 @@ export async function fetchDealById(id: string): Promise<DealRow | null> {
     .gt("expires_at", new Date().toISOString())
     .maybeSingle();
   if (error) throw new Error(error.message);
-  return data;
+  return data as DealRow | null;
 }
 
 export async function fetchDealPriceHistory(dealId: string): Promise<DealPriceHistoryRow[]> {
@@ -226,6 +240,44 @@ export async function fetchAdditionalServices(): Promise<AdditionalServiceRow[]>
     .order("price", { ascending: true });
   if (error) return [];
   return data ?? [];
+}
+
+/** A service package (Basic/Smart/Premium) with its real bundled services, as stored in the DB. */
+export type ServicePackageWithServices = ServicePackageRow & {
+  services: AdditionalServiceRow[];
+};
+
+/** Fetches the real fare-bundle packages (service_packages) with their bundled
+ *  additional_services, joined via service_package_items. Replaces the old
+ *  hardcoded/keyword-guessed PACKAGE_OPTIONS in lib/packages.ts.
+ *
+ *  Deliberately avoids Supabase's typed embedded-select syntax
+ *  (`.select("...,service_package_items(...)")`) — the generated `Database`
+ *  type here has no `Relationships` metadata, which makes postgrest-js infer
+ *  embeds as `never`. Three flat queries + an in-memory join sidesteps that
+ *  entirely and stays simple to type. */
+export async function fetchServicePackages(): Promise<ServicePackageWithServices[]> {
+  const [packagesRes, itemsRes, servicesRes] = await Promise.all([
+    supabase
+      .from("service_packages")
+      .select("id,tier,name,description,price,is_active,sort_order")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true }),
+    supabase.from("service_package_items").select("package_id,service_id"),
+    supabase.from("additional_services").select("id,type,name,description,price,category,is_active"),
+  ]);
+  if (packagesRes.error) return [];
+
+  const items = itemsRes.data ?? [];
+  const servicesById = new Map((servicesRes.data ?? []).map((s) => [s.id, s]));
+
+  return (packagesRes.data ?? []).map((pkg) => ({
+    ...pkg,
+    services: items
+      .filter((item) => item.package_id === pkg.id)
+      .map((item) => servicesById.get(item.service_id))
+      .filter((s): s is AdditionalServiceRow => s !== undefined),
+  }));
 }
 
 export interface CreateServiceRequestInput {
@@ -547,12 +599,12 @@ export type TicketResaleSearchParams = {
 };
 
 const TICKET_RESALE_COLUMNS =
-  "id,seller_customer_id,airline_code,from_airport,to_airport,departure_date,return_date,passenger_name,pnr_reference,reason,original_price,asking_price,currency,status,created_at";
+  "id,airline_code,from_airport,to_airport,departure_date,return_date,asking_price,currency,status";
 
 /** Public browsing — only rows verified and published for sale are visible to anonymous users (per RLS). */
 export async function fetchActiveTicketResales(
   params: TicketResaleSearchParams = {},
-): Promise<TicketResaleRow[]> {
+): Promise<PublicTicketResaleRow[]> {
   let query = supabase
     .from("ticket_resales")
     .select(TICKET_RESALE_COLUMNS)
