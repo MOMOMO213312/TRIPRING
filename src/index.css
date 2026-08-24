@@ -138,7 +138,7 @@ body {
 }
 
 .hero-field-input {
-  @apply w-full border-0 bg-transparent p-0 text-sm font-semibold text-slate-800 outline-none;
+  @apply w-full border-0 bg-transparent p-0 text-[15px] font-bold text-slate-800 outline-none placeholder:font-medium placeholder:text-slate-400;
 }
 
 .font-cairo {
