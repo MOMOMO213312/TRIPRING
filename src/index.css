@@ -31,6 +31,7 @@
   --font-sans-ar: "IBM Plex Sans Arabic", system-ui, sans-serif;
   --font-display-ar: "El Messiri", "IBM Plex Sans Arabic", system-ui, sans-serif;
   --font-sans-latin: "Inter", system-ui, sans-serif;
+  --font-mono-latin: "IBM Plex Mono", ui-monospace, monospace;
 }
 
 html {
@@ -136,4 +137,26 @@ body {
 
 .hero-field-select {
   @apply cursor-pointer appearance-none;
+}
+
+/* Boarding-pass motif for the hero search widget: mono "printed ticket"
+   eyebrow labels (From / To / When / Budget...), and a faint barcode strip
+   tucked along the search button's edge. */
+.font-ticket {
+  font-family: var(--font-mono-latin);
+  text-transform: uppercase;
+}
+
+.ticket-barcode {
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.9) 0px,
+    rgba(255, 255, 255, 0.9) 1px,
+    transparent 1px,
+    transparent 3px,
+    rgba(255, 255, 255, 0.9) 3px,
+    rgba(255, 255, 255, 0.9) 5px,
+    transparent 5px,
+    transparent 6px
+  );
 }
