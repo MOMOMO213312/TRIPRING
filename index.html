@@ -1,21 +1,161 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
-    <link rel="apple-touch-icon" href="/favicon-192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TripRing — سوق فرص السفر</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@600;700;800&family=Cairo:wght@700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0C7BB3;
+  --color-primary-hover: #095E8A;
+  --color-primary-light: #E5F4FB;
+  --color-primary-bright: #299FD1;
+  /* Alias for --color-primary: several components (Input, Select, BookingPage
+     payment selection, ConfirmationPage booking number) reference `accent`
+     directly. Without this token those utilities (focus:border-accent,
+     text-accent, border-accent) silently no-op. */
+  --color-accent: #0C7BB3;
+  --color-alert-red: #DB2F2B;
+  --color-alert-red-light: #FBE3E2;
+  --color-score-green: #16a34a;
+  --color-score-bg: #f0fdf4;
+  --color-score-amber: #d97706;
+  --color-score-amber-bg: #fffbeb;
+  --color-score-gray: #6b7280;
+  --color-score-gray-bg: #f9fafb;
+  --color-rank-gold: #f59e0b;
+  --color-rank-blue: #3b82f6;
+  --color-rank-gray: #6b7280;
+  --color-savings: #16a34a;
+  --color-accent-coral: #f97362;
+  --color-accent-teal: #0d9488;
+  --color-navy: #0f172a;
+  --color-navy-light: #1e293b;
+  --color-flash-orange: #0C7BB3;
+  --color-flash-orange-light: #F3A6A3;
+  --font-sans-ar: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-display-ar: "El Messiri", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-sans-latin: "Inter", system-ui, sans-serif;
+  --font-mono-latin: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html {
+  font-family: var(--font-sans-ar);
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+.font-latin {
+  font-family: var(--font-sans-latin);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.font-display {
+  font-family: var(--font-display-ar);
+  font-weight: 700;
+}
+
+.deal-card-lift {
+  @apply shadow-sm transition-shadow duration-200 hover:shadow-lg;
+}
+
+.field-input {
+  @apply w-full rounded-xl border border-slate-200 bg-[#F8FAFC] px-3 py-2.5 text-sm text-[#334155] outline-none transition focus:border-[#0C7BB3] focus:ring-2 focus:ring-[#BFE3F6];
+}
+
+.opportunity-card-lift {
+  @apply shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
+}
+
+.tripgo-card-lift {
+  @apply shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-xl;
+}
+
+.tripgo-gradient-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #0c7bb3 100%);
+}
+
+/* Continuous marquee: track is duplicated in JS, so translating by -50%
+   loops seamlessly back to an identical copy of the start. Pauses on
+   hover/focus so the customer can actually read a card. */
+.marquee-track {
+  animation-name: marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.group\/marquee:hover .marquee-track,
+.marquee-track:focus-within {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* RTL layout: the natural forward direction scrolls toward the left,
+       i.e. negative X. */
+    transform: translateX(-50%);
+  }
+}
+
+.smart-chip {
+  @apply inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-[#0C7BB3] hover:bg-[#E5F4FB] hover:text-[#0C7BB3] hover:shadow-md active:scale-95;
+}
+
+.smart-chip-active {
+  @apply border-[#0C7BB3] bg-[#E5F4FB] text-[#0C7BB3];
+}
+
+/* Homepage-only orange variant — TravelToSection is only rendered on the
+   homepage, so this can follow the orange theme without affecting the
+   shared .smart-chip-active used on /search and /deals. */
+.smart-chip-active-home {
+  @apply border-[#FF7A45] bg-[#FFEDE3] text-[#FF7A45];
+}
+
+.cta-primary {
+  @apply rounded-xl bg-[#0C7BB3] font-semibold text-white shadow-md shadow-[#BFE3F6] transition hover:bg-[#095E8A] hover:shadow-lg active:scale-[0.98];
+}
+
+.skeleton-pulse {
+  @apply animate-pulse rounded-xl bg-slate-200;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-track {
+  animation: ticker-scroll 35s linear infinite;
+}
+
+.ticker-viewport:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+.hero-field-input {
+  @apply w-full border-0 bg-transparent p-0 text-[15px] font-bold text-slate-800 outline-none placeholder:font-medium placeholder:text-slate-400;
+}
+
+.font-cairo {
+  font-family: "Cairo", var(--font-sans-ar);
+}
+
+@keyframes hero-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-card-in {
+  animation: hero-card-in 0.5s ease-out both;
+}
