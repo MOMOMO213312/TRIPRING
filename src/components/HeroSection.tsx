@@ -305,12 +305,15 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
   const [swapped, setSwapped] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const [bgImage, setBgImage] = useState<string | null>(null);
-
-  // Re-rank whenever fresh deal/catalog data lands (deals arrive async after first paint).
-  useEffect(() => {
-    setBgImage(topDestinationImage(deals, airports, imageCache));
-  }, [deals, airports, imageCache]);
+  // Hero background is intentionally always the custom illustrated skyline
+  // (HERO_IMAGE) rather than a live per-deal destination photo — the real
+  // photos in `image_cache` are plain sky/cloud stock shots that look just
+  // as empty as the old default, so swapping to one on load made the hero
+  // flash the new artwork for an instant and then fall back to a bare-sky
+  // photo. `deals`/`airports`/`imageCache` are still accepted as props
+  // (used elsewhere below, e.g. HeroFlashDealCard) but no longer drive the
+  // background image.
+  void imageCache;
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -332,7 +335,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
         <div className="absolute inset-0 h-[420px] sm:h-[460px]">
           <img
-            src={bgImage ?? HERO_IMAGE}
+            src={HERO_IMAGE}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
