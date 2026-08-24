@@ -14,6 +14,7 @@ import { PAYMENT_METHODS } from "../lib/payment-config";
 import { formatRoute } from "../lib/deal-utils";
 import { PACKAGE_OPTIONS, packagePrice } from "../lib/packages";
 import type { PackageTier } from "../lib/packages";
+import { friendlyErrorMessage } from "../lib/errors";
 import { setLastBooking } from "../lib/session";
 import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
 import type { AdditionalServiceRow, DealRow, PaymentMethod } from "../types/database";
@@ -77,7 +78,10 @@ export function BookingPage() {
           });
         }
       })
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => {
+        console.error("[BookingPage] failed to load deal:", e);
+        setError("حصل خطأ في تحميل بيانات العرض، جرّب تاني.");
+      })
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dealId]);
@@ -238,7 +242,7 @@ export function BookingPage() {
         },
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "فشل إنشاء الحجز");
+      setError(friendlyErrorMessage(err, "فشل إنشاء الحجز، جرّب تاني أو تواصل معانا.", "BookingPage.createBooking"));
     } finally {
       setSubmitting(false);
     }

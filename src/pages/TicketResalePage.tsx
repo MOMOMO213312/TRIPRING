@@ -12,6 +12,7 @@ import { Select } from "../components/ui/Select";
 import { createTicketResale, fetchActiveTicketResales, type TicketResaleRow } from "../lib/api";
 import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { airlineName, airportLabel } from "../lib/deal-utils";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import { formatDate, formatPrice, whatsAppLink, WhatsAppIcon } from "../lib/utils";
 import type { ResaleReason } from "../types/database";
@@ -111,7 +112,7 @@ function ListTicketForm({ onPosted }: { onPosted: () => void }) {
       });
       onPosted();
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "تعذر نشر التذكرة");
+      setSubmitError(friendlyErrorMessage(err, "تعذر نشر التذكرة، جرّب تاني.", "TicketResalePage.submit"));
     } finally {
       setSubmitting(false);
     }
@@ -219,7 +220,7 @@ export function TicketResalePage() {
     setLoading(true);
     fetchActiveTicketResales({ from: from || undefined, to: to || undefined })
       .then(setResales)
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في التحميل، جرّب تاني.", "TicketResalePage.load")))
       .finally(() => setLoading(false));
   }
 

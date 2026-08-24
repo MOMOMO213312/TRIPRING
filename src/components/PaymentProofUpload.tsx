@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+import { friendlyErrorMessage } from "../lib/errors";
 import { uploadPaymentProof } from "../lib/api";
 import { Button } from "./ui/Button";
 
@@ -32,7 +33,7 @@ export function PaymentProofUpload({
       setDone(true);
       onUploaded?.(result.status);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "تعذر رفع الملف");
+      setError(friendlyErrorMessage(err, "تعذر رفع الملف، جرّب تاني.", "PaymentProofUpload.upload"));
     } finally {
       setUploading(false);
     }

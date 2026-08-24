@@ -14,6 +14,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { fetchActiveDeals } from "../lib/api";
 import type { TripType } from "../lib/api";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
@@ -34,7 +35,7 @@ export function HomePage() {
   useEffect(() => {
     fetchActiveDeals({ sort: "price_asc", availableOnly: true })
       .then(setAllActiveDeals)
-      .catch((e) => setDealsError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => setDealsError(friendlyErrorMessage(e, "حصل خطأ في تحميل العروض، جرّب تاني.", "HomePage.loadDeals")))
       .finally(() => setLoadingDeals(false));
   }, []);
 

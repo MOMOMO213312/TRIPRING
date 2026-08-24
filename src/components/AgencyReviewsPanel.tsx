@@ -8,6 +8,7 @@ import {
   summarizeAgencyRating,
   type AgencyReviewRow,
 } from "../lib/api";
+import { friendlyErrorMessage } from "../lib/errors";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import type { AgencyRow } from "../types/database";
@@ -61,7 +62,7 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
       const fresh = await fetchAgencyReviews(agency.id);
       setReviews(fresh);
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "تعذر إرسال التقييم");
+      setSubmitError(friendlyErrorMessage(err, "تعذر إرسال التقييم، جرّب تاني.", "AgencyReviewsPanel.submit"));
     } finally {
       setSubmitting(false);
     }

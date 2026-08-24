@@ -72,5 +72,8 @@ export function authErrorMessage(err: unknown): string {
   if (raw.includes("User already registered")) return "هذا البريد الإلكتروني مسجل بالفعل";
   if (raw.includes("Password should be at least")) return "كلمة المرور يجب أن تكون 6 أحرف على الأقل";
   if (raw.includes("Unable to validate email")) return "صيغة البريد الإلكتروني غير صحيحة";
-  return raw || "حدث خطأ، حاول مرة أخرى";
+  // Supabase Auth errors we don't have a specific Arabic message for yet are
+  // always raw English technical strings — never show those directly.
+  console.error("[authErrorMessage] unhandled auth error:", err);
+  return "حدث خطأ، حاول مرة أخرى";
 }

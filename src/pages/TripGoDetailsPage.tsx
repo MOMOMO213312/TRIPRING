@@ -11,6 +11,7 @@ import { airlineName, baggageBadgeLabel, formatRoute, stopsMetaLabel } from "../
 import { defaultTransfer, transportServices, tripGoTotal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
 import { cn, formatDate, formatPrice, formatTime, isValidEmail, isValidPhone, whatsAppLink } from "../lib/utils";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import type { AdditionalServiceRow, DealRow, PaymentMethod } from "../types/database";
 
@@ -79,7 +80,7 @@ export function TripGoDetailsPage() {
         const def = defaultTransfer(s);
         if (def) setSelectedVehicleId(def.id);
       })
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل العرض، جرّب تاني.", "TripGoDetailsPage.load")))
       .finally(() => setLoading(false));
   }, [dealId]);
 
@@ -224,7 +225,7 @@ export function TripGoDetailsPage() {
         },
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "فشل إنشاء الحجز");
+      setError(friendlyErrorMessage(err, "فشل إنشاء الحجز، جرّب تاني أو تواصل معانا.", "TripGoDetailsPage.createBooking"));
     } finally {
       setSubmitting(false);
     }

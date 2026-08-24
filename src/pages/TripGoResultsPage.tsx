@@ -5,6 +5,7 @@ import { TripGoCard } from "../components/TripGoCard";
 import { Card } from "../components/ui/Card";
 import { useCatalog } from "../hooks/useCatalog";
 import { fetchActiveDeals, fetchAdditionalServices } from "../lib/api";
+import { friendlyErrorMessage } from "../lib/errors";
 import { airportLabel } from "../lib/deal-utils";
 import type { AdditionalServiceRow, DealRow } from "../types/database";
 
@@ -35,7 +36,7 @@ export function TripGoResultsPage() {
         setDeals(d);
         setServices(s);
       })
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل النتائج، جرّب تاني.", "TripGoResultsPage.load")))
       .finally(() => setLoading(false));
   }, [from, to, date]);
 

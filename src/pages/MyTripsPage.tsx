@@ -11,6 +11,7 @@ import { lookupBooking } from "../lib/api";
 import { setSessionContact } from "../lib/session";
 import { formatDate, formatPrice } from "../lib/utils";
 import { airlineName, airportLabel } from "../lib/deal-utils";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import type { BookingLookupResult } from "../types/database";
 
@@ -47,7 +48,7 @@ export function MyTripsPage() {
       if (result) setSessionContact(contactValue);
       if (!result) setError("لم يتم العثور على حجز بهذه البيانات");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "خطأ في البحث");
+      setError(friendlyErrorMessage(err, "حصل خطأ في البحث، جرّب تاني.", "MyTripsPage.search"));
       setBooking(null);
     } finally {
       setLoading(false);

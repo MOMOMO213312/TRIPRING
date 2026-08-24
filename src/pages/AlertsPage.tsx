@@ -8,6 +8,7 @@ import { Select } from "../components/ui/Select";
 import { createPriceAlert, lookupPriceAlerts } from "../lib/api";
 import { setSessionContact } from "../lib/session";
 import { airportLabel } from "../lib/deal-utils";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
 
@@ -64,7 +65,7 @@ export function AlertsPage() {
       if (contact) setSessionContact(contact);
       setMessage("تم إنشاء التنبيه بنجاح");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "فشل إنشاء التنبيه");
+      setError(friendlyErrorMessage(err, "فشل إنشاء التنبيه، جرّب تاني.", "AlertsPage.createAlert"));
     } finally {
       setLoading(false);
     }
@@ -80,7 +81,7 @@ export function AlertsPage() {
       setSessionContact(lookupContact);
       if (!data.length) setMessage("لا توجد تنبيهات نشطة");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "فشل البحث");
+      setError(friendlyErrorMessage(err, "حصل خطأ في البحث، جرّب تاني.", "AlertsPage.search"));
     } finally {
       setLoading(false);
     }

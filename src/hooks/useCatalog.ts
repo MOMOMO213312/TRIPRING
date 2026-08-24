@@ -8,6 +8,7 @@ import {
   fetchRoutePriceReferences,
   getDestinationImage,
 } from "../lib/api";
+import { friendlyErrorMessage } from "../lib/errors";
 import type { AgencyRow, AirlineRow, AirportRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
 
 export type Catalog = {
@@ -53,7 +54,7 @@ export function useCatalog(): Catalog {
         setState((s) => ({
           ...s,
           loading: false,
-          error: e instanceof Error ? e.message : "فشل تحميل البيانات",
+          error: friendlyErrorMessage(e, "حصل خطأ في تحميل بيانات الموقع، جرّب تاني.", "useCatalog"),
         }));
       }
     })();

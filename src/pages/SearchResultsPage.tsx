@@ -11,6 +11,7 @@ import { airportLabel, dealTripScope } from "../lib/deal-utils";
 import type { TripScope } from "../lib/deal-utils";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
@@ -56,7 +57,7 @@ export function SearchResultsPage() {
       tripType,
     })
       .then(setDeals)
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل النتائج، جرّب تاني.", "SearchResultsPage.load")))
       .finally(() => setLoading(false));
   }, [from, effectiveTo, date, budget, sort, tripType]);
 

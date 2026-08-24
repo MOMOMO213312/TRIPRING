@@ -30,6 +30,7 @@ import {
   layoverLabel,
   stopsLabel,
 } from "../lib/deal-utils";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
 import { cn, formatDate, formatPrice, formatTime, whatsAppLink } from "../lib/utils";
 import type { AdditionalServiceRow, DealPriceHistoryRow, DealRow } from "../types/database";
@@ -75,7 +76,14 @@ export function DealDetailPage() {
           .then(setRouteDates)
           .catch(() => setRouteDates([]));
       })
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => {
+        // Never show the raw Supabase/PostgREST error string to the
+        // customer (e.g. "JSON object requested, multiple (or no) rows
+        // returned") — log it for debugging and show a friendly Arabic
+        // message instead.
+        console.error("[DealDetailPage] failed to load deal:", e);
+        setError("حصل خطأ في تحميل العرض، جرّب تاني أو ارجع للرئيسية.");
+      })
       .finally(() => setLoading(false));
   }, [dealId]);
 
@@ -456,7 +464,7 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
       });
       setDone(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "حصل خطأ، حاول تاني");
+      setError(friendlyErrorMessage(e, "حصل خطأ، حاول تاني", "PriceAlertModal.submit"));
     } finally {
       setSubmitting(false);
     }

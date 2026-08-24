@@ -20,6 +20,7 @@ import {
   type ResolvedPackageItem,
   type ServicePackageDef,
 } from "../lib/servicePackages";
+import { friendlyErrorMessage } from "../lib/errors";
 import { cn, formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
 import type { AdditionalServiceRow, ServiceCategory } from "../types/database";
 
@@ -551,7 +552,7 @@ function ServiceRequestModal({
       });
       onSuccess(row.request_number, row.total_price);
     } catch (err) {
-      f.setError(err instanceof Error ? err.message : "فشل إرسال الطلب");
+      f.setError(friendlyErrorMessage(err, "فشل إرسال الطلب، جرّب تاني.", "ExplorePage.submitRequest"));
     } finally {
       f.setSubmitting(false);
     }
@@ -652,7 +653,7 @@ function PackageRequestModal({
       });
       onSuccess(row.request_number, row.total_price);
     } catch (err) {
-      f.setError(err instanceof Error ? err.message : "فشل إرسال الطلب");
+      f.setError(friendlyErrorMessage(err, "فشل إرسال الطلب، جرّب تاني.", "ExplorePage.submitRequest"));
     } finally {
       f.setSubmitting(false);
     }

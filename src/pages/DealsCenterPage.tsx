@@ -10,6 +10,7 @@ import { Card } from "../components/ui/Card";
 import { fetchActiveDealsPage } from "../lib/api";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
+import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import type { DealRow, DealType } from "../types/database";
 
@@ -72,7 +73,7 @@ export function DealsCenterPage() {
         setDeals(rows);
         setTotal(count);
       })
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل العروض، جرّب تاني.", "DealsCenterPage.load")))
       .finally(() => setLoading(false));
   }, [sort, from, to, budget]);
 
@@ -93,7 +94,7 @@ export function DealsCenterPage() {
         setTotal(count);
         setPage(nextPage);
       })
-      .catch((e) => setError(e instanceof Error ? e.message : "خطأ"))
+      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل العروض، جرّب تاني.", "DealsCenterPage.load")))
       .finally(() => setLoadingMore(false));
   }
 
