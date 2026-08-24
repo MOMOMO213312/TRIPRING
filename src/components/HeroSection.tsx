@@ -12,7 +12,6 @@ import heroSky from "../assets/hero-sky.jpg";
 
 const HERO_IMAGE = heroSky;
 const MAX_ROTATING_IMAGES = 4;
-const ROTATE_INTERVAL_MS = 6000;
 
 const POPULAR = [
   { from: "CAI", to: "DXB", label: "القاهرة ← دبي" },
@@ -105,6 +104,22 @@ function topDestinationImages(
   return result;
 }
 
+/** One photo tile inside the hero collage — a real destination photo (or the
+ *  static fallback if this slot has no photo yet) with rounded corners and
+ *  a small city-name pill so each tile still reads as a specific place. */
+function CollageTile({ img, className }: { img: HeroDestinationImage | undefined; className: string }) {
+  return (
+    <div className={`relative overflow-hidden rounded-2xl ${className}`}>
+      <img src={img?.url ?? HERO_IMAGE} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      {img ? (
+        <span className="absolute start-2 bottom-2 rounded-full bg-black/35 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">
+          {img.city}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 export function HeroSection({ airports, deals, references, imageCache, onSearch }: Props) {
   const [tripType, setTripType] = useState<TripType>("round_trip");
   const [from, setFrom] = useState("CAI");
@@ -115,24 +130,12 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
   const [budget, setBudget] = useState("");
 
   const [heroImages, setHeroImages] = useState<HeroDestinationImage[]>([]);
-  const [activeImage, setActiveImage] = useState(0);
+  const collageImages = heroImages.slice(0, 3);
 
   // Re-rank whenever fresh deal/catalog data lands (deals arrive async after first paint).
   useEffect(() => {
     setHeroImages(topDestinationImages(deals, airports, imageCache, MAX_ROTATING_IMAGES));
   }, [deals, airports, imageCache]);
-
-  // Auto-rotate between the top destinations. Respects prefers-reduced-motion,
-  // and simply does nothing (single static photo) if fewer than 2 real photos
-  // were found — e.g. an empty/dev image_cache.
-  useEffect(() => {
-    if (heroImages.length < 2) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => {
-      setActiveImage((i) => (i + 1) % heroImages.length);
-    }, ROTATE_INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [heroImages]);
 
   const airportOptions = airports.map((a) => (
     <option key={a.code} value={a.code}>
@@ -154,58 +157,56 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
-        <div className="absolute inset-0 h-[400px] sm:h-[440px]">
-          {/* Static fallback stays as the base layer so there's never a blank
-             flash while the first real destination photo loads, and it's all
-             that renders if image_cache has nothing usable yet. */}
-          <img src={HERO_IMAGE} alt="" className="absolute inset-0 h-full w-full object-cover" />
-          {heroImages.map((img, i) => (
-            <img
-              key={img.code}
-              src={img.url}
-              alt=""
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-                i === activeImage ? "opacity-100" : "opacity-0"
+        <div className="absolute inset-0 h-[400px] p-2 sm:h-[440px] sm:p-3">
+          {/* Collage instead of one full-bleed photo: a single wide stock shot
+             left a lot of flat empty sky/sea, which read as "empty" — 2-3
+             real destination photos tiled together fill the space and show
+             more of what's actually on offer at a glance. Falls back to one
+             full tile when fewer than 2 real destination photos are
+             available yet (e.g. image_cache still loading). */}
+          {collageImages.length >= 2 ? (
+            <div
+              className={`grid h-full gap-2 sm:gap-3 ${
+                collageImages.length >= 3 ? "grid-cols-3 grid-rows-2" : "grid-cols-3 grid-rows-1"
               }`}
-            />
-          ))}
-          {/* Daytime wing-over-clouds shot (or whichever destination photo is
-             active) carries bright natural color, so the overlay's job is just
-             to guarantee the headline stays legible over it — a dark wash on
-             the text side that fades to nothing by mid-photo, then a soft
-             handoff into the page background at the very bottom so the photo
-             still reads as a hero, not a washed-out panel. */}
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/10 to-black/60 rtl:bg-gradient-to-r" />
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
-
-          {heroImages.length > 0 ? (
-            <div className="absolute start-4 top-4 z-10 rounded-full bg-black/30 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
-              ✈ {heroImages[activeImage]?.city}
+            >
+              <CollageTile
+                img={collageImages[0]}
+                className={collageImages.length >= 3 ? "col-span-2 row-span-2" : "col-span-2 row-span-1"}
+              />
+              <CollageTile
+                img={collageImages[1]}
+                className={collageImages.length >= 3 ? "col-span-1 row-span-1" : "col-span-1 row-span-1"}
+              />
+              {collageImages.length >= 3 ? <CollageTile img={collageImages[2]} className="col-span-1 row-span-1" /> : null}
             </div>
-          ) : null}
+          ) : (
+            <div className="relative h-full overflow-hidden rounded-2xl">
+              <img
+                src={collageImages[0]?.url ?? HERO_IMAGE}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+          )}
+
+          {/* Daytime wing-over-clouds shot (or whichever destination photos
+             are active) carries bright natural color, so the overlay's job is
+             just to guarantee the headline stays legible over it — a dark
+             wash on the text side that fades to nothing by mid-photo, then a
+             soft handoff into the page background at the very bottom so the
+             collage still reads as a hero, not a washed-out panel. Sits above
+             the collage grid (which has its own rounded/gapped tiles) so it
+             reads as one shared lighting pass across all tiles. */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-black/5 to-black/55 rtl:bg-gradient-to-r" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
 
           {/* Flash-deal corner card — mirrors the "end" side (opposite the
              headline) so it works the same way in RTL as the reference's
              top-right countdown card does in LTR. */}
-          <div className="absolute end-4 top-4 z-10 hidden sm:block">
+          <div className="absolute end-5 top-5 z-10 hidden sm:block">
             <HeroFlashDealCard deals={deals} airports={airports} />
           </div>
-
-          {heroImages.length > 1 ? (
-            <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-1.5">
-              {heroImages.map((img, i) => (
-                <button
-                  key={img.code}
-                  type="button"
-                  aria-label={`عرض صورة ${img.city}`}
-                  onClick={() => setActiveImage(i)}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === activeImage ? "w-6 bg-white" : "w-1.5 bg-white/50"
-                  }`}
-                />
-              ))}
-            </div>
-          ) : null}
         </div>
 
       <div className="relative mx-auto max-w-6xl px-4 pb-40 pt-10 sm:pb-44 sm:pt-14">
