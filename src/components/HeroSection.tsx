@@ -1,5 +1,5 @@
 import type { FormEvent, ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { OneWayFareBoard } from "./OneWayFareBoard";
@@ -11,7 +11,6 @@ import type { AirportRow, DealRow, ImageCacheRow, RoutePriceReferenceRow } from 
 import heroSky from "../assets/hero-sky.jpg";
 
 const HERO_IMAGE = heroSky;
-const MAX_ROTATING_IMAGES = 4;
 
 const POPULAR = [
   { from: "CAI", to: "DXB", label: "القاهرة ← دبي" },
@@ -22,11 +21,11 @@ const POPULAR = [
 ];
 
 const BUDGET_OPTIONS = [
-  { value: "", label: "Any budget" },
-  { value: "300", label: "Up to $300" },
-  { value: "500", label: "Up to $500" },
-  { value: "700", label: "Up to $700" },
-  { value: "1000", label: "Up to $1000" },
+  { value: "", label: "أي ميزانية" },
+  { value: "300", label: "حتى 300$" },
+  { value: "500", label: "حتى 500$" },
+  { value: "700", label: "حتى 700$" },
+  { value: "1000", label: "حتى 1000$" },
 ];
 
 type Props = {
@@ -37,13 +36,12 @@ type Props = {
   onSearch: (params: { from: string; to: string; date: string; returnDate: string; passengers: number; tripType: TripType; budget: string }) => void;
 };
 
-type HeroDestinationImage = { code: string; city: string; url: string };
-
-// Hero rotation is intentionally limited to these four destinations (per request):
-// Saudi Arabia (any city), Dubai specifically, Istanbul specifically, and Egypt
-// (domestic — Sharm, Luxor, Aswan, Hurghada, etc.). Matched by both the airport's
-// country/city text AND a known IATA-code fallback, since exact Arabic spellings
-// in the live `airports` table can't be verified from here.
+// Hero background photo is intentionally limited to this curated set (per
+// request): Saudi Arabia (any city), Dubai specifically, Istanbul
+// specifically, and Egypt (domestic — Sharm, Luxor, Aswan, Hurghada, etc.).
+// Matched by both the airport's country/city text AND a known IATA-code
+// fallback, since exact Arabic spellings in the live `airports` table can't
+// be verified from here.
 const HERO_COUNTRY_MATCHES = ["السعودية", "المملكة العربية السعودية", "مصر"];
 const HERO_CITY_MATCHES = ["دبي", "إسطنبول", "اسطنبول"];
 const HERO_CODE_FALLBACK = new Set([
@@ -65,20 +63,20 @@ function isHeroEligibleDestination(airport: AirportRow | undefined): boolean {
 }
 
 /**
- * Picks real photos for the currently most in-demand destinations (within the
- * curated Saudi Arabia / Dubai / Istanbul / Egypt set) instead of one static
- * stock photo. Ranked by deal_score, then booking/view counts, then price — so
- * whichever of those routes is actually hot right now shows up in the hero.
- * Only uses the same licensed `image_cache` table already used everywhere else
- * in the app (deal cards, TravelToSection, etc.), so no new image licensing is
- * introduced.
+ * Picks one real photo for the currently most in-demand destination (within
+ * the curated Saudi Arabia / Dubai / Istanbul / Egypt set) instead of a
+ * static stock photo. Ranked by deal_score, then booking/view counts, then
+ * price — so whichever of those routes is actually hot right now becomes the
+ * hero backdrop. Only uses the same licensed `image_cache` table already
+ * used everywhere else in the app (deal cards, TravelToSection, etc.), so no
+ * new image licensing is introduced. Falls back to the static hero photo
+ * when no real destination photo is available yet (e.g. still loading).
  */
-function topDestinationImages(
+function topDestinationImage(
   deals: DealRow[],
   airports: AirportRow[],
   imageCache: ImageCacheRow[],
-  limit: number,
-): HeroDestinationImage[] {
+): string | null {
   const ranked = [...deals]
     .filter((deal) => isHeroEligibleDestination(airports.find((a) => a.code === deal.to_airport)))
     .sort((a, b) => {
@@ -91,30 +89,201 @@ function topDestinationImages(
       return a.price - b.price;
     });
 
-  const seen = new Set<string>();
-  const result: HeroDestinationImage[] = [];
   for (const deal of ranked) {
-    if (seen.has(deal.to_airport)) continue;
-    seen.add(deal.to_airport);
     const airport = airports.find((a) => a.code === deal.to_airport);
     const url = getDestinationImage(airport, imageCache, deal.to_airport);
-    if (url && airport) result.push({ code: deal.to_airport, city: airport.city, url });
-    if (result.length >= limit) break;
+    if (url) return url;
   }
-  return result;
+  return null;
 }
 
-/** One photo tile inside the hero collage — a real destination photo (or the
- *  static fallback if this slot has no photo yet) with rounded corners and
- *  a small city-name pill so each tile still reads as a specific place. */
-function CollageTile({ img, className }: { img: HeroDestinationImage | undefined; className: string }) {
+function airportLabel(a: AirportRow): string {
+  return `${a.city_en ?? a.city} (${a.code})`;
+}
+
+/** Matches an airport against a free-text query across code, city (ar/en),
+ *  airport name, and country — so typing "دبي", "Dubai", "DXB" or "الإمارات"
+ *  all find the same airport. */
+function matchesAirportQuery(a: AirportRow, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
   return (
-    <div className={`relative overflow-hidden rounded-2xl ${className}`}>
-      <img src={img?.url ?? HERO_IMAGE} alt="" className="absolute inset-0 h-full w-full object-cover" />
-      {img ? (
-        <span className="absolute start-2 bottom-2 rounded-full bg-black/35 px-2 py-0.5 text-[11px] font-semibold text-white backdrop-blur-sm">
-          {img.city}
-        </span>
+    a.code.toLowerCase().includes(q) ||
+    a.city.toLowerCase().includes(q) ||
+    (a.city_en ?? "").toLowerCase().includes(q) ||
+    a.name.toLowerCase().includes(q) ||
+    a.country.toLowerCase().includes(q)
+  );
+}
+
+/** Searchable From/To field: typeahead over the real airports catalog
+ *  (code, name, city, country — Arabic and English), same underlying data
+ *  and value shape (an IATA code) as the select it replaces. Keeps the
+ *  "Anywhere" option that the To field previously exposed. */
+function AirportField({
+  icon,
+  label,
+  value,
+  onChange,
+  airports,
+  allowAnywhere,
+  className = "",
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string;
+  onChange: (code: string) => void;
+  airports: AirportRow[];
+  allowAnywhere?: boolean;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        setQuery("");
+      }
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
+
+  const selected = value === "any" ? null : airports.find((a) => a.code === value);
+  const displayValue = open
+    ? query
+    : value === "any"
+      ? "أي وجهة"
+      : selected
+        ? airportLabel(selected)
+        : "";
+
+  const results = useMemo(() => {
+    if (!open) return [];
+    return airports.filter((a) => matchesAirportQuery(a, query)).slice(0, 8);
+  }, [airports, query, open]);
+
+  function pick(code: string) {
+    onChange(code);
+    setOpen(false);
+    setQuery("");
+  }
+
+  return (
+    <div ref={wrapRef} className={`relative min-w-0 ${className}`}>
+      <FieldBox icon={icon} label={label}>
+        <input
+          type="text"
+          value={displayValue}
+          placeholder="ابحث بالمدينة أو المطار"
+          onFocus={() => {
+            setOpen(true);
+            setQuery("");
+          }}
+          onChange={(e) => setQuery(e.target.value)}
+          className="hero-field-input"
+          autoComplete="off"
+        />
+      </FieldBox>
+
+      {open ? (
+        <div className="absolute inset-x-0 top-full z-30 mt-2 max-h-72 overflow-y-auto rounded-2xl border border-slate-100 bg-white p-1.5 shadow-xl">
+          {allowAnywhere ? (
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => pick("any")}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-start text-sm font-semibold text-slate-700 hover:bg-[#FFF1EA]"
+            >
+              <span aria-hidden className="text-slate-400">🌍</span>
+              أي وجهة
+            </button>
+          ) : null}
+          {results.length > 0 ? (
+            results.map((a) => (
+              <button
+                key={a.code}
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => pick(a.code)}
+                className="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-start hover:bg-[#FFF1EA]"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold text-slate-800">
+                    {a.city_en ?? a.city}
+                    <span className="text-slate-400"> · {a.name}</span>
+                  </span>
+                  <span className="block truncate text-xs text-slate-400">{a.country}</span>
+                </span>
+                <span className="font-latin shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500">
+                  {a.code}
+                </span>
+              </button>
+            ))
+          ) : (
+            <p className="px-3 py-2.5 text-sm text-slate-400">لا توجد نتائج مطابقة</p>
+          )}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** Compact passengers stepper — same underlying value (a single passenger
+ *  count, 1–6) as the select it replaces, just presented as a +/- control
+ *  instead of a dropdown list. */
+function TravelersField({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, []);
+
+  return (
+    <div ref={wrapRef} className="relative min-w-0">
+      <button type="button" onClick={() => setOpen((o) => !o)} className="w-full text-start">
+        <FieldBox icon="👤" label="المسافرون" trailingIcon="▾">
+          <span className="hero-field-input block truncate">
+            {value} {value === 1 ? "مسافر" : "مسافرين"}
+          </span>
+        </FieldBox>
+      </button>
+
+      {open ? (
+        <div className="absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-slate-100 bg-white p-4 shadow-xl">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-sm font-semibold text-slate-700">عدد المسافرين</span>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => onChange(Math.max(1, value - 1))}
+                disabled={value <= 1}
+                className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:border-[#FF7A45] hover:text-[#FF7A45] disabled:opacity-30"
+                aria-label="تقليل عدد المسافرين"
+              >
+                −
+              </button>
+              <span className="font-latin w-4 text-center text-sm font-bold text-slate-800">{value}</span>
+              <button
+                type="button"
+                onClick={() => onChange(Math.min(6, value + 1))}
+                disabled={value >= 6}
+                className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:border-[#FF7A45] hover:text-[#FF7A45] disabled:opacity-30"
+                aria-label="زيادة عدد المسافرين"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );
@@ -128,24 +297,23 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
   const [returnDate, setReturnDate] = useState("");
   const [passengers, setPassengers] = useState(1);
   const [budget, setBudget] = useState("");
+  const [swapped, setSwapped] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const [heroImages, setHeroImages] = useState<HeroDestinationImage[]>([]);
-  const collageImages = heroImages.slice(0, 3);
+  const [bgImage, setBgImage] = useState<string | null>(null);
 
   // Re-rank whenever fresh deal/catalog data lands (deals arrive async after first paint).
   useEffect(() => {
-    setHeroImages(topDestinationImages(deals, airports, imageCache, MAX_ROTATING_IMAGES));
+    setBgImage(topDestinationImage(deals, airports, imageCache));
   }, [deals, airports, imageCache]);
-
-  const airportOptions = airports.map((a) => (
-    <option key={a.code} value={a.code}>
-      {a.city_en ?? a.city} ({a.code})
-    </option>
-  ));
 
   function submit(e: FormEvent) {
     e.preventDefault();
+    setSubmitting(true);
     onSearch({ from, to, date, returnDate, passengers, tripType, budget });
+    // Purely a brief visual acknowledgement — the actual navigation below is
+    // synchronous (client-side route change), so this never blocks it.
+    window.setTimeout(() => setSubmitting(false), 600);
   }
 
   return (
@@ -157,269 +325,206 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
       <OneWayFareBoard deals={deals} references={references} airports={airports} />
 
       <section className="relative overflow-hidden bg-[#F7F8FA]">
-        <div className="absolute inset-0 h-[400px] p-2 sm:h-[440px] sm:p-3">
-          {/* Collage instead of one full-bleed photo: a single wide stock shot
-             left a lot of flat empty sky/sea, which read as "empty" — 2-3
-             real destination photos tiled together fill the space and show
-             more of what's actually on offer at a glance. Falls back to one
-             full tile when fewer than 2 real destination photos are
-             available yet (e.g. image_cache still loading). */}
-          {collageImages.length >= 2 ? (
-            <div
-              className={`grid h-full gap-2 sm:gap-3 ${
-                collageImages.length >= 3 ? "grid-cols-3 grid-rows-2" : "grid-cols-3 grid-rows-1"
-              }`}
-            >
-              <CollageTile
-                img={collageImages[0]}
-                className={collageImages.length >= 3 ? "col-span-2 row-span-2" : "col-span-2 row-span-1"}
-              />
-              <CollageTile
-                img={collageImages[1]}
-                className={collageImages.length >= 3 ? "col-span-1 row-span-1" : "col-span-1 row-span-1"}
-              />
-              {collageImages.length >= 3 ? <CollageTile img={collageImages[2]} className="col-span-1 row-span-1" /> : null}
-            </div>
-          ) : (
-            <div className="relative h-full overflow-hidden rounded-2xl">
-              <img
-                src={collageImages[0]?.url ?? HERO_IMAGE}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-          )}
+        <div className="absolute inset-0 h-[420px] sm:h-[460px]">
+          <img
+            src={bgImage ?? HERO_IMAGE}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          {/* Deep navy wash for legibility — a single calm gradient instead
+             of a busy multi-tile collage, per the "clean, premium, no
+             clutter" direction: strongest over the text side, fading out
+             toward the opposite edge, then handing off softly into the page
+             background at the very bottom. */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#0B1B2B]/25 via-[#0B1B2B]/55 to-[#0B1B2B]/80 rtl:bg-gradient-to-r" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
 
-          {/* Daytime wing-over-clouds shot (or whichever destination photos
-             are active) carries bright natural color, so the overlay's job is
-             just to guarantee the headline stays legible over it — a dark
-             wash on the text side that fades to nothing by mid-photo, then a
-             soft handoff into the page background at the very bottom so the
-             collage still reads as a hero, not a washed-out panel. Sits above
-             the collage grid (which has its own rounded/gapped tiles) so it
-             reads as one shared lighting pass across all tiles. */}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-transparent via-black/5 to-black/55 rtl:bg-gradient-to-r" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-[#F7F8FA]" />
-
-          {/* Flash-deal corner card — mirrors the "end" side (opposite the
-             headline) so it works the same way in RTL as the reference's
-             top-right countdown card does in LTR. */}
+          {/* Flash-deal corner card — real, data-driven urgency (an actual
+             expiring deal), kept as the hero's only "trust badge" so the
+             rest of the hero can stay uncluttered. */}
           <div className="absolute end-5 top-5 z-10 hidden sm:block">
             <HeroFlashDealCard deals={deals} airports={airports} />
           </div>
         </div>
 
-      <div className="relative mx-auto max-w-6xl px-4 pb-40 pt-10 sm:pb-44 sm:pt-14">
-        <div className="max-w-xl text-start">
-          <h1
-            className="font-display text-4xl font-black leading-[1.05] tracking-tight text-white sm:text-5xl"
-            style={{ textShadow: "0 4px 28px rgba(0,0,0,0.5)" }}
-          >
-            اكتشف افضل فرص السفر يوميا
-          </h1>
-          <p
-            className="mt-3 max-w-md text-base text-white/90 sm:text-lg"
-            style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
-          >
-            تجربة تستحق البحث
-          </p>
-          <p className="mt-2 text-sm font-semibold text-[#FF7A45]" style={{ textShadow: "0 1px 12px rgba(0,0,0,0.4)" }}>
-            مقاعد محدودة. وقت محدود.
-          </p>
-        </div>
-
-        {/* Compact flash-deal card for small screens, right under the
-           headline instead of floating in the corner (no room for that
-           there below `sm`). */}
-        <div className="mt-5 max-w-[260px] sm:hidden">
-          <HeroFlashDealCard deals={deals} airports={airports} />
-        </div>
-      </div>
-
-      {/* Search box pulled up to overlap the bottom of the hero photo. The
-         headline block above now reserves fixed bottom padding (pb-40 /
-         sm:pb-44) that comfortably exceeds this negative margin, so the card
-         can never cover the headline or subheadline text. */}
-      <div className="relative z-10 mx-auto max-w-5xl px-4">
-        <div className="-mt-28 overflow-visible rounded-[24px] bg-[#FBF9F4] p-4 shadow-2xl shadow-slate-900/15 ring-1 ring-black/[0.04] sm:-mt-32 sm:p-5">
-          {/* Trip-type tabs as an underline segmented control (a boarding
-             pass' "class" selector, not a generic pill switcher) — the
-             active tab's indicator uses the CTA orange so tab selection and
-             the search button read as one connected action. */}
-          <div className="mb-3 flex gap-5 border-b border-slate-100 px-0.5">
-            {(
-              [
-                ["round_trip", "↔️", "ذهاب وعودة"],
-                ["one_way", "✈️", "ذهاب فقط"],
-              ] as const
-            ).map(([key, icon, label]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setTripType(key)}
-                className={`relative flex items-center gap-1.5 pb-2.5 pt-1 text-sm font-bold transition ${
-                  tripType === key ? "text-[#FF7A45]" : "text-slate-400 hover:text-slate-600"
-                }`}
-              >
-                <span aria-hidden className="text-xs">
-                  {icon}
-                </span>
-                {label}
-                {tripType === key ? (
-                  <span aria-hidden className="absolute inset-x-0 -bottom-px h-[3px] rounded-full bg-[#FF7A45]" />
-                ) : null}
-              </button>
-            ))}
+        <div className="relative mx-auto max-w-6xl px-4 pb-36 pt-12 sm:pb-40 sm:pt-16">
+          <div className="max-w-xl text-start">
+            <h1
+              className="font-cairo text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl sm:leading-[1.1]"
+              style={{ textShadow: "0 4px 28px rgba(0,0,0,0.45)" }}
+            >
+              اكتشف أفضل فرص السفر بأفضل الأسعار
+            </h1>
+            <p
+              className="mt-4 max-w-md text-base leading-relaxed text-white/85 sm:text-lg"
+              style={{ textShadow: "0 1px 16px rgba(0,0,0,0.35)" }}
+            >
+              اكتشف الرحلات والعروض التي تستحق الحجز، وقارن أفضل الفرص في مكان واحد.
+            </p>
           </div>
 
-          {/* Boarding-pass layout: route/date fields sit in the "flight
-             segment" of the ticket, a perforated tear-line (dashed rule +
-             two edge notches) splits it from the "stub" holding
-             budget/passengers/search — mirroring how a real paper ticket
-             separates the flight details from the tear-off stub, instead of
-             a generic bordered form card. */}
-          <form onSubmit={submit}>
-            <div className="flex flex-col divide-y divide-slate-100 lg:flex-row lg:items-stretch lg:divide-x lg:divide-y-0 rtl:lg:divide-x-reverse">
-              <FieldBox icon="📍" label="From" className="lg:flex-1">
-                <select value={from} onChange={(e) => setFrom(e.target.value)} className="hero-field-select">
-                  {airportOptions}
-                </select>
-              </FieldBox>
+          {/* Compact flash-deal card for small screens, right under the
+             headline instead of floating in the corner (no room for that
+             there below `sm`). */}
+          <div className="mt-5 max-w-[260px] sm:hidden">
+            <HeroFlashDealCard deals={deals} airports={airports} />
+          </div>
+        </div>
 
-              <div className="flex h-8 shrink-0 items-center justify-center lg:h-auto lg:w-10">
+        {/* Search card pulled up to overlap the bottom of the hero photo.
+           The headline block above reserves fixed bottom padding
+           (pb-36 / sm:pb-40) that comfortably exceeds this negative margin,
+           so the card can never cover the headline or subheadline text. */}
+        <div className="relative z-20 mx-auto max-w-5xl px-4">
+          <div className="animate-hero-card-in -mt-24 rounded-[28px] bg-white p-4 shadow-2xl shadow-slate-900/20 ring-1 ring-black/[0.03] sm:-mt-28 sm:p-5">
+            {/* Trip-type segmented control */}
+            <div className="mb-4 inline-flex rounded-full bg-slate-100 p-1">
+              {(
+                [
+                  ["round_trip", "ذهاب وعودة"],
+                  ["one_way", "ذهاب فقط"],
+                ] as const
+              ).map(([key, label]) => (
                 <button
+                  key={key}
                   type="button"
-                  onClick={() => {
-                    setFrom(to);
-                    setTo(from);
-                  }}
-                  aria-label="تبديل الوجهتين"
-                  className="flex size-8 shrink-0 rotate-90 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition hover:border-[#FF7A45] hover:text-[#FF7A45] lg:rotate-0"
+                  onClick={() => setTripType(key)}
+                  className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
+                    tripType === key ? "bg-white text-[#FF7A45] shadow-sm" : "text-slate-500 hover:text-slate-700"
+                  }`}
                 >
-                  ⇄
+                  {label}
                 </button>
-              </div>
+              ))}
+            </div>
 
-              <FieldBox icon="📍" label="To" className="lg:flex-1">
-                <select value={to} onChange={(e) => setTo(e.target.value)} className="hero-field-select">
-                  <option value="">Select destination</option>
-                  <option value="any">Anywhere</option>
-                  {airportOptions}
-                </select>
-              </FieldBox>
+            <form onSubmit={submit}>
+              <div className="flex flex-col gap-2 lg:flex-row lg:items-stretch lg:gap-0 lg:divide-x lg:divide-slate-100 rtl:lg:divide-x-reverse lg:rounded-2xl lg:border lg:border-slate-100">
+                <AirportField
+                  icon="🛫"
+                  label="من"
+                  value={from}
+                  onChange={setFrom}
+                  airports={airports}
+                  className="lg:flex-1"
+                />
 
-              <FieldBox icon="📅" label="When" className="lg:flex-1">
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={date}
-                    min={new Date().toISOString().slice(0, 10)}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="hero-field-input"
-                  />
-                  {/* Native date inputs render their empty state in the
-                     browser's own locale (often "mm/dd"). Cover it with a
-                     fixed English label until a date is actually picked —
-                     pointer-events-none so the click still opens the native
-                     picker underneath. */}
-                  {!date && (
-                    <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-[#FBF9F4] text-sm font-semibold text-slate-800">
-                      Flexible dates
-                    </span>
-                  )}
+                <div className="flex h-6 shrink-0 items-center justify-center lg:h-auto lg:w-10">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFrom(to === "any" ? from : to);
+                      setTo(from);
+                      setSwapped((s) => !s);
+                    }}
+                    aria-label="تبديل الوجهتين"
+                    className={`flex size-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition duration-300 hover:border-[#FF7A45] hover:text-[#FF7A45] ${
+                      swapped ? "rotate-[270deg]" : "rotate-90"
+                    } lg:rotate-0`}
+                  >
+                    ⇄
+                  </button>
                 </div>
-              </FieldBox>
 
-              {tripType === "round_trip" ? (
-                <FieldBox icon="📅" label="Return" className="lg:flex-1">
+                <AirportField
+                  icon="🛬"
+                  label="إلى"
+                  value={to}
+                  onChange={setTo}
+                  airports={airports}
+                  allowAnywhere
+                  className="lg:flex-1"
+                />
+
+                <FieldBox icon="📅" label="تاريخ الذهاب" className="lg:flex-1">
                   <div className="relative">
                     <input
                       type="date"
-                      value={returnDate}
-                      min={date || new Date().toISOString().slice(0, 10)}
-                      onChange={(e) => setReturnDate(e.target.value)}
+                      value={date}
+                      min={new Date().toISOString().slice(0, 10)}
+                      onChange={(e) => setDate(e.target.value)}
                       className="hero-field-input"
                     />
-                    {!returnDate && (
-                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-[#FBF9F4] text-sm font-semibold text-slate-800">
-                        Flexible dates
+                    {/* Native date inputs render their empty state in the
+                       browser's own locale (often "mm/dd"). Cover it with a
+                       fixed label until a date is actually picked —
+                       pointer-events-none so the click still opens the
+                       native picker underneath. */}
+                    {!date && (
+                      <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-400">
+                        اختر تاريخًا
                       </span>
                     )}
                   </div>
                 </FieldBox>
-              ) : null}
-            </div>
 
-            {/* Perforated tear-line — sized to its own thin strip so its
-               position never depends on how tall the rows above/below it
-               are (they reflow a lot between mobile-stacked and desktop).
-               The two notch circles match the card's own paper color, so
-               they read as punched-through cutouts at the card's edges. */}
-            <div className="relative my-1">
-              <div className="border-t-2 border-dashed border-slate-200" />
-              <span
-                aria-hidden
-                className="absolute left-0 top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FBF9F4] ring-1 ring-black/[0.04]"
-              />
-              <span
-                aria-hidden
-                className="absolute right-0 top-1/2 size-5 translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FBF9F4] ring-1 ring-black/[0.04]"
-              />
-            </div>
+                {tripType === "round_trip" ? (
+                  <FieldBox icon="📅" label="تاريخ العودة" className="lg:flex-1">
+                    <div className="relative">
+                      <input
+                        type="date"
+                        value={returnDate}
+                        min={date || new Date().toISOString().slice(0, 10)}
+                        onChange={(e) => setReturnDate(e.target.value)}
+                        className="hero-field-input"
+                      />
+                      {!returnDate && (
+                        <span className="pointer-events-none absolute inset-y-0 start-0 flex items-center bg-white text-sm font-semibold text-slate-400">
+                          اختر تاريخًا
+                        </span>
+                      )}
+                    </div>
+                  </FieldBox>
+                ) : null}
 
-            <div className="flex flex-col divide-y divide-slate-100 lg:flex-row lg:items-stretch lg:divide-x lg:divide-y-0 rtl:lg:divide-x-reverse">
-              <FieldBox
-                icon="💰"
-                label="Budget"
-                trailingIcon="▾"
-                className="lg:w-56 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#FFEDE3]/40"
-              >
-                <select
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                  className="hero-field-select cursor-pointer"
-                >
-                  {BUDGET_OPTIONS.map((b) => (
-                    <option key={b.value} value={b.value}>
-                      {b.label}
-                    </option>
-                  ))}
-                </select>
-              </FieldBox>
+                <div className="lg:w-56 lg:shrink-0">
+                  <TravelersField value={passengers} onChange={setPassengers} />
+                </div>
+              </div>
 
-              <FieldBox
-                icon="👤"
-                label="Passengers"
-                trailingIcon="▾"
-                className="lg:w-56 lg:shrink-0 lg:flex-none cursor-pointer hover:bg-[#FFEDE3]/40"
-              >
-                <select
-                  value={passengers}
-                  onChange={(e) => setPassengers(Number(e.target.value))}
-                  className="hero-field-select cursor-pointer"
-                >
-                  {[1, 2, 3, 4, 5, 6].map((n) => (
-                    <option key={n} value={n}>
-                      {n} {n === 1 ? "Passenger" : "Passengers"}
-                    </option>
-                  ))}
-                </select>
-              </FieldBox>
+              <div className="mt-3 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+                {/* Budget kept as a real, functioning filter — de-emphasized
+                   to a small secondary control so it doesn't compete with
+                   the primary route/date fields above. */}
+                <label className="flex items-center gap-2 text-sm text-slate-500">
+                  <span aria-hidden>💰</span>
+                  <select
+                    value={budget}
+                    onChange={(e) => setBudget(e.target.value)}
+                    className="cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-slate-600 outline-none"
+                  >
+                    {BUDGET_OPTIONS.map((b) => (
+                      <option key={b.value} value={b.value}>
+                        {b.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-              <div className="p-2 lg:flex lg:flex-1 lg:items-center lg:p-1.5">
                 <button
                   type="submit"
-                  className="ticket-stub-btn group relative flex w-full shrink-0 items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#FF7A45] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0 lg:h-full lg:w-full lg:rounded-2xl"
+                  disabled={submitting}
+                  className="flex items-center justify-center gap-2 rounded-2xl bg-[#FF7A45] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#FFD4C2] transition hover:-translate-y-0.5 hover:bg-[#F0642F] hover:shadow-xl active:scale-[0.98] active:translate-y-0 disabled:opacity-80 sm:w-auto"
                 >
-                  {/* Barcode strip — a quiet nod to the ticket-stub motif,
-                     tucked along the button's own edge rather than
-                     competing with the label. */}
-                  <span aria-hidden className="ticket-barcode absolute inset-y-0 end-0 w-9 opacity-25" />
-                  <span aria-hidden>🔍</span> دوّر على أفضل عرض
+                  {submitting ? (
+                    <>
+                      <span className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden />
+                      جارِ البحث عن الفرص...
+                    </>
+                  ) : (
+                    <>
+                      <span aria-hidden>🔍</span>
+                      ابحث الآن
+                    </>
+                  )}
                 </button>
               </div>
-            </div>
-          </form>
+            </form>
+
+            <p className="mt-3 text-center text-xs font-medium text-slate-400 sm:text-start">
+              عروض ذكية · أسعار أفضل · حجز سهل
+            </p>
+          </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <span className="text-xs font-medium text-slate-500">عمليات بحث شائعة:</span>
@@ -434,19 +539,18 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Round-trip ticker now takes the "LIVE DEALS" ticker's old spot,
-         directly under the search box — full-bleed like the one-way board
-         above, with a clear gap (mt-8) so it never visually crowds the trip-
-         type tabs or the search fields sitting right above it. Its own
-         independent, overflow-clipped container keeps the scrolling marquee
-         (labels, prices, indicator dot) fully contained even if the section
-         above it changes height — nothing here can bleed into the header or
-         hero photo. */}
-      <div className="relative isolate z-0 mt-6 w-full overflow-hidden pb-6">
-        <RoundTripFareBoard deals={deals} references={references} airports={airports} />
-      </div>
+        {/* Round-trip ticker now takes the "LIVE DEALS" ticker's old spot,
+           directly under the search box — full-bleed like the one-way board
+           above, with a clear gap (mt-8) so it never visually crowds the
+           search card sitting right above it. Its own independent,
+           overflow-clipped container keeps the scrolling marquee (labels,
+           prices, indicator dot) fully contained even if the section above
+           it changes height — nothing here can bleed into the header or
+           hero photo. */}
+        <div className="relative isolate z-0 mt-8 w-full overflow-hidden pb-6">
+          <RoundTripFareBoard deals={deals} references={references} airports={airports} />
+        </div>
       </section>
     </>
   );
@@ -459,7 +563,7 @@ function FieldBox({
   children,
   className = "",
 }: {
-  icon: string;
+  icon: ReactNode;
   label: string;
   trailingIcon?: string;
   children: ReactNode;
@@ -467,13 +571,13 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`flex min-w-0 items-center gap-2 px-3.5 py-2.5 transition focus-within:bg-[#FFEDE3]/40 ${className}`}
+      className={`flex min-w-0 items-center gap-2 rounded-xl border border-slate-100 bg-white px-3.5 py-2.5 transition focus-within:border-[#FF7A45] focus-within:ring-2 focus-within:ring-[#FFEDE3] lg:rounded-none lg:border-0 ${className}`}
     >
       <span className="shrink-0 text-slate-400" aria-hidden>
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="font-ticket text-[10px] tracking-[0.12em] text-slate-400">{label}</p>
+        <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">{label}</p>
         {children}
       </div>
       {trailingIcon ? (
