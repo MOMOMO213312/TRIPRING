@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { BOOKING_STATUS_LABELS, fetchAgencyBookings, updateBookingStatus } from "../../lib/agency";
+import { BOOKING_STATUS_LABELS, fetchAgencyBookings, updateBookingStatus, uploadTicketFile } from "../../lib/agency";
+import { friendlyErrorMessage } from "../../lib/errors";
 import type { BookingRow } from "../../types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
@@ -10,6 +11,48 @@ import { Input } from "../ui/Input";
 /** Bookings awaiting a payment/ticket decision: awaiting_payment, payment_uploaded, paid. */
 function needsAttention(b: BookingRow): boolean {
   return b.status === "awaiting_payment" || b.status === "payment_uploaded" || b.status === "paid";
+}
+
+/** Real file upload (PDF/image) for issuing a ticket — replaces the old
+ *  "paste a link" field. Uploads straight to the `tickets` storage bucket
+ *  and marks the booking ticket_issued in one step once the upload succeeds. */
+function TicketUpload({
+  booking,
+  uploading,
+  onFile,
+}: {
+  booking: BookingRow;
+  uploading: boolean;
+  onFile: (file: File) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  return (
+    <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
+      <input
+        ref={inputRef}
+        type="file"
+        accept="application/pdf,image/jpeg,image/png,image/webp"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onFile(file);
+        }}
+      />
+      {booking.ticket_url ? (
+        <a
+          href={booking.ticket_url}
+          target="_blank"
+          rel="noreferrer"
+          className="text-sm font-semibold text-[#0C7BB3] underline"
+        >
+          عرض التذكرة الحالية ↗
+        </a>
+      ) : null}
+      <Button disabled={uploading} onClick={() => inputRef.current?.click()}>
+        {uploading ? "جاري رفع التذكرة..." : booking.ticket_url ? "🎫 استبدال ملف التذكرة" : "🎫 رفع التذكرة وتأكيد الإصدار"}
+      </Button>
+    </div>
+  );
 }
 
 export function AgencyPaymentTab({
@@ -24,7 +67,7 @@ export function AgencyPaymentTab({
   const [error, setError] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [paymentRefDraft, setPaymentRefDraft] = useState<Record<string, string>>({});
-  const [ticketUrlDraft, setTicketUrlDraft] = useState<Record<string, string>>({});
+  const [uploadingTicketId, setUploadingTicketId] = useState<string | null>(null);
 
   async function reload() {
     setLoading(true);
@@ -61,22 +104,18 @@ export function AgencyPaymentTab({
     }
   }
 
-  async function markTicketIssued(b: BookingRow) {
-    const ticketUrl = ticketUrlDraft[b.id];
-    if (!ticketUrl) {
-      setError("أدخل رابط التذكرة أولاً");
-      return;
-    }
-    setSavingId(b.id);
+  async function uploadAndIssueTicket(b: BookingRow, file: File) {
+    setUploadingTicketId(b.id);
     setError(null);
     try {
+      const ticketUrl = await uploadTicketFile(agencyId, b.id, file);
       await updateBookingStatus(b.id, "ticket_issued", { ticketUrl });
       await reload();
       onChanged?.();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "تعذر تحديث الحالة");
+      setError(friendlyErrorMessage(err, "تعذر رفع التذكرة، جرّب تاني.", "AgencyPaymentTab.uploadTicket"));
     } finally {
-      setSavingId(null);
+      setUploadingTicketId(null);
     }
   }
 
@@ -174,17 +213,11 @@ export function AgencyPaymentTab({
               )}
 
               {b.status === "paid" && (
-                <div className="flex flex-wrap items-end gap-2 border-t border-slate-100 pt-3">
-                  <Input
-                    label="رابط التذكرة الصادرة"
-                    value={ticketUrlDraft[b.id] ?? b.ticket_url ?? ""}
-                    onChange={(e) => setTicketUrlDraft((p) => ({ ...p, [b.id]: e.target.value }))}
-                    className="min-w-[220px]"
-                  />
-                  <Button disabled={savingId === b.id} onClick={() => markTicketIssued(b)}>
-                    {savingId === b.id ? "جاري الحفظ..." : "🎫 تأكيد إصدار التذكرة"}
-                  </Button>
-                </div>
+                <TicketUpload
+                  booking={b}
+                  uploading={uploadingTicketId === b.id}
+                  onFile={(file) => uploadAndIssueTicket(b, file)}
+                />
               )}
             </Card>
           ))}

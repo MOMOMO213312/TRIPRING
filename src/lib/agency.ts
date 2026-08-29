@@ -638,6 +638,37 @@ export async function setDealStatus(dealId: string, status: DealRow["status"]): 
 
 export type BookingStatusGroup = "new" | "awaiting_payment" | "confirmed" | "cancelled" | "all";
 
+const TICKET_ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/webp"];
+const TICKET_MAX_BYTES = 8 * 1024 * 1024; // 8MB
+
+/**
+ * Uploads the real ticket file (PDF or image) to the `tickets` storage bucket
+ * under this agency's own folder — the bucket's RLS policy only allows an
+ * agency to write inside `${their agency_id}/...`, so this can't be used to
+ * overwrite another agency's tickets. Returns the public URL to store on
+ * bookings.ticket_url, same field the old "paste a link" flow used, so
+ * nothing downstream (MyTripsPage, admin views) needs to change.
+ */
+export async function uploadTicketFile(agencyId: string, bookingId: string, file: File): Promise<string> {
+  if (!TICKET_ALLOWED_TYPES.includes(file.type)) {
+    throw new Error("الملف يجب أن يكون PDF أو صورة (JPG/PNG/WebP)");
+  }
+  if (file.size > TICKET_MAX_BYTES) {
+    throw new Error("حجم الملف أكبر من 8 ميجابايت");
+  }
+
+  const ext = file.name.split(".").pop() ?? "pdf";
+  const path = `${agencyId}/${bookingId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("tickets")
+    .upload(path, file, { contentType: file.type });
+  if (uploadError) throw new Error(uploadError.message);
+
+  const { data } = supabase.storage.from("tickets").getPublicUrl(path);
+  return data.publicUrl;
+}
+
 const BOOKING_FULL_COLUMNS =
   "id,booking_number,deal_id,agency_id,customer_name,customer_phone,customer_email,notes,channel,payment_method,status,payment_proof_url,payment_ref,payment_at,ticket_url,handled_by,created_at,updated_at,unit_price,total_price,currency,adults_count,children_count,infants_count,travelers_count,fare_package_tier,fare_package_markup";
 
