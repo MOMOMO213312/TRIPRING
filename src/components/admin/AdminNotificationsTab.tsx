@@ -108,7 +108,9 @@ export function AdminNotificationsTab() {
                   <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${STATUS_BADGE[n.status]}`}>
                     {NOTIFICATION_STATUS_LABELS[n.status]}
                   </span>
-                  {n.is_ticker ? <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-700">شريط</span> : null}
+                  {n.status === "sent" && n.audience === "all_public" ? (
+                    <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[11px] font-semibold text-sky-700">شريط</span>
+                  ) : null}
                 </div>
                 <p className="mt-0.5 line-clamp-1 text-xs text-slate-500">{n.body}</p>
                 <p className="mt-1 text-[11px] text-slate-400">
@@ -150,7 +152,6 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
-  const [isTicker, setIsTicker] = useState(true);
   const channels = ["in_site"] as NotificationRow["channels"];
   const [targetAgencyId, setTargetAgencyId] = useState("");
   const [targetAffiliateId, setTargetAffiliateId] = useState("");
@@ -184,7 +185,7 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
         targetAgencyId: audience === "specific_agency" ? targetAgencyId || null : null,
         targetAffiliateId: audience === "specific_affiliate" ? targetAffiliateId || null : null,
         channels,
-        isTicker: audience === "all_public" ? isTicker : false,
+        isTicker: audience === "all_public",
         endsAt: endsAt ? new Date(endsAt).toISOString() : null,
       });
       if (sendNow) await setNotificationStatus(created.id, "sent");
@@ -250,13 +251,6 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
         </label>
         <Input label="رابط (اختياري)" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="/deals" />
         <Input label="تاريخ الانتهاء (اختياري)" type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} />
-
-        {audience === "all_public" ? (
-          <label className="flex items-center gap-1.5 text-sm">
-            <input type="checkbox" checked={isTicker} onChange={(e) => setIsTicker(e.target.checked)} />
-            إظهار في شريط الأخبار أعلى الموقع
-          </label>
-        ) : null}
 
         <label className="flex items-center gap-1.5 text-sm">
           <input type="checkbox" checked={sendNow} onChange={(e) => setSendNow(e.target.checked)} />

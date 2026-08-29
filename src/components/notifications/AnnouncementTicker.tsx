@@ -11,15 +11,17 @@ const TYPE_ICON: Partial<Record<NotificationRow["type"], string>> = {
   site_announcement: "📣",
 };
 
-/** Public scrolling ticker for site-wide announcements (deals, airport info, circulars).
- *  Shows nothing if there are no active `all_public` announcements. */
+/** Public scrolling ticker for site-wide announcements (deals, news, updates).
+ *  Shows every sent `all_public` announcement automatically — no separate
+ *  "is_ticker" flag to remember when publishing, so nothing gets missed.
+ *  Shows nothing if there are no active announcements. */
 export function AnnouncementTicker() {
   const [items, setItems] = useState<NotificationRow[]>([]);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     fetchPublicAnnouncements()
-      .then((all) => setItems(all.filter((n) => n.is_ticker)))
+      .then(setItems)
       .catch(() => setItems([]));
   }, []);
 
