@@ -7,11 +7,13 @@ import {
   inviteAgencyUser,
   setAgencyActive,
   setAgencyVerificationStatus,
+  updateAgencyAllowedCategories,
   updateAgencyCommission,
   uploadAgencyDocument,
 } from "../../lib/admin";
 import { friendlyErrorMessage } from "../../lib/errors";
-import type { AgencyRow } from "../../types/database";
+import { PROVIDER_TYPES, PROVIDER_TYPE_LABELS } from "../../lib/serviceProviders";
+import type { AgencyRow, ProviderType } from "../../types/database";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
@@ -66,6 +68,20 @@ export function AdminAgenciesTab() {
     }
   }
 
+  async function toggleCategory(agency: AgencyRow, category: ProviderType) {
+    const current = agency.allowed_categories ?? [];
+    const next = current.includes(category) ? current.filter((c) => c !== category) : [...current, category];
+    setBusyId(agency.id);
+    try {
+      await updateAgencyAllowedCategories(agency.id, next);
+      load();
+    } catch (e) {
+      setError(friendlyErrorMessage(e, "تعذر تحديث الفئات المسموحة", "AdminAgenciesTab.categories"));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   const pending = agencies.filter((a) => !a.is_active);
   const active = agencies.filter((a) => a.is_active);
 
@@ -92,6 +108,7 @@ export function AdminAgenciesTab() {
               busy={busyId === a.id}
               onToggle={toggleActive}
               onCommission={saveCommission}
+              onToggleCategory={toggleCategory}
               onRefresh={load}
             />
           ))}
@@ -108,6 +125,7 @@ export function AdminAgenciesTab() {
             busy={busyId === a.id}
             onToggle={toggleActive}
             onCommission={saveCommission}
+            onToggleCategory={toggleCategory}
             onRefresh={load}
           />
         ))}
@@ -131,12 +149,14 @@ function AgencyRowCard({
   busy,
   onToggle,
   onCommission,
+  onToggleCategory,
   onRefresh,
 }: {
   agency: AgencyRow;
   busy: boolean;
   onToggle: (a: AgencyRow) => void;
   onCommission: (a: AgencyRow, value: string) => void;
+  onToggleCategory: (a: AgencyRow, category: ProviderType) => void;
   onRefresh: () => void;
 }) {
   const [docsOpen, setDocsOpen] = useState(false);
@@ -223,6 +243,24 @@ function AgencyRowCard({
           </button>
         </div>
         <span className="text-xs">{VERIFICATION_LABELS[agency.verification_status]}</span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-slate-100 pt-2">
+        <span className="text-xs font-semibold text-slate-500">فئات الخدمات المسموحة للوكالة:</span>
+        {PROVIDER_TYPES.map((category) => {
+          const checked = (agency.allowed_categories ?? []).includes(category);
+          return (
+            <label key={category} className="flex items-center gap-1 text-xs text-slate-700">
+              <input
+                type="checkbox"
+                checked={checked}
+                disabled={busy}
+                onChange={() => onToggleCategory(agency, category)}
+              />
+              {PROVIDER_TYPE_LABELS[category]}
+            </label>
+          );
+        })}
       </div>
 
       {inviteOpen ? <InviteAgencyUserForm agencyId={agency.id} onDone={() => setInviteOpen(false)} /> : null}
