@@ -1,0 +1,263 @@
+import { getCurrentUser } from "./auth";
+import { supabase } from "./supabase";
+import type { TicketResaleRow } from "./api";
+import type {
+  AgencyRow,
+  AgencyVerificationDocument,
+  BookingRow,
+  DealRow,
+  ProfileRow,
+  ResaleStatus,
+} from "../types/database";
+
+const AGENCY_DOC_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+const AGENCY_DOC_MAX_BYTES = 8 * 1024 * 1024; // 8MB
+
+// ── Access gate ──────────────────────────────────────────────────────────
+// Mirrors fetchMyAgencyProfile's shape (see lib/agency.ts) but checks for
+// the "admin" role instead of "agency" — same pattern, different gate.
+export async function fetchMyAdminProfile(): Promise<ProfileRow | null> {
+  const user = await getCurrentUser();
+  if (!user) return null;
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("id,role,full_name,phone,agency_id,agency_role,membership,created_at")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!profile) return null;
+
+  const row = profile as ProfileRow;
+  if (row.role !== "admin") return null;
+  return row;
+}
+
+// ── Agencies ─────────────────────────────────────────────────────────────
+export async function fetchAllAgencies(): Promise<AgencyRow[]> {
+  const { data, error } = await supabase.from("agencies").select("*").order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AgencyRow[];
+}
+
+export async function setAgencyActive(agencyId: string, isActive: boolean): Promise<void> {
+  const { error } = await supabase.from("agencies").update({ is_active: isActive } as never).eq("id", agencyId);
+  if (error) throw new Error(error.message);
+}
+
+export async function updateAgencyCommission(agencyId: string, commissionRate: number): Promise<void> {
+  const { error } = await supabase
+    .from("agencies")
+    .update({ commission_rate: commissionRate } as never)
+    .eq("id", agencyId);
+  if (error) throw new Error(error.message);
+}
+
+export async function createAgency(input: {
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  whatsapp?: string | null;
+  commissionRate?: number | null;
+  commercialRegisterNumber?: string | null;
+  tourismLicenseNumber?: string | null;
+}): Promise<AgencyRow> {
+  const { data, error } = await supabase
+    .from("agencies")
+    .insert([
+      {
+        name: input.name.trim(),
+        phone: input.phone || null,
+        email: input.email || null,
+        whatsapp: input.whatsapp || null,
+        commission_rate: input.commissionRate ?? null,
+        commercial_register_number: input.commercialRegisterNumber || null,
+        tourism_license_number: input.tourismLicenseNumber || null,
+        is_active: false, // new agencies start inactive until admin approves
+      },
+    ] as never)
+    .select("*")
+    .single();
+  if (error) throw new Error(error.message);
+  return data as AgencyRow;
+}
+
+/**
+ * Invites a new agency staff user by email (or, if the email already has an
+ * account, links their existing account) to the given agency. Runs entirely
+ * server-side via the `invite-agency-user` Edge Function — creating/inviting
+ * auth users needs the service_role key, which must never reach the browser.
+ */
+export async function inviteAgencyUser(input: {
+  agencyId: string;
+  email: string;
+  fullName?: string;
+  agencyRole?: string;
+}): Promise<{ userId: string; agencyId: string; email: string }> {
+  const { data, error } = await supabase.functions.invoke("invite-agency-user", {
+    body: {
+      agencyId: input.agencyId,
+      email: input.email,
+      fullName: input.fullName ?? null,
+      agencyRole: input.agencyRole ?? null,
+    },
+  });
+  if (error) {
+    // supabase-js wraps non-2xx responses in a generic FunctionsHttpError;
+    // the actual { error: "..." } message from our function is on context.
+    const context = (error as { context?: Response }).context;
+    if (context) {
+      try {
+        const body = await context.clone().json();
+        if (body?.error) throw new Error(body.error);
+      } catch {
+        // fall through to generic message below
+      }
+    }
+    throw new Error(error.message);
+  }
+  return data as { userId: string; agencyId: string; email: string };
+}
+
+/**
+ * Uploads one official document (commercial register, tourism license,
+ * work certificate, etc.) to the private "agency-documents" bucket and
+ * appends it to the agency's verification_documents list. Files are stored
+ * under `${agencyId}/...` so the "owner select" storage policy (which checks
+ * the profile's agency_id against the folder name) can find them.
+ */
+export async function uploadAgencyDocument(agencyId: string, label: string, file: File): Promise<AgencyRow> {
+  if (!AGENCY_DOC_ALLOWED_TYPES.includes(file.type)) {
+    throw new Error("الملف يجب أن يكون صورة (JPG/PNG/WebP) أو PDF");
+  }
+  if (file.size > AGENCY_DOC_MAX_BYTES) {
+    throw new Error("حجم الملف أكبر من 8 ميجابايت");
+  }
+
+  const ext = file.name.split(".").pop() ?? "bin";
+  const path = `${agencyId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("agency-documents")
+    .upload(path, file, { contentType: file.type });
+  if (uploadError) throw new Error(uploadError.message);
+
+  const { data: current, error: fetchError } = await supabase
+    .from("agencies")
+    .select("verification_documents")
+    .eq("id", agencyId)
+    .single();
+  if (fetchError) throw new Error(fetchError.message);
+
+  const existing = ((current as { verification_documents: AgencyVerificationDocument[] } | null)
+    ?.verification_documents ?? []) as AgencyVerificationDocument[];
+  const nextDocs: AgencyVerificationDocument[] = [
+    ...existing,
+    { label, url: path, uploaded_at: new Date().toISOString() },
+  ];
+
+  const { data, error } = await supabase
+    .from("agencies")
+    .update({ verification_documents: nextDocs } as never)
+    .eq("id", agencyId)
+    .select("*")
+    .single();
+  if (error) throw new Error(error.message);
+  return data as AgencyRow;
+}
+
+/** Signed URL (bucket is private) so admins can view/download an uploaded document. */
+export async function getAgencyDocumentUrl(path: string): Promise<string> {
+  const { data, error } = await supabase.storage.from("agency-documents").createSignedUrl(path, 300);
+  if (error) throw new Error(error.message);
+  return data.signedUrl;
+}
+
+export async function setAgencyVerificationStatus(
+  agencyId: string,
+  status: "pending" | "verified" | "rejected",
+): Promise<void> {
+  const user = await getCurrentUser();
+  const { error } = await supabase
+    .from("agencies")
+    .update({
+      verification_status: status,
+      verified_at: status === "verified" ? new Date().toISOString() : null,
+      verified_by: status === "verified" ? (user?.id ?? null) : null,
+    } as never)
+    .eq("id", agencyId);
+  if (error) throw new Error(error.message);
+}
+
+// ── Bookings (platform-wide, not scoped to one agency) ─────────────────────
+const BOOKING_FULL_COLUMNS =
+  "id,booking_number,deal_id,agency_id,customer_name,customer_phone,customer_email,notes,channel,payment_method,status,payment_proof_url,payment_ref,payment_at,ticket_url,handled_by,created_at,updated_at,unit_price,total_price,currency,adults_count,children_count,infants_count,travelers_count,fare_package_tier,fare_package_markup";
+
+export async function fetchAllBookings(): Promise<BookingRow[]> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select(BOOKING_FULL_COLUMNS)
+    .order("created_at", { ascending: false })
+    .limit(300);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as BookingRow[];
+}
+
+/** Small lookup tables joined client-side so the admin bookings list can show
+ *  the agency name and route without a heavier server-side join. */
+export async function fetchAgencyNameMap(): Promise<Record<string, string>> {
+  const { data, error } = await supabase.from("agencies").select("id,name");
+  if (error) throw new Error(error.message);
+  const map: Record<string, string> = {};
+  for (const a of (data ?? []) as { id: string; name: string }[]) map[a.id] = a.name;
+  return map;
+}
+
+export async function fetchDealRouteMap(dealIds: string[]): Promise<Record<string, Pick<DealRow, "from_airport" | "to_airport">>> {
+  if (dealIds.length === 0) return {};
+  const { data, error } = await supabase.from("deals").select("id,from_airport,to_airport").in("id", dealIds);
+  if (error) throw new Error(error.message);
+  const map: Record<string, Pick<DealRow, "from_airport" | "to_airport">> = {};
+  for (const d of (data ?? []) as { id: string; from_airport: string; to_airport: string }[]) {
+    map[d.id] = { from_airport: d.from_airport, to_airport: d.to_airport };
+  }
+  return map;
+}
+
+// ── Ticket resale review queue ──────────────────────────────────────────
+export async function fetchResaleQueue(statuses?: ResaleStatus[]): Promise<TicketResaleRow[]> {
+  let query = supabase.from("ticket_resales").select("*").order("created_at", { ascending: false });
+  if (statuses?.length) query = query.in("status", statuses);
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return (data ?? []) as TicketResaleRow[];
+}
+
+export async function updateResaleReview(
+  resaleId: string,
+  patch: { status: ResaleStatus; verificationNotes?: string | null },
+): Promise<void> {
+  const user = await getCurrentUser();
+  const { error } = await supabase
+    .from("ticket_resales")
+    .update({
+      status: patch.status,
+      verification_notes: patch.verificationNotes ?? null,
+      verified_by: user?.id ?? null,
+    } as never)
+    .eq("id", resaleId);
+  if (error) throw new Error(error.message);
+}
+
+export const RESALE_STATUS_LABELS: Record<ResaleStatus, string> = {
+  submitted: "بانتظار المراجعة",
+  under_review: "تحت المراجعة",
+  verified: "تم التحقق",
+  rejected: "مرفوض",
+  listed: "معروض للبيع",
+  reserved: "محجوز",
+  sold: "تم البيع",
+  expired: "منتهي",
+  cancelled: "ملغي",
+  converted_to_deal: "تحول لعرض",
+};
