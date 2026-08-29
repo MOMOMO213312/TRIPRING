@@ -24,6 +24,11 @@ import type {
 export type AgencyReviewRow = Tables<"agency_reviews">;
 export type TicketResaleRow = Tables<"ticket_resales">;
 
+/** Shape actually returned by the public/anonymous resale listing — excludes
+ * passenger_name and pnr_reference, which are only safe to expose to the
+ * seller/admin (see TICKET_RESALE_COLUMNS below). */
+export type PublicTicketResaleRow = Omit<TicketResaleRow, "passenger_name" | "pnr_reference">;
+
 export const DEAL_COLUMNS =
   "id,agency_id,deal_type,airline_code,from_airport,to_airport,departure_date,departure_time,return_date,arrival_time,flight_duration_minutes,duration_hours,stops,stopover_airport,baggage_kg,travel_class,price,original_price,child_price,infant_price,available_seats,is_featured,status,expires_at,currency,notes,deal_score,view_count,min_membership_tier,fare_family,refundable,changeable,change_fee,cancellation_fee,fare_rules,base_fare,taxes_fees,price_checked_at,flight_number,aircraft_type,operating_airline_code,arrival_date,layover_minutes,cabin_baggage_kg,checked_bags_count,extra_baggage_price" as const;
 
@@ -570,13 +575,17 @@ export type TicketResaleSearchParams = {
   to?: string;
 };
 
+// Public columns only — deliberately excludes passenger_name and pnr_reference,
+// since either one is enough for a stranger to manage/cancel the seller's
+// booking directly on the airline's site. Those stay restricted to the admin
+// query in lib/admin.ts.
 const TICKET_RESALE_COLUMNS =
-  "id,seller_customer_id,airline_code,from_airport,to_airport,departure_date,return_date,passenger_name,pnr_reference,reason,original_price,asking_price,currency,status,created_at";
+  "id,seller_customer_id,airline_code,from_airport,to_airport,departure_date,return_date,reason,original_price,asking_price,currency,status,created_at";
 
 /** Public browsing — only rows verified and published for sale are visible to anonymous users (per RLS). */
 export async function fetchActiveTicketResales(
   params: TicketResaleSearchParams = {},
-): Promise<TicketResaleRow[]> {
+): Promise<PublicTicketResaleRow[]> {
   let query = supabase
     .from("ticket_resales")
     .select(TICKET_RESALE_COLUMNS)
