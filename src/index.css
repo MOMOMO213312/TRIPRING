@@ -120,6 +120,41 @@ body {
   @apply animate-pulse rounded-xl bg-slate-200;
 }
 
+/* Dual-thumb price range slider (DealsSidebarFilters) — two native range
+   inputs stacked on the same track; only the thumb itself is clickable so
+   they don't fight each other for pointer events. */
+.range-thumb {
+  pointer-events: none;
+}
+.range-thumb::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #0c7bb3;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+.range-thumb::-moz-range-thumb {
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #0c7bb3;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+.range-thumb::-webkit-slider-runnable-track {
+  background: transparent;
+}
+.range-thumb::-moz-range-track {
+  background: transparent;
+}
+
 @keyframes ticker-scroll {
   from {
     transform: translateX(0);

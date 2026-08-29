@@ -45,6 +45,7 @@ export type DealSearchParams = {
    *  picking a region and a specific airport never silently conflict. */
   toAirports?: string[];
   departureDate?: string;
+  minPrice?: number;
   maxPrice?: number;
   sort?: "price_asc" | "price_desc";
   dealType?: DealType | "any";
@@ -157,6 +158,7 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean) {
   if (params.toAirports?.length) query = query.in("to_airport", params.toAirports);
   else if (params.to) query = query.eq("to_airport", params.to);
   if (params.departureDate) query = query.eq("departure_date", params.departureDate);
+  if (params.minPrice != null) query = query.gte("price", params.minPrice);
   if (params.maxPrice != null) query = query.lte("price", params.maxPrice);
   if (params.dealType && params.dealType !== "any") query = query.eq("deal_type", params.dealType);
   // Filtered server-side (rather than with a post-fetch .filter() in JS) so
@@ -204,6 +206,29 @@ export async function fetchActiveDealsPage(
   return { deals: (data ?? []) as DealRow[], total: count ?? (data ?? []).length };
 }
 
+/** Real min/max active price, used to size the DealsCenterPage price slider — never a hardcoded guess. */
+export async function fetchActivePriceBounds(): Promise<{ min: number; max: number }> {
+  const base = () =>
+    supabase
+      .from("deals")
+      .select("price")
+      .eq("status", "active")
+      .eq("min_membership_tier", PUBLIC_MEMBERSHIP_TIER)
+      .gt("expires_at", new Date().toISOString())
+      .gt("available_seats", 0);
+
+  const [{ data: lowest }, { data: highest }] = await Promise.all([
+    base().order("price", { ascending: true }).limit(1),
+    base().order("price", { ascending: false }).limit(1),
+  ]);
+  const lowestRow = (lowest as { price: number }[] | null)?.[0];
+  const highestRow = (highest as { price: number }[] | null)?.[0];
+  return {
+    min: lowestRow ? Math.floor(lowestRow.price) : 0,
+    max: highestRow ? Math.ceil(highestRow.price) : 1000,
+  };
+}
+
 export async function fetchBestOpportunities(limit = 12): Promise<DealRow[]> {
   const deals = await fetchActiveDeals({ sort: "price_asc", availableOnly: true });
   return deals.slice(0, limit);
@@ -230,6 +255,49 @@ export async function fetchDealPriceHistory(dealId: string): Promise<DealPriceHi
     .order("changed_at", { ascending: true });
   if (error) throw new Error(error.message);
   return data ?? [];
+}
+
+/**
+ * Bulk price-drop lookup for a set of deals (one query instead of one per
+ * card) — used by DealsCenterPage's grid to show a real "price dropped X%"
+ * note only where deal_price_history actually shows a drop. Compares each
+ * deal's earliest and latest recorded price within the last 7 days; never
+ * invents a percentage for deals with no history.
+ */
+export async function fetchDealPriceDrops(
+  dealIds: string[],
+): Promise<Map<string, { percent: number; amount: number }>> {
+  const drops = new Map<string, { percent: number; amount: number }>();
+  if (!dealIds.length) return drops;
+
+  const since = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  const { data, error } = await supabase
+    .from("deal_price_history")
+    .select("deal_id,old_price,new_price,changed_at")
+    .in("deal_id", dealIds)
+    .gte("changed_at", since)
+    .order("changed_at", { ascending: true });
+  if (error || !data) return drops;
+
+  const rows = data as { deal_id: string; old_price: number; new_price: number; changed_at: string }[];
+  const byDeal = new Map<string, typeof rows>();
+  for (const row of rows) {
+    const list = byDeal.get(row.deal_id) ?? [];
+    list.push(row);
+    byDeal.set(row.deal_id, list);
+  }
+
+  for (const [dealId, list] of byDeal) {
+    const earliest = list[0].old_price;
+    const latest = list[list.length - 1].new_price;
+    if (earliest > latest) {
+      drops.set(dealId, {
+        percent: Math.round(((earliest - latest) / earliest) * 100),
+        amount: Math.round(earliest - latest),
+      });
+    }
+  }
+  return drops;
 }
 
 export async function fetchAdditionalServices(): Promise<AdditionalServiceRow[]> {

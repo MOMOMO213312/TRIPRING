@@ -17,8 +17,7 @@ export type Region = {
 };
 
 export const REGIONS: Region[] = [
-  { key: "saudi", label: "السعودية", emoji: "🇸🇦", countries: ["السعودية"] },
-  { key: "uae", label: "الإمارات", emoji: "🇦🇪", countries: ["الإمارات"] },
+  { key: "gulf", label: "الخليج", emoji: "🇸🇦", countries: ["السعودية", "الإمارات"] },
   { key: "turkey", label: "تركيا", emoji: "🇹🇷", countries: ["تركيا"] },
   {
     key: "europe",
