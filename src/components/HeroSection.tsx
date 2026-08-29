@@ -362,8 +362,8 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
            The headline block above reserves fixed bottom padding
            (pb-36 / sm:pb-40) that comfortably exceeds this negative margin,
            so the card can never cover the headline or subheadline text. */}
-        <div className="relative z-20 mx-auto max-w-5xl px-4">
-          <div className="animate-hero-card-in -mt-24 rounded-[28px] bg-white p-4 shadow-2xl shadow-slate-900/20 ring-1 ring-black/[0.03] sm:-mt-28 sm:p-5">
+        <div className="relative z-20 mx-auto max-w-6xl px-4">
+          <div className="animate-hero-card-in -mt-24 rounded-[28px] bg-white p-5 shadow-2xl shadow-slate-900/20 ring-1 ring-black/[0.03] sm:-mt-28 sm:p-8">
             {/* Trip-type segmented control */}
             <div className="mb-4 inline-flex rounded-full bg-slate-100 p-1">
               {(
@@ -386,7 +386,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
             </div>
 
             <form onSubmit={submit}>
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-0 lg:divide-x lg:divide-slate-100 rtl:lg:divide-x-reverse lg:rounded-2xl lg:border lg:border-slate-100">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-0 lg:divide-x lg:divide-slate-100 rtl:lg:divide-x-reverse lg:rounded-2xl lg:border lg:border-slate-100">
                 <AirportField
                   icon="🛫"
                   label="من"
@@ -543,7 +543,7 @@ function FieldBox({
 }) {
   return (
     <div
-      className={`min-w-0 rounded-xl border border-slate-100 bg-white px-4 py-3 transition focus-within:border-[#FF7A45] focus-within:ring-2 focus-within:ring-[#FFEDE3] lg:rounded-none lg:border-0 lg:py-3.5 ${className}`}
+      className={`min-w-0 rounded-xl border border-slate-100 bg-white px-5 py-3.5 transition focus-within:border-[#FF7A45] focus-within:ring-2 focus-within:ring-[#FFEDE3] lg:rounded-none lg:border-0 lg:px-6 lg:py-5 ${className}`}
     >
       <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-slate-400">
         <span aria-hidden className="text-[13px] leading-none">
