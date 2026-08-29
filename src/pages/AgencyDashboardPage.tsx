@@ -4,6 +4,7 @@ import { AgencyBookingsTab } from "../components/agency/AgencyBookingsTab";
 import { AgencyDealsTab } from "../components/agency/AgencyDealsTab";
 import { AgencyDocumentsTab } from "../components/agency/AgencyDocumentsTab";
 import { AgencyPaymentTab } from "../components/agency/AgencyPaymentTab";
+import { AgencyServicesTab } from "../components/agency/AgencyServicesTab";
 import { AgencyTripGoTab } from "../components/agency/AgencyTripGoTab";
 import { AgencyLoginGate } from "../components/agency/AgencyLoginGate";
 import { NotificationBell } from "../components/notifications/NotificationBell";
@@ -11,7 +12,7 @@ import { fetchMyAgencyProfile, type AgencyProfile } from "../lib/agency";
 import { signOut, useAuth } from "../lib/auth";
 import { Button } from "../components/ui/Button";
 
-type Tab = "deals" | "tripgo" | "bookings" | "payments" | "documents";
+type Tab = "deals" | "tripgo" | "services" | "bookings" | "payments" | "documents";
 
 export function AgencyDashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -66,6 +67,7 @@ export function AgencyDashboardPage() {
   const tabs: { key: Tab; label: string }[] = [
     { key: "deals", label: "العروض" },
     { key: "tripgo", label: "🚐 TripGo" },
+    { key: "services", label: "خدماتي" },
     { key: "bookings", label: "الحجوزات" },
     { key: "payments", label: "الدفع/الحالة" },
     { key: "documents", label: "الوثائق والشهادات" },
@@ -107,6 +109,7 @@ export function AgencyDashboardPage() {
         <AgencyDealsTab agencyId={profile.agency_id!} key={`deals-${refreshKey}`} />
       ) : null}
       {tab === "tripgo" ? <AgencyTripGoTab agencyId={profile.agency_id!} key={`tripgo-${refreshKey}`} /> : null}
+      {tab === "services" ? <AgencyServicesTab agencyId={profile.agency_id!} key={`services-${refreshKey}`} /> : null}
       {tab === "bookings" ? (
         <AgencyBookingsTab
           agencyId={profile.agency_id!}
