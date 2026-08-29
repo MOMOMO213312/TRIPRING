@@ -63,6 +63,7 @@ export type CreateNotificationInput = {
   title: string;
   body: string;
   linkUrl?: string | null;
+  relatedDealId?: string | null;
   audience: NotificationRow["audience"];
   targetAgencyId?: string | null;
   targetAffiliateId?: string | null;
@@ -84,6 +85,7 @@ export async function createNotification(input: CreateNotificationInput): Promis
         title: input.title.trim(),
         body: input.body.trim(),
         link_url: input.linkUrl || null,
+        related_deal_id: input.relatedDealId || null,
         audience: input.audience,
         target_agency_id: input.targetAgencyId || null,
         target_affiliate_id: input.targetAffiliateId || null,

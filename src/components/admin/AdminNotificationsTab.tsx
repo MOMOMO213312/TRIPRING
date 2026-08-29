@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   createNotification,
@@ -10,8 +10,11 @@ import {
   NOTIFICATION_TYPE_LABELS,
   setNotificationStatus,
 } from "../../lib/notifications";
+import { fetchActiveDeals } from "../../lib/api";
+import { formatRouteCities } from "../../lib/deal-utils";
+import { formatPrice } from "../../lib/utils";
 import { friendlyErrorMessage } from "../../lib/errors";
-import type { NotificationRow } from "../../types/database";
+import type { DealRow, NotificationRow } from "../../types/database";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
@@ -41,6 +44,17 @@ const STATUS_BADGE: Record<NotificationRow["status"], string> = {
   sent: "bg-emerald-100 text-emerald-700",
   cancelled: "bg-red-100 text-red-700",
 };
+
+// Common destinations an admin links a non-deal announcement to (travel info,
+// a new section, a policy update) — saves typing/memorizing exact paths.
+const QUICK_LINK_OPTIONS: { value: string; label: string }[] = [
+  { value: "", label: "بدون رابط سريع (اكتب رابط يدوي تحت)" },
+  { value: "/deals", label: "صفحة العروض" },
+  { value: "/explore", label: "صفحة استكشف" },
+  { value: "/tripgo", label: "TripGo" },
+  { value: "/blue-friday", label: "بلاك فرايدي" },
+  { value: "/faq", label: "الأسئلة الشائعة" },
+];
 
 export function AdminNotificationsTab() {
   const [items, setItems] = useState<NotificationRow[]>([]);
@@ -152,6 +166,9 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [relatedDealId, setRelatedDealId] = useState<string | null>(null);
+  const [dealQuery, setDealQuery] = useState("");
+  const [activeDeals, setActiveDeals] = useState<DealRow[]>([]);
   const channels = ["in_site"] as NotificationRow["channels"];
   const [targetAgencyId, setTargetAgencyId] = useState("");
   const [targetAffiliateId, setTargetAffiliateId] = useState("");
@@ -166,7 +183,30 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
     if (!open) return;
     fetchAgenciesForTargeting().then(setAgencies).catch(() => {});
     fetchAffiliatesForTargeting().then(setAffiliates).catch(() => {});
+    // Small live set (no pagination needed at current scale) — lets the
+    // "اختر عرض" picker below filter client-side as the admin types,
+    // instead of round-tripping to Supabase on every keystroke.
+    fetchActiveDeals({ sort: "price_asc", availableOnly: true }).then(setActiveDeals).catch(() => {});
   }, [open]);
+
+  const dealMatches = useMemo(() => {
+    if (!dealQuery.trim()) return [];
+    const q = dealQuery.trim().toLowerCase();
+    return activeDeals
+      .filter(
+        (d) =>
+          d.from_airport.toLowerCase().includes(q) ||
+          d.to_airport.toLowerCase().includes(q) ||
+          `${d.from_airport}${d.to_airport}`.toLowerCase().includes(q),
+      )
+      .slice(0, 8);
+  }, [dealQuery, activeDeals]);
+
+  function pickDeal(d: DealRow) {
+    setRelatedDealId(d.id);
+    setLinkUrl(`/deals/${d.id}`);
+    setDealQuery(`${d.from_airport} → ${d.to_airport} · ${formatPrice(d.price, d.currency ?? "USD")}`);
+  }
 
   async function handleSubmit() {
     if (!title.trim() || !body.trim()) {
@@ -181,6 +221,7 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
         title,
         body,
         linkUrl: linkUrl || null,
+        relatedDealId,
         audience,
         targetAgencyId: audience === "specific_agency" ? targetAgencyId || null : null,
         targetAffiliateId: audience === "specific_affiliate" ? targetAffiliateId || null : null,
@@ -193,6 +234,8 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
       setTitle("");
       setBody("");
       setLinkUrl("");
+      setRelatedDealId(null);
+      setDealQuery("");
       setEndsAt("");
       onCreated();
     } catch (e) {
@@ -249,7 +292,64 @@ function CreateNotificationModal({ open, onClose, onCreated }: { open: boolean; 
             placeholder="تفاصيل الإشعار..."
           />
         </label>
-        <Input label="رابط (اختياري)" value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="/deals" />
+
+        {/* Where the notification takes the customer when they tap it —
+           either a specific deal (searched by route) or a common page.
+           Both just set linkUrl under the hood; picking a deal additionally
+           records relatedDealId for that deal's own reference. */}
+        <div className="space-y-2 rounded-xl border border-slate-200 p-3">
+          <p className="text-sm font-medium text-slate-700">وجهة الرابط (اختياري) — فين هياخد العميل لما يدوس؟</p>
+
+          {type === "flash_deal" ? (
+            <div className="space-y-1.5">
+              <Input
+                label="اختر عرض (اكتب كود مطار زي CAI أو RUH)"
+                value={dealQuery}
+                onChange={(e) => {
+                  setDealQuery(e.target.value);
+                  if (relatedDealId) setRelatedDealId(null);
+                }}
+                placeholder="مثال: CAI RUH"
+              />
+              {dealMatches.length > 0 ? (
+                <div className="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-slate-100 p-1">
+                  {dealMatches.map((d) => (
+                    <button
+                      key={d.id}
+                      type="button"
+                      onClick={() => pickDeal(d)}
+                      className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-start text-sm hover:bg-slate-50"
+                    >
+                      <span>{formatRouteCities(d, [])}</span>
+                      <span className="font-latin text-xs font-semibold text-[#0C7BB3]">
+                        {formatPrice(d.price, d.currency ?? "USD")}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              {relatedDealId ? <p className="text-xs text-emerald-600">✓ مربوط بعرض محدد — {linkUrl}</p> : null}
+            </div>
+          ) : (
+            <Select
+              label="صفحة سريعة"
+              options={QUICK_LINK_OPTIONS}
+              value={QUICK_LINK_OPTIONS.some((o) => o.value === linkUrl) ? linkUrl : ""}
+              onChange={(e) => setLinkUrl(e.target.value)}
+            />
+          )}
+
+          <Input
+            label="أو رابط يدوي"
+            value={linkUrl}
+            onChange={(e) => {
+              setLinkUrl(e.target.value);
+              setRelatedDealId(null);
+            }}
+            placeholder="/deals أو https://..."
+          />
+        </div>
+
         <Input label="تاريخ الانتهاء (اختياري)" type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} />
 
         <label className="flex items-center gap-1.5 text-sm">
