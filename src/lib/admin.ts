@@ -7,6 +7,7 @@ import type {
   BookingRow,
   DealRow,
   ProfileRow,
+  ProviderType,
   ResaleStatus,
 } from "../types/database";
 
@@ -49,6 +50,16 @@ export async function updateAgencyCommission(agencyId: string, commissionRate: n
   const { error } = await supabase
     .from("agencies")
     .update({ commission_rate: commissionRate } as never)
+    .eq("id", agencyId);
+  if (error) throw new Error(error.message);
+}
+
+/** Which service categories (provider_type) this agency is permitted to self-manage
+ *  from its own dashboard — see "خدماتي" tab / lib/serviceProviders.ts. */
+export async function updateAgencyAllowedCategories(agencyId: string, categories: ProviderType[]): Promise<void> {
+  const { error } = await supabase
+    .from("agencies")
+    .update({ allowed_categories: categories } as never)
     .eq("id", agencyId);
   if (error) throw new Error(error.message);
 }
