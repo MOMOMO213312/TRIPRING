@@ -319,12 +319,6 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
 
   return (
     <>
-      {/* One-way ticker stays pinned to the very top of the hero, in normal
-         document flow — kept OUTSIDE the hero photo's relatively-positioned
-         section below so the absolutely-positioned photo layer can never
-         overlap or cover it. */}
-      <OneWayFareBoard deals={deals} references={references} airports={airports} />
-
       <section className="relative overflow-hidden bg-[#F7F8FA]">
         <div className="absolute inset-0 h-[420px] sm:h-[460px]">
           <img
@@ -508,17 +502,30 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
           </div>
         </div>
 
-        {/* Round-trip ticker now takes the "LIVE DEALS" ticker's old spot,
-           directly under the search box — full-bleed like the one-way board
-           above, with a clear gap (mt-8) so it never visually crowds the
-           search card sitting right above it. Its own independent,
-           overflow-clipped container keeps the scrolling marquee (labels,
-           prices, indicator dot) fully contained even if the section above
-           it changes height — nothing here can bleed into the header or
-           hero photo. */}
+        {/* Single fare-board ticker, synced with the trip-type toggle above
+           instead of stacking both OneWayFareBoard and RoundTripFareBoard —
+           avoids showing two near-identical scrolling boards at once (and a
+           route with both OW and RT deals no longer appears twice). Keyed by
+           tripType so React remounts on switch, which combined with the
+           fade-in animation gives a soft crossfade instead of an abrupt
+           content swap. */}
         <div className="relative isolate z-0 mt-8 w-full overflow-hidden pb-6">
-          <RoundTripFareBoard deals={deals} references={references} airports={airports} />
+          {tripType === "round_trip" ? (
+            <div key="round_trip" className="animate-[fadeIn_0.25s_ease-out]">
+              <RoundTripFareBoard deals={deals} references={references} airports={airports} />
+            </div>
+          ) : (
+            <div key="one_way" className="animate-[fadeIn_0.25s_ease-out]">
+              <OneWayFareBoard deals={deals} references={references} airports={airports} />
+            </div>
+          )}
         </div>
+        <style>{`
+          @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+          }
+        `}</style>
       </section>
     </>
   );

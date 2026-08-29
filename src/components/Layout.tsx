@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { Footer } from "./Footer";
 import { AnnouncementTicker } from "./notifications/AnnouncementTicker";
+import { PublicNotificationBell } from "./notifications/PublicNotificationBell";
 
 const NAV_ITEMS = [
   { to: "/", label: "الرئيسية", match: (p: string, h: string) => p === "/" && !h },
@@ -74,6 +75,7 @@ export function Layout() {
 
           {/* Utility controls */}
           <div className="mr-auto flex items-center gap-2 md:mr-0">
+            <PublicNotificationBell />
             <div className="hidden items-center gap-2 text-xs md:flex">
               <button
                 type="button"
