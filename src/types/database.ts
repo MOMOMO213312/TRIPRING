@@ -50,6 +50,9 @@ export type NotificationStatus = "draft" | "scheduled" | "sent" | "cancelled";
 /** The standalone-service categories shown on the "استكشف" (Explore) page. */
 export type ServiceCategory = "transport" | "airport" | "baggage" | "destination" | "insurance";
 export type TransportType = "private" | "shared";
+/** Categories a service_providers row (and, by extension, an agency) can operate in. */
+export type ProviderType = "transport" | "tourism" | "insurance" | "ground_handling" | "airport";
+export type ServiceFulfillmentType = "affiliate" | "ground_handling" | "in_house";
 
 export interface Database {
   public: {
@@ -296,6 +299,7 @@ export interface Database {
           verification_status: "pending" | "verified" | "rejected";
           verified_at: string | null;
           verified_by: string | null;
+          allowed_categories: ProviderType[];
         };
         Insert: Omit<Database["public"]["Tables"]["agencies"]["Row"], "created_at"> & {
           created_at?: string;
@@ -331,11 +335,34 @@ export interface Database {
           price: number;
           category: ServiceCategory | null;
           is_active: boolean;
+          provider_id: string | null;
+          fulfillment_type: ServiceFulfillmentType;
         };
         Insert: Omit<Database["public"]["Tables"]["additional_services"]["Row"], "id"> & {
           id?: string;
         };
         Update: Partial<Database["public"]["Tables"]["additional_services"]["Row"]>;
+      };
+      service_providers: {
+        Row: {
+          id: string;
+          name: string;
+          provider_type: ProviderType;
+          phone: string | null;
+          whatsapp: string | null;
+          email: string | null;
+          commission_rate: number | null;
+          notes: string | null;
+          is_active: boolean;
+          created_at: string;
+          /** Set when this provider record is self-managed by one of our agency accounts. */
+          agency_id: string | null;
+        };
+        Insert: Omit<Database["public"]["Tables"]["service_providers"]["Row"], "id" | "created_at"> & {
+          id?: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["service_providers"]["Row"]>;
       };
       fare_package_tiers: {
         Row: {
@@ -728,6 +755,7 @@ export type AgencyRow = Tables<"agencies">;
 export type AffiliateRow = Tables<"affiliates">;
 export type BookingRow = Tables<"bookings">;
 export type AdditionalServiceRow = Tables<"additional_services">;
+export type ServiceProviderRow = Tables<"service_providers">;
 export type ServiceRequestRow = Tables<"service_requests">;
 export type DealPriceHistoryRow = Tables<"deal_price_history">;
 export type RoutePriceReferenceRow = Tables<"route_price_reference">;
