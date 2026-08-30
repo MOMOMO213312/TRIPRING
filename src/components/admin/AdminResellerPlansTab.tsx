@@ -73,6 +73,19 @@ export function AdminResellerPlansTab() {
     }
   }
 
+  async function saveDescription(plan: ResellerSubscriptionPlanRow, value: string) {
+    if (value === (plan.description ?? "")) return;
+    setBusyId(plan.id);
+    try {
+      await updateResellerPlan(plan.id, { description: value.trim() || null });
+      load();
+    } catch (e) {
+      setError(friendlyErrorMessage(e, "تعذر تحديث الوصف", "AdminResellerPlansTab.description"));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   const active = plans.filter((p) => p.is_active);
   const inactive = plans.filter((p) => !p.is_active);
 
@@ -92,7 +105,7 @@ export function AdminResellerPlansTab() {
       <div className="space-y-2">
         {plans.map((p) => (
           <Card key={p.id} className="flex flex-wrap items-center justify-between gap-3">
-            <div>
+            <div className="min-w-[220px] flex-1">
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-slate-900">{p.name}</p>
                 <Badge tone={p.is_active ? "empty_seat" : "default"}>{p.is_active ? "نشطة" : "متوقفة"}</Badge>
@@ -100,6 +113,13 @@ export function AdminResellerPlansTab() {
               <p className="text-xs text-slate-500">
                 {p.duration_days} يوم اشتراك · تتيح الوصول للسعر الرسمي بدون عمولة
               </p>
+              <textarea
+                defaultValue={p.description ?? ""}
+                placeholder="وصف الباقة (يظهر للأفلييت)"
+                rows={2}
+                className="mt-2 w-full rounded-lg border border-slate-200 px-2 py-1 text-xs text-slate-600"
+                onBlur={(e) => saveDescription(p, e.target.value)}
+              />
             </div>
             <div className="flex items-center gap-3">
               <label className="flex items-center gap-1.5 text-xs text-slate-600">
@@ -151,6 +171,7 @@ export function AdminResellerPlansTab() {
 
 function CreatePlanForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [durationDays, setDurationDays] = useState("30");
   const [saving, setSaving] = useState(false);
@@ -174,7 +195,12 @@ function CreatePlanForm({ onDone, onCancel }: { onDone: () => void; onCancel: ()
     setSaving(true);
     setError(null);
     try {
-      await createResellerPlan({ name: name.trim(), price: priceNum, durationDays: durationNum });
+      await createResellerPlan({
+        name: name.trim(),
+        description: description.trim() || null,
+        price: priceNum,
+        durationDays: durationNum,
+      });
       onDone();
     } catch (e) {
       setError(friendlyErrorMessage(e, "تعذر إنشاء الباقة", "AdminResellerPlansTab.create"));
@@ -185,6 +211,16 @@ function CreatePlanForm({ onDone, onCancel }: { onDone: () => void; onCancel: ()
   return (
     <div className="space-y-3">
       <Input label="اسم الباقة" value={name} onChange={(e) => setName(e.target.value)} placeholder="مثلاً: شهري" />
+      <div>
+        <label className="mb-1 block text-sm font-medium text-slate-700">وصف الباقة (اختياري)</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="يظهر للأفلييت وقت اختيار الباقة"
+          rows={2}
+          className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+        />
+      </div>
       <Input label="السعر" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
       <Input
         label="المدة بالأيام"

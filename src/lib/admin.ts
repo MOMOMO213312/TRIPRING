@@ -2,6 +2,8 @@ import { getCurrentUser } from "./auth";
 import { supabase } from "./supabase";
 import type { TicketResaleRow } from "./api";
 import type {
+  AffiliateResellerSubscriptionRow,
+  AffiliateRow,
   AgencyRow,
   AgencyVerificationDocument,
   BookingRow,
@@ -10,6 +12,7 @@ import type {
   ProviderType,
   ResaleStatus,
   ResellerSubscriptionPlanRow,
+  ResellerSubscriptionStatus,
 } from "../types/database";
 
 const AGENCY_DOC_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
@@ -275,6 +278,7 @@ export async function fetchResellerPlans(): Promise<ResellerSubscriptionPlanRow[
 
 export async function createResellerPlan(input: {
   name: string;
+  description?: string | null;
   price: number;
   durationDays: number;
 }): Promise<ResellerSubscriptionPlanRow> {
@@ -283,6 +287,7 @@ export async function createResellerPlan(input: {
     .insert([
       {
         name: input.name.trim(),
+        description: input.description?.trim() || null,
         price: input.price,
         duration_days: input.durationDays,
         is_active: true,
@@ -296,11 +301,81 @@ export async function createResellerPlan(input: {
 
 export async function updateResellerPlan(
   planId: string,
-  patch: Partial<Pick<ResellerSubscriptionPlanRow, "name" | "price" | "duration_days" | "is_active">>,
+  patch: Partial<Pick<ResellerSubscriptionPlanRow, "name" | "description" | "price" | "duration_days" | "is_active">>,
 ): Promise<void> {
   const { error } = await supabase.from("reseller_subscription_plans").update(patch as never).eq("id", planId);
   if (error) throw new Error(error.message);
 }
+
+// ── Affiliate reseller subscriptions review (net-price program) ────────────
+export async function fetchResellerSubscriptionQueue(
+  statuses?: ResellerSubscriptionStatus[],
+): Promise<AffiliateResellerSubscriptionRow[]> {
+  let query = supabase
+    .from("affiliate_reseller_subscriptions")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (statuses?.length) query = query.in("status", statuses);
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AffiliateResellerSubscriptionRow[];
+}
+
+/** Cross-referenced client-side (this codebase has no relational .select()
+ *  joins anywhere) so the review tab can show who's asking and for what plan. */
+export async function fetchAffiliatesByIds(ids: string[]): Promise<AffiliateRow[]> {
+  if (!ids.length) return [];
+  const { data, error } = await supabase.from("affiliates").select("*").in("id", ids);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AffiliateRow[];
+}
+
+export async function fetchProfileNamesByIds(
+  ids: string[],
+): Promise<Pick<ProfileRow, "id" | "full_name" | "phone">[]> {
+  if (!ids.length) return [];
+  const { data, error } = await supabase.from("profiles").select("id,full_name,phone").in("id", ids);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Pick<ProfileRow, "id" | "full_name" | "phone">[];
+}
+
+export async function activateResellerSubscription(subscriptionId: string, durationDays: number): Promise<void> {
+  const user = await getCurrentUser();
+  const startsAt = new Date();
+  const endsAt = new Date(startsAt.getTime() + durationDays * 24 * 60 * 60 * 1000);
+  const { error } = await supabase
+    .from("affiliate_reseller_subscriptions")
+    .update({
+      status: "active",
+      starts_at: startsAt.toISOString(),
+      ends_at: endsAt.toISOString(),
+      verified_by: user?.id ?? null,
+      verified_at: new Date().toISOString(),
+    } as never)
+    .eq("id", subscriptionId);
+  if (error) throw new Error(error.message);
+}
+
+export async function rejectResellerSubscription(subscriptionId: string): Promise<void> {
+  const user = await getCurrentUser();
+  const { error } = await supabase
+    .from("affiliate_reseller_subscriptions")
+    .update({
+      status: "rejected",
+      verified_by: user?.id ?? null,
+      verified_at: new Date().toISOString(),
+    } as never)
+    .eq("id", subscriptionId);
+  if (error) throw new Error(error.message);
+}
+
+export const RESELLER_SUBSCRIPTION_STATUS_LABELS: Record<ResellerSubscriptionStatus, string> = {
+  pending_payment: "بانتظار المراجعة",
+  active: "نشط",
+  expired: "منتهي",
+  rejected: "مرفوض",
+  cancelled: "ملغي",
+};
 
 export const RESALE_STATUS_LABELS: Record<ResaleStatus, string> = {
   submitted: "بانتظار المراجعة",
