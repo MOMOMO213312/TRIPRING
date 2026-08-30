@@ -9,6 +9,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { fetchAirports } from "../lib/api";
 import { affiliateReferralLink, affiliateTierLabel, fetchMyAffiliateProfile, resellerSubscriptionIsActive } from "../lib/affiliate";
+import { signOut } from "../lib/auth";
 import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { friendlyErrorMessage } from "../lib/errors";
 import { whatsAppLink } from "../lib/utils";
@@ -85,8 +86,11 @@ function AffiliateBody() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end gap-2">
         <NotificationBell />
+        <Button variant="outline" onClick={() => signOut().then(() => window.location.reload())}>
+          تسجيل الخروج
+        </Button>
       </div>
 
       <div className="flex gap-2 rounded-xl bg-slate-100 p-1">
