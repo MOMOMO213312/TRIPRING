@@ -83,6 +83,8 @@ export type CreateBookingInput = {
    *  customer picked one. The server looks up the markup% itself from
    *  fare_package_tiers and charges that — this is only which tier was chosen. */
   farePackageTier?: string | null;
+  /** Instant TripGo private-car add-on (see lib/tripgo.ts) — a transport_zones.id, if the customer picked a pickup zone. */
+  transportZoneId?: string | null;
 };
 
 export type CreateBookingResult = {
@@ -507,6 +509,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     p_travelers: travelers as never,
     p_services: input.services,
     p_fare_package_tier: input.farePackageTier ?? null,
+    p_transport_zone_id: input.transportZoneId ?? null,
   };
   const { data, error } = await supabase.rpc("create_booking", args as never);
   if (error) throw new Error(error.message);

@@ -5,6 +5,7 @@ import type {
   BookingTravelerInput,
   PaymentMethod,
   TransportType,
+  TransportZoneRow,
   TripGoBookingResult,
   TripGoBundleJoined,
   TripGoDealRow,
@@ -235,5 +236,71 @@ export async function updateTripGoBookingStatus(
   status: BookingStatus,
 ): Promise<void> {
   const { error } = await supabase.from("tripgo_bookings").update({ status } as never).eq("id", tripgoBookingId);
+  if (error) throw new Error(error.message);
+}
+
+// ── Instant TripGo (private-car, priced by pickup zone — Uber-style) ────
+//
+// Independent of the tripgo_deals/tripgo_bundles model above (which stays
+// Swvl-style: pre-scheduled shared/private inventory an agency links to one
+// specific flight deal). A `transport_zone` is a flat add-on price an agency
+// sets per departure airport + area name (e.g. "مدينة نصر" +1000ج). Any of
+// that agency's ACTIVE flight deals departing from that airport can then
+// have the zone applied at booking time via create_booking's
+// p_transport_zone_id — no pre-created inventory or capacity involved, so
+// this also works unmodified once deals start coming from a live
+// Amadeus/Duffel search instead of an agency-typed row.
+
+export async function fetchAgencyTransportZones(agencyId: string): Promise<TransportZoneRow[]> {
+  const { data, error } = await supabase
+    .from("transport_zones")
+    .select("*")
+    .eq("agency_id", agencyId)
+    .order("airport_code", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as TransportZoneRow[];
+}
+
+/** Zones a customer can pick from for a given deal (matched by that deal's owning agency + departure airport). */
+export async function fetchZonesForDeal(agencyId: string, fromAirport: string): Promise<TransportZoneRow[]> {
+  const { data, error } = await supabase
+    .from("transport_zones")
+    .select("*")
+    .eq("agency_id", agencyId)
+    .eq("airport_code", fromAirport)
+    .eq("is_active", true)
+    .order("price_addon", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as TransportZoneRow[];
+}
+
+export type TransportZoneFormInput = {
+  airportCode: string;
+  zoneName: string;
+  priceAddon: number;
+  currency: string;
+};
+
+export async function createTransportZone(agencyId: string, input: TransportZoneFormInput): Promise<void> {
+  const { error } = await supabase.from("transport_zones").insert([
+    {
+      agency_id: agencyId,
+      airport_code: input.airportCode.toUpperCase(),
+      zone_name: input.zoneName,
+      price_addon: input.priceAddon,
+      currency: input.currency,
+      is_active: true,
+    },
+  ] as never);
+  if (error) throw new Error(error.message);
+}
+
+export async function setTransportZoneActive(zoneId: string, isActive: boolean): Promise<void> {
+  const { error } = await supabase.from("transport_zones").update({ is_active: isActive } as never).eq("id", zoneId);
+  if (error) throw new Error(error.message);
+}
+
+export async function deleteTransportZone(zoneId: string): Promise<void> {
+  const { error } = await supabase.from("transport_zones").delete().eq("id", zoneId);
   if (error) throw new Error(error.message);
 }

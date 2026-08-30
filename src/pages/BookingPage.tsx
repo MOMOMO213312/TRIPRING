@@ -16,9 +16,10 @@ import { classifyService, dedupeByKey, packagePrice, usePackageOptions } from ".
 import type { PackageTier, ServiceKey } from "../lib/packages";
 import { RECOMMENDED_SERVICE_KEYS, serviceDisplayLabel } from "../lib/servicePackages";
 import { friendlyErrorMessage } from "../lib/errors";
+import { fetchZonesForDeal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
 import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
-import type { AdditionalServiceRow, DealRow, PaymentMethod } from "../types/database";
+import type { AdditionalServiceRow, DealRow, PaymentMethod, TransportZoneRow } from "../types/database";
 
 type DealSelectionState = {
   selectedPackage?: PackageTier;
@@ -56,6 +57,8 @@ export function BookingPage() {
     { full_name: "", date_of_birth: "", passport_number: "", nationality: "EG", traveler_type: "adult" },
   ]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
+  const [transportZones, setTransportZones] = useState<TransportZoneRow[]>([]);
+  const [selectedZoneId, setSelectedZoneId] = useState<string>("");
   const packageOptions = usePackageOptions();
 
   useEffect(() => {
@@ -67,6 +70,15 @@ export function BookingPage() {
         if (!d) {
           setError("العرض غير متاح");
           return;
+        }
+        // Instant TripGo (private-car pickup priced by zone) — only offered
+        // when the deal's own agency has configured zones for its departure
+        // airport. Silently empty otherwise; this is a bonus add-on, not a
+        // blocker on the booking flow.
+        if (d.agency_id && d.from_airport) {
+          fetchZonesForDeal(d.agency_id, d.from_airport)
+            .then(setTransportZones)
+            .catch(() => setTransportZones([]));
         }
         // Pre-check the extra add-on services the customer picked on the deal-detail
         // page. Services already bundled for free inside the chosen package are
@@ -155,6 +167,11 @@ export function BookingPage() {
     return packagePrice(deal.price, pkg) - deal.price;
   }
 
+  function zonePrice(): number {
+    if (!selectedZoneId) return 0;
+    return transportZones.find((z) => z.id === selectedZoneId)?.price_addon ?? 0;
+  }
+
   function estimatedTotal(): number {
     if (!deal) return 0;
     // Must mirror the server's handle_new_booking trigger exactly: when a
@@ -166,7 +183,7 @@ export function BookingPage() {
       deal.price * adults +
       (deal.child_price ?? deal.price) * children +
       (deal.infant_price ?? 0) * infants;
-    return base + packageMarkup() + servicesTotal();
+    return base + packageMarkup() + servicesTotal() + zonePrice();
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -258,6 +275,7 @@ export function BookingPage() {
         travelers: travelerPayload,
         services: servicePayload,
         farePackageTier: selectedPackage,
+        transportZoneId: selectedZoneId || undefined,
       });
       setLastBooking(result.booking_number, customerPhone || customerEmail || "");
       navigate("/confirmation", {
@@ -398,6 +416,47 @@ export function BookingPage() {
           </Card>
         ) : null}
 
+        {transportZones.length > 0 ? (
+          <Card className="space-y-3">
+            <h2 className="font-bold">🚗 TripGo الفوري — عربية خاصة تجيبك من مكانك (اختياري)</h2>
+            <p className="text-sm text-slate-600">اختار منطقتك وهيتحسب سعر العربية تلقائيًا فوق سعر التذكرة.</p>
+            <div className="space-y-2">
+              <label
+                className={`block cursor-pointer rounded-xl border p-3 ${
+                  selectedZoneId === "" ? "border-accent bg-[#E5F4FB]" : "border-slate-200"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="transport_zone"
+                  checked={selectedZoneId === ""}
+                  onChange={() => setSelectedZoneId("")}
+                  className="me-2"
+                />
+                <span className="font-semibold">بدون نقل — هدبر مواصلاتي بنفسي</span>
+              </label>
+              {transportZones.map((z) => (
+                <label
+                  key={z.id}
+                  className={`block cursor-pointer rounded-xl border p-3 ${
+                    selectedZoneId === z.id ? "border-accent bg-[#E5F4FB]" : "border-slate-200"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="transport_zone"
+                    checked={selectedZoneId === z.id}
+                    onChange={() => setSelectedZoneId(z.id)}
+                    className="me-2"
+                  />
+                  <span className="font-semibold">{z.zone_name}</span>
+                  <span className="text-slate-600"> — +{formatPrice(z.price_addon, z.currency)}</span>
+                </label>
+              ))}
+            </div>
+          </Card>
+        ) : null}
+
         <Card className="space-y-4">
           <h2 className="font-bold">الملخص وطريقة الدفع</h2>
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
@@ -425,6 +484,15 @@ export function BookingPage() {
                   {packageOptions.find((p) => p.id === selectedPackage)?.label}
                   {" · "}
                   {formatPrice(packagePrice(deal.price, packageOptions.find((p) => p.id === selectedPackage)!), deal.currency ?? "USD")}
+                </dd>
+              </div>
+            ) : null}
+            {selectedZoneId ? (
+              <div className="flex justify-between">
+                <dt className="text-slate-500">TripGo (نقل)</dt>
+                <dd className="font-semibold">
+                  {transportZones.find((z) => z.id === selectedZoneId)?.zone_name} ·{" "}
+                  {formatPrice(zonePrice(), deal.currency ?? "USD")}
                 </dd>
               </div>
             ) : null}

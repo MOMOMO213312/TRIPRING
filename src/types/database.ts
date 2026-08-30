@@ -446,6 +446,9 @@ export interface Database {
           package_price: number | null;
           fare_package_tier: string | null;
           fare_package_markup: number | null;
+          tripgo_bundle_id: string | null;
+          tripgo_transport_price: number | null;
+          transport_zone_id: string | null;
         };
         Insert: Partial<Database["public"]["Tables"]["bookings"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["bookings"]["Row"]>;
@@ -600,6 +603,22 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["tripgo_deals"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["tripgo_deals"]["Row"]>;
+      };
+      transport_zones: {
+        Row: {
+          id: string;
+          agency_id: string;
+          airport_code: string;
+          zone_name: string;
+          price_addon: number;
+          currency: string;
+          is_active: boolean;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["transport_zones"]["Row"]>;
+        Update: Partial<Database["public"]["Tables"]["transport_zones"]["Row"]>;
       };
       tripgo_bundles: {
         Row: {
@@ -781,6 +800,7 @@ export interface Database {
           p_services: Json;
           p_package_id?: string | null;
           p_fare_package_tier?: string | null;
+          p_transport_zone_id?: string | null;
         };
         Returns: {
           booking_number: number | string;
@@ -860,6 +880,7 @@ export type NotificationRow = Tables<"notifications">;
 export type NotificationReadRow = Tables<"notification_reads">;
 export type NotificationDeliveryRow = Tables<"notification_deliveries">;
 export type TripGoDealRow = Tables<"tripgo_deals">;
+export type TransportZoneRow = Tables<"transport_zones">;
 export type TripGoBundleRow = Tables<"tripgo_bundles">;
 export type TripGoBookingRow = Tables<"tripgo_bookings">;
 export type ResellerSubscriptionPlanRow = Tables<"reseller_subscription_plans">;

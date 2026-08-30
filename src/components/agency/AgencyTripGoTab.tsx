@@ -1,23 +1,35 @@
 import { useEffect, useState } from "react";
 
 import {
+  createTransportZone,
   createTripGoBundle,
   createTripGoDeal,
+  deleteTransportZone,
   deleteTripGoBundle,
+  fetchAgencyTransportZones,
   fetchAgencyTripGoBundles,
   fetchAgencyTripGoDeals,
+  setTransportZoneActive,
   setTripGoDealStatus,
   transferKindLabel,
+  type TransportZoneFormInput,
   type TripGoDealFormInput,
 } from "../../lib/tripgo";
 import { fetchAgencyDeals } from "../../lib/agency";
 import { formatPrice } from "../../lib/utils";
-import type { DealRow, TripGoBundleJoined, TripGoDealRow } from "../../types/database";
+import type { DealRow, TransportZoneRow, TripGoBundleJoined, TripGoDealRow } from "../../types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Select } from "../ui/Select";
+
+const BLANK_ZONE_FORM: TransportZoneFormInput = {
+  airportCode: "",
+  zoneName: "",
+  priceAddon: 0,
+  currency: "EGP",
+};
 
 const BLANK_FORM: TripGoDealFormInput = {
   transportType: "private",
@@ -36,15 +48,20 @@ const BLANK_FORM: TripGoDealFormInput = {
 };
 
 export function AgencyTripGoTab({ agencyId }: { agencyId: string }) {
-  const [section, setSection] = useState<"deals" | "bundles">("deals");
+  const [section, setSection] = useState<"deals" | "bundles" | "zones">("deals");
   const [tripgoDeals, setTripgoDeals] = useState<TripGoDealRow[]>([]);
   const [bundles, setBundles] = useState<TripGoBundleJoined[]>([]);
   const [flightDeals, setFlightDeals] = useState<DealRow[]>([]);
+  const [zones, setZones] = useState<TransportZoneRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<TripGoDealFormInput>(BLANK_FORM);
   const [submitting, setSubmitting] = useState(false);
+
+  // Instant zone (private-car add-on) management
+  const [showZoneForm, setShowZoneForm] = useState(false);
+  const [zoneForm, setZoneForm] = useState<TransportZoneFormInput>(BLANK_ZONE_FORM);
 
   // Bundle creation
   const [bundleDealId, setBundleDealId] = useState("");
@@ -55,14 +72,16 @@ export function AgencyTripGoTab({ agencyId }: { agencyId: string }) {
     setLoading(true);
     setError(null);
     try {
-      const [td, b, fd] = await Promise.all([
+      const [td, b, fd, z] = await Promise.all([
         fetchAgencyTripGoDeals(agencyId),
         fetchAgencyTripGoBundles(agencyId),
         fetchAgencyDeals(agencyId),
+        fetchAgencyTransportZones(agencyId),
       ]);
       setTripgoDeals(td);
       setBundles(b);
       setFlightDeals(fd.filter((d) => d.status === "active"));
+      setZones(z);
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر تحميل بيانات TripGo");
     } finally {
@@ -128,6 +147,43 @@ export function AgencyTripGoTab({ agencyId }: { agencyId: string }) {
     }
   }
 
+  async function handleCreateZone() {
+    if (!zoneForm.airportCode.trim() || !zoneForm.zoneName.trim()) {
+      setError("اختر المطار واكتب اسم المنطقة");
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      await createTransportZone(agencyId, zoneForm);
+      setZoneForm(BLANK_ZONE_FORM);
+      setShowZoneForm(false);
+      await reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر إنشاء المنطقة");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function toggleZoneActive(zone: TransportZoneRow) {
+    try {
+      await setTransportZoneActive(zone.id, !zone.is_active);
+      await reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر تحديث المنطقة");
+    }
+  }
+
+  async function handleDeleteZone(zoneId: string) {
+    try {
+      await deleteTransportZone(zoneId);
+      await reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "تعذر حذف المنطقة");
+    }
+  }
+
   const activeTripgoDeals = tripgoDeals.filter((d) => d.status === "active");
 
   if (loading) return <div className="py-10 text-center text-sm text-slate-500">جاري التحميل...</div>;
@@ -154,6 +210,15 @@ export function AgencyTripGoTab({ agencyId }: { agencyId: string }) {
           }`}
         >
           باقات TripGo (تذكرة + نقل)
+        </button>
+        <button
+          type="button"
+          onClick={() => setSection("zones")}
+          className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+            section === "zones" ? "bg-[#0C7BB3] text-white" : "text-slate-600 hover:bg-slate-50"
+          }`}
+        >
+          🚗 TripGo الفوري (مناطق)
         </button>
       </div>
 
@@ -255,7 +320,7 @@ export function AgencyTripGoTab({ agencyId }: { agencyId: string }) {
             )}
           </div>
         </div>
-      ) : (
+      ) : section === "bundles" ? (
         <div className="space-y-4">
           <Card className="space-y-3">
             <p className="text-sm font-semibold text-slate-700">إنشاء باقة (ربط عرض رحلة بعرض نقل)</p>
@@ -317,7 +382,84 @@ export function AgencyTripGoTab({ agencyId }: { agencyId: string }) {
             )}
           </div>
         </div>
-      )}
+      ) : null}
+
+      {section === "zones" ? (
+        <div className="space-y-4">
+          <p className="text-sm text-slate-600">
+            عربية خاصة فورية لأي عرض رحلة نشط عندك — من غير جدولة أو سعة مسبقة. حدد سعر إضافي ثابت لكل منطقة
+            انطلاق، وهيظهر للعميل كخيار وقت الحجز على أي رحلة مغادرة من نفس المطار.
+          </p>
+          {!showZoneForm ? (
+            <Button onClick={() => setShowZoneForm(true)}>+ إضافة منطقة جديدة</Button>
+          ) : (
+            <Card className="space-y-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input
+                  label="مطار المغادرة (كود)"
+                  placeholder="مثال: CAI"
+                  value={zoneForm.airportCode}
+                  onChange={(e) => setZoneForm({ ...zoneForm, airportCode: e.target.value.toUpperCase() })}
+                />
+                <Input
+                  label="اسم المنطقة"
+                  placeholder="مثال: مدينة نصر"
+                  value={zoneForm.zoneName}
+                  onChange={(e) => setZoneForm({ ...zoneForm, zoneName: e.target.value })}
+                />
+                <Input
+                  label="السعر الإضافي"
+                  type="number"
+                  min={0}
+                  value={zoneForm.priceAddon}
+                  onChange={(e) => setZoneForm({ ...zoneForm, priceAddon: Number(e.target.value) })}
+                />
+                <Input
+                  label="العملة"
+                  value={zoneForm.currency}
+                  onChange={(e) => setZoneForm({ ...zoneForm, currency: e.target.value.toUpperCase() })}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button onClick={handleCreateZone} disabled={submitting}>
+                  {submitting ? "جاري الحفظ..." : "حفظ المنطقة"}
+                </Button>
+                <Button variant="outline" onClick={() => setShowZoneForm(false)}>
+                  إلغاء
+                </Button>
+              </div>
+            </Card>
+          )}
+
+          <div className="space-y-3">
+            {zones.length === 0 ? (
+              <p className="py-8 text-center text-sm text-slate-500">لا توجد مناطق بعد</p>
+            ) : (
+              zones.map((z) => (
+                <Card key={z.id} className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-slate-900">
+                        {z.airport_code} · {z.zone_name}
+                      </span>
+                      <Badge tone={z.is_active ? "empty_seat" : "urgent"}>{z.is_active ? "نشط" : "متوقف"}</Badge>
+                    </div>
+                    <p className="text-sm text-slate-600">+{formatPrice(z.price_addon, z.currency)}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant={z.is_active ? "secondary" : "primary"} onClick={() => toggleZoneActive(z)}>
+                      {z.is_active ? "إيقاف" : "تفعيل"}
+                    </Button>
+                    <Button variant="secondary" onClick={() => handleDeleteZone(z.id)}>
+                      حذف
+                    </Button>
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
