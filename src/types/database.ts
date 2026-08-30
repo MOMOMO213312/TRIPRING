@@ -700,7 +700,8 @@ export interface Database {
           adults_count: number;
           children_count: number;
           infants_count: number;
-          status: "draft" | "confirmed" | "cancelled";
+          status: "draft" | "pending_admin_review" | "booking_created" | "rejected" | "cancelled";
+          booking_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -726,6 +727,14 @@ export interface Database {
           p_infants_count: number;
         };
         Returns: string;
+      };
+      admin_convert_resale_order_to_booking: {
+        Args: { p_resale_order_id: string };
+        Returns: { booking_number: number; total_price: number; currency: string; status: BookingStatus }[];
+      };
+      admin_reject_resale_order: {
+        Args: { p_resale_order_id: string; p_reason?: string | null };
+        Returns: undefined;
       };
       create_tripgo_booking: {
         Args: {

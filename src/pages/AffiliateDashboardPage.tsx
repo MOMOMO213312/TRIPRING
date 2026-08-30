@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { AuthGate } from "../components/AuthGate";
 import { ResellerDealBrowser } from "../components/affiliate/ResellerDealBrowser";
+import { ResellerOrdersHistory } from "../components/affiliate/ResellerOrdersHistory";
 import { ResellerSubscriptionCard } from "../components/affiliate/ResellerSubscriptionCard";
 import { NotificationBell } from "../components/notifications/NotificationBell";
 import { Button } from "../components/ui/Button";
@@ -158,6 +159,7 @@ function ResellerProgramTab({ affiliateId }: { affiliateId: string }) {
   const [activeSub, setActiveSub] = useState<AffiliateResellerSubscriptionRow | null>(null);
   const [airports, setAirports] = useState<AirportRow[]>([]);
   const [airportsError, setAirportsError] = useState<string | null>(null);
+  const [ordersRefreshKey, setOrdersRefreshKey] = useState(0);
 
   useEffect(() => {
     fetchAirports()
@@ -178,7 +180,13 @@ function ResellerProgramTab({ affiliateId }: { affiliateId: string }) {
         airportsError ? (
           <p className="text-sm text-red-600">{airportsError}</p>
         ) : (
-          <ResellerDealBrowser airports={airports} />
+          <>
+            <ResellerOrdersHistory key={ordersRefreshKey} affiliateId={affiliateId} />
+            <ResellerDealBrowser
+              airports={airports}
+              onOrderCreated={() => setOrdersRefreshKey((k) => k + 1)}
+            />
+          </>
         )
       ) : null}
     </div>

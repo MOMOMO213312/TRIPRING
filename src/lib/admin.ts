@@ -2,6 +2,7 @@ import { getCurrentUser } from "./auth";
 import { supabase } from "./supabase";
 import type { TicketResaleRow } from "./api";
 import type {
+  AffiliateResaleOrderRow,
   AffiliateResellerSubscriptionRow,
   AffiliateRow,
   AgencyRow,
@@ -368,6 +369,51 @@ export async function rejectResellerSubscription(subscriptionId: string): Promis
     .eq("id", subscriptionId);
   if (error) throw new Error(error.message);
 }
+
+// ── Affiliate resale orders review (net-price program: sell → real booking) ─
+// A resale order is the affiliate's promise of a sale at their own sell_price;
+// it only becomes a real, ticketable booking once an admin approves it here —
+// the affiliate never issues a ticket themselves.
+export async function fetchResaleOrderQueue(
+  statuses?: AffiliateResaleOrderRow["status"][],
+): Promise<AffiliateResaleOrderRow[]> {
+  let query = supabase.from("affiliate_resale_orders").select("*").order("created_at", { ascending: false });
+  if (statuses?.length) query = query.in("status", statuses);
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AffiliateResaleOrderRow[];
+}
+
+/** Approves the resale order: creates the real booking at the affiliate's
+ *  sell_price, credits the affiliate's commission (handled by a DB trigger),
+ *  and flips the order to booking_created. Admin still issues the ticket
+ *  afterwards from the normal Bookings tab, same as any other booking. */
+export async function adminConvertResaleOrderToBooking(
+  resaleOrderId: string,
+): Promise<{ booking_number: number; total_price: number; currency: string; status: string }> {
+  const { data, error } = await supabase.rpc("admin_convert_resale_order_to_booking", {
+    p_resale_order_id: resaleOrderId,
+  } as never);
+  if (error) throw new Error(error.message);
+  const row = Array.isArray(data) ? data[0] : data;
+  return row as { booking_number: number; total_price: number; currency: string; status: string };
+}
+
+export async function adminRejectResaleOrder(resaleOrderId: string, reason?: string): Promise<void> {
+  const { error } = await supabase.rpc("admin_reject_resale_order", {
+    p_resale_order_id: resaleOrderId,
+    p_reason: reason ?? null,
+  } as never);
+  if (error) throw new Error(error.message);
+}
+
+export const RESALE_ORDER_STATUS_LABELS: Record<AffiliateResaleOrderRow["status"], string> = {
+  draft: "مسودة",
+  pending_admin_review: "بانتظار المراجعة",
+  booking_created: "تم إنشاء الحجز",
+  rejected: "مرفوض",
+  cancelled: "ملغي",
+};
 
 export const RESELLER_SUBSCRIPTION_STATUS_LABELS: Record<ResellerSubscriptionStatus, string> = {
   pending_payment: "بانتظار المراجعة",

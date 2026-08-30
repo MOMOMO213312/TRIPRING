@@ -4,6 +4,7 @@ import { AdminAgenciesTab } from "../components/admin/AdminAgenciesTab";
 import { AdminBookingsTab } from "../components/admin/AdminBookingsTab";
 import { AdminNotificationsTab } from "../components/admin/AdminNotificationsTab";
 import { AdminResaleTab } from "../components/admin/AdminResaleTab";
+import { AdminResellerOrdersTab } from "../components/admin/AdminResellerOrdersTab";
 import { AdminResellerPlansTab } from "../components/admin/AdminResellerPlansTab";
 import { AdminResellerSubscriptionsTab } from "../components/admin/AdminResellerSubscriptionsTab";
 import { AgencyLoginGate } from "../components/agency/AgencyLoginGate";
@@ -13,7 +14,14 @@ import { fetchMyAdminProfile } from "../lib/admin";
 import { signOut, useAuth } from "../lib/auth";
 import type { ProfileRow } from "../types/database";
 
-type Tab = "agencies" | "bookings" | "resale" | "notifications" | "reseller_plans" | "reseller_subscriptions";
+type Tab =
+  | "agencies"
+  | "bookings"
+  | "resale"
+  | "notifications"
+  | "reseller_plans"
+  | "reseller_subscriptions"
+  | "reseller_orders";
 
 export function AdminDashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -73,6 +81,7 @@ export function AdminDashboardPage() {
     { key: "notifications", label: "الإشعارات" },
     { key: "reseller_plans", label: "باقات الأفلييت" },
     { key: "reseller_subscriptions", label: "مراجعة اشتراكات الأفلييت" },
+    { key: "reseller_orders", label: "طلبات بيع الأفلييت" },
   ];
 
   return (
@@ -111,6 +120,7 @@ export function AdminDashboardPage() {
       {tab === "notifications" ? <AdminNotificationsTab /> : null}
       {tab === "reseller_plans" ? <AdminResellerPlansTab /> : null}
       {tab === "reseller_subscriptions" ? <AdminResellerSubscriptionsTab /> : null}
+      {tab === "reseller_orders" ? <AdminResellerOrdersTab /> : null}
     </div>
   );
 }

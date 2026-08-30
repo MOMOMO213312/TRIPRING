@@ -159,6 +159,14 @@ export async function createAffiliateResaleOrder(input: {
   return data as string;
 }
 
+export const RESALE_ORDER_STATUS_LABELS: Record<AffiliateResaleOrderRow["status"], string> = {
+  draft: "مسودة",
+  pending_admin_review: "بانتظار المراجعة",
+  booking_created: "تم إنشاء الحجز",
+  rejected: "مرفوض",
+  cancelled: "ملغي",
+};
+
 export async function fetchMyResaleOrders(affiliateId: string): Promise<AffiliateResaleOrderRow[]> {
   const { data, error } = await supabase
     .from("affiliate_resale_orders")

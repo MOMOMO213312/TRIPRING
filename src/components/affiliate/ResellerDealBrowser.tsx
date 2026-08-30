@@ -21,7 +21,13 @@ const RESELLER_MAX_MARKUP_RATE = 0.15;
  *  price and their max allowed sell price, and register a resale order for
  *  their own customer. Only rendered once the affiliate has a valid active
  *  reseller subscription (gated by the parent). */
-export function ResellerDealBrowser({ airports }: { airports: AirportRow[] }) {
+export function ResellerDealBrowser({
+  airports,
+  onOrderCreated,
+}: {
+  airports: AirportRow[];
+  onOrderCreated?: () => void;
+}) {
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +43,14 @@ export function ResellerDealBrowser({ airports }: { airports: AirportRow[] }) {
   }, []);
 
   if (selectedDeal) {
-    return <ResellerSellForm deal={selectedDeal} airports={airports} onBack={() => setSelectedDeal(null)} />;
+    return (
+      <ResellerSellForm
+        deal={selectedDeal}
+        airports={airports}
+        onBack={() => setSelectedDeal(null)}
+        onOrderCreated={onOrderCreated}
+      />
+    );
   }
 
   return (
@@ -94,10 +107,12 @@ function ResellerSellForm({
   deal,
   airports,
   onBack,
+  onOrderCreated,
 }: {
   deal: DealRow;
   airports: AirportRow[];
   onBack: () => void;
+  onOrderCreated?: () => void;
 }) {
   const [netPrice, setNetPrice] = useState<number | null>(null);
   const [loadingPrice, setLoadingPrice] = useState(true);
@@ -158,6 +173,7 @@ function ResellerSellForm({
         infantsCount,
       });
       setDone(orderId);
+      onOrderCreated?.();
     } catch (e) {
       setSubmitError(friendlyErrorMessage(e, "تعذر تسجيل الطلب", "ResellerSellForm.submit"));
     } finally {
