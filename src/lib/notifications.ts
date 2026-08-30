@@ -137,6 +137,7 @@ export const NOTIFICATION_TYPE_LABELS: Record<NotificationRow["type"], string> =
   circular: "تعميم/إجراء جديد",
   agency_bulletin: "نشرة داخلية للوكالات",
   affiliate_bulletin: "نشرة داخلية للأفلييت",
+  admin_alert: "إشعار نظام للأدمن",
 };
 
 export const NOTIFICATION_AUDIENCE_LABELS: Record<NotificationRow["audience"], string> = {
@@ -145,6 +146,7 @@ export const NOTIFICATION_AUDIENCE_LABELS: Record<NotificationRow["audience"], s
   affiliates: "كل الأفلييت",
   specific_agency: "وكالة معينة",
   specific_affiliate: "أفلييت معين",
+  admins: "الأدمن (تلقائي من النظام)",
 };
 
 export const NOTIFICATION_STATUS_LABELS: Record<NotificationStatus, string> = {

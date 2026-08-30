@@ -43,8 +43,15 @@ export type NotificationType =
   | "airport_info"
   | "circular"
   | "agency_bulletin"
-  | "affiliate_bulletin";
-export type NotificationAudience = "all_public" | "agencies" | "affiliates" | "specific_agency" | "specific_affiliate";
+  | "affiliate_bulletin"
+  | "admin_alert";
+export type NotificationAudience =
+  | "all_public"
+  | "agencies"
+  | "affiliates"
+  | "specific_agency"
+  | "specific_affiliate"
+  | "admins";
 export type NotificationChannel = "in_site" | "email" | "whatsapp";
 export type NotificationStatus = "draft" | "scheduled" | "sent" | "cancelled";
 /** The standalone-service categories shown on the "استكشف" (Explore) page. */
