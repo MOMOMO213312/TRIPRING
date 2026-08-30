@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 
 import { AuthGate } from "../components/AuthGate";
+import { ResellerDealBrowser } from "../components/affiliate/ResellerDealBrowser";
+import { ResellerSubscriptionCard } from "../components/affiliate/ResellerSubscriptionCard";
 import { NotificationBell } from "../components/notifications/NotificationBell";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
-import { affiliateReferralLink, affiliateTierLabel, fetchMyAffiliateProfile } from "../lib/affiliate";
+import { fetchAirports } from "../lib/api";
+import { affiliateReferralLink, affiliateTierLabel, fetchMyAffiliateProfile, resellerSubscriptionIsActive } from "../lib/affiliate";
 import { PLATFORM_WHATSAPP } from "../lib/constants";
+import { friendlyErrorMessage } from "../lib/errors";
 import { whatsAppLink } from "../lib/utils";
-import type { AffiliateRow } from "../types/database";
+import type { AffiliateResellerSubscriptionRow, AffiliateRow, AirportRow } from "../types/database";
 
 export function AffiliateDashboardPage() {
   return (
@@ -28,6 +32,7 @@ function AffiliateBody() {
   const [affiliate, setAffiliate] = useState<AffiliateRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<"referral" | "reseller">("referral");
 
   useEffect(() => {
     let cancelled = false;
@@ -82,41 +87,100 @@ function AffiliateBody() {
       <div className="flex justify-end">
         <NotificationBell />
       </div>
-      <Card>
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-bold text-slate-900">رابط الإحالة بتاعك</p>
-          <span className="font-latin rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">
-            {affiliateTierLabel(affiliate.tier)}
-          </span>
-        </div>
-        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-          <input
-            readOnly
-            value={link}
-            className="font-latin flex-1 truncate rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700"
-          />
-          <Button onClick={copyLink}>{copied ? "✓ اتنسخ" : "نسخ الرابط"}</Button>
-        </div>
-        {!affiliate.is_active ? (
-          <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
-            حسابك موقوف مؤقتًا — كلّم الدعم لو محتاج تفعيله تاني.
-          </p>
-        ) : null}
-      </Card>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <StatCard label="نسبة العمولة" value={`${Math.round(affiliate.commission_rate * 100)}%`} />
-        <StatCard label="حجوزات محالة" value={String(affiliate.total_referred_bookings)} />
-        <StatCard label="إجمالي الأرباح" value={`$${affiliate.total_earned}`} highlight />
+      <div className="flex gap-2 rounded-xl bg-slate-100 p-1">
+        <button
+          type="button"
+          onClick={() => setTab("referral")}
+          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+            tab === "referral" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+          }`}
+        >
+          برنامج الإحالة
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab("reseller")}
+          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+            tab === "reseller" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+          }`}
+        >
+          برنامج السعر الرسمي
+        </button>
       </div>
 
-      <Card>
-        <h3 className="font-bold text-slate-900">إزاي تكسب أكتر؟</h3>
-        <ul className="mt-3 space-y-2 text-sm text-slate-600">
-          <li>شارك رابطك مع أصحابك — كل حجز بيتم من خلاله بيديك عمولة.</li>
-          <li>كل ما رصيدك يزيد، الـ tier بترقّى تلقائيًا وعمولتك تزيد معاها.</li>
-        </ul>
-      </Card>
+      {tab === "referral" ? (
+        <div className="space-y-6">
+          <Card>
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold text-slate-900">رابط الإحالة بتاعك</p>
+              <span className="font-latin rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">
+                {affiliateTierLabel(affiliate.tier)}
+              </span>
+            </div>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <input
+                readOnly
+                value={link}
+                className="font-latin flex-1 truncate rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-700"
+              />
+              <Button onClick={copyLink}>{copied ? "✓ اتنسخ" : "نسخ الرابط"}</Button>
+            </div>
+            {!affiliate.is_active ? (
+              <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700">
+                حسابك موقوف مؤقتًا — كلّم الدعم لو محتاج تفعيله تاني.
+              </p>
+            ) : null}
+          </Card>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <StatCard label="نسبة العمولة" value={`${Math.round(affiliate.commission_rate * 100)}%`} />
+            <StatCard label="حجوزات محالة" value={String(affiliate.total_referred_bookings)} />
+            <StatCard label="إجمالي الأرباح" value={`$${affiliate.total_earned}`} highlight />
+          </div>
+
+          <Card>
+            <h3 className="font-bold text-slate-900">إزاي تكسب أكتر؟</h3>
+            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+              <li>شارك رابطك مع أصحابك — كل حجز بيتم من خلاله بيديك عمولة.</li>
+              <li>كل ما رصيدك يزيد، الـ tier بترقّى تلقائيًا وعمولتك تزيد معاها.</li>
+            </ul>
+          </Card>
+        </div>
+      ) : (
+        <ResellerProgramTab affiliateId={affiliate.id} />
+      )}
+    </div>
+  );
+}
+
+function ResellerProgramTab({ affiliateId }: { affiliateId: string }) {
+  const [activeSub, setActiveSub] = useState<AffiliateResellerSubscriptionRow | null>(null);
+  const [airports, setAirports] = useState<AirportRow[]>([]);
+  const [airportsError, setAirportsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchAirports()
+      .then(setAirports)
+      .catch((e) => setAirportsError(friendlyErrorMessage(e, "تعذر تحميل بيانات المطارات", "ResellerProgramTab.airports")));
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <ResellerSubscriptionCard
+        affiliateId={affiliateId}
+        onSubscriptionActive={(sub) => {
+          if (resellerSubscriptionIsActive(sub)) setActiveSub(sub);
+        }}
+      />
+
+      {activeSub ? (
+        airportsError ? (
+          <p className="text-sm text-red-600">{airportsError}</p>
+        ) : (
+          <ResellerDealBrowser airports={airports} />
+        )
+      ) : null}
     </div>
   );
 }
