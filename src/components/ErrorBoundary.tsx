@@ -1,5 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
+import { Sentry } from "../lib/sentry";
+
 /**
  * Catches render-time exceptions anywhere below it in the tree and shows a
  * recoverable Arabic error screen instead of an unhandled white screen.
@@ -19,10 +21,8 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // Intentionally just console.error for now — there's no error-tracking
-    // service (Sentry etc.) wired into the project yet (also flagged in
-    // the audit as a gap). Swap/extend this once one is added.
     console.error("[ErrorBoundary] caught render error:", error, info.componentStack);
+    Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
   }
 
   private reset = () => {

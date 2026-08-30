@@ -15,11 +15,14 @@
  * (See audit: raw DB/network errors were leaking onto the deal-detail,
  * booking, and price-alert screens.)
  */
+import { Sentry } from "./sentry";
+
 const ARABIC_RE = /[\u0600-\u06FF]/;
 
 export function friendlyErrorMessage(e: unknown, fallback: string, context: string): string {
   const raw = e instanceof Error ? e.message : String(e);
   if (raw && ARABIC_RE.test(raw)) return raw;
   console.error(`[${context}]`, e);
+  Sentry.captureException(e instanceof Error ? e : new Error(raw), { tags: { context } });
   return fallback;
 }
