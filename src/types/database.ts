@@ -53,6 +53,7 @@ export type TransportType = "private" | "shared";
 /** Categories a service_providers row (and, by extension, an agency) can operate in. */
 export type ProviderType = "transport" | "tourism" | "insurance" | "ground_handling" | "airport";
 export type ServiceFulfillmentType = "affiliate" | "ground_handling" | "in_house";
+export type ResellerSubscriptionStatus = "pending_payment" | "active" | "expired" | "rejected" | "cancelled";
 
 export interface Database {
   public: {
@@ -647,9 +648,84 @@ export interface Database {
         Insert: Partial<Database["public"]["Tables"]["tripgo_booking_status_log"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["tripgo_booking_status_log"]["Row"]>;
       };
+      reseller_subscription_plans: {
+        Row: {
+          id: string;
+          name: string;
+          price: number;
+          duration_days: number;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["reseller_subscription_plans"]["Row"]> & {
+          name: string;
+          price: number;
+          duration_days: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["reseller_subscription_plans"]["Row"]>;
+      };
+      affiliate_reseller_subscriptions: {
+        Row: {
+          id: string;
+          affiliate_id: string;
+          plan_id: string;
+          status: ResellerSubscriptionStatus;
+          starts_at: string | null;
+          ends_at: string | null;
+          payment_method: PaymentMethod | null;
+          payment_proof_url: string | null;
+          payment_ref: string | null;
+          verified_by: string | null;
+          verified_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["affiliate_reseller_subscriptions"]["Row"]> & {
+          affiliate_id: string;
+          plan_id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["affiliate_reseller_subscriptions"]["Row"]>;
+      };
+      affiliate_resale_orders: {
+        Row: {
+          id: string;
+          affiliate_id: string;
+          deal_id: string;
+          net_price_snapshot: number;
+          sell_price: number;
+          customer_name: string;
+          customer_phone: string;
+          customer_email: string | null;
+          adults_count: number;
+          children_count: number;
+          infants_count: number;
+          status: "draft" | "confirmed" | "cancelled";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["affiliate_resale_orders"]["Row"]>;
+        Update: Partial<Database["public"]["Tables"]["affiliate_resale_orders"]["Row"]>;
+      };
     };
     Views: Record<string, never>;
     Functions: {
+      get_reseller_net_price: {
+        Args: { p_deal_id: string };
+        Returns: number;
+      };
+      create_affiliate_resale_order: {
+        Args: {
+          p_deal_id: string;
+          p_sell_price: number;
+          p_customer_name: string;
+          p_customer_phone: string;
+          p_customer_email?: string | null;
+          p_adults_count: number;
+          p_children_count: number;
+          p_infants_count: number;
+        };
+        Returns: string;
+      };
       create_tripgo_booking: {
         Args: {
           p_deal_id: string;
@@ -734,6 +810,7 @@ export interface Database {
       notification_channel: NotificationChannel;
       notification_status: NotificationStatus;
       transport_type: TransportType;
+      reseller_subscription_status: ResellerSubscriptionStatus;
     };
   };
 }
@@ -768,6 +845,9 @@ export type NotificationDeliveryRow = Tables<"notification_deliveries">;
 export type TripGoDealRow = Tables<"tripgo_deals">;
 export type TripGoBundleRow = Tables<"tripgo_bundles">;
 export type TripGoBookingRow = Tables<"tripgo_bookings">;
+export type ResellerSubscriptionPlanRow = Tables<"reseller_subscription_plans">;
+export type AffiliateResellerSubscriptionRow = Tables<"affiliate_reseller_subscriptions">;
+export type AffiliateResaleOrderRow = Tables<"affiliate_resale_orders">;
 
 /** A bundle joined with its flight deal and transport deal — the shape TripGo browsing/booking works with. */
 export type TripGoBundleJoined = TripGoBundleRow & {

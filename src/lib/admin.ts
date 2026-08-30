@@ -9,6 +9,7 @@ import type {
   ProfileRow,
   ProviderType,
   ResaleStatus,
+  ResellerSubscriptionPlanRow,
 } from "../types/database";
 
 const AGENCY_DOC_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
@@ -257,6 +258,47 @@ export async function updateResaleReview(
       verified_by: user?.id ?? null,
     } as never)
     .eq("id", resaleId);
+  if (error) throw new Error(error.message);
+}
+
+// ── Reseller subscription plans (net-price affiliate program) ──────────────
+// Separate from the referral-commission affiliate system above: these plans
+// are what an affiliate pays for to unlock get_reseller_net_price() access.
+export async function fetchResellerPlans(): Promise<ResellerSubscriptionPlanRow[]> {
+  const { data, error } = await supabase
+    .from("reseller_subscription_plans")
+    .select("*")
+    .order("price", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ResellerSubscriptionPlanRow[];
+}
+
+export async function createResellerPlan(input: {
+  name: string;
+  price: number;
+  durationDays: number;
+}): Promise<ResellerSubscriptionPlanRow> {
+  const { data, error } = await supabase
+    .from("reseller_subscription_plans")
+    .insert([
+      {
+        name: input.name.trim(),
+        price: input.price,
+        duration_days: input.durationDays,
+        is_active: true,
+      },
+    ] as never)
+    .select("*")
+    .single();
+  if (error) throw new Error(error.message);
+  return data as ResellerSubscriptionPlanRow;
+}
+
+export async function updateResellerPlan(
+  planId: string,
+  patch: Partial<Pick<ResellerSubscriptionPlanRow, "name" | "price" | "duration_days" | "is_active">>,
+): Promise<void> {
+  const { error } = await supabase.from("reseller_subscription_plans").update(patch as never).eq("id", planId);
   if (error) throw new Error(error.message);
 }
 

@@ -4,6 +4,7 @@ import { AdminAgenciesTab } from "../components/admin/AdminAgenciesTab";
 import { AdminBookingsTab } from "../components/admin/AdminBookingsTab";
 import { AdminNotificationsTab } from "../components/admin/AdminNotificationsTab";
 import { AdminResaleTab } from "../components/admin/AdminResaleTab";
+import { AdminResellerPlansTab } from "../components/admin/AdminResellerPlansTab";
 import { AgencyLoginGate } from "../components/agency/AgencyLoginGate";
 import { NotificationBell } from "../components/notifications/NotificationBell";
 import { Button } from "../components/ui/Button";
@@ -11,7 +12,7 @@ import { fetchMyAdminProfile } from "../lib/admin";
 import { signOut, useAuth } from "../lib/auth";
 import type { ProfileRow } from "../types/database";
 
-type Tab = "agencies" | "bookings" | "resale" | "notifications";
+type Tab = "agencies" | "bookings" | "resale" | "notifications" | "reseller_plans";
 
 export function AdminDashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -69,6 +70,7 @@ export function AdminDashboardPage() {
     { key: "bookings", label: "كل الحجوزات" },
     { key: "resale", label: "مراجعة إعادة البيع" },
     { key: "notifications", label: "الإشعارات" },
+    { key: "reseller_plans", label: "باقات الأفلييت" },
   ];
 
   return (
@@ -105,6 +107,7 @@ export function AdminDashboardPage() {
       {tab === "bookings" ? <AdminBookingsTab /> : null}
       {tab === "resale" ? <AdminResaleTab /> : null}
       {tab === "notifications" ? <AdminNotificationsTab /> : null}
+      {tab === "reseller_plans" ? <AdminResellerPlansTab /> : null}
     </div>
   );
 }
