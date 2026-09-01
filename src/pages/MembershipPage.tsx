@@ -1,6 +1,8 @@
-import { AuthGate } from "../components/AuthGate";
 import { MembershipSubscriptionCard } from "../components/customer/MembershipSubscriptionCard";
 
+// Browsing the tiers and prices needs no account — MembershipSubscriptionCard
+// only asks the customer to sign in right before the final submit, since
+// that's the step that actually writes a row tied to their account.
 export function MembershipPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -9,7 +11,7 @@ export function MembershipPage() {
         <p className="mt-1 text-slate-600">خصومات على الحجوزات، خدمات مجانية، وأولوية في إشعارات الفرص.</p>
       </div>
 
-      <AuthGate title="سجّل الدخول عشان تشترك في عضوية TRIPRING">{() => <MembershipSubscriptionCard />}</AuthGate>
+      <MembershipSubscriptionCard />
     </div>
   );
 }

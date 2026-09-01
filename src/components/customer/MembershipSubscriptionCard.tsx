@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { AuthGate } from "../AuthGate";
 import {
   CUSTOMER_SUBSCRIPTION_STATUS_LABELS,
   expireDueSubscriptions,
@@ -234,9 +235,16 @@ function SubscribeForm({ onDone }: { onDone: () => void }) {
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-      <Button type="button" fullWidth disabled={submitting} onClick={submit}>
-        {submitting ? "جاري الإرسال..." : "إرسال طلب الاشتراك"}
-      </Button>
+      {/* Browsing tiers and filling the form needs no account — only the
+       *  final submit does, since it writes a row under the signed-in
+       *  customer's id. */}
+      <AuthGate title="سجّل الدخول عشان تكمل الاشتراك" description="اختيارك للباقة وبيانات الدفع محفوظة، سجّل دخولك أو اعمل حساب عشان نبعت الطلب.">
+        {() => (
+          <Button type="button" fullWidth disabled={submitting} onClick={submit}>
+            {submitting ? "جاري الإرسال..." : "إرسال طلب الاشتراك"}
+          </Button>
+        )}
+      </AuthGate>
     </Card>
   );
 }
