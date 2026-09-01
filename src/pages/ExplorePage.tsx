@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
@@ -151,6 +152,33 @@ export function ExplorePage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">استكمل رحلتك عبر TripRing بخدمات إضافية أو باقات متكاملة</h1>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <Link
+          to="/blue-friday"
+          className="flex items-center gap-3 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 p-4 transition hover:border-blue-400"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-lg text-white">
+            🔵
+          </span>
+          <span>
+            <span className="block font-bold text-slate-900">الجمعة السماوي</span>
+            <span className="block text-xs text-slate-500">خصومات لحد 33% على الطيران — كل جمعة</span>
+          </span>
+        </Link>
+        <Link
+          to="/membership"
+          className="flex items-center gap-3 rounded-2xl border-2 border-dashed border-[#0C7BB3]/30 bg-[#0C7BB3]/5 p-4 transition hover:border-[#0C7BB3]"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#0C7BB3] text-lg text-white">
+            👑
+          </span>
+          <span>
+            <span className="block font-bold text-slate-900">عضوية TRIPRING</span>
+            <span className="block text-xs text-slate-500">خصومات دائمة + خدمات مجانية + أولوية إشعارات</span>
+          </span>
+        </Link>
       </div>
 
       {/* Section switcher */}
