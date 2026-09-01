@@ -115,7 +115,7 @@ export function TravelToSection({ airports, imageCache, references, fromAirport 
             >
               {fromOptions.map((code) => (
                 <option key={code} value={code}>
-                  {airportByCode.get(code)?.city ?? code} ({code})
+                  {airportByCode.get(code)?.name ?? code} ({code})
                 </option>
               ))}
             </select>
