@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { AdvancedFilters, DurationBucket } from "../lib/filters";
+import type { AdvancedFilters, DurationBucket, TimeSlot } from "../lib/filters";
 import { EMPTY_FILTERS } from "../lib/filters";
 import { formatPrice } from "../lib/utils";
 import { REGIONS } from "../lib/regions";
@@ -18,6 +18,13 @@ const DURATION_OPTIONS: { value: DurationBucket; label: string }[] = [
   { value: "short", label: "أقل من 5 ساعات" },
   { value: "medium", label: "من 5 إلى 10 ساعات" },
   { value: "long", label: "أكثر من 10 ساعات" },
+];
+
+const TIME_SLOT_OPTIONS: { value: TimeSlot; label: string; icon: string }[] = [
+  { value: "6am_12pm", label: "6 ص - 12 م", icon: "☀️" },
+  { value: "before_6am", label: "قبل 6 ص", icon: "🌙" },
+  { value: "6pm_midnight", label: "6 م - منتصف الليل", icon: "🌙" },
+  { value: "12pm_6pm", label: "12 م - 6 م", icon: "🌤️" },
 ];
 
 type Props = {
@@ -192,6 +199,22 @@ export function DealsSidebarFilters({
         </div>
       </FilterSection>
 
+      <FilterSection title="مواعيد رحلة المغادرة">
+        <TimeSlotGrid
+          selected={filters.departureSlot}
+          onSelect={(slot) =>
+            onChange({ ...filters, departureSlot: filters.departureSlot === slot ? null : slot })
+          }
+        />
+      </FilterSection>
+
+      <FilterSection title="مواعيد رحلة الوصول">
+        <TimeSlotGrid
+          selected={filters.arrivalSlot}
+          onSelect={(slot) => onChange({ ...filters, arrivalSlot: filters.arrivalSlot === slot ? null : slot })}
+        />
+      </FilterSection>
+
       <FilterSection title="شروط التذكرة">
         <div className="space-y-2">
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
@@ -275,6 +298,36 @@ function FilterSection({ title, children }: { title: string; children: React.Rea
     <div className="border-t border-slate-100 pt-4 first:border-0 first:pt-0">
       <p className="mb-2.5 text-sm font-semibold text-slate-800">{title}</p>
       {children}
+    </div>
+  );
+}
+
+function TimeSlotGrid({
+  selected,
+  onSelect,
+}: {
+  selected: TimeSlot | null;
+  onSelect: (slot: TimeSlot) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {TIME_SLOT_OPTIONS.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onSelect(opt.value)}
+          className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-center text-[11px] font-semibold transition ${
+            selected === opt.value
+              ? "border-[#0C7BB3] bg-[#E5F4FB] text-[#0C7BB3]"
+              : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+          }`}
+        >
+          <span aria-hidden className="text-base">
+            {opt.icon}
+          </span>
+          {opt.label}
+        </button>
+      ))}
     </div>
   );
 }
