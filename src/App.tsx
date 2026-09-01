@@ -43,6 +43,9 @@ const HomePage = lazy(() =>
 const MyTripsPage = lazy(() =>
   import("./pages/MyTripsPage").then((m) => ({ default: m.MyTripsPage })),
 );
+const MembershipPage = lazy(() =>
+  import("./pages/MembershipPage").then((m) => ({ default: m.MembershipPage })),
+);
 const PrivacyPage = lazy(() =>
   import("./pages/PrivacyPage").then((m) => ({ default: m.PrivacyPage })),
 );
@@ -92,6 +95,7 @@ export default function App() {
               <Route path="book/:dealId" element={<BookingPage />} />
               <Route path="confirmation" element={<ConfirmationPage />} />
               <Route path="my-trips" element={<MyTripsPage />} />
+              <Route path="membership" element={<MembershipPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="resale" element={<TicketResalePage />} />
               <Route path="agency" element={<AgencyDashboardPage />} />

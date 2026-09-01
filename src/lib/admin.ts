@@ -8,7 +8,10 @@ import type {
   AgencyRow,
   AgencyVerificationDocument,
   BookingRow,
+  CustomerSubscriptionRow,
   DealRow,
+  MembershipTierRow,
+  PaidMembershipTier,
   ProfileRow,
   ProviderType,
   ResaleStatus,
@@ -413,6 +416,83 @@ export const RESALE_ORDER_STATUS_LABELS: Record<AffiliateResaleOrderRow["status"
   booking_created: "تم إنشاء الحجز",
   rejected: "مرفوض",
   cancelled: "ملغي",
+};
+
+// ── Customer membership tiers (Basic/Smart/Premium) ─────────────────────────
+export async function fetchMembershipTiers(): Promise<MembershipTierRow[]> {
+  const { data, error } = await supabase.from("membership_tiers").select("*").order("price_monthly", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as MembershipTierRow[];
+}
+
+export async function updateMembershipTier(
+  tierId: string,
+  patch: Partial<
+    Pick<
+      MembershipTierRow,
+      "name" | "description" | "price_monthly" | "price_yearly" | "discount_percentage" | "priority_minutes" | "is_active"
+    >
+  >,
+): Promise<void> {
+  const { error } = await supabase.from("membership_tiers").update(patch as never).eq("id", tierId);
+  if (error) throw new Error(error.message);
+}
+
+// ── Customer subscriptions review ───────────────────────────────────────────
+export async function fetchCustomerSubscriptionQueue(
+  statuses?: ResellerSubscriptionStatus[],
+): Promise<CustomerSubscriptionRow[]> {
+  let query = supabase.from("customer_subscriptions").select("*").order("created_at", { ascending: false });
+  if (statuses?.length) query = query.in("status", statuses);
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return (data ?? []) as CustomerSubscriptionRow[];
+}
+
+/** duration is derived from billing_period: 30 days (monthly) or 365 (yearly). */
+export async function activateCustomerSubscription(subscriptionId: string, billingPeriod: "monthly" | "yearly"): Promise<void> {
+  const user = await getCurrentUser();
+  const startsAt = new Date();
+  const days = billingPeriod === "yearly" ? 365 : 30;
+  const endsAt = new Date(startsAt.getTime() + days * 24 * 60 * 60 * 1000);
+  const { error } = await supabase
+    .from("customer_subscriptions")
+    .update({
+      status: "active",
+      starts_at: startsAt.toISOString(),
+      ends_at: endsAt.toISOString(),
+      verified_by: user?.id ?? null,
+      verified_at: new Date().toISOString(),
+    } as never)
+    .eq("id", subscriptionId);
+  if (error) throw new Error(error.message);
+}
+
+export async function rejectCustomerSubscription(subscriptionId: string): Promise<void> {
+  const user = await getCurrentUser();
+  const { error } = await supabase
+    .from("customer_subscriptions")
+    .update({
+      status: "rejected",
+      verified_by: user?.id ?? null,
+      verified_at: new Date().toISOString(),
+    } as never)
+    .eq("id", subscriptionId);
+  if (error) throw new Error(error.message);
+}
+
+export const CUSTOMER_SUBSCRIPTION_STATUS_LABELS: Record<ResellerSubscriptionStatus, string> = {
+  pending_payment: "بانتظار المراجعة",
+  active: "نشط",
+  expired: "منتهي",
+  rejected: "مرفوض",
+  cancelled: "ملغي",
+};
+
+export const MEMBERSHIP_TIER_LABELS: Record<PaidMembershipTier, string> = {
+  basic: "Basic",
+  smart: "Smart",
+  premium: "Premium",
 };
 
 export const RESELLER_SUBSCRIPTION_STATUS_LABELS: Record<ResellerSubscriptionStatus, string> = {

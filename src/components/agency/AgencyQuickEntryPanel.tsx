@@ -45,7 +45,9 @@ const CURRENCY_OPTIONS = ["USD", "EGP", "SAR", "AED", "QAR", "KWD", "EUR", "GBP"
 
 const MEMBERSHIP_OPTIONS = [
   { value: "free", label: "مجاني" },
-  { value: "premium", label: "بريميوم" },
+  { value: "basic", label: "Basic" },
+  { value: "smart", label: "Smart" },
+  { value: "premium", label: "Premium" },
 ];
 
 const BOOL_OPTIONS = [

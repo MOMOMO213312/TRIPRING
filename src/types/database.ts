@@ -18,7 +18,9 @@ export type BookingStatus =
   | "paid"
   | "ticket_issued"
   | "cancelled";
-export type MembershipTier = "free" | "premium";
+export type MembershipTier = "free" | "basic" | "smart" | "premium";
+export type PaidMembershipTier = "basic" | "smart" | "premium";
+export type BillingPeriod = "monthly" | "yearly";
 export type ResaleStatus =
   | "submitted"
   | "under_review"
@@ -717,6 +719,53 @@ export interface Database {
         };
         Update: Partial<Database["public"]["Tables"]["affiliate_reseller_subscriptions"]["Row"]>;
       };
+      membership_tiers: {
+        Row: {
+          id: string;
+          tier: PaidMembershipTier;
+          name: string;
+          description: string | null;
+          price_monthly: number;
+          price_yearly: number;
+          discount_percentage: number;
+          included_service_ids: string[];
+          priority_minutes: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["membership_tiers"]["Row"]> & {
+          tier: PaidMembershipTier;
+          name: string;
+          price_monthly: number;
+          price_yearly: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["membership_tiers"]["Row"]>;
+      };
+      customer_subscriptions: {
+        Row: {
+          id: string;
+          customer_id: string;
+          tier_id: string;
+          billing_period: BillingPeriod;
+          status: ResellerSubscriptionStatus;
+          starts_at: string | null;
+          ends_at: string | null;
+          payment_method: PaymentMethod | null;
+          payment_proof_url: string | null;
+          payment_ref: string | null;
+          verified_by: string | null;
+          verified_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<Database["public"]["Tables"]["customer_subscriptions"]["Row"]> & {
+          customer_id: string;
+          tier_id: string;
+          billing_period: BillingPeriod;
+        };
+        Update: Partial<Database["public"]["Tables"]["customer_subscriptions"]["Row"]>;
+      };
       affiliate_resale_orders: {
         Row: {
           id: string;
@@ -852,6 +901,7 @@ export interface Database {
       notification_status: NotificationStatus;
       transport_type: TransportType;
       reseller_subscription_status: ResellerSubscriptionStatus;
+      billing_period: BillingPeriod;
     };
   };
 }
@@ -889,6 +939,8 @@ export type TripGoBundleRow = Tables<"tripgo_bundles">;
 export type TripGoBookingRow = Tables<"tripgo_bookings">;
 export type ResellerSubscriptionPlanRow = Tables<"reseller_subscription_plans">;
 export type AffiliateResellerSubscriptionRow = Tables<"affiliate_reseller_subscriptions">;
+export type MembershipTierRow = Tables<"membership_tiers">;
+export type CustomerSubscriptionRow = Tables<"customer_subscriptions">;
 export type AffiliateResaleOrderRow = Tables<"affiliate_resale_orders">;
 
 /** A bundle joined with its flight deal and transport deal — the shape TripGo browsing/booking works with. */

@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { to: "/deals", label: "العروض", match: (p: string) => p.startsWith("/deals") },
   { to: "/explore", label: "اكتشف", match: (p: string) => p.startsWith("/explore") },
   { to: "/tripgo", label: "tripgo", match: (p: string) => p.startsWith("/tripgo") },
+  { to: "/membership", label: "الاشتراك", match: (p: string) => p.startsWith("/membership") },
 ];
 
 export function Layout() {

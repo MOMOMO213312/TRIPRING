@@ -142,7 +142,7 @@ export type DealFormInput = {
   extraBaggagePrice?: number | null;
   baseFare?: number | null;
   taxesFees?: number | null;
-  minMembershipTier?: "free" | "premium";
+  minMembershipTier?: "free" | "basic" | "smart" | "premium";
   tripTypes?: string[];
   isFeatured?: boolean;
 };
@@ -205,7 +205,7 @@ export const DEAL_IMPORT_EXTRA_COLUMNS = [
 
 const DEAL_TYPES: DealRow["deal_type"][] = ["flash", "last_minute", "empty_seat", "special_fare"];
 const STOP_TYPES: DealRow["stops"][] = ["direct", "one_stop", "multi_stop"];
-const MEMBERSHIP_TIERS = ["free", "premium"] as const;
+const MEMBERSHIP_TIERS = ["free", "basic", "smart", "premium"] as const;
 const TRIP_TYPES = [
   "beach", "city", "adventure", "business", "family",
   "religious", "shopping", "nature", "ski", "honeymoon",
@@ -362,11 +362,14 @@ export function parseDealImportRows(
     }
 
     const minMembershipTierRaw = String(get("min_membership_tier") ?? "free").trim();
-    if (get("min_membership_tier") && !MEMBERSHIP_TIERS.includes(minMembershipTierRaw as "free" | "premium")) {
-      rowErrors.push(`min_membership_tier "${minMembershipTierRaw}" غير صحيح (free/premium)`);
+    if (
+      get("min_membership_tier") &&
+      !MEMBERSHIP_TIERS.includes(minMembershipTierRaw as "free" | "basic" | "smart" | "premium")
+    ) {
+      rowErrors.push(`min_membership_tier "${minMembershipTierRaw}" غير صحيح (free/basic/smart/premium)`);
     }
     const minMembershipTier = (MEMBERSHIP_TIERS as readonly string[]).includes(minMembershipTierRaw)
-      ? (minMembershipTierRaw as "free" | "premium")
+      ? (minMembershipTierRaw as "free" | "basic" | "smart" | "premium")
       : "free";
 
     const tripTypesRaw = String(get("trip_types") ?? "").trim();

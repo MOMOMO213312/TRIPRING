@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { AdminAgenciesTab } from "../components/admin/AdminAgenciesTab";
 import { AdminBookingsTab } from "../components/admin/AdminBookingsTab";
+import { AdminCustomerSubscriptionsTab } from "../components/admin/AdminCustomerSubscriptionsTab";
+import { AdminMembershipTiersTab } from "../components/admin/AdminMembershipTiersTab";
 import { AdminNotificationsTab } from "../components/admin/AdminNotificationsTab";
 import { AdminResaleTab } from "../components/admin/AdminResaleTab";
 import { AdminResellerOrdersTab } from "../components/admin/AdminResellerOrdersTab";
@@ -21,7 +23,9 @@ type Tab =
   | "notifications"
   | "reseller_plans"
   | "reseller_subscriptions"
-  | "reseller_orders";
+  | "reseller_orders"
+  | "membership_tiers"
+  | "customer_subscriptions";
 
 export function AdminDashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -82,6 +86,8 @@ export function AdminDashboardPage() {
     { key: "reseller_plans", label: "باقات الأفلييت" },
     { key: "reseller_subscriptions", label: "مراجعة اشتراكات الأفلييت" },
     { key: "reseller_orders", label: "طلبات بيع الأفلييت" },
+    { key: "membership_tiers", label: "باقات الاشتراك" },
+    { key: "customer_subscriptions", label: "مراجعة اشتراكات العملاء" },
   ];
 
   return (
@@ -121,6 +127,8 @@ export function AdminDashboardPage() {
       {tab === "reseller_plans" ? <AdminResellerPlansTab /> : null}
       {tab === "reseller_subscriptions" ? <AdminResellerSubscriptionsTab /> : null}
       {tab === "reseller_orders" ? <AdminResellerOrdersTab /> : null}
+      {tab === "membership_tiers" ? <AdminMembershipTiersTab /> : null}
+      {tab === "customer_subscriptions" ? <AdminCustomerSubscriptionsTab /> : null}
     </div>
   );
 }
