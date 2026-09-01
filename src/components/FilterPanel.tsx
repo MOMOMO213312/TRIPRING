@@ -1,5 +1,5 @@
 import { EMPTY_FILTERS } from "../lib/filters";
-import type { AdvancedFilters } from "../lib/filters";
+import type { AdvancedFilters, TimeSlot } from "../lib/filters";
 import { dealTypeLabel } from "../lib/deal-utils";
 import type { AirlineRow, DealType, StopType } from "../types/database";
 import { Button } from "./ui/Button";
@@ -16,6 +16,12 @@ const EXPIRY_OPTIONS = [
   { value: 48, label: "خلال 48 ساعة" },
 ];
 const DEAL_TYPES: (DealType | "any")[] = ["any", "flash", "last_minute", "empty_seat", "special_fare"];
+const TIME_SLOT_OPTIONS: { value: TimeSlot; label: string; icon: string }[] = [
+  { value: "6am_12pm", label: "6 ص - 12 م", icon: "☀️" },
+  { value: "before_6am", label: "قبل 6 ص", icon: "🌙" },
+  { value: "6pm_midnight", label: "6 م - منتصف الليل", icon: "🌙" },
+  { value: "12pm_6pm", label: "12 م - 6 م", icon: "🌤️" },
+];
 
 type Props = {
   filters: AdvancedFilters;
@@ -125,6 +131,22 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
         </div>
       </FilterGroup>
 
+      <FilterGroup title="مواعيد رحلة المغادرة">
+        <TimeSlotGrid
+          selected={filters.departureSlot}
+          onSelect={(slot) =>
+            onChange({ ...filters, departureSlot: filters.departureSlot === slot ? null : slot })
+          }
+        />
+      </FilterGroup>
+
+      <FilterGroup title="مواعيد رحلة الوصول">
+        <TimeSlotGrid
+          selected={filters.arrivalSlot}
+          onSelect={(slot) => onChange({ ...filters, arrivalSlot: filters.arrivalSlot === slot ? null : slot })}
+        />
+      </FilterGroup>
+
       <FilterGroup title="نوع الفرصة">
         <div className="flex flex-wrap gap-2">
           {DEAL_TYPES.map((t) => (
@@ -176,6 +198,36 @@ function FilterGroup({ title, children }: { title: string; children: React.React
     <div className="border-t border-slate-100 pt-4 first:border-0 first:pt-0">
       <p className="mb-2.5 text-sm font-semibold text-slate-800">{title}</p>
       {children}
+    </div>
+  );
+}
+
+function TimeSlotGrid({
+  selected,
+  onSelect,
+}: {
+  selected: TimeSlot | null;
+  onSelect: (slot: TimeSlot) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {TIME_SLOT_OPTIONS.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onSelect(opt.value)}
+          className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-center text-[11px] font-semibold transition ${
+            selected === opt.value
+              ? "border-[#0C7BB3] bg-[#E5F4FB] text-[#0C7BB3]"
+              : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
+          }`}
+        >
+          <span aria-hidden className="text-base">
+            {opt.icon}
+          </span>
+          {opt.label}
+        </button>
+      ))}
     </div>
   );
 }

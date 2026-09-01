@@ -1,6 +1,7 @@
 import type { AirlineRow, DealRow, DealType, StopType } from "../types/database";
 
 export type DurationBucket = "short" | "medium" | "long"; // <5h / 5-10h / >10h
+export type TimeSlot = "before_6am" | "6am_12pm" | "12pm_6pm" | "6pm_midnight";
 
 export type AdvancedFilters = {
   stops: StopType[]; // empty = any
@@ -13,6 +14,8 @@ export type AdvancedFilters = {
   /** Optional — only set by DealsCenterPage's sidebar; other pages that share
    *  this type/applyAdvancedFilters simply never touch it. */
   durationBucket: DurationBucket | null;
+  departureSlot: TimeSlot | null;
+  arrivalSlot: TimeSlot | null;
 };
 
 export const EMPTY_FILTERS: AdvancedFilters = {
@@ -24,6 +27,8 @@ export const EMPTY_FILTERS: AdvancedFilters = {
   refundableOnly: false,
   changeableOnly: false,
   durationBucket: null,
+  departureSlot: null,
+  arrivalSlot: null,
 };
 
 export function countActiveFilters(f: AdvancedFilters): number {
@@ -36,6 +41,8 @@ export function countActiveFilters(f: AdvancedFilters): number {
   if (f.refundableOnly) n++;
   if (f.changeableOnly) n++;
   if (f.durationBucket != null) n++;
+  if (f.departureSlot != null) n++;
+  if (f.arrivalSlot != null) n++;
   return n;
 }
 
@@ -44,6 +51,17 @@ function matchesDurationBucket(hours: number | null, bucket: DurationBucket): bo
   if (bucket === "short") return hours < 5;
   if (bucket === "medium") return hours >= 5 && hours <= 10;
   return hours > 10;
+}
+
+/** Buckets a "HH:MM[:SS]" time-of-day string into one of the 4 slots shown in the filter UI. */
+function matchesTimeSlot(time: string | null, slot: TimeSlot): boolean {
+  if (!time) return false;
+  const hour = Number(time.split(":")[0]);
+  if (Number.isNaN(hour)) return false;
+  if (slot === "before_6am") return hour < 6;
+  if (slot === "6am_12pm") return hour >= 6 && hour < 12;
+  if (slot === "12pm_6pm") return hour >= 12 && hour < 18;
+  return hour >= 18; // 6pm_midnight
 }
 
 export function applyAdvancedFilters(deals: DealRow[], filters: AdvancedFilters): DealRow[] {
@@ -56,6 +74,8 @@ export function applyAdvancedFilters(deals: DealRow[], filters: AdvancedFilters)
     if (filters.changeableOnly && deal.changeable !== true) return false;
     if (filters.durationBucket != null && !matchesDurationBucket(deal.duration_hours, filters.durationBucket))
       return false;
+    if (filters.departureSlot != null && !matchesTimeSlot(deal.departure_time, filters.departureSlot)) return false;
+    if (filters.arrivalSlot != null && !matchesTimeSlot(deal.arrival_time, filters.arrivalSlot)) return false;
     if (filters.expiresWithinHours != null) {
       const hoursLeft = hoursUntil(deal.expires_at);
       if (hoursLeft == null || hoursLeft < 0 || hoursLeft > filters.expiresWithinHours) return false;

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { getAgencyWhatsApp } from "../lib/api";
 import {
@@ -45,9 +45,13 @@ export function DealOpportunityCard({
   const waPhone = getAgencyWhatsApp(deal, agencies);
   const waMessage = `مرحباً، أريد حجز العرض: ${formatRouteCities(deal, airports)} — ${deal.price} ${deal.currency ?? "USD"}`;
   const hasScore = deal.deal_score != null;
+  const navigate = useNavigate();
 
   return (
-    <article className="opportunity-card-lift relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white">
+    <article
+      onClick={() => navigate(`/deals/${deal.id}`)}
+      className="opportunity-card-lift relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white"
+    >
       <div className="relative h-[150px] w-full bg-slate-100">
         <div className="absolute start-3 top-3 z-10">
           <span
@@ -63,7 +67,10 @@ export function DealOpportunityCard({
           {onToggleCompare ? (
             <button
               type="button"
-              onClick={() => onToggleCompare(deal.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleCompare(deal.id);
+              }}
               className={cn(
                 "rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm backdrop-blur-sm transition",
                 comparing ? "bg-[#0C7BB3] text-white" : "bg-white/95 text-slate-700 hover:bg-white",
@@ -159,18 +166,17 @@ export function DealOpportunityCard({
         ) : null}
 
         <div className="mt-auto flex flex-col gap-2 pt-1">
-          {deal.available_seats > 0 ? (
-            <Link to={`/deals/${deal.id}`}>
-              <Button fullWidth variant="primary">
-                عرض التفاصيل
-              </Button>
-            </Link>
-          ) : (
-            <Button fullWidth variant="primary" disabled>
+          {deal.available_seats <= 0 ? (
+            <Button fullWidth variant="primary" disabled onClick={(e) => e.stopPropagation()}>
               نفدت المقاعد
             </Button>
-          )}
-          <a href={whatsAppLink(waPhone, waMessage)} target="_blank" rel="noreferrer">
+          ) : null}
+          <a
+            href={whatsAppLink(waPhone, waMessage)}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Button fullWidth variant="outline" className="gap-2 border-slate-300 text-slate-800">
               <WhatsAppIcon className="size-4 text-[#25D366]" />
               احجز عبر واتساب
