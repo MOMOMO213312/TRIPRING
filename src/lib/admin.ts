@@ -10,6 +10,7 @@ import type {
   BookingRow,
   CustomerSubscriptionRow,
   DealRow,
+  FarePackageTierRow,
   MembershipTierRow,
   PaidMembershipTier,
   ProfileRow,
@@ -490,6 +491,30 @@ export const CUSTOMER_SUBSCRIPTION_STATUS_LABELS: Record<ResellerSubscriptionSta
 };
 
 export const MEMBERSHIP_TIER_LABELS: Record<PaidMembershipTier, string> = {
+  basic: "Basic",
+  smart: "Smart",
+  premium: "Premium",
+};
+
+// ── Fare bundle tiers (تذكرة فقط / Smart Trip / Premium Trip) ───────────────
+// Distinct from membership_tiers above — this is the Basic/Smart/Premium
+// *fare* markup shown on DealDetail/BookingPage (lib/packages.ts), not the
+// paid customer subscription. Same admin-manage pattern, own table.
+export async function fetchFarePackageTiersAdmin(): Promise<FarePackageTierRow[]> {
+  const { data, error } = await supabase.from("fare_package_tiers").select("*").order("sort_order", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as FarePackageTierRow[];
+}
+
+export async function updateFarePackageTier(
+  tier: string,
+  patch: Partial<Pick<FarePackageTierRow, "label" | "markup_percent" | "is_active" | "sort_order">>,
+): Promise<void> {
+  const { error } = await supabase.from("fare_package_tiers").update(patch as never).eq("tier", tier);
+  if (error) throw new Error(error.message);
+}
+
+export const FARE_PACKAGE_TIER_LABELS: Record<PaidMembershipTier, string> = {
   basic: "Basic",
   smart: "Smart",
   premium: "Premium",
