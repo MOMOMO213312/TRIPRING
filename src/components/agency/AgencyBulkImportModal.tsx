@@ -16,6 +16,14 @@ import { Modal } from "../ui/Modal";
 
 const TEMPLATE_URL = "/templates/tripring-deals-template.xlsx";
 
+// The `xlsx` package on npm has a known high-severity prototype-pollution /
+// ReDoS advisory with no npm-published fix (SheetJS only ships the patched
+// build from their own site, not the registry). Since this still parses an
+// agency-uploaded file client-side, keep the attack surface small: cap the
+// file size before handing it to XLSX.read, and skip parsing features
+// (formulas/styles/VBA) this import doesn't need.
+const MAX_IMPORT_FILE_BYTES = 5 * 1024 * 1024; // 5MB
+
 export function AgencyBulkImportModal({
   agencyId,
   airports,
@@ -44,9 +52,21 @@ export function AgencyBulkImportModal({
     setResult(null);
     setParseError(null);
     setSubmitError(null);
+    if (file.size > MAX_IMPORT_FILE_BYTES) {
+      setParseError("حجم الملف أكبر من 5 ميجابايت — قسّم الرحلات على أكتر من ملف.");
+      return;
+    }
     try {
       const buf = await file.arrayBuffer();
-      const workbook = XLSX.read(buf, { cellDates: false });
+      const workbook = XLSX.read(buf, {
+        cellDates: false,
+        // Only the raw cell values are needed for import — skip parsing
+        // formulas/styles/embedded VBA entirely.
+        cellFormula: false,
+        cellStyles: false,
+        cellHTML: false,
+        bookVBA: false,
+      });
       // The template has one tab per route (plus "تعليمات"/"القوائم" meta
       // tabs to skip) — read every route tab in one pass so uploading the
       // whole file publishes every line at once instead of just the first tab.
