@@ -56,6 +56,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link to="/resale" className="hover:text-[#0C7BB3]">
+                بيع تذكرتك
+              </Link>
+            </li>
+            <li>
               <Link to="/agency" className="hover:text-[#0C7BB3]">
                 لوحة الوكالة
               </Link>
