@@ -6,6 +6,7 @@ import type {
   AirlineRow,
   AirportRow,
   BookingRow,
+  BookingServiceStatus,
   BookingStatus,
   DealRow,
   ProfileRow,
@@ -729,5 +730,53 @@ export const DEAL_STATUS_LABELS: Record<DealRow["status"], string> = {
   sold_out: "نفدت المقاعد",
   cancelled: "متوقف",
 };
+
+/** A single requested add-on service, joined with its booking + service name, for the agency confirmation queue. */
+export type BookingServiceQueueRow = {
+  id: string;
+  booking_id: string;
+  quantity: number;
+  price: number;
+  status: BookingServiceStatus;
+  updated_at: string;
+  service: { name: string; type: string } | null;
+  booking: { booking_number: number; customer_name: string; customer_phone: string } | null;
+};
+
+/**
+ * Requested add-on services (seat selection, extra baggage, transfers, etc)
+ * for this agency's bookings, most-recently-updated first. Pass a status to
+ * filter (e.g. the "pending_confirmation" queue); omit for the full history.
+ */
+export async function fetchAgencyBookingServices(
+  agencyId: string,
+  status?: BookingServiceStatus,
+): Promise<BookingServiceQueueRow[]> {
+  let query = supabase
+    .from("booking_services")
+    .select(
+      "id,booking_id,quantity,price,status,updated_at,service:additional_services(name,type),booking:bookings!inner(booking_number,customer_name,customer_phone,agency_id)",
+    )
+    .eq("booking.agency_id", agencyId)
+    .order("updated_at", { ascending: false });
+
+  if (status) query = query.eq("status", status);
+
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as BookingServiceQueueRow[];
+}
+
+/** Marks a booking's requested service as confirmed/failed/refunded with the airline or provider. */
+export async function updateBookingServiceStatus(
+  bookingServiceId: string,
+  status: BookingServiceStatus,
+): Promise<void> {
+  const { error } = await supabase
+    .from("booking_services")
+    .update({ status } as never)
+    .eq("id", bookingServiceId);
+  if (error) throw new Error(error.message);
+}
 
 export type AgencyReviewRowFull = Tables<"agency_reviews">;

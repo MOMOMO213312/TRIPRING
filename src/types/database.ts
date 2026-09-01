@@ -473,11 +473,15 @@ export interface Database {
           id: string;
           booking_id: string;
           service_id: string;
-          quantity: number | null;
-          unit_price: number | null;
+          quantity: number;
+          price: number;
+          status: BookingServiceStatus;
+          updated_at: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["booking_services"]["Row"], "id"> & {
+        Insert: Omit<Database["public"]["Tables"]["booking_services"]["Row"], "id" | "status" | "updated_at"> & {
           id?: string;
+          status?: BookingServiceStatus;
+          updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["booking_services"]["Row"]>;
       };
@@ -918,7 +922,22 @@ export type BookingLookupResult = {
   } | null;
   travelers: { full_name: string; traveler_type: string }[];
   ticket_url: string | null;
-  services: { type: string; quantity: number; unit_price: number }[];
+  services: { type: string; name: string; quantity: number; unit_price: number; status: BookingServiceStatus }[];
+};
+
+/**
+ * Lifecycle of an extra service (seat request, extra baggage, transfer, etc)
+ * attached to a booking. `pending_confirmation` is the state right after the
+ * customer requests it — it is NOT a guarantee the airline/provider granted
+ * it yet, so customer-facing copy should say "requested" not "purchased".
+ */
+export type BookingServiceStatus = "pending_confirmation" | "confirmed_with_airline" | "failed" | "refunded";
+
+export const BOOKING_SERVICE_STATUS_LABELS: Record<BookingServiceStatus, string> = {
+  pending_confirmation: "بانتظار التأكيد",
+  confirmed_with_airline: "تم التأكيد مع شركة الطيران",
+  failed: "تعذّر تنفيذها",
+  refunded: "تم استرداد المبلغ",
 };
 
 export type BookingTravelerInput = Pick<

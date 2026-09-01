@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/EmptyState";
@@ -13,7 +14,14 @@ import { formatDate, formatPrice } from "../lib/utils";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
-import type { BookingLookupResult } from "../types/database";
+import { BOOKING_SERVICE_STATUS_LABELS, type BookingLookupResult, type BookingServiceStatus } from "../types/database";
+
+function serviceStatusTone(status: BookingServiceStatus): "default" | "flash" | "empty_seat" | "urgent" {
+  if (status === "confirmed_with_airline") return "empty_seat";
+  if (status === "failed") return "urgent";
+  if (status === "refunded") return "default";
+  return "flash"; // pending_confirmation
+}
 
 type PrefillState = { bookingNumber?: string; contact?: string; autoSearch?: boolean };
 
@@ -158,12 +166,18 @@ export function MyTripsPage() {
           ) : null}
           {booking.services.length > 0 ? (
             <div className="mt-4 border-t border-slate-100 pt-4">
-              <p className="mb-2 text-sm font-medium text-slate-700">خدمات إضافية</p>
-              <ul className="space-y-1 text-sm text-slate-600">
+              <p className="mb-2 text-sm font-medium text-slate-700">خدمات إضافية مطلوبة</p>
+              <p className="mb-2 text-xs text-slate-400">
+                هذه خدمات طلبتها — تفعيلها الفعلي مرتبط بتأكيد شركة الطيران/الجهة المزوّدة، مش مضمونة تلقائيًا.
+              </p>
+              <ul className="space-y-2 text-sm text-slate-600">
                 {booking.services.map((s, i) => (
-                  <li key={i} className="flex justify-between">
-                    <span>{s.type} × {s.quantity}</span>
-                    <span>{formatPrice(s.unit_price * s.quantity, booking.currency)}</span>
+                  <li key={i} className="flex flex-wrap items-center justify-between gap-1">
+                    <span>{s.name} × {s.quantity}</span>
+                    <div className="flex items-center gap-2">
+                      <span>{formatPrice(s.unit_price * s.quantity, booking.currency)}</span>
+                      <Badge tone={serviceStatusTone(s.status)}>{BOOKING_SERVICE_STATUS_LABELS[s.status]}</Badge>
+                    </div>
                   </li>
                 ))}
               </ul>

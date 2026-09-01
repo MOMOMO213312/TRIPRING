@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { AgencyBookingServicesTab } from "../components/agency/AgencyBookingServicesTab";
 import { AgencyBookingsTab } from "../components/agency/AgencyBookingsTab";
 import { AgencyDealsTab } from "../components/agency/AgencyDealsTab";
 import { AgencyDocumentsTab } from "../components/agency/AgencyDocumentsTab";
@@ -12,7 +13,7 @@ import { fetchMyAgencyProfile, type AgencyProfile } from "../lib/agency";
 import { signOut, useAuth } from "../lib/auth";
 import { Button } from "../components/ui/Button";
 
-type Tab = "deals" | "tripgo" | "services" | "bookings" | "payments" | "documents";
+type Tab = "deals" | "tripgo" | "services" | "bookings" | "service_requests" | "payments" | "documents";
 
 export function AgencyDashboardPage() {
   const { user, loading: authLoading } = useAuth();
@@ -69,6 +70,7 @@ export function AgencyDashboardPage() {
     { key: "tripgo", label: "🚐 TripGo" },
     { key: "services", label: "خدماتي" },
     { key: "bookings", label: "الحجوزات" },
+    { key: "service_requests", label: "طلبات الخدمات" },
     { key: "payments", label: "الدفع/الحالة" },
     { key: "documents", label: "الوثائق والشهادات" },
   ];
@@ -116,6 +118,9 @@ export function AgencyDashboardPage() {
           key={`bookings-${refreshKey}`}
           onChanged={() => setRefreshKey((k) => k + 1)}
         />
+      ) : null}
+      {tab === "service_requests" ? (
+        <AgencyBookingServicesTab agencyId={profile.agency_id!} key={`service_requests-${refreshKey}`} />
       ) : null}
       {tab === "payments" ? (
         <AgencyPaymentTab
