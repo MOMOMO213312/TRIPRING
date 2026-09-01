@@ -154,7 +154,7 @@ export function ExplorePage() {
         <h1 className="text-2xl font-bold text-slate-900">استكمل رحلتك عبر TripRing بخدمات إضافية أو باقات متكاملة</h1>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Link
           to="/blue-friday"
           className="flex items-center gap-3 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 p-4 transition hover:border-blue-400"
@@ -177,18 +177,6 @@ export function ExplorePage() {
           <span>
             <span className="block font-bold text-slate-900">عضوية TRIPRING</span>
             <span className="block text-xs text-slate-500">خصومات دائمة + خدمات مجانية + أولوية إشعارات</span>
-          </span>
-        </Link>
-        <Link
-          to="/resale"
-          className="flex items-center gap-3 rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/40 p-4 transition hover:border-emerald-400"
-        >
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-lg text-white">
-            🎫
-          </span>
-          <span>
-            <span className="block font-bold text-slate-900">بيع تذكرتك</span>
-            <span className="block text-xs text-slate-500">معندكش وقت تسافر؟ اعرض تذكرتك لعملاء تانيين</span>
           </span>
         </Link>
       </div>
