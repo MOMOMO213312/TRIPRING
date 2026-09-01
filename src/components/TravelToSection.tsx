@@ -102,7 +102,7 @@ export function TravelToSection({ airports, imageCache, references, fromAirport 
     <section>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3 px-4 sm:px-0">
         <div>
-          <h2 className="font-display text-2xl text-slate-900">✈️ سافر إلى</h2>
+          <h2 className="font-display text-2xl text-slate-900">✈️ اختر وجهتك</h2>
           <p className="text-sm text-slate-600">اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول</p>
         </div>
         {fromOptions.length > 1 ? (
