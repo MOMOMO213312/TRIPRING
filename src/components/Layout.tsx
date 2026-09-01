@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { Footer } from "./Footer";
+import { BottomNav } from "./BottomNav";
 import { AnnouncementTicker } from "./notifications/AnnouncementTicker";
 import { PublicNotificationBell } from "./notifications/PublicNotificationBell";
 
@@ -154,10 +155,11 @@ export function Layout() {
           </div>
         )}
       </header>
-      <main className={isHome ? "" : "mx-auto max-w-6xl px-4 py-6"}>
+      <main className={`${isHome ? "" : "mx-auto max-w-6xl px-4 py-6"} pb-20 md:pb-0`}>
         <Outlet />
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }

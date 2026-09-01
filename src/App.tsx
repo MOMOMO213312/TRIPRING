@@ -31,6 +31,12 @@ const DealDetailPage = lazy(() =>
 const DealsCenterPage = lazy(() =>
   import("./pages/DealsCenterPage").then((m) => ({ default: m.DealsCenterPage })),
 );
+const DestinationsPage = lazy(() =>
+  import("./pages/DestinationsPage").then((m) => ({ default: m.DestinationsPage })),
+);
+const RoutesPage = lazy(() =>
+  import("./pages/RoutesPage").then((m) => ({ default: m.RoutesPage })),
+);
 const ExplorePage = lazy(() =>
   import("./pages/ExplorePage").then((m) => ({ default: m.ExplorePage })),
 );
@@ -86,6 +92,8 @@ export default function App() {
               <Route index element={<HomePage />} />
               <Route path="search" element={<SearchResultsPage />} />
               <Route path="deals" element={<DealsCenterPage />} />
+              <Route path="destinations" element={<DestinationsPage />} />
+              <Route path="routes" element={<RoutesPage />} />
               <Route path="explore" element={<ExplorePage />} />
               <Route path="tripgo" element={<TripGoPage />} />
               <Route path="tripgo/results" element={<TripGoResultsPage />} />
