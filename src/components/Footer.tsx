@@ -46,16 +46,6 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link to="/destinations" className="hover:text-[#0C7BB3]">
-                وجهات السفر
-              </Link>
-            </li>
-            <li>
-              <Link to="/routes" className="hover:text-[#0C7BB3]">
-                خطوط الطيران
-              </Link>
-            </li>
-            <li>
               <Link to="/my-trips" className="hover:text-[#0C7BB3]">
                 رحلاتي
               </Link>
@@ -63,11 +53,6 @@ export function Footer() {
             <li>
               <Link to="/blue-friday" className="hover:text-[#0C7BB3]">
                 Blue Friday
-              </Link>
-            </li>
-            <li>
-              <Link to="/resale" className="hover:text-[#0C7BB3]">
-                بيع تذكرتك
               </Link>
             </li>
             <li>
