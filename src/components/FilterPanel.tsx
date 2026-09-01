@@ -109,6 +109,24 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
           >
             يمكن تغييرها فقط
           </Checkbox>
+          <Checkbox
+            checked={filters.checkedBaggageOnly}
+            onChange={() => onChange({ ...filters, checkedBaggageOnly: !filters.checkedBaggageOnly })}
+          >
+            تشمل حقيبة مسجلة
+          </Checkbox>
+          <Checkbox
+            checked={filters.noChangeFeeOnly}
+            onChange={() => onChange({ ...filters, noChangeFeeOnly: !filters.noChangeFeeOnly })}
+          >
+            بدون رسوم تغيير
+          </Checkbox>
+          <Checkbox
+            checked={filters.noCancellationFeeOnly}
+            onChange={() => onChange({ ...filters, noCancellationFeeOnly: !filters.noCancellationFeeOnly })}
+          >
+            بدون رسوم إلغاء
+          </Checkbox>
         </div>
       </FilterGroup>
 

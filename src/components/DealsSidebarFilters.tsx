@@ -212,6 +212,33 @@ export function DealsSidebarFilters({
             />
             يمكن تغييرها فقط
           </label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={filters.checkedBaggageOnly}
+              onChange={() => onChange({ ...filters, checkedBaggageOnly: !filters.checkedBaggageOnly })}
+              className="size-4 rounded accent-[#0C7BB3]"
+            />
+            تشمل حقيبة مسجلة
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={filters.noChangeFeeOnly}
+              onChange={() => onChange({ ...filters, noChangeFeeOnly: !filters.noChangeFeeOnly })}
+              className="size-4 rounded accent-[#0C7BB3]"
+            />
+            بدون رسوم تغيير
+          </label>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+            <input
+              type="checkbox"
+              checked={filters.noCancellationFeeOnly}
+              onChange={() => onChange({ ...filters, noCancellationFeeOnly: !filters.noCancellationFeeOnly })}
+              className="size-4 rounded accent-[#0C7BB3]"
+            />
+            بدون رسوم إلغاء
+          </label>
         </div>
       </FilterSection>
     </div>

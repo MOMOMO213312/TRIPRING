@@ -11,6 +11,9 @@ export type AdvancedFilters = {
   expiresWithinHours: number | null; // 12 / 24 / 48 / null (any)
   refundableOnly: boolean;
   changeableOnly: boolean;
+  checkedBaggageOnly: boolean;
+  noChangeFeeOnly: boolean;
+  noCancellationFeeOnly: boolean;
   /** Optional — only set by DealsCenterPage's sidebar; other pages that share
    *  this type/applyAdvancedFilters simply never touch it. */
   durationBucket: DurationBucket | null;
@@ -26,6 +29,9 @@ export const EMPTY_FILTERS: AdvancedFilters = {
   expiresWithinHours: null,
   refundableOnly: false,
   changeableOnly: false,
+  checkedBaggageOnly: false,
+  noChangeFeeOnly: false,
+  noCancellationFeeOnly: false,
   durationBucket: null,
   departureSlot: null,
   arrivalSlot: null,
@@ -40,6 +46,9 @@ export function countActiveFilters(f: AdvancedFilters): number {
   if (f.expiresWithinHours != null) n++;
   if (f.refundableOnly) n++;
   if (f.changeableOnly) n++;
+  if (f.checkedBaggageOnly) n++;
+  if (f.noChangeFeeOnly) n++;
+  if (f.noCancellationFeeOnly) n++;
   if (f.durationBucket != null) n++;
   if (f.departureSlot != null) n++;
   if (f.arrivalSlot != null) n++;
@@ -72,6 +81,11 @@ export function applyAdvancedFilters(deals: DealRow[], filters: AdvancedFilters)
     if (filters.dealType !== "any" && deal.deal_type !== filters.dealType) return false;
     if (filters.refundableOnly && deal.refundable !== true) return false;
     if (filters.changeableOnly && deal.changeable !== true) return false;
+    if (filters.checkedBaggageOnly && !((deal.checked_bags_count ?? 0) > 0 || (deal.baggage_kg ?? 0) > 0))
+      return false;
+    if (filters.noChangeFeeOnly && !(deal.change_fee == null || deal.change_fee === 0)) return false;
+    if (filters.noCancellationFeeOnly && !(deal.cancellation_fee == null || deal.cancellation_fee === 0))
+      return false;
     if (filters.durationBucket != null && !matchesDurationBucket(deal.duration_hours, filters.durationBucket))
       return false;
     if (filters.departureSlot != null && !matchesTimeSlot(deal.departure_time, filters.departureSlot)) return false;
