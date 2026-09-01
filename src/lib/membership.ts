@@ -1,6 +1,32 @@
 import { getCurrentUser } from "./auth";
 import { supabase } from "./supabase";
-import type { BillingPeriod, CustomerSubscriptionRow, MembershipTierRow, PaymentMethod } from "../types/database";
+import type { BillingPeriod, CustomerSubscriptionRow, MembershipTier, MembershipTierRow, PaymentMethod } from "../types/database";
+
+// Tier order, lowest→highest (matches the DB enum's sort order) — used to
+// resolve "everything this customer's tier unlocks", not just an exact match.
+const MEMBERSHIP_TIER_ORDER: MembershipTier[] = ["free", "basic", "smart", "premium"];
+
+/** The signed-in customer's current tier from profiles.membership (kept in
+ *  sync by the sync_customer_membership DB trigger), or 'free' for guests/
+ *  anyone without an active paid subscription. Never throws — a lookup
+ *  failure degrades to the safe 'free' default rather than blocking deals
+ *  from loading. */
+export async function fetchMyMembershipTier(): Promise<MembershipTier> {
+  const user = await getCurrentUser();
+  if (!user) return "free";
+  const { data, error } = await supabase.from("profiles").select("membership").eq("id", user.id).maybeSingle();
+  if (error || !data) return "free";
+  return (data as { membership: MembershipTier }).membership ?? "free";
+}
+
+/** Every tier at or below the customer's current tier — i.e. every
+ *  min_membership_tier value on `deals` this customer should be allowed to
+ *  see (early-access gating). 'free' deals are always included. */
+export async function fetchAllowedMembershipTiers(): Promise<MembershipTier[]> {
+  const tier = await fetchMyMembershipTier();
+  const idx = MEMBERSHIP_TIER_ORDER.indexOf(tier);
+  return MEMBERSHIP_TIER_ORDER.slice(0, idx === -1 ? 1 : idx + 1);
+}
 
 // ── Customer membership program ─────────────────────────────────────────────
 // A customer pays for a Basic/Smart/Premium tier (discount % + included free

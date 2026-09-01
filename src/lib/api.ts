@@ -1,5 +1,6 @@
 import { getCurrentUser } from "./auth";
 import { PLATFORM_WHATSAPP } from "./constants";
+import { fetchAllowedMembershipTiers } from "./membership";
 import { supabase } from "./supabase";
 import type {
   AdditionalServiceRow,
@@ -32,8 +33,9 @@ export type PublicTicketResaleRow = Omit<TicketResaleRow, "passenger_name" | "pn
 export const DEAL_COLUMNS =
   "id,agency_id,deal_type,airline_code,from_airport,to_airport,departure_date,departure_time,return_date,arrival_time,flight_duration_minutes,duration_hours,stops,stopover_airport,baggage_kg,travel_class,price,original_price,child_price,infant_price,available_seats,is_featured,status,expires_at,currency,notes,deal_score,view_count,min_membership_tier,fare_family,refundable,changeable,change_fee,cancellation_fee,fare_rules,base_fare,taxes_fees,price_checked_at,flight_number,aircraft_type,operating_airline_code,arrival_date,layover_minutes,cabin_baggage_kg,checked_bags_count,extra_baggage_price" as const;
 
-/** Anonymous/guest-facing feeds only show free-tier deals until membership auth exists. */
-export const PUBLIC_MEMBERSHIP_TIER = "free" as const;
+// Guests and free-tier customers only see 'free' deals; a signed-in customer with an
+// active paid subscription also sees deals gated at or below their own tier (early
+// access) — resolved per-request via fetchAllowedMembershipTiers(), not hardcoded.
 
 export type TripType = "round_trip" | "one_way";
 
@@ -148,12 +150,12 @@ export async function fetchImageCache(): Promise<ImageCacheRow[]> {
   return data ?? [];
 }
 
-function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean) {
+function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean, allowedTiers: string[]) {
   let query = supabase
     .from("deals")
     .select(DEAL_COLUMNS, withCount ? { count: "exact" } : undefined)
     .eq("status", "active")
-    .eq("min_membership_tier", PUBLIC_MEMBERSHIP_TIER)
+    .in("min_membership_tier", allowedTiers)
     .gt("expires_at", new Date().toISOString());
 
   if (params.from) query = query.eq("from_airport", params.from);
@@ -191,7 +193,8 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean) {
 }
 
 export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<DealRow[]> {
-  const { data, error } = await buildActiveDealsQuery(params, false);
+  const allowedTiers = await fetchAllowedMembershipTiers();
+  const { data, error } = await buildActiveDealsQuery(params, false, allowedTiers);
   if (error) throw new Error(error.message);
   return (data ?? []) as DealRow[];
 }
@@ -203,19 +206,21 @@ export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<D
 export async function fetchActiveDealsPage(
   params: DealSearchParams & { page: number; pageSize: number },
 ): Promise<DealSearchResult> {
-  const { data, error, count } = await buildActiveDealsQuery(params, true);
+  const allowedTiers = await fetchAllowedMembershipTiers();
+  const { data, error, count } = await buildActiveDealsQuery(params, true, allowedTiers);
   if (error) throw new Error(error.message);
   return { deals: (data ?? []) as DealRow[], total: count ?? (data ?? []).length };
 }
 
 /** Real min/max active price, used to size the DealsCenterPage price slider — never a hardcoded guess. */
 export async function fetchActivePriceBounds(): Promise<{ min: number; max: number }> {
+  const allowedTiers = await fetchAllowedMembershipTiers();
   const base = () =>
     supabase
       .from("deals")
       .select("price")
       .eq("status", "active")
-      .eq("min_membership_tier", PUBLIC_MEMBERSHIP_TIER)
+      .in("min_membership_tier", allowedTiers)
       .gt("expires_at", new Date().toISOString())
       .gt("available_seats", 0);
 
@@ -237,12 +242,13 @@ export async function fetchBestOpportunities(limit = 12): Promise<DealRow[]> {
 }
 
 export async function fetchDealById(id: string): Promise<DealRow | null> {
+  const allowedTiers = await fetchAllowedMembershipTiers();
   const { data, error } = await supabase
     .from("deals")
     .select(DEAL_COLUMNS)
     .eq("id", id)
     .eq("status", "active")
-    .eq("min_membership_tier", PUBLIC_MEMBERSHIP_TIER)
+    .in("min_membership_tier", allowedTiers)
     .gt("expires_at", new Date().toISOString())
     .maybeSingle();
   if (error) throw new Error(error.message);
