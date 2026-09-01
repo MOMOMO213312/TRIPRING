@@ -13,14 +13,53 @@ import type { Catalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 
 const PROMO_CODE = "BLUEFRIDAY";
-// Sale runs for 24h from whenever the customer first lands on the page.
-const SALE_WINDOW_MS = 24 * 60 * 60 * 1000;
+const MIN_DISCOUNT_PCT = 15; // a deal only counts as "Blue Friday" if it's at least this % off original_price
+
+/** Real weekly Friday window in Cairo time — not a per-visitor countdown.
+ *  Live from Friday 00:00 to Friday 24:00 Africa/Cairo; otherwise returns a
+ *  countdown to the next Friday's start, so the urgency is genuine and
+ *  identical for every visitor regardless of when they land. */
+function getBlueFridayWindow(now: number) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Africa/Cairo",
+    weekday: "short",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date(now));
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "0";
+  const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+
+  // The Cairo UTC offset right now, derived from the formatted parts (works
+  // correctly even if Egypt ever reintroduces DST).
+  const cairoLocalAsUtc = Date.UTC(
+    Number(get("year")),
+    Number(get("month")) - 1,
+    Number(get("day")),
+    Number(get("hour")),
+    Number(get("minute")),
+    Number(get("second")),
+  );
+  const cairoOffsetMs = cairoLocalAsUtc - now;
+  const cairoMidnightTodayReal =
+    Date.UTC(Number(get("year")), Number(get("month")) - 1, Number(get("day")), 0, 0, 0) - cairoOffsetMs;
+
+  const isFriday = weekday === 5;
+  const daysUntilFriday = (5 - weekday + 7) % 7;
+
+  return isFriday
+    ? { isLive: true, endsAt: cairoMidnightTodayReal + 86400000 }
+    : { isLive: false, endsAt: cairoMidnightTodayReal + daysUntilFriday * 86400000 };
+}
 
 export function BlueFridayPage() {
   const catalog = useCatalog();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saleEndsAt] = useState(() => Date.now() + SALE_WINDOW_MS);
   const [now, setNow] = useState(Date.now());
   const [budget, setBudget] = useState("");
   const [mysteryDeals, setMysteryDeals] = useState<DealRow[] | null>(null);
@@ -37,27 +76,35 @@ export function BlueFridayPage() {
     return () => clearInterval(id);
   }, []);
 
-  const remainingMs = Math.max(0, saleEndsAt - now);
+  const { isLive, endsAt } = getBlueFridayWindow(now);
+  const remainingMs = Math.max(0, endsAt - now);
   const timeParts = {
     h: String(Math.floor(remainingMs / 3600000)).padStart(2, "0"),
     m: String(Math.floor((remainingMs % 3600000) / 60000)).padStart(2, "0"),
     s: String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, "0"),
   };
 
+  // Only deals genuinely discounted ≥MIN_DISCOUNT_PCT off original_price count
+  // as "Blue Friday" deals — otherwise this is just the regular deals feed
+  // with a blue coat of paint, which kills the urgency once customers notice.
+  const blueFridayDeals = useMemo(() => {
+    return deals.filter((d) => d.original_price && d.original_price > d.price && (1 - d.price / d.original_price) * 100 >= MIN_DISCOUNT_PCT);
+  }, [deals]);
+
   // Cheapest real prices first — this is the whole point of the sale.
   const bestFlightDeals = useMemo(() => {
-    return [...deals].sort((a, b) => a.price - b.price).slice(0, 8);
-  }, [deals]);
+    return [...blueFridayDeals].sort((a, b) => a.price - b.price).slice(0, 8);
+  }, [blueFridayDeals]);
 
   // Deals closest to expiring — the actual "flash" hours.
   const flashHourDeals = useMemo(() => {
-    return [...deals]
+    return [...blueFridayDeals]
       .map((d) => ({ deal: d, hoursLeft: hoursUntil(d.expires_at) }))
       .filter((x): x is { deal: DealRow; hoursLeft: number } => x.hoursLeft != null && x.hoursLeft > 0)
       .sort((a, b) => a.hoursLeft - b.hoursLeft)
       .slice(0, 4)
       .map((x) => x.deal);
-  }, [deals]);
+  }, [blueFridayDeals]);
 
   // Cheapest destination per country, for the "Blue Friday destinations from CAI" strip.
   const destinations = useMemo(() => {
@@ -65,7 +112,7 @@ export function BlueFridayPage() {
       string,
       { airport: (typeof catalog.airports)[number]; minPrice: number; currency: string }
     >();
-    for (const d of deals) {
+    for (const d of blueFridayDeals) {
       const airport = catalog.airports.find((a) => a.code === d.to_airport);
       if (!airport) continue;
       const existing = byCountry.get(airport.country);
@@ -73,7 +120,7 @@ export function BlueFridayPage() {
         byCountry.set(airport.country, { airport, minPrice: d.price, currency: d.currency ?? "USD" });
     }
     return [...byCountry.values()].slice(0, 6);
-  }, [deals, catalog.airports]);
+  }, [blueFridayDeals, catalog.airports]);
 
   function copyCode() {
     navigator.clipboard.writeText(PROMO_CODE).catch(() => {});
@@ -85,7 +132,7 @@ export function BlueFridayPage() {
     e.preventDefault();
     const max = Number(budget);
     if (!max || max <= 0) return;
-    const inBudget = deals.filter((d) => d.price <= max);
+    const inBudget = blueFridayDeals.filter((d) => d.price <= max);
     const shuffled = [...inBudget].sort(() => Math.random() - 0.5);
     setMysteryDeals(shuffled.slice(0, 3));
   }
@@ -98,7 +145,7 @@ export function BlueFridayPage() {
           {["a", "b"].map((suffix) => (
             <div key={suffix} className="flex shrink-0 items-center gap-8 px-4">
               {[
-                "24 HOURS ONLY",
+                "EVERY FRIDAY",
                 "UP TO 33% OFF FLIGHTS",
                 `CODE: ${PROMO_CODE}`,
                 "MYSTERY FARES INSIDE",
@@ -116,24 +163,33 @@ export function BlueFridayPage() {
       {/* Hero */}
       <div className="mx-auto max-w-4xl px-4 pt-14 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
-          ✨ عروض الجمعة السماوي
+          ✨ عروض الجمعة السماوي — كل جمعة
         </span>
         <h1 className="mt-5 text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl md:text-5xl">
-          24 ساعة. جمعة سماوي واحدة.
+          كل جمعة، من الفجر لنص الليل.
           <br />
           <span className="text-blue-600">خصومات لحد 33% على الطيران.</span>
         </h1>
         <p className="mx-auto mt-4 max-w-lg text-slate-600">
-          أعمق خصومات السنة بتظهر دلوقتي وبتختفي في نص الليل. استخدم كود{" "}
-          <span className="font-latin font-bold text-blue-600">{PROMO_CODE}</span> لخصم إضافي.
+          {isLive ? (
+            <>
+              أعمق خصومات الأسبوع شغالة دلوقتي وبتختفي في نص الليل. استخدم كود{" "}
+              <span className="font-latin font-bold text-blue-600">{PROMO_CODE}</span> لخصم إضافي.
+            </>
+          ) : (
+            "الجمعة السماوي شغالة كل يوم جمعة بس — تحت تلاقي العداد لبداية الجمعة الجاية."
+          )}
         </p>
 
         <div className="mt-8 flex justify-center gap-3">
-          <TimeBox value={timeParts.h} label="ساعة" />
+          {remainingMs >= 86400000 ? <TimeBox value={String(Math.floor(remainingMs / 86400000))} label="يوم" /> : null}
+          <TimeBox value={remainingMs >= 86400000 ? String(Math.floor((remainingMs % 86400000) / 3600000)).padStart(2, "0") : timeParts.h} label="ساعة" />
           <TimeBox value={timeParts.m} label="دقيقة" />
           <TimeBox value={timeParts.s} label="ثانية" />
         </div>
-        <p className="mt-2 text-sm text-slate-500">العرض بينتهي في نص الليل — متستناش.</p>
+        <p className="mt-2 text-sm text-slate-500">
+          {isLive ? "العرض بينتهي في نص الليل — متستناش." : "استنى — العرض بيفتح تلقائي الساعة 12 بالليل."}
+        </p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a href="#deals">
@@ -174,11 +230,13 @@ export function BlueFridayPage() {
       <section id="deals" className="mx-auto mt-14 max-w-6xl px-4">
         <div className="mb-5 flex items-center gap-2">
           <span aria-hidden>⚡</span>
-          <h2 className="text-2xl font-bold text-slate-900">أفضل عروض النهاردة</h2>
+          <h2 className="text-2xl font-bold text-slate-900">{isLive ? "أفضل عروض النهاردة" : "معاينة عروض الجمعة الجاية"}</h2>
           <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">لحد 33% خصم</span>
         </div>
         {loading ? (
           <p className="text-slate-500">جاري التحميل...</p>
+        ) : bestFlightDeals.length === 0 ? (
+          <p className="text-slate-500">مفيش عروض بخصم كافي دلوقتي — تابعنا يوم الجمعة الجاية.</p>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {bestFlightDeals.map((deal) => (
