@@ -1,18 +1,18 @@
 const POINTS = [
   {
     icon: "🎯",
-    title: "مش بس أسعار رخيصة",
-    text: "بنحدد الفرص اللي فعلاً تستاهل، مقارنة بسعرها المعتاد، مش أي تذكرة رخيصة عشوائية.",
+    title: "أبعد من السعر",
+    text: "نقيّم كل فرصة بقيمتها الحقيقية، لا برخصها وحده.",
   },
   {
     icon: "📊",
     title: "Deal Score لكل عرض",
-    text: "كل فرصة بتاخد تقييم واضح من 100 بناءً على السعر والتوفير والتوفر — تفهم ليه هي فرصة كويسة في ثواني.",
+    text: "تقييم من 100 نقطة يختصر لك القرار في ثوانٍ.",
   },
   {
     icon: "⚡",
-    title: "بيانات حية ومحدثة",
-    text: "الأسعار والمقاعد المتاحة بتتحدث باستمرار من شركائنا الموثقين، مش أرقام قديمة.",
+    title: "بيانات حيّة",
+    text: "أسعار ومقاعد تُحدَّث لحظيًا من شركاء موثوقين.",
   },
 ];
 
@@ -21,9 +21,9 @@ export function WhyTripRing() {
   return (
     <section className="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 px-6 py-10 text-white sm:px-10">
       <div className="mx-auto max-w-3xl text-center">
-        <h2 className="font-display text-2xl sm:text-3xl">ليه TripRing؟</h2>
+        <h2 className="font-display text-2xl sm:text-3xl">لماذا TripRing؟</h2>
         <p className="mt-2 text-slate-300">
-          إحنا مش محرك بحث تقليدي. TripRing بيكتشفلك فرص سفر حقيقية تستاهل تتحجز، مش مجرد قائمة رحلات.
+          لسنا محرك بحث. نكتشف لك الفرص التي تستحق فعلاً — لا مجرد قائمة رحلات.
         </p>
       </div>
       <div className="mx-auto mt-8 grid max-w-4xl gap-6 sm:grid-cols-3">
