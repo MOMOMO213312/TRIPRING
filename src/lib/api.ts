@@ -33,6 +33,15 @@ export type PublicTicketResaleRow = Omit<TicketResaleRow, "passenger_name" | "pn
 export const DEAL_COLUMNS =
   "id,agency_id,deal_type,airline_code,from_airport,to_airport,departure_date,departure_time,return_date,arrival_time,flight_duration_minutes,duration_hours,stops,stopover_airport,baggage_kg,travel_class,price,original_price,child_price,infant_price,available_seats,is_featured,status,expires_at,currency,notes,deal_score,view_count,min_membership_tier,fare_family,refundable,changeable,change_fee,cancellation_fee,fare_rules,base_fare,taxes_fees,price_checked_at,flight_number,aircraft_type,operating_airline_code,arrival_date,layover_minutes,cabin_baggage_kg,checked_bags_count,extra_baggage_price" as const;
 
+// Same as DEAL_COLUMNS plus the Offer Normalization Layer's ranking/supplier columns — only
+// available when reading from the v_flight_offers view (not the deals table directly).
+const OFFER_COLUMNS = `${DEAL_COLUMNS},offer_score,supplier_name` as const;
+
+/** Result of a v_flight_offers-backed search: a normal DealRow plus the Offer Engine's
+ *  ranking score and the supplier that offered it (currently always "Tourism TripRing",
+ *  but this is what makes multi-supplier ranking a non-breaking addition later). */
+export type OfferDealRow = DealRow & { offer_score: number | null; supplier_name: string | null };
+
 // Guests and free-tier customers only see 'free' deals; a signed-in customer with an
 // active paid subscription also sees deals gated at or below their own tier (early
 // access) — resolved per-request via fetchAllowedMembershipTiers(), not hardcoded.
@@ -49,7 +58,7 @@ export type DealSearchParams = {
   departureDate?: string;
   minPrice?: number;
   maxPrice?: number;
-  sort?: "price_asc" | "price_desc";
+  sort?: "price_asc" | "price_desc" | "best_match";
   dealType?: DealType | "any";
   availableOnly?: boolean;
   /** one_way → only deals with no return_date; round_trip → only deals WITH a
@@ -151,9 +160,11 @@ export async function fetchImageCache(): Promise<ImageCacheRow[]> {
 }
 
 function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean, allowedTiers: string[]) {
+  // Reads from the Phase 2 Offer Normalization Layer view instead of `deals` directly — a strict
+  // superset (same columns via d.*) plus offer_score/supplier_name, so this is a non-breaking swap.
   let query = supabase
-    .from("deals")
-    .select(DEAL_COLUMNS, withCount ? { count: "exact" } : undefined)
+    .from("v_flight_offers")
+    .select(OFFER_COLUMNS, withCount ? { count: "exact" } : undefined)
     .eq("status", "active")
     .in("min_membership_tier", allowedTiers)
     .gt("expires_at", new Date().toISOString());
@@ -177,6 +188,10 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean, all
     case "price_desc":
       query = query.order("price", { ascending: false });
       break;
+    case "best_match":
+      // Ranking Engine order — highest offer_score first, nulls (unscored) last, price as tiebreaker.
+      query = query.order("offer_score", { ascending: false, nullsFirst: false }).order("price", { ascending: true });
+      break;
     case "price_asc":
     default:
       query = query.order("price", { ascending: true });
@@ -192,11 +207,11 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean, all
   return query;
 }
 
-export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<DealRow[]> {
+export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<OfferDealRow[]> {
   const allowedTiers = await fetchAllowedMembershipTiers();
   const { data, error } = await buildActiveDealsQuery(params, false, allowedTiers);
   if (error) throw new Error(error.message);
-  return (data ?? []) as DealRow[];
+  return (data ?? []) as OfferDealRow[];
 }
 
 /** Paginated variant for listing pages with a "load more" / page control —
@@ -209,7 +224,7 @@ export async function fetchActiveDealsPage(
   const allowedTiers = await fetchAllowedMembershipTiers();
   const { data, error, count } = await buildActiveDealsQuery(params, true, allowedTiers);
   if (error) throw new Error(error.message);
-  return { deals: (data ?? []) as DealRow[], total: count ?? (data ?? []).length };
+  return { deals: (data ?? []) as OfferDealRow[], total: count ?? (data ?? []).length };
 }
 
 /** Real min/max active price, used to size the DealsCenterPage price slider — never a hardcoded guess. */
@@ -236,7 +251,7 @@ export async function fetchActivePriceBounds(): Promise<{ min: number; max: numb
   };
 }
 
-export async function fetchBestOpportunities(limit = 12): Promise<DealRow[]> {
+export async function fetchBestOpportunities(limit = 12): Promise<OfferDealRow[]> {
   const deals = await fetchActiveDeals({ sort: "price_asc", availableOnly: true });
   return deals.slice(0, limit);
 }

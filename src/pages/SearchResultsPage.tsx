@@ -6,17 +6,16 @@ import { FilterPanel } from "../components/FilterPanel";
 import { Select } from "../components/ui/Select";
 import { Card } from "../components/ui/Card";
 import { fetchActiveDeals } from "../lib/api";
-import type { TripType } from "../lib/api";
+import type { OfferDealRow, TripType } from "../lib/api";
 import { airportLabel, dealTripScope } from "../lib/deal-utils";
 import type { TripScope } from "../lib/deal-utils";
 import { airlinesInDeals, applyAdvancedFilters, countActiveFilters, EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters } from "../lib/filters";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
-import type { DealRow } from "../types/database";
 
 const BUDGET_CHIPS = [100, 200, 300, 500, 700, 1000];
-type SortKey = "price_asc" | "price_desc";
+type SortKey = "price_asc" | "price_desc" | "best_match";
 
 export function SearchResultsPage() {
   const [params, setParams] = useSearchParams();
@@ -30,9 +29,11 @@ export function SearchResultsPage() {
   const budget = params.get("budget") ?? "";
   const scope = params.get("scope") as TripScope | null;
   const stopsParam = params.get("stops");
-  const initialSort: SortKey = params.get("sort") === "price_desc" ? "price_desc" : "price_asc";
+  const sortParam = params.get("sort");
+  const initialSort: SortKey =
+    sortParam === "price_desc" || sortParam === "best_match" ? sortParam : "price_asc";
   const [sort, setSort] = useState<SortKey>(initialSort);
-  const [deals, setDeals] = useState<DealRow[]>([]);
+  const [deals, setDeals] = useState<OfferDealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   // Picks up ?stops=direct|one_stop|multi_stop coming from SmartFilterChips
@@ -107,6 +108,7 @@ export function SearchResultsPage() {
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
             options={[
+              { value: "best_match", label: "الأفضل (موصى به)" },
               { value: "price_asc", label: "السعر: الأقل أولاً" },
               { value: "price_desc", label: "السعر: الأعلى أولاً" },
             ]}

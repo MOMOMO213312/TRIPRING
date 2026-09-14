@@ -788,7 +788,27 @@ export interface Database {
         Update: Partial<Database["public"]["Tables"]["affiliate_resale_orders"]["Row"]>;
       };
     };
-    Views: Record<string, never>;
+    Views: {
+      // Phase 2/3 Offer Normalization Layer: strict superset of deals.Row (same columns) plus
+      // offer_score/supplier/contract columns. Added by hand since view introspection isn't
+      // part of the generation script yet — keep in sync with the `v_flight_offers` view def.
+      v_flight_offers: {
+        Row: Database["public"]["Tables"]["deals"]["Row"] & {
+          offer_id: string;
+          offer_score: number | null;
+          score_breakdown: Json | null;
+          last_scored_at: string | null;
+          supplier_id: string;
+          supplier_name: string;
+          supplier_type: string;
+          supplier_reliability_score: number | null;
+          commercial_model: string | null;
+          markup_percent: number | null;
+          commission_percent: number | null;
+          contract_status: string | null;
+        };
+      };
+    };
     Functions: {
       get_reseller_net_price: {
         Args: { p_deal_id: string };
