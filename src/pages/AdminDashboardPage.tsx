@@ -4,8 +4,11 @@ import { AdminAgenciesTab } from "../components/admin/AdminAgenciesTab";
 import { AdminBookingsTab } from "../components/admin/AdminBookingsTab";
 import { AdminCustomerSubscriptionsTab } from "../components/admin/AdminCustomerSubscriptionsTab";
 import { AdminFarePackageTiersTab } from "../components/admin/AdminFarePackageTiersTab";
+import { AdminFulfillmentTab } from "../components/admin/AdminFulfillmentTab";
 import { AdminMembershipTiersTab } from "../components/admin/AdminMembershipTiersTab";
 import { AdminNotificationsTab } from "../components/admin/AdminNotificationsTab";
+import { AdminSettlementsTab } from "../components/admin/AdminSettlementsTab";
+import { AdminSuppliersTab } from "../components/admin/AdminSuppliersTab";
 import { AdminResaleTab } from "../components/admin/AdminResaleTab";
 import { AdminResellerOrdersTab } from "../components/admin/AdminResellerOrdersTab";
 import { AdminResellerPlansTab } from "../components/admin/AdminResellerPlansTab";
@@ -18,6 +21,9 @@ import { signOut, useAuth } from "../lib/auth";
 import type { ProfileRow } from "../types/database";
 
 type Tab =
+  | "suppliers"
+  | "fulfillment"
+  | "settlements"
   | "agencies"
   | "bookings"
   | "resale"
@@ -33,7 +39,7 @@ export function AdminDashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
-  const [tab, setTab] = useState<Tab>("agencies");
+  const [tab, setTab] = useState<Tab>("suppliers");
 
   useEffect(() => {
     if (authLoading) return;
@@ -81,6 +87,9 @@ export function AdminDashboardPage() {
   }
 
   const tabs: { key: Tab; label: string }[] = [
+    { key: "suppliers", label: "الموردين والعقود" },
+    { key: "fulfillment", label: "مراقبة التنفيذ" },
+    { key: "settlements", label: "التسويات المالية" },
     { key: "agencies", label: "الوكالات" },
     { key: "bookings", label: "كل الحجوزات" },
     { key: "resale", label: "مراجعة إعادة البيع" },
@@ -123,6 +132,9 @@ export function AdminDashboardPage() {
         ))}
       </div>
 
+      {tab === "suppliers" ? <AdminSuppliersTab /> : null}
+      {tab === "fulfillment" ? <AdminFulfillmentTab /> : null}
+      {tab === "settlements" ? <AdminSettlementsTab /> : null}
       {tab === "agencies" ? <AdminAgenciesTab /> : null}
       {tab === "bookings" ? <AdminBookingsTab /> : null}
       {tab === "resale" ? <AdminResaleTab /> : null}
