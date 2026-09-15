@@ -5,6 +5,7 @@ import { Footer } from "./Footer";
 import { BottomNav } from "./BottomNav";
 import { AnnouncementTicker } from "./notifications/AnnouncementTicker";
 import { PublicNotificationBell } from "./notifications/PublicNotificationBell";
+import { captureAffiliateClickFromUrl } from "../lib/affiliateAttribution";
 
 const NAV_ITEMS = [
   { to: "/", label: "الرئيسية", match: (p: string, h: string) => p === "/" && !h },
@@ -19,6 +20,12 @@ export function Layout() {
   const isHome = pathname === "/";
   const [lang, setLang] = useState<"AR" | "EN">("AR");
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Long-session affiliate attribution: if this load carries ?ref=CODE, record
+  // the click (once — first-touch) so it can survive days until a later booking.
+  useEffect(() => {
+    void captureAffiliateClickFromUrl(location.search, pathname);
+  }, [location.search, pathname]);
 
   // Smooth-scroll to the section referenced by the URL hash (e.g. /#budget), retrying
   // briefly since homepage sections render after their data finishes loading.
