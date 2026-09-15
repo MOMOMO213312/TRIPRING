@@ -1,0 +1,313 @@
+/* ============================================================
+   Ground Ops Portal — visual system
+   "Split-flap departure board" — dark control-room base with a
+   brass/instrument accent. Distinct from TripRing's light
+   customer-facing theme: this is a B2B tool for staff on shift.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
+
+:root[data-ground-portal] {
+  --gp-ink: #0b1526;
+  --gp-panel: #101b30;
+  --gp-panel-raised: #16233d;
+  --gp-hairline: #24314c;
+  --gp-brass: #c9a227;
+  --gp-brass-soft: #8a7020;
+  --gp-paper: #ede7d9;
+  --gp-mist: #93a4c2;
+  --gp-green: #3fae7a;
+  --gp-amber: #e0a939;
+  --gp-red: #e1524b;
+
+  --gp-font-ui: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --gp-font-data: 'IBM Plex Mono', ui-monospace, monospace;
+
+  background: var(--gp-ink);
+  color: var(--gp-paper);
+  font-family: var(--gp-font-ui);
+  min-height: 100vh;
+  direction: rtl;
+}
+
+.gp-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 20px 20px 64px;
+}
+
+/* ---------- top bar ---------- */
+.gp-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--gp-panel-raised);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.gp-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.gp-brand-mark {
+  font-family: var(--gp-font-data);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gp-brass);
+  font-size: 15px;
+}
+.gp-brand-sub {
+  color: var(--gp-mist);
+  font-size: 13px;
+}
+.gp-supplier-name {
+  font-size: 14px;
+  color: var(--gp-paper);
+}
+.gp-signout {
+  font-size: 13px;
+  color: var(--gp-mist);
+  background: transparent;
+  border: 1px solid var(--gp-hairline);
+  border-radius: 7px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: border-color .15s ease, color .15s ease;
+}
+.gp-signout:hover { border-color: var(--gp-brass-soft); color: var(--gp-paper); }
+
+/* ---------- shift ticker ---------- */
+.gp-ticker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--gp-hairline);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.gp-ticker-cell {
+  background: var(--gp-panel);
+  padding: 14px 16px;
+}
+.gp-ticker-num {
+  font-family: var(--gp-font-data);
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.gp-ticker-label {
+  color: var(--gp-mist);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+.gp-ticker-num.green { color: var(--gp-green); }
+.gp-ticker-num.amber { color: var(--gp-amber); }
+.gp-ticker-num.red { color: var(--gp-red); }
+.gp-ticker-num.brass { color: var(--gp-brass); }
+
+/* ---------- section heading ---------- */
+.gp-section-label {
+  font-size: 12.5px;
+  color: var(--gp-mist);
+  margin: 22px 4px 8px;
+}
+
+/* ---------- queue: flap rows ---------- */
+.gp-board {
+  border: 1px solid var(--gp-hairline);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.gp-row {
+  display: grid;
+  grid-template-columns: 6px 1.1fr 1.6fr 1.4fr auto;
+  align-items: center;
+  background: var(--gp-panel);
+  border-bottom: 1px solid var(--gp-hairline);
+  transition: background .5s ease;
+}
+.gp-row:last-child { border-bottom: none; }
+.gp-row.flip { animation: gp-flip 420ms ease; }
+@keyframes gp-flip {
+  0%   { transform: perspective(600px) rotateX(0deg); }
+  45%  { transform: perspective(600px) rotateX(-14deg); filter: brightness(1.25); }
+  100% { transform: perspective(600px) rotateX(0deg); }
+}
+
+.gp-sla-bar { align-self: stretch; }
+.gp-sla-bar.green { background: var(--gp-green); }
+.gp-sla-bar.amber { background: var(--gp-amber); }
+.gp-sla-bar.red { background: var(--gp-red); }
+.gp-sla-bar.closed { background: var(--gp-hairline); }
+
+.gp-flight {
+  padding: 14px 16px;
+}
+.gp-flight-num {
+  font-family: var(--gp-font-data);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--gp-brass);
+}
+.gp-route {
+  font-size: 12.5px;
+  color: var(--gp-mist);
+  margin-top: 3px;
+}
+.gp-time {
+  font-family: var(--gp-font-data);
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  margin-top: 3px;
+}
+
+.gp-passenger {
+  padding: 14px 10px;
+}
+.gp-passenger-name { font-size: 14.5px; }
+.gp-service {
+  font-size: 12.5px;
+  color: var(--gp-mist);
+  margin-top: 3px;
+}
+
+.gp-status {
+  padding: 14px 10px;
+}
+.gp-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--gp-hairline);
+  color: var(--gp-mist);
+}
+.gp-status-dot { width: 6px; height: 6px; border-radius: 999px; background: currentColor; }
+.gp-status-pill.accepted { color: var(--gp-brass); border-color: var(--gp-brass-soft); }
+.gp-status-pill.in_progress { color: #7fb8e0; border-color: #35507a; }
+.gp-status-pill.completed { color: var(--gp-green); border-color: #1f5b41; }
+.gp-status-pill.failed, .gp-status-pill.no_show { color: var(--gp-red); border-color: #6f2b28; }
+
+.gp-actions { padding: 10px 16px; display: flex; gap: 8px; }
+.gp-btn {
+  font-family: var(--gp-font-ui);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--gp-brass-soft);
+  background: transparent;
+  color: var(--gp-brass);
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+  white-space: nowrap;
+}
+.gp-btn:hover { background: var(--gp-brass); color: var(--gp-ink); }
+.gp-btn.danger { border-color: #6f2b28; color: var(--gp-red); }
+.gp-btn.danger:hover { background: var(--gp-red); color: var(--gp-ink); }
+.gp-btn:disabled { opacity: .35; cursor: default; }
+.gp-btn:disabled:hover { background: transparent; color: var(--gp-brass); }
+
+.gp-empty {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--gp-mist);
+  font-size: 14px;
+}
+
+/* ---------- login ---------- */
+.gp-login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gp-login-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--gp-panel-raised);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 12px;
+  padding: 32px 28px;
+}
+.gp-login-title {
+  font-family: var(--gp-font-data);
+  color: var(--gp-brass);
+  font-size: 15px;
+  letter-spacing: .04em;
+  margin-bottom: 4px;
+}
+.gp-login-sub { color: var(--gp-mist); font-size: 13px; margin-bottom: 22px; }
+.gp-field { margin-bottom: 14px; }
+.gp-field label { display: block; font-size: 12.5px; color: var(--gp-mist); margin-bottom: 6px; }
+.gp-field input {
+  width: 100%;
+  background: var(--gp-ink);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 7px;
+  padding: 10px 12px;
+  color: var(--gp-paper);
+  font-family: var(--gp-font-ui);
+  font-size: 14px;
+}
+.gp-field input:focus { outline: none; border-color: var(--gp-brass); }
+.gp-login-btn {
+  width: 100%;
+  margin-top: 6px;
+  padding: 11px;
+  background: var(--gp-brass);
+  color: var(--gp-ink);
+  border: none;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+.gp-login-btn:disabled { opacity: .5; cursor: default; }
+.gp-error { color: var(--gp-red); font-size: 12.5px; margin-top: 10px; }
+
+/* ---------- reports / settlements ---------- */
+.gp-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.gp-card {
+  background: var(--gp-panel);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 10px;
+  padding: 16px;
+}
+.gp-card-label { color: var(--gp-mist); font-size: 12.5px; margin-bottom: 8px; }
+.gp-card-value {
+  font-family: var(--gp-font-data);
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.gp-table { width: 100%; border-collapse: collapse; }
+.gp-table th {
+  text-align: right;
+  font-size: 12px;
+  color: var(--gp-mist);
+  font-weight: 500;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--gp-hairline);
+}
+.gp-table td {
+  padding: 12px;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--gp-hairline);
+}
+.gp-table tr:last-child td { border-bottom: none; }
+
+@media (max-width: 720px) {
+  .gp-row { grid-template-columns: 6px 1fr auto; }
+  .gp-passenger { display: none; }
+  .gp-ticker { grid-template-columns: repeat(2, 1fr); }
+  .gp-cards { grid-template-columns: 1fr; }
+}
