@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
-import { supabase } from '../../lib/supabaseClient';
-import { getMySupplierId } from '../../lib/groundPortal';
-import '../../styles/ground-portal.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { getMySupplierId } from "../lib/groundPortal";
+import "../styles/ground-portal.css";
 
-export default function GroundPortalLogin() {
+export function GroundPortalLoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,20 +18,20 @@ export default function GroundPortalLogin() {
 
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
     if (authError) {
-      setError('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      setError("البريد الإلكتروني أو كلمة المرور غير صحيحة");
       setLoading(false);
       return;
     }
 
     const supplierId = await getMySupplierId();
     if (!supplierId) {
-      setError('هذا الحساب غير مرتبط بأي مورد خدمة أرضية');
+      setError("هذا الحساب غير مرتبط بأي مورد خدمة أرضية");
       await supabase.auth.signOut();
       setLoading(false);
       return;
     }
 
-    navigate({ to: '/ground-portal/queue' });
+    navigate("/ground-portal/queue");
   }
 
   return (
@@ -65,7 +65,7 @@ export default function GroundPortalLogin() {
           </div>
           {error && <div className="gp-error">{error}</div>}
           <button className="gp-login-btn" type="submit" disabled={loading}>
-            {loading ? 'جارِ الدخول...' : 'دخول'}
+            {loading ? "جارِ الدخول..." : "دخول"}
           </button>
         </form>
       </div>

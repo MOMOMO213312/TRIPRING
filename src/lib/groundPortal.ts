@@ -2,17 +2,26 @@
 // Reuses the existing TripRing Supabase client/session (same project,
 // same auth.users — a supplier login is just a normal Supabase Auth user
 // who has a row in `supplier_users`).
+//
+// supplier_users / supplier_settlements / v_ground_operations_queue /
+// v_supplier_service_report / supplier_update_execution_status were added
+// directly on the production DB as part of the Phase 5.1/5.2 orchestration
+// work and were never added to src/types/database.ts (which is hand-
+// maintained, not generated) — same convention already established in
+// src/lib/orchestration.ts for suppliers/order_items/etc. Typed locally
+// here rather than touching the shared file, per "لا نكسر الموجود".
 
-import { supabase } from './supabaseClient'; // existing tripring-fresh client
+import { supabase } from "./supabase";
 
-export type SlaState = 'green' | 'amber' | 'red' | 'closed';
+export type SlaState = "green" | "amber" | "red" | "closed";
 export type ExecutionStatus =
-  | 'not_started'
-  | 'accepted'
-  | 'in_progress'
-  | 'completed'
-  | 'failed'
-  | 'no_show';
+  | "not_started"
+  | "accepted"
+  | "in_progress"
+  | "completed"
+  | "failed"
+  | "no_show";
+export type SettlementStatus = "draft" | "pending" | "paid" | "disputed" | "cancelled";
 
 export interface GroundQueueRow {
   order_item_id: string;
@@ -31,11 +40,15 @@ export interface GroundQueueRow {
   customer_phone: string | null;
   flight_number: string | null;
   airline_code: string | null;
+  operating_airline_code: string | null;
   from_airport: string | null;
   to_airport: string | null;
   departure_date: string | null;
   departure_time: string | null;
+  arrival_date: string | null;
+  arrival_time: string | null;
   scheduled_departure_at: string | null;
+  scheduled_arrival_at: string | null;
   sla_hours: number | null;
   sla_deadline: string | null;
   sla_state: SlaState;
@@ -53,17 +66,23 @@ export interface SupplierReportRow {
 
 export interface SettlementRow {
   id: string;
+  supplier_id: string;
+  contract_id: string | null;
   period_start: string;
   period_end: string;
   currency: string;
   gross_customer_amount: number;
   supplier_cost_total: number;
+  platform_margin_total: number;
   amount_due_supplier: number;
   amount_paid: number;
   items_count: number;
-  status: string;
+  status: SettlementStatus;
   generated_at: string;
+  generated_by: string | null;
   paid_at: string | null;
+  payment_ref: string | null;
+  notes: string | null;
 }
 
 /** Which supplier does the currently logged-in user belong to? */
@@ -71,43 +90,46 @@ export async function getMySupplierId(): Promise<string | null> {
   const { data: userData } = await supabase.auth.getUser();
   if (!userData.user) return null;
   const { data, error } = await supabase
-    .from('supplier_users')
-    .select('supplier_id')
-    .eq('user_id', userData.user.id)
+    .from("supplier_users")
+    .select("supplier_id")
+    .eq("user_id", userData.user.id)
     .maybeSingle();
   if (error || !data) return null;
-  return data.supplier_id;
+  return (data as { supplier_id: string }).supplier_id;
 }
 
 /** Today's + all open queue for the logged-in supplier (RLS already scopes this). */
 export async function fetchGroundQueue(): Promise<GroundQueueRow[]> {
   const { data, error } = await supabase
-    .from('v_ground_operations_queue')
-    .select('*')
-    .order('scheduled_departure_at', { ascending: true, nullsFirst: false });
+    .from("v_ground_operations_queue")
+    .select("*")
+    .order("scheduled_departure_at", { ascending: true, nullsFirst: false });
   if (error) throw error;
-  return data as GroundQueueRow[];
+  return (data ?? []) as GroundQueueRow[];
 }
 
 /** Accept / Start / Complete / Fail / No-show — the only valid transitions. */
 export async function updateExecutionStatus(
   orderItemId: string,
   newStatus: ExecutionStatus,
-  note?: string
+  note?: string,
 ) {
-  const { data, error } = await supabase.rpc('supplier_update_execution_status', {
-    p_order_item_id: orderItemId,
-    p_new_status: newStatus,
-    p_note: note ?? null,
-  });
+  const { data, error } = await supabase.rpc(
+    "supplier_update_execution_status",
+    {
+      p_order_item_id: orderItemId,
+      p_new_status: newStatus,
+      p_note: note ?? null,
+    } as never,
+  );
   if (error) throw error;
   return data;
 }
 
 export async function fetchSupplierReport(): Promise<SupplierReportRow | null> {
   const { data, error } = await supabase
-    .from('v_supplier_service_report')
-    .select('*')
+    .from("v_supplier_service_report")
+    .select("*")
     .maybeSingle();
   if (error) throw error;
   return data as SupplierReportRow | null;
@@ -115,9 +137,9 @@ export async function fetchSupplierReport(): Promise<SupplierReportRow | null> {
 
 export async function fetchSettlements(): Promise<SettlementRow[]> {
   const { data, error } = await supabase
-    .from('supplier_settlements')
-    .select('*')
-    .order('period_end', { ascending: false });
+    .from("supplier_settlements")
+    .select("*")
+    .order("period_end", { ascending: false });
   if (error) throw error;
-  return data as SettlementRow[];
+  return (data ?? []) as SettlementRow[];
 }

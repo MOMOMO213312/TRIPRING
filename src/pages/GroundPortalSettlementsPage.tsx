@@ -1,23 +1,23 @@
-import { useEffect, useState } from 'react';
-import GroundPortalShell from './GroundPortalShell';
-import { fetchSettlements, fetchGroundQueue, type SettlementRow } from '../../lib/groundPortal';
-import '../../styles/ground-portal.css';
+import { useEffect, useState } from "react";
+import { GroundPortalShell } from "../components/groundPortal/GroundPortalShell";
+import { fetchSettlements, fetchGroundQueue, type SettlementRow, type GroundQueueRow } from "../lib/groundPortal";
+import "../styles/ground-portal.css";
 
 const STATUS_LABEL: Record<string, string> = {
-  draft: 'مسودة',
-  pending: 'قيد المراجعة',
-  paid: 'مدفوعة',
-  disputed: 'محل نزاع',
-  cancelled: 'ملغاة',
+  draft: "مسودة",
+  pending: "قيد المراجعة",
+  paid: "مدفوعة",
+  disputed: "محل نزاع",
+  cancelled: "ملغاة",
 };
 
 function money(n: number, currency: string) {
-  return `${n.toLocaleString('ar-EG', { minimumFractionDigits: 2 })} ${currency}`;
+  return `${n.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} ${currency}`;
 }
 
-export default function GroundPortalSettlements() {
+export function GroundPortalSettlementsPage() {
   const [rows, setRows] = useState<SettlementRow[]>([]);
-  const [queue, setQueue] = useState<any[]>([]);
+  const [queue, setQueue] = useState<GroundQueueRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

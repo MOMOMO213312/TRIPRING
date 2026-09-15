@@ -73,6 +73,20 @@ const TripGoResultsPage = lazy(() =>
 const TripGoDetailsPage = lazy(() =>
   import("./pages/TripGoDetailsPage").then((m) => ({ default: m.TripGoDetailsPage })),
 );
+const GroundPortalLoginPage = lazy(() =>
+  import("./pages/GroundPortalLoginPage").then((m) => ({ default: m.GroundPortalLoginPage })),
+);
+const GroundPortalQueuePage = lazy(() =>
+  import("./pages/GroundPortalQueuePage").then((m) => ({ default: m.GroundPortalQueuePage })),
+);
+const GroundPortalReportsPage = lazy(() =>
+  import("./pages/GroundPortalReportsPage").then((m) => ({ default: m.GroundPortalReportsPage })),
+);
+const GroundPortalSettlementsPage = lazy(() =>
+  import("./pages/GroundPortalSettlementsPage").then((m) => ({
+    default: m.GroundPortalSettlementsPage,
+  })),
+);
 
 function PageLoader() {
   return (
@@ -113,6 +127,12 @@ export default function App() {
               <Route path="terms" element={<TermsPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
             </Route>
+
+            {/* Ground Provider Portal — its own chrome, outside the customer Layout */}
+            <Route path="ground-portal/login" element={<GroundPortalLoginPage />} />
+            <Route path="ground-portal/queue" element={<GroundPortalQueuePage />} />
+            <Route path="ground-portal/reports" element={<GroundPortalReportsPage />} />
+            <Route path="ground-portal/settlements" element={<GroundPortalSettlementsPage />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
