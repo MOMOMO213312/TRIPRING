@@ -8,12 +8,21 @@ import { NotificationBell } from "../components/notifications/NotificationBell";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { fetchAirports } from "../lib/api";
-import { affiliateReferralLink, affiliateTierLabel, fetchMyAffiliateProfile, resellerSubscriptionIsActive } from "../lib/affiliate";
+import {
+  affiliateReferralLink,
+  affiliateTierLabel,
+  fetchMyAffiliateProfile,
+  fetchMyCommissionLedger,
+  fetchMyReferredBookings,
+  REFERRAL_BOOKING_STATUS_LABELS,
+  resellerSubscriptionIsActive,
+  type AffiliateLedgerEntry,
+} from "../lib/affiliate";
 import { signOut } from "../lib/auth";
 import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { friendlyErrorMessage } from "../lib/errors";
 import { whatsAppLink } from "../lib/utils";
-import type { AffiliateResellerSubscriptionRow, AffiliateRow, AirportRow } from "../types/database";
+import type { AffiliateResellerSubscriptionRow, AffiliateRow, AirportRow, BookingRow } from "../types/database";
 
 export function AffiliateDashboardPage() {
   return (
@@ -144,6 +153,8 @@ function AffiliateBody() {
             <StatCard label="إجمالي الأرباح" value={`$${affiliate.total_earned}`} highlight />
           </div>
 
+          <ReferralActivityPanel affiliateId={affiliate.id} />
+
           <Card>
             <h3 className="font-bold text-slate-900">إزاي تكسب أكتر؟</h3>
             <ul className="mt-3 space-y-2 text-sm text-slate-600">
@@ -156,6 +167,110 @@ function AffiliateBody() {
         <ResellerProgramTab affiliateId={affiliate.id} />
       )}
     </div>
+  );
+}
+
+/** Real orchestration data for the referral program: the affiliate's actual
+ *  referred bookings (live fulfillment status) and their real commission
+ *  ledger (commission events + reversals) — sourced from bookings/
+ *  financial_transactions directly, not the static counters on `affiliates`. */
+function ReferralActivityPanel({ affiliateId }: { affiliateId: string }) {
+  const [bookings, setBookings] = useState<BookingRow[] | null>(null);
+  const [ledger, setLedger] = useState<AffiliateLedgerEntry[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [view, setView] = useState<"bookings" | "ledger">("bookings");
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([fetchMyReferredBookings(affiliateId), fetchMyCommissionLedger(affiliateId)])
+      .then(([b, l]) => {
+        if (cancelled) return;
+        setBookings(b);
+        setLedger(l);
+      })
+      .catch((e) => {
+        if (!cancelled) setError(friendlyErrorMessage(e, "تعذر تحميل نشاط الإحالة", "ReferralActivityPanel"));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [affiliateId]);
+
+  if (error) return <p className="text-sm text-red-600">{error}</p>;
+
+  return (
+    <Card>
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-slate-900">نشاط الإحالة</h3>
+        <div className="flex gap-1 rounded-lg bg-slate-100 p-0.5 text-xs font-semibold">
+          <button
+            type="button"
+            onClick={() => setView("bookings")}
+            className={`rounded-md px-2.5 py-1 transition ${view === "bookings" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
+          >
+            الحجوزات
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("ledger")}
+            className={`rounded-md px-2.5 py-1 transition ${view === "ledger" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"}`}
+          >
+            سجل العمولات
+          </button>
+        </div>
+      </div>
+
+      {bookings === null || ledger === null ? (
+        <p className="mt-3 text-sm text-slate-500">جاري التحميل...</p>
+      ) : view === "bookings" ? (
+        bookings.length === 0 ? (
+          <p className="mt-3 text-sm text-slate-500">لسه مفيش حجوزات من رابطك.</p>
+        ) : (
+          <ul className="mt-3 divide-y divide-slate-100">
+            {bookings.map((b) => (
+              <li key={b.id} className="flex items-center justify-between py-2.5 text-sm">
+                <div>
+                  <p className="font-semibold text-slate-900">حجز #{b.booking_number}</p>
+                  <p className="text-xs text-slate-500">{b.customer_name}</p>
+                </div>
+                <span
+                  className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                    b.status === "paid" || b.status === "ticket_issued"
+                      ? "bg-emerald-50 text-emerald-700"
+                      : b.status === "cancelled"
+                        ? "bg-red-50 text-red-700"
+                        : "bg-amber-50 text-amber-700"
+                  }`}
+                >
+                  {REFERRAL_BOOKING_STATUS_LABELS[b.status]}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )
+      ) : ledger.length === 0 ? (
+        <p className="mt-3 text-sm text-slate-500">لسه مفيش عمولات متسجلة.</p>
+      ) : (
+        <ul className="mt-3 divide-y divide-slate-100">
+          {ledger.map((entry) => (
+            <li key={entry.id} className="flex items-center justify-between py-2.5 text-sm">
+              <div>
+                <p className="font-semibold text-slate-900">
+                  {entry.txn_type === "affiliate_reversal" ? "استرجاع عمولة" : "عمولة إحالة"}
+                </p>
+                <p className="text-xs text-slate-500">{new Date(entry.occurred_at).toLocaleDateString("ar-EG")}</p>
+              </div>
+              <span
+                className={`font-latin font-bold ${entry.amount < 0 ? "text-red-600" : "text-emerald-700"}`}
+              >
+                {entry.amount < 0 ? "" : "+"}
+                {entry.amount} {entry.currency}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
   );
 }
 

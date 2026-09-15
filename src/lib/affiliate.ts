@@ -4,9 +4,67 @@ import type {
   AffiliateResaleOrderRow,
   AffiliateResellerSubscriptionRow,
   AffiliateRow,
+  BookingRow,
+  BookingStatus,
   PaymentMethod,
   ResellerSubscriptionPlanRow,
 } from "../types/database";
+
+// ── Referral orchestration data (Phase 7.5) ─────────────────────────────────
+// financial_transactions is the live money ledger (Phase 6) — it isn't in the
+// generated types/database.ts, typed locally here rather than touching that
+// shared/stale file, same convention as lib/orchestration.ts.
+
+export type AffiliateLedgerTxnType = "affiliate_commission" | "affiliate_reversal";
+
+export type AffiliateLedgerEntry = {
+  id: string;
+  txn_type: AffiliateLedgerTxnType;
+  booking_id: string | null;
+  amount: number;
+  currency: string;
+  occurred_at: string;
+  notes: string | null;
+  reverses_id: string | null;
+};
+
+export const REFERRAL_BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
+  new: "جديد",
+  contacted: "تم التواصل",
+  awaiting_payment: "بانتظار الدفع",
+  payment_uploaded: "إثبات الدفع مرفوع",
+  paid: "مدفوع",
+  ticket_issued: "تم إصدار التذكرة",
+  cancelled: "ملغي",
+};
+
+/** The affiliate's own referred bookings (bookings.referred_by_affiliate_id),
+ *  with their real, current fulfillment status — not just the static
+ *  total_referred_bookings counter on `affiliates`. */
+export async function fetchMyReferredBookings(affiliateId: string): Promise<BookingRow[]> {
+  const { data, error } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("referred_by_affiliate_id", affiliateId)
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as BookingRow[];
+}
+
+/** The affiliate's own real commission ledger — every commission event and
+ *  any reversal (cancellation/refund), sourced from financial_transactions,
+ *  the single source of truth for money. total_earned on `affiliates` is a
+ *  running counter derived from this; this is the actual auditable trail. */
+export async function fetchMyCommissionLedger(affiliateId: string): Promise<AffiliateLedgerEntry[]> {
+  const { data, error } = await supabase
+    .from("financial_transactions")
+    .select("id, txn_type, booking_id, amount, currency, occurred_at, notes, reverses_id")
+    .eq("affiliate_id", affiliateId)
+    .in("txn_type", ["affiliate_commission", "affiliate_reversal"])
+    .order("occurred_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AffiliateLedgerEntry[];
+}
 
 /** Returns the signed-in user's affiliate record, or null if they aren't
  *  registered as an affiliate yet. Affiliate rows are created by an admin
