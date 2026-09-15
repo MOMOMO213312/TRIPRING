@@ -382,6 +382,22 @@ export async function reassignOrderItem(orderItemId: string, reason: string): Pr
 }
 
 /**
+ * Marks a non-flight (service) item as actually delivered. Temporary admin-only
+ * action until the ground-provider portal (Phase 7.7) can call this itself.
+ * Only legal confirmed -> fulfilled; flight items are advanced automatically by
+ * trg_booking_fulfillment_from_status on ticket issuance, never through this path.
+ */
+export async function markServiceItemFulfilled(orderItemId: string, reason?: string): Promise<void> {
+  const user = await getCurrentUser();
+  const { error } = await supabase.rpc("mark_service_item_fulfilled", {
+    p_order_item_id: orderItemId,
+    p_changed_by: user?.id ?? null,
+    p_reason: reason ?? "service marked delivered by admin",
+  } as never);
+  if (error) throw new Error(error.message);
+}
+
+/**
  * Item-level statuses. These MUST match the live
  * `order_items_fulfillment_status_check` constraint exactly — verified
  * against the production DB, not assumed.

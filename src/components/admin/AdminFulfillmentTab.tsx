@@ -9,6 +9,7 @@ import {
   fetchOrdersNeedingAttention,
   FULFILLMENT_STATUS_LABELS,
   FULFILLMENT_SUMMARY_LABELS,
+  markServiceItemFulfilled,
   reassignOrderItem,
   type NegativeMarginItemRow,
   type OrderItemRow,
@@ -183,6 +184,20 @@ function OrderItemsPanel({ orderId, onChanged }: { orderId: string; onChanged: (
     }
   }
 
+  async function handleMarkDelivered(item: OrderItemRow) {
+    setBusyId(item.id);
+    setError(null);
+    try {
+      await markServiceItemFulfilled(item.id);
+      load();
+      onChanged();
+    } catch (e) {
+      setError(friendlyErrorMessage(e, "تعذر تسجيل تنفيذ الخدمة", "AdminFulfillmentTab.markDelivered"));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   if (loading) return <p className="text-sm text-slate-500">جاري التحميل...</p>;
 
   return (
@@ -194,7 +209,7 @@ function OrderItemsPanel({ orderId, onChanged }: { orderId: string; onChanged: (
             <span className="font-semibold">{item.reference_label ?? item.item_type}</span>
             <span
               className={`rounded-full px-2 py-0.5 font-semibold ${
-                item.fulfillment_status === "fulfilled" || item.fulfillment_status === "confirmed"
+                item.fulfillment_status === "fulfilled"
                   ? "bg-emerald-100 text-emerald-800"
                   : item.fulfillment_status === "failed"
                     ? "bg-red-100 text-red-800"
@@ -226,6 +241,17 @@ function OrderItemsPanel({ orderId, onChanged }: { orderId: string; onChanged: (
                 className="text-amber-700 underline disabled:opacity-50"
               >
                 {busyId === item.id ? "جاري البحث..." : "بحث عن مورد بديل (Fallback)"}
+              </button>
+            ) : null}
+            {item.item_type !== "flight" && item.fulfillment_status === "confirmed" ? (
+              <button
+                type="button"
+                disabled={busyId === item.id}
+                onClick={() => handleMarkDelivered(item)}
+                className="text-emerald-700 underline disabled:opacity-50"
+                title="إجراء مؤقت لحد ما بورتال المزوّد يجي في المرحلة القادمة"
+              >
+                {busyId === item.id ? "جاري التسجيل..." : "✅ تسجيل تنفيذ الخدمة"}
               </button>
             ) : null}
             <button type="button" className="text-slate-500 underline" onClick={() => setLogItem(item.id)}>
