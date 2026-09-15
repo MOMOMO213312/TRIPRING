@@ -98,10 +98,18 @@ export async function getMySupplierId(): Promise<string | null> {
   return (data as { supplier_id: string }).supplier_id;
 }
 
-/** Today's + all open queue for the logged-in supplier (RLS already scopes this). */
+/**
+ * Today's + all open queue for the logged-in supplier.
+ *
+ * SECURITY: goes through get_my_ground_operations_queue() (SECURITY DEFINER
+ * RPC), not a direct select on v_ground_operations_queue. The raw view has
+ * no SELECT grant for `authenticated`/`anon` (locked down after the
+ * cross-supplier exposure incident) — the RPC is the only sanctioned
+ * provider-facing read path. Do not switch this back to `.from(view)`.
+ */
 export async function fetchGroundQueue(): Promise<GroundQueueRow[]> {
   const { data, error } = await supabase
-    .from("v_ground_operations_queue")
+    .rpc("get_my_ground_operations_queue", { p_status_filter: null } as never)
     .select("*")
     .order("scheduled_departure_at", { ascending: true, nullsFirst: false });
   if (error) throw error;
@@ -126,9 +134,14 @@ export async function updateExecutionStatus(
   return data;
 }
 
+/**
+ * SECURITY: goes through get_my_supplier_service_report() (SECURITY DEFINER
+ * RPC), not a direct select on v_supplier_service_report — same reasoning
+ * as fetchGroundQueue() above. The raw view has no grant for authenticated.
+ */
 export async function fetchSupplierReport(): Promise<SupplierReportRow | null> {
   const { data, error } = await supabase
-    .from("v_supplier_service_report")
+    .rpc("get_my_supplier_service_report" as never)
     .select("*")
     .maybeSingle();
   if (error) throw error;
