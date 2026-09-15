@@ -14,13 +14,86 @@ import { formatDate, formatPrice } from "../lib/utils";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
-import { BOOKING_SERVICE_STATUS_LABELS, type BookingLookupResult, type BookingServiceStatus } from "../types/database";
+import {
+  BOOKING_SERVICE_STATUS_LABELS,
+  JOURNEY_ITEM_STATUS_LABELS,
+  JOURNEY_SUMMARY_LABELS,
+  type BookingLookupResult,
+  type BookingServiceStatus,
+} from "../types/database";
 
 function serviceStatusTone(status: BookingServiceStatus): "default" | "flash" | "empty_seat" | "urgent" {
   if (status === "confirmed_with_airline") return "empty_seat";
   if (status === "failed") return "urgent";
   if (status === "refunded") return "default";
   return "flash"; // pending_confirmation
+}
+
+const ITEM_TYPE_ICON: Record<string, string> = {
+  flight: "✈",
+  service: "🤝",
+  transport_zone: "🚗",
+  package: "🎁",
+  fare_tier: "⭐",
+};
+
+function journeyItemTone(status: string): "default" | "flash" | "empty_seat" | "urgent" {
+  if (status === "fulfilled" || status === "confirmed") return "empty_seat";
+  if (status === "cancelled") return "default";
+  // `failed` / `reassigning` are recoverable states the Fallback Engine is
+  // working on — shown as in-progress (amber), not as an error (red), to
+  // match the reassuring customer-facing copy.
+  return "flash";
+}
+
+/**
+ * MY JOURNEY — the customer's window onto the orchestration engine.
+ *
+ * Before this, the customer saw only bookings.status while the engine tracked
+ * a totally separate reality per order item. A supplier failing and the
+ * Fallback Engine recovering it was completely invisible here.
+ */
+function JourneyPanel({
+  journey,
+  currency,
+}: {
+  journey: NonNullable<BookingLookupResult["journey"]>;
+  currency: string;
+}) {
+  if (journey.items.length === 0) return null;
+
+  return (
+    <div className="mt-4 border-t border-slate-100 pt-4">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm font-bold text-slate-800">رحلتك</p>
+        <span className="text-xs font-semibold text-[#0C7BB3]">
+          {JOURNEY_SUMMARY_LABELS[journey.fulfillment_summary] ?? journey.fulfillment_summary}
+        </span>
+      </div>
+      <ul className="space-y-2">
+        {journey.items.map((item, i) => (
+          <li key={i} className="rounded-lg border border-slate-100 bg-slate-50 p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-sm font-medium text-slate-800">
+                {ITEM_TYPE_ICON[item.item_type] ?? "•"} {item.label}
+                {item.quantity > 1 ? ` × ${item.quantity}` : ""}
+              </span>
+              <Badge tone={journeyItemTone(item.fulfillment_status)}>
+                {JOURNEY_ITEM_STATUS_LABELS[item.fulfillment_status] ?? item.fulfillment_status}
+              </Badge>
+            </div>
+            <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+              <span>{item.supplier_name ?? "جاري تحديد المزوّد"}</span>
+              <span>{formatPrice(item.customer_price, currency)}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 text-xs text-slate-400">
+        كل عنصر في رحلتك بيتأكد لوحده. لو حصلت مشكلة في عنصر، بندوّر على بديل تلقائيًا من غير ما نلغي باقي الرحلة.
+      </p>
+    </div>
+  );
 }
 
 type PrefillState = { bookingNumber?: string; contact?: string; autoSearch?: boolean };
@@ -164,6 +237,10 @@ export function MyTripsPage() {
               </ul>
             </div>
           ) : null}
+          {booking.journey ? <JourneyPanel journey={booking.journey} currency={booking.currency} /> : null}
+          {/* Legacy per-service view. Kept while booking_services remains the
+              source of truth for the airline-confirmation status, which the
+              orchestration layer does not yet model. */}
           {booking.services.length > 0 ? (
             <div className="mt-4 border-t border-slate-100 pt-4">
               <p className="mb-2 text-sm font-medium text-slate-700">خدمات إضافية مطلوبة</p>

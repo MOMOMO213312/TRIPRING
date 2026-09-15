@@ -995,6 +995,56 @@ export type BookingLookupResult = {
   travelers: { full_name: string; traveler_type: string }[];
   ticket_url: string | null;
   services: { type: string; name: string; quantity: number; unit_price: number; status: BookingServiceStatus }[];
+  /**
+   * The orchestration engine's real view of this booking (order_items /
+   * orders.fulfillment_summary). Null for bookings created before the
+   * orders layer existed, so always guard before reading it.
+   *
+   * Deliberately carries NO supplier_cost / margin_amount — those are
+   * internal commercial data and are not selected server-side.
+   */
+  journey: {
+    order_number: number;
+    fulfillment_summary: string;
+    items: {
+      item_type: string;
+      label: string;
+      quantity: number;
+      customer_price: number;
+      fulfillment_status: string;
+      supplier_name: string | null;
+    }[];
+  } | null;
+};
+
+/**
+ * Customer-facing wording for order_items.fulfillment_status.
+ *
+ * Deliberately NOT the same copy the admin sees. `failed` and `reassigning`
+ * are both internal states the Fallback Engine is actively recovering from —
+ * telling a customer "فشل" while the engine is mid-recovery causes panic and
+ * support calls for something that usually self-heals. The customer is told
+ * the truth (something is being re-arranged) without the alarming internal
+ * label. The admin Fulfillment Monitor still shows the raw state.
+ */
+export const JOURNEY_ITEM_STATUS_LABELS: Record<string, string> = {
+  pending_assignment: "جاري الترتيب",
+  assigned: "جاري التأكيد",
+  confirmed: "تم التأكيد",
+  fulfilled: "مؤكد ✓",
+  failed: "بنعيد ترتيبها لك",
+  reassigning: "بنعيد ترتيبها لك",
+  cancelled: "ملغية",
+};
+
+export const JOURNEY_SUMMARY_LABELS: Record<string, string> = {
+  pending_assignment: "جاري ترتيب رحلتك",
+  partially_assigned: "جاري ترتيب رحلتك",
+  fully_assigned: "جاري تأكيد كل عناصر رحلتك",
+  partially_fulfilled: "تم تأكيد جزء من رحلتك",
+  fully_fulfilled: "رحلتك مؤكدة بالكامل ✓",
+  needs_attention: "فريقنا بيراجع عنصر في رحلتك",
+  cancelled: "ملغية",
 };
 
 /**

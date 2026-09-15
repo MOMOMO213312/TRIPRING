@@ -8,6 +8,7 @@ import {
   fetchOrderItemStatusLog,
   fetchOrdersNeedingAttention,
   FULFILLMENT_STATUS_LABELS,
+  FULFILLMENT_SUMMARY_LABELS,
   reassignOrderItem,
   type NegativeMarginItemRow,
   type OrderItemRow,
@@ -92,7 +93,7 @@ export function AdminFulfillmentTab() {
                   </p>
                   <p className="text-xs text-slate-500">
                     {o.customer_phone} · {o.total_price} {o.currency ?? ""} ·{" "}
-                    {FULFILLMENT_STATUS_LABELS[o.fulfillment_summary] ?? o.fulfillment_summary}
+                    {FULFILLMENT_SUMMARY_LABELS[o.fulfillment_summary] ?? o.fulfillment_summary}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -193,7 +194,7 @@ function OrderItemsPanel({ orderId, onChanged }: { orderId: string; onChanged: (
             <span className="font-semibold">{item.reference_label ?? item.item_type}</span>
             <span
               className={`rounded-full px-2 py-0.5 font-semibold ${
-                item.fulfillment_status === "confirmed"
+                item.fulfillment_status === "fulfilled" || item.fulfillment_status === "confirmed"
                   ? "bg-emerald-100 text-emerald-800"
                   : item.fulfillment_status === "failed"
                     ? "bg-red-100 text-red-800"
@@ -217,7 +218,7 @@ function OrderItemsPanel({ orderId, onChanged }: { orderId: string; onChanged: (
                 تعيين مورّد
               </button>
             ) : null}
-            {item.fulfillment_status === "failed" || item.fulfillment_status === "fallback_in_progress" ? (
+            {item.fulfillment_status === "failed" || item.fulfillment_status === "reassigning" ? (
               <button
                 type="button"
                 disabled={busyId === item.id}

@@ -381,12 +381,33 @@ export async function reassignOrderItem(orderItemId: string, reason: string): Pr
   return data as string;
 }
 
+/**
+ * Item-level statuses. These MUST match the live
+ * `order_items_fulfillment_status_check` constraint exactly — verified
+ * against the production DB, not assumed.
+ */
 export const FULFILLMENT_STATUS_LABELS: Record<string, string> = {
   pending_assignment: "بانتظار تعيين مورّد",
-  assigned: "تم التعيين",
-  confirmed: "✅ تم التأكيد",
+  assigned: "تم التعيين لمورّد",
+  confirmed: "أكّده المورّد",
+  fulfilled: "✅ تم التنفيذ",
   failed: "❌ فشل",
-  fallback_in_progress: "جاري البحث عن بديل",
+  reassigning: "جاري البحث عن بديل (Fallback)",
+  cancelled: "ملغي",
+};
+
+/**
+ * Order-level summary — a DIFFERENT value set from the item-level one above
+ * (`orders_fulfillment_summary_check`). Computed by
+ * recompute_order_fulfillment_summary() from all the order's items.
+ */
+export const FULFILLMENT_SUMMARY_LABELS: Record<string, string> = {
+  pending_assignment: "بانتظار تعيين الموردين",
+  partially_assigned: "تعيين جزئي",
+  fully_assigned: "تم تعيين كل الموردين",
+  partially_fulfilled: "تم تنفيذ جزء من الطلب",
+  fully_fulfilled: "✅ تم تنفيذ الطلب بالكامل",
+  needs_attention: "⚠️ يحتاج تدخل",
   cancelled: "ملغي",
 };
 
