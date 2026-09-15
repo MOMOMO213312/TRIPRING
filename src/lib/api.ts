@@ -1,3 +1,4 @@
+import { attributeBookingToStoredClick } from "./affiliateAttribution";
 import { getCurrentUser } from "./auth";
 import { PLATFORM_WHATSAPP } from "./constants";
 import { fetchAllowedMembershipTiers } from "./membership";
@@ -536,6 +537,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
   if (error) throw new Error(error.message);
   const row = (Array.isArray(data) ? data[0] : data) as CreateBookingResult | undefined;
   if (!row?.booking_number) throw new Error("لم يتم إنشاء الحجز");
+  void attributeBookingToStoredClick(row.booking_number); // fire-and-forget, never blocks the booking
   return { ...row, booking_number: String(row.booking_number) };
 }
 
