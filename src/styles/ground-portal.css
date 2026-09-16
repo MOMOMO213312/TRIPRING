@@ -7,7 +7,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
 
-:root[data-ground-portal] {
+[data-ground-portal] {
   --gp-ink: #0b1526;
   --gp-panel: #101b30;
   --gp-panel-raised: #16233d;
