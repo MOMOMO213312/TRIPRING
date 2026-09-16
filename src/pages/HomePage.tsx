@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { BetaNotice } from "../components/BetaNotice";
 import { BudgetExplorer } from "../components/BudgetExplorer";
 import { DealCarousel } from "../components/DealCarousel";
 import { TravelToSection } from "../components/TravelToSection";
@@ -98,6 +99,7 @@ export function HomePage() {
 
   return (
     <div>
+      <BetaNotice />
       <HeroSection
         airports={catalog.airports}
         deals={allActiveDeals}
