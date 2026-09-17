@@ -1,16 +1,18 @@
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
+import { JourneyPanel } from "../components/JourneyPanel";
 import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { useCatalog } from "../hooks/useCatalog";
-import { getAgencyWhatsApp } from "../lib/api";
+import { getAgencyWhatsApp, lookupBooking } from "../lib/api";
 import { formatRoute } from "../lib/deal-utils";
 import { getLastBooking } from "../lib/session";
 import { formatPrice, whatsAppLink } from "../lib/utils";
 import { transferKindLabel } from "../lib/tripgo";
 import type { CreateBookingResult } from "../lib/api";
-import type { DealRow, PaymentMethod, TripGoDealRow } from "../types/database";
+import type { BookingLookupResult, DealRow, PaymentMethod, TripGoDealRow } from "../types/database";
 
 type TripGoState = {
   pickupLocation: string;
@@ -51,7 +53,6 @@ const STATUS_LABELS: Record<CreateBookingResult["status"], string> = {
 export function ConfirmationPage() {
   const location = useLocation();
   const state = location.state as LocationState | null;
-  const catalog = useCatalog();
 
   if (!state?.booking) {
     // location.state is lost on refresh — fall back to the last booking
@@ -77,7 +78,55 @@ export function ConfirmationPage() {
     );
   }
 
-  const { booking, deal, paymentMethod, customerName, customerPhone, adults, children, infants, tripGo } = state;
+  const { booking, deal, paymentMethod, customerName, customerPhone, customerEmail, adults, children, infants, tripGo } = state;
+
+  return (
+    <ConfirmationBody
+      booking={booking}
+      deal={deal}
+      paymentMethod={paymentMethod}
+      customerName={customerName}
+      customerPhone={customerPhone}
+      customerEmail={customerEmail}
+      adults={adults}
+      children={children}
+      infants={infants}
+      tripGo={tripGo}
+    />
+  );
+}
+
+function ConfirmationBody({
+  booking,
+  deal,
+  paymentMethod,
+  customerName,
+  customerPhone,
+  customerEmail,
+  adults,
+  children,
+  infants,
+  tripGo,
+}: LocationState) {
+  const catalog = useCatalog();
+  // The create_booking RPC returns only the top-level booking fields —
+  // order_items (and therefore the per-item journey) are created by a DB
+  // trigger right after, so we fetch the full record once via the same
+  // lookup_booking RPC My Trips uses. Best-effort: if this fails or the
+  // journey isn't ready yet, the rest of the confirmation page still works
+  // fine without it (falls back to the single booking.status shown below).
+  const [journey, setJourney] = useState<BookingLookupResult["journey"] | null>(null);
+
+  useEffect(() => {
+    const contact = customerPhone || customerEmail || "";
+    if (!contact) return;
+    lookupBooking(String(booking.booking_number), contact)
+      .then((result) => setJourney(result?.journey ?? null))
+      .catch(() => {
+        /* silent — confirmation page must never block on this */
+      });
+  }, [booking.booking_number, customerPhone, customerEmail]);
+
   const travelerSummary = [
     `${adults} بالغ`,
     children ? `${children} طفل` : null,
@@ -129,6 +178,14 @@ export function ConfirmationPage() {
             <dd className="font-semibold text-amber-700">{STATUS_LABELS[booking.status] ?? booking.status}</dd>
           </div>
         </dl>
+
+        {/* Per-item journey status (order_items/fulfillment_status), same
+           panel My Trips shows — surfaced here too so the customer sees it
+           from the first moment, not only when they look the booking up
+           again later. Silently absent if the orchestration data isn't
+           ready yet (older bookings, or the trigger hasn't run) — the
+           single booking.status above always covers that case. */}
+        {journey ? <JourneyPanel journey={journey} currency={booking.currency} /> : null}
 
         {tripGo ? (
           <div className="mt-4 space-y-2 rounded-2xl border border-[#16A34A]/25 bg-[#F0FDF4] p-3 text-sm">
