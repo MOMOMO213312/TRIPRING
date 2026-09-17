@@ -14,7 +14,6 @@ import {
   fetchDealById,
   fetchDealPriceHistory,
   fetchRouteDatePrices,
-  getAgencyWhatsApp,
 } from "../lib/api";
 import type { PriceTrendPoint, RouteDatePrice } from "../lib/api";
 import type { PackageTier } from "../lib/packages";
@@ -32,7 +31,7 @@ import {
 } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
-import { cn, formatDate, formatPrice, formatTime, whatsAppLink } from "../lib/utils";
+import { cn, formatDate, formatPrice, formatTime } from "../lib/utils";
 import type { AdditionalServiceRow, DealPriceHistoryRow, DealRow } from "../types/database";
 
 export function DealDetailPage() {
@@ -102,7 +101,6 @@ export function DealDetailPage() {
   }
 
   const currency = deal.currency ?? "USD";
-  const waMessage = `مرحباً، أريد حجز العرض ${deal.id}: ${formatRoute(deal)} — ${deal.price} ${currency}`;
   const agency = catalog.agencies.find((a) => a.id === deal.agency_id);
   const trendPoints: PriceTrendPoint[] = history
     .map((h) => ({ date: h.changed_at, price: h.new_price }))
@@ -180,11 +178,6 @@ export function DealDetailPage() {
             نفدت المقاعد
           </Button>
         )}
-        <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer">
-          <Button fullWidth variant="whatsapp">
-            احجز عبر واتساب
-          </Button>
-        </a>
       </div>
 
       <div className="flex gap-2 text-xs">

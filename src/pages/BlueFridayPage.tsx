@@ -4,10 +4,9 @@ import { Link } from "react-router-dom";
 import { DestinationCard } from "../components/DestinationCard";
 import { Button } from "../components/ui/Button";
 import { fetchActiveDeals } from "../lib/api";
-import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { airportLabel, formatRouteCities } from "../lib/deal-utils";
 import { hoursUntil } from "../lib/filters";
-import { formatPrice, whatsAppLink } from "../lib/utils";
+import { formatPrice } from "../lib/utils";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
@@ -218,7 +217,7 @@ export function BlueFridayPage() {
           </span>
         </button>
         <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-4">
-          {["أفضل سعر", "حجز آمن", "دعم 24/7", "دفع بالواتساب"].map((label) => (
+          {["أفضل سعر", "حجز آمن", "دعم 24/7", "دفع مرن"].map((label) => (
             <div key={label} className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white p-3 text-center text-xs font-semibold text-slate-700">
               {label}
             </div>
@@ -325,25 +324,6 @@ export function BlueFridayPage() {
           </div>
         </section>
       ) : null}
-
-      {/* WhatsApp CTA */}
-      <section className="mx-auto mt-14 max-w-6xl px-4">
-        <div className="rounded-2xl bg-[#0F172A] p-8 text-center text-white">
-          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-blue-600 text-2xl">💬</div>
-          <h3 className="mt-4 text-xl font-bold">احجز على واتساب — دعم فوري</h3>
-          <p className="mt-2 text-sm text-slate-300">
-            كلّم فريق السفر بتاعنا لعروض الجمعة السماوي، تأكيد المقعد، والدفع. اذكر كود {PROMO_CODE}.
-          </p>
-          <a
-            href={whatsAppLink(PLATFORM_WHATSAPP, `عايز أعرف عروض الجمعة السماوي — كود ${PROMO_CODE}`)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold transition hover:bg-blue-500"
-          >
-            💬 تواصل عبر واتساب
-          </a>
-        </div>
-      </section>
 
       <p className="mt-10 text-center text-xs text-slate-400">
         TripRing الجمعة السماوي · عروض طيران 24 ساعة ·{" "}
