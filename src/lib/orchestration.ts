@@ -321,19 +321,20 @@ export async function setSupplierContractStatus(contractId: string, status: Supp
 // ── Fulfillment Monitor (Phase 7.2) ─────────────────────────────────────
 
 export async function fetchOrdersNeedingAttention(): Promise<OrderNeedingAttentionRow[]> {
-  const { data, error } = await supabase
-    .from("v_orders_needing_attention")
-    .select("*")
-    .order("created_at", { ascending: false });
+  // v_orders_needing_attention has no grants and no admin check of its own
+  // (raw customer PII) -- go through the admin-only RPC wrapper instead of
+  // querying the view directly (fixed 2026-09-17, same pattern as the
+  // Ground Portal fix).
+  const { data, error } = await supabase.rpc("get_admin_orders_needing_attention");
   if (error) throw new Error(error.message);
   return (data ?? []) as OrderNeedingAttentionRow[];
 }
 
 export async function fetchNegativeMarginItems(): Promise<NegativeMarginItemRow[]> {
-  const { data, error } = await supabase
-    .from("v_negative_margin_items")
-    .select("*")
-    .order("margin_amount", { ascending: true });
+  // v_negative_margin_items has no grants and no admin check of its own --
+  // go through the admin-only RPC wrapper instead of querying the view
+  // directly (fixed 2026-09-17, same pattern as the Ground Portal fix).
+  const { data, error } = await supabase.rpc("get_admin_negative_margin_items");
   if (error) throw new Error(error.message);
   return (data ?? []) as NegativeMarginItemRow[];
 }
@@ -430,20 +431,21 @@ export const FULFILLMENT_SUMMARY_LABELS: Record<string, string> = {
 // ── Settlement Center (Phase 7.3) ───────────────────────────────────────
 
 export async function fetchSupplierBalances(): Promise<SupplierBalanceRow[]> {
-  const { data, error } = await supabase
-    .from("v_supplier_balances")
-    .select("*")
-    .order("outstanding_balance", { ascending: false });
+  // v_supplier_balances has no grants and no admin check of its own (raw
+  // financial data) -- go through the admin-only RPC wrapper instead of
+  // querying the view directly (fixed 2026-09-17).
+  const { data, error } = await supabase.rpc("get_admin_supplier_balances");
   if (error) throw new Error(error.message);
   return (data ?? []) as SupplierBalanceRow[];
 }
 
 export async function fetchUnsettledItemsForSupplier(supplierId: string): Promise<UnsettledSupplierItemRow[]> {
-  const { data, error } = await supabase
-    .from("v_unsettled_supplier_items")
-    .select("*")
-    .eq("supplier_id", supplierId)
-    .order("occurred_at", { ascending: true });
+  // v_unsettled_supplier_items has no grants and no admin check of its own
+  // -- go through the admin-only RPC wrapper instead of querying the view
+  // directly (fixed 2026-09-17).
+  const { data, error } = await supabase.rpc("get_admin_unsettled_supplier_items", {
+    p_supplier_id: supplierId,
+  } as never);
   if (error) throw new Error(error.message);
   return (data ?? []) as UnsettledSupplierItemRow[];
 }
@@ -493,10 +495,10 @@ export const SETTLEMENT_STATUS_LABELS: Record<SettlementStatus, string> = {
 // ── Subscription revenue (surfaced here per Phase 7 plan item 4) ────────
 
 export async function fetchSubscriptionRevenue(): Promise<SubscriptionRevenueRow[]> {
-  const { data, error } = await supabase
-    .from("v_subscription_revenue")
-    .select("*")
-    .order("occurred_at", { ascending: false });
+  // v_subscription_revenue has no grants and no admin check of its own --
+  // go through the admin-only RPC wrapper instead of querying the view
+  // directly (fixed 2026-09-17).
+  const { data, error } = await supabase.rpc("get_admin_subscription_revenue");
   if (error) throw new Error(error.message);
   return (data ?? []) as SubscriptionRevenueRow[];
 }
