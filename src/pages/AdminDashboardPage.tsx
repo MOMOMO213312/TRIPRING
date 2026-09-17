@@ -9,6 +9,7 @@ import { AdminMembershipTiersTab } from "../components/admin/AdminMembershipTier
 import { AdminNotificationsTab } from "../components/admin/AdminNotificationsTab";
 import { AdminSettlementsTab } from "../components/admin/AdminSettlementsTab";
 import { AdminSuppliersTab } from "../components/admin/AdminSuppliersTab";
+import { AdminSupplierApplicationsTab } from "../components/admin/AdminSupplierApplicationsTab";
 import { AdminResaleTab } from "../components/admin/AdminResaleTab";
 import { AdminResellerOrdersTab } from "../components/admin/AdminResellerOrdersTab";
 import { AdminResellerPlansTab } from "../components/admin/AdminResellerPlansTab";
@@ -22,6 +23,7 @@ import type { ProfileRow } from "../types/database";
 
 type Tab =
   | "suppliers"
+  | "supplier_applications"
   | "fulfillment"
   | "settlements"
   | "agencies"
@@ -88,6 +90,7 @@ export function AdminDashboardPage() {
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "suppliers", label: "الموردين والعقود" },
+    { key: "supplier_applications", label: "طلبات الانضمام كمورد" },
     { key: "fulfillment", label: "مراقبة التنفيذ" },
     { key: "settlements", label: "التسويات المالية" },
     { key: "agencies", label: "الوكالات" },
@@ -133,6 +136,7 @@ export function AdminDashboardPage() {
       </div>
 
       {tab === "suppliers" ? <AdminSuppliersTab /> : null}
+      {tab === "supplier_applications" ? <AdminSupplierApplicationsTab /> : null}
       {tab === "fulfillment" ? <AdminFulfillmentTab /> : null}
       {tab === "settlements" ? <AdminSettlementsTab /> : null}
       {tab === "agencies" ? <AdminAgenciesTab /> : null}

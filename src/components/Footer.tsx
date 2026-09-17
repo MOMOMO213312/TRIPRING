@@ -65,6 +65,11 @@ export function Footer() {
                 لوحة الأفلييت
               </Link>
             </li>
+            <li>
+              <Link to="/become-a-supplier" className="hover:text-[#0C7BB3]">
+                انضم كمورد
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

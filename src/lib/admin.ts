@@ -18,6 +18,9 @@ import type {
   ResaleStatus,
   ResellerSubscriptionPlanRow,
   ResellerSubscriptionStatus,
+  SupplierApplicationRow,
+  SupplierApplicationStatus,
+  SupplierOrgType,
 } from "../types/database";
 
 const AGENCY_DOC_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
@@ -526,6 +529,54 @@ export const RESELLER_SUBSCRIPTION_STATUS_LABELS: Record<ResellerSubscriptionSta
   expired: "منتهي",
   rejected: "مرفوض",
   cancelled: "ملغي",
+};
+
+// ── Supplier applications (unified self-signup: airline/agency/ground/transport/etc.) ─
+// This is the onboarding front door for the `suppliers` table (Phase "Partner Portal
+// unification") — approving one creates the real suppliers + supplier_users(owner) rows
+// via the admin_approve_supplier_application RPC, so a new airline/ground-provider/etc.
+// partner never needs to be created by hand in the database again.
+export async function fetchSupplierApplications(
+  statuses?: SupplierApplicationStatus[],
+): Promise<SupplierApplicationRow[]> {
+  let query = supabase.from("supplier_applications").select("*").order("created_at", { ascending: false });
+  if (statuses?.length) query = query.in("status", statuses);
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as SupplierApplicationRow[];
+}
+
+export async function adminApproveSupplierApplication(applicationId: string, reviewNote?: string): Promise<string> {
+  const { data, error } = await supabase.rpc("admin_approve_supplier_application", {
+    p_application_id: applicationId,
+    p_review_note: reviewNote ?? null,
+  } as never);
+  if (error) throw new Error(error.message);
+  return data as string; // created supplier id
+}
+
+export async function adminRejectSupplierApplication(applicationId: string, reviewNote?: string): Promise<void> {
+  const { error } = await supabase.rpc("admin_reject_supplier_application", {
+    p_application_id: applicationId,
+    p_review_note: reviewNote ?? null,
+  } as never);
+  if (error) throw new Error(error.message);
+}
+
+export const SUPPLIER_APPLICATION_STATUS_LABELS: Record<SupplierApplicationStatus, string> = {
+  pending: "بانتظار المراجعة",
+  approved: "تمت الموافقة",
+  rejected: "مرفوض",
+};
+
+export const SUPPLIER_ORG_TYPE_LABELS: Record<SupplierOrgType, string> = {
+  agency: "وكالة سياحية",
+  airline: "شركة طيران",
+  ground_provider: "مزود خدمات أرضية",
+  transport_provider: "مزود نقل/مواصلات",
+  rental_provider: "مزود تأجير",
+  hotel_provider: "مزود فنادق",
+  experience_provider: "مزود تجارب/أنشطة",
 };
 
 export const RESALE_STATUS_LABELS: Record<ResaleStatus, string> = {

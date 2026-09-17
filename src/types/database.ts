@@ -63,6 +63,38 @@ export type TransportType = "private" | "shared";
 export type ProviderType = "transport" | "tourism" | "insurance" | "ground_handling" | "airport";
 export type ServiceFulfillmentType = "affiliate" | "ground_handling" | "in_house";
 export type ResellerSubscriptionStatus = "pending_payment" | "active" | "expired" | "rejected" | "cancelled";
+/** Every kind of supplier org TripRing can source offers from — mirrors the DB's supplier_org_type enum. */
+export type SupplierOrgType =
+  | "agency"
+  | "airline"
+  | "ground_provider"
+  | "transport_provider"
+  | "rental_provider"
+  | "hotel_provider"
+  | "experience_provider";
+export type SupplierApplicationStatus = "pending" | "approved" | "rejected";
+/** A self-signup application from a company wanting to join TripRing as a supplier (any org type).
+ *  Not part of the generated `Database` mapping yet — defined by hand from the live schema. */
+export interface SupplierApplicationRow {
+  id: string;
+  applicant_user_id: string;
+  org_type: SupplierOrgType;
+  company_name: string;
+  country_code: string | null;
+  contact_name: string;
+  contact_email: string;
+  contact_phone: string | null;
+  contact_whatsapp: string | null;
+  website: string | null;
+  notes: string | null;
+  status: SupplierApplicationStatus;
+  review_note: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_supplier_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface Database {
   public: {

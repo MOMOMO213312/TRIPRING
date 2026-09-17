@@ -43,6 +43,9 @@ const ExplorePage = lazy(() =>
 const FaqPage = lazy(() =>
   import("./pages/FaqPage").then((m) => ({ default: m.FaqPage })),
 );
+const BecomeSupplierPage = lazy(() =>
+  import("./pages/BecomeSupplierPage").then((m) => ({ default: m.BecomeSupplierPage })),
+);
 const HomePage = lazy(() =>
   import("./pages/HomePage").then((m) => ({ default: m.HomePage })),
 );
@@ -124,6 +127,7 @@ export default function App() {
               <Route path="admin" element={<AdminDashboardPage />} />
               <Route path="affiliate" element={<AffiliateDashboardPage />} />
               <Route path="faq" element={<FaqPage />} />
+              <Route path="become-a-supplier" element={<BecomeSupplierPage />} />
               <Route path="terms" element={<TermsPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
             </Route>
