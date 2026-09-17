@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 
-import { getAgencyWhatsApp } from "../lib/api";
 import {
   airlineName,
   baggageBadgeLabel,
@@ -12,7 +11,7 @@ import {
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { cn, formatPrice, whatsAppLink, WhatsAppIcon } from "../lib/utils";
+import { cn, formatPrice } from "../lib/utils";
 import type { AgencyRow, AirlineRow, AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 import { DealBadge } from "./DealBadge";
 import { DealCountdown } from "./DealCountdown";
@@ -47,8 +46,6 @@ export function DealCard({
   const airline = airlines.find((a) => a.code === deal.airline_code);
   const toAirport = airports.find((a) => a.code === deal.to_airport);
   const agency = agencies.find((a) => a.id === deal.agency_id);
-  const waPhone = getAgencyWhatsApp(deal, agencies);
-  const waMessage = `مرحباً، أريد حجز العرض: ${formatRouteCities(deal, airports)} — ${deal.price} ${deal.currency ?? "USD"}`;
   const rankStyle = rank ? rankBadgeStyle(rank) : null;
 
   return (
@@ -184,12 +181,6 @@ export function DealCard({
               نفدت المقاعد
             </Button>
           )}
-          <a href={whatsAppLink(waPhone, waMessage)} target="_blank" rel="noreferrer">
-            <Button fullWidth variant="outline" className="gap-2 border-slate-300 text-slate-800">
-              <WhatsAppIcon className="size-4 text-[#25D366]" />
-              احجز عبر واتساب
-            </Button>
-          </a>
         </div>
       </div>
     </article>

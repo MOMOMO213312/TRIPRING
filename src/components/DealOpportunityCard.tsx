@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 
-import { getAgencyWhatsApp } from "../lib/api";
 import {
   airlineName,
   baggageBadgeLabel,
@@ -11,7 +10,7 @@ import {
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { cn, formatPrice, whatsAppLink, WhatsAppIcon } from "../lib/utils";
+import { cn, formatPrice } from "../lib/utils";
 import type { AgencyRow, AirlineRow, AirportRow, DealRow } from "../types/database";
 import { DealCountdown } from "./DealCountdown";
 import { DealScoreRing } from "./DealScoreRing";
@@ -42,8 +41,6 @@ export function DealOpportunityCard({
   const airline = airlines.find((a) => a.code === deal.airline_code);
   const toAirport = airports.find((a) => a.code === deal.to_airport);
   const agency = agencies.find((a) => a.id === deal.agency_id);
-  const waPhone = getAgencyWhatsApp(deal, agencies);
-  const waMessage = `مرحباً، أريد حجز العرض: ${formatRouteCities(deal, airports)} — ${deal.price} ${deal.currency ?? "USD"}`;
   const hasScore = deal.deal_score != null;
   const navigate = useNavigate();
 
@@ -170,18 +167,18 @@ export function DealOpportunityCard({
             <Button fullWidth variant="primary" disabled onClick={(e) => e.stopPropagation()}>
               نفدت المقاعد
             </Button>
-          ) : null}
-          <a
-            href={whatsAppLink(waPhone, waMessage)}
-            target="_blank"
-            rel="noreferrer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Button fullWidth variant="outline" className="gap-2 border-slate-300 text-slate-800">
-              <WhatsAppIcon className="size-4 text-[#25D366]" />
-              احجز عبر واتساب
+          ) : (
+            <Button
+              fullWidth
+              variant="primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/deals/${deal.id}`);
+              }}
+            >
+              عرض التفاصيل
             </Button>
-          </a>
+          )}
         </div>
       </div>
     </article>
