@@ -1085,11 +1085,11 @@ export const JOURNEY_SUMMARY_LABELS: Record<string, string> = {
  * customer requests it — it is NOT a guarantee the airline/provider granted
  * it yet, so customer-facing copy should say "requested" not "purchased".
  */
-export type BookingServiceStatus = "pending_confirmation" | "confirmed_with_airline" | "failed" | "refunded";
+export type BookingServiceStatus = "pending_confirmation" | "confirmed_with_supplier" | "failed" | "refunded";
 
 export const BOOKING_SERVICE_STATUS_LABELS: Record<BookingServiceStatus, string> = {
   pending_confirmation: "بانتظار التأكيد",
-  confirmed_with_airline: "تم التأكيد مع شركة الطيران",
+  confirmed_with_supplier: "تم التأكيد مع المورد",
   failed: "تعذّر تنفيذها",
   refunded: "تم استرداد المبلغ",
 };

@@ -1,15 +1,20 @@
 // invite-agency-user
 //
-// Admin-only Edge Function. Creates (or invites) an auth user and links
-// their profile to a specific agency. This MUST run server-side because it
-// needs the service_role key (auth.admin.*) which can never be exposed to
-// the browser.
+// Creates (or invites) an auth user and links their profile to a specific
+// agency. This MUST run server-side because it needs the service_role key
+// (auth.admin.*) which can never be exposed to the browser.
 //
 // Auth flow:
 //   1. verify_jwt=true (set at deploy time) ensures the request carries a
 //      valid Supabase session JWT.
-//   2. We still explicitly re-check the caller's profile.role === 'admin'
-//      here — verify_jwt only proves "some logged-in user", not "an admin".
+//   2. Caller must be either:
+//      - profile.role === 'admin' (can invite into any agency, any
+//        agency_role), or
+//      - profile.role === 'agency' AND profile.agency_role === 'owner' AND
+//        the target agencyId matches their own agency_id (self-service —
+//        an agency owner inviting into their own team). Owners can only
+//        ever invite 'staff', never grant 'owner', to avoid privilege
+//        escalation via this endpoint.
 //
 // Request body:
 //   {
@@ -60,15 +65,19 @@ Deno.serve(async (req: Request) => {
 
   const { data: callerProfile, error: profileError } = await callerClient
     .from("profiles")
-    .select("role")
+    .select("role,agency_id,agency_role")
     .eq("id", caller.id)
     .maybeSingle();
 
   if (profileError) {
     return json({ error: profileError.message }, 500);
   }
-  if (!callerProfile || callerProfile.role !== "admin") {
-    return json({ error: "Admins only" }, 403);
+
+  const isAdmin = callerProfile?.role === "admin";
+  const isOwnAgencyOwner = callerProfile?.role === "agency" && callerProfile?.agency_role === "owner";
+
+  if (!callerProfile || (!isAdmin && !isOwnAgencyOwner)) {
+    return json({ error: "Admins or agency owners only" }, 403);
   }
 
   let body: { agencyId?: string; email?: string; fullName?: string; agencyRole?: string };
@@ -81,10 +90,17 @@ Deno.serve(async (req: Request) => {
   const agencyId = body.agencyId?.trim();
   const email = body.email?.trim().toLowerCase();
   const fullName = body.fullName?.trim() || null;
-  const agencyRole = body.agencyRole?.trim() || null;
+  // Agency owners can only ever invite plain "staff" through self-service —
+  // never "owner" (that stays an admin-only grant to avoid a staff member
+  // inviting themselves/a colleague into an owner-level role).
+  const agencyRole = isAdmin ? body.agencyRole?.trim() || null : "staff";
 
   if (!agencyId || !email) {
     return json({ error: "agencyId and email are required" }, 400);
+  }
+
+  if (isOwnAgencyOwner && agencyId !== callerProfile.agency_id) {
+    return json({ error: "You can only invite staff into your own agency" }, 403);
   }
 
   // Privileged client — service_role key, only used for the two writes

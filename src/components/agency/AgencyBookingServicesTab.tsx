@@ -14,14 +14,14 @@ import { Card } from "../ui/Card";
 
 const FILTERS: { key: BookingServiceStatus | "all"; label: string }[] = [
   { key: "pending_confirmation", label: "بانتظار التأكيد" },
-  { key: "confirmed_with_airline", label: "مؤكدة" },
+  { key: "confirmed_with_supplier", label: "مؤكدة" },
   { key: "failed", label: "متعذّرة" },
   { key: "refunded", label: "مستردة" },
   { key: "all", label: "الكل" },
 ];
 
 function statusTone(status: BookingServiceStatus): "default" | "flash" | "empty_seat" | "urgent" {
-  if (status === "confirmed_with_airline") return "empty_seat";
+  if (status === "confirmed_with_supplier") return "empty_seat";
   if (status === "failed") return "urgent";
   if (status === "refunded") return "default";
   return "flash";
@@ -30,8 +30,8 @@ function statusTone(status: BookingServiceStatus): "default" | "flash" | "empty_
 // Which transitions make sense from each state — mirrors NEXT_STATUS_OPTIONS
 // in AgencyBookingsTab (bookings-status kanban) but for the service lifecycle.
 const NEXT_OPTIONS: Record<BookingServiceStatus, BookingServiceStatus[]> = {
-  pending_confirmation: ["confirmed_with_airline", "failed"],
-  confirmed_with_airline: ["failed", "refunded"],
+  pending_confirmation: ["confirmed_with_supplier", "failed"],
+  confirmed_with_supplier: ["failed", "refunded"],
   failed: ["refunded", "pending_confirmation"],
   refunded: [],
 };

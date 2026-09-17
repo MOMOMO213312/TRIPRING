@@ -56,6 +56,23 @@ export async function fetchMyAgency(agencyId: string): Promise<AgencyRow | null>
   return data as AgencyRow | null;
 }
 
+// ── Team (self-service, owners only) ─────────────────────────────────────
+// RLS ("profiles: agency owner sees own team") only allows this select to
+// return rows when the caller is themselves an agency owner — staff members
+// calling this will just get their own row back (the existing "self" policy),
+// so the tab is also hidden from staff in the UI (see AgencyTeamTab).
+export type AgencyTeamMember = Pick<ProfileRow, "id" | "full_name" | "phone" | "agency_role" | "created_at">;
+
+export async function fetchMyAgencyTeam(agencyId: string): Promise<AgencyTeamMember[]> {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id,full_name,phone,agency_role,created_at")
+    .eq("agency_id", agencyId)
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AgencyTeamMember[];
+}
+
 export async function uploadMyAgencyDocument(agencyId: string, label: string, file: File): Promise<AgencyRow> {
   if (!AGENCY_DOC_ALLOWED_TYPES.includes(file.type)) {
     throw new Error("الملف يجب أن يكون صورة (JPG/PNG/WebP) أو PDF");

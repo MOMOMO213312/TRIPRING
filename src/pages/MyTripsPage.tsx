@@ -18,7 +18,7 @@ import { useCatalog } from "../hooks/useCatalog";
 import { BOOKING_SERVICE_STATUS_LABELS, type BookingLookupResult, type BookingServiceStatus } from "../types/database";
 
 function serviceStatusTone(status: BookingServiceStatus): "default" | "flash" | "empty_seat" | "urgent" {
-  if (status === "confirmed_with_airline") return "empty_seat";
+  if (status === "confirmed_with_supplier") return "empty_seat";
   if (status === "failed") return "urgent";
   if (status === "refunded") return "default";
   return "flash"; // pending_confirmation
