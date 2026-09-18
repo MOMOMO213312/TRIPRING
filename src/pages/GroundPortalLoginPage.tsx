@@ -1,9 +1,17 @@
+import type { FormEvent } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { supabase } from "../lib/supabase";
 import { getMySupplierId } from "../lib/groundPortal";
-import "../styles/ground-portal.css";
+import { Button } from "../components/ui/Button";
+import { Card } from "../components/ui/Card";
+import { Input } from "../components/ui/Input";
 
+/** Same visual design as AgencyLoginGate (used for the agency + admin
+ *  dashboards) — Card/Input/Button, same blue theme — but keeps its own
+ *  submit logic since it needs to verify the account is linked to a ground
+ *  service supplier before letting them into the ops queue. */
 export function GroundPortalLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -11,7 +19,7 @@ export function GroundPortalLoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -35,39 +43,36 @@ export function GroundPortalLoginPage() {
   }
 
   return (
-    <div data-ground-portal className="gp-login-wrap">
-      <div className="gp-login-card">
-        <div className="gp-login-title">GROUND OPS</div>
-        <div className="gp-login-sub">بوابة موردي الخدمة الأرضية — TripRing</div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="gp-field">
-            <label htmlFor="email">البريد الإلكتروني</label>
-            <input
-              id="email"
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+      <div className="mx-auto w-full max-w-sm">
+        <Card className="space-y-4">
+          <div>
+            <h1 className="text-lg font-bold text-slate-900">دخول بوابة الخدمات الأرضية</h1>
+            <p className="mt-1 text-sm text-slate-600">هذه البوابة مخصصة لموردي الخدمة الأرضية الشركاء فقط.</p>
+          </div>
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <Input
+              label="البريد الإلكتروني"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
             />
-          </div>
-          <div className="gp-field">
-            <label htmlFor="password">كلمة المرور</label>
-            <input
-              id="password"
+            <Input
+              label="كلمة المرور"
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
-          </div>
-          {error && <div className="gp-error">{error}</div>}
-          <button className="gp-login-btn" type="submit" disabled={loading}>
-            {loading ? "جارِ الدخول..." : "دخول"}
-          </button>
-        </form>
+            {error ? <p className="text-xs text-red-600">{error}</p> : null}
+            <Button type="submit" fullWidth disabled={loading}>
+              {loading ? "جاري الدخول..." : "دخول"}
+            </Button>
+          </form>
+        </Card>
       </div>
     </div>
   );
