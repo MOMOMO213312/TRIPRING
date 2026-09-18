@@ -800,3 +800,56 @@ export async function updateBookingServiceStatus(
 }
 
 export type AgencyReviewRowFull = Tables<"agency_reviews">;
+
+export type AgencyCustomer = {
+  key: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  bookingsCount: number;
+  totalSpent: number;
+  currency: string;
+  lastBookingAt: string;
+};
+
+/**
+ * Derives the agency's customer list from its own bookings (there is no
+ * separate customers table yet — bookings.customer_name/phone/email is the
+ * only source of truth) grouped by phone (falling back to email, then name)
+ * so repeat customers collapse into one row with a booking count and total
+ * spend. Reuses fetchAgencyBookings, so it inherits the same agency_id RLS
+ * scoping — no new table access is introduced.
+ */
+export async function fetchAgencyCustomers(agencyId: string): Promise<AgencyCustomer[]> {
+  const bookings = await fetchAgencyBookings(agencyId, "all");
+  const byKey = new Map<string, AgencyCustomer>();
+
+  for (const b of bookings) {
+    const key = (b.customer_phone || b.customer_email || b.customer_name || "").trim().toLowerCase();
+    if (!key) continue;
+    const spent = Number(b.total_price ?? 0);
+    const existing = byKey.get(key);
+    if (existing) {
+      existing.bookingsCount += 1;
+      existing.totalSpent += spent;
+      if (new Date(b.created_at) > new Date(existing.lastBookingAt)) {
+        existing.lastBookingAt = b.created_at;
+      }
+    } else {
+      byKey.set(key, {
+        key,
+        name: b.customer_name || "بدون اسم",
+        phone: b.customer_phone ?? null,
+        email: b.customer_email ?? null,
+        bookingsCount: 1,
+        totalSpent: spent,
+        currency: b.currency || "USD",
+        lastBookingAt: b.created_at,
+      });
+    }
+  }
+
+  return Array.from(byKey.values()).sort(
+    (a, b) => new Date(b.lastBookingAt).getTime() - new Date(a.lastBookingAt).getTime(),
+  );
+}
