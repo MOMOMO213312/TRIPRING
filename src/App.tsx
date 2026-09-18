@@ -85,6 +85,15 @@ const AirlinePortalLoginPage = lazy(() =>
 const AirlinePortalOverviewPage = lazy(() =>
   import("./pages/AirlinePortalOverviewPage").then((m) => ({ default: m.AirlinePortalOverviewPage })),
 );
+const AirlinePortalFlightsPage = lazy(() =>
+  import("./pages/AirlinePortalFlightsPage").then((m) => ({ default: m.AirlinePortalFlightsPage })),
+);
+const AirlinePortalBookingsPage = lazy(() =>
+  import("./pages/AirlinePortalBookingsPage").then((m) => ({ default: m.AirlinePortalBookingsPage })),
+);
+const AirlinePortalGroundPage = lazy(() =>
+  import("./pages/AirlinePortalGroundPage").then((m) => ({ default: m.AirlinePortalGroundPage })),
+);
 const GroundPortalQueuePage = lazy(() =>
   import("./pages/GroundPortalQueuePage").then((m) => ({ default: m.GroundPortalQueuePage })),
 );
@@ -153,6 +162,9 @@ export default function App() {
             <Route path="ground-portal/settlements" element={<GroundPortalSettlementsPage />} />
             <Route path="airline-portal/login" element={<AirlinePortalLoginPage />} />
             <Route path="airline-portal/overview" element={<AirlinePortalOverviewPage />} />
+            <Route path="airline-portal/flights" element={<AirlinePortalFlightsPage />} />
+            <Route path="airline-portal/bookings" element={<AirlinePortalBookingsPage />} />
+            <Route path="airline-portal/ground" element={<AirlinePortalGroundPage />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
