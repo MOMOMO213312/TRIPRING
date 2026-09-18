@@ -79,6 +79,12 @@ const TripGoDetailsPage = lazy(() =>
 const GroundPortalLoginPage = lazy(() =>
   import("./pages/GroundPortalLoginPage").then((m) => ({ default: m.GroundPortalLoginPage })),
 );
+const AirlinePortalLoginPage = lazy(() =>
+  import("./pages/AirlinePortalLoginPage").then((m) => ({ default: m.AirlinePortalLoginPage })),
+);
+const AirlinePortalOverviewPage = lazy(() =>
+  import("./pages/AirlinePortalOverviewPage").then((m) => ({ default: m.AirlinePortalOverviewPage })),
+);
 const GroundPortalQueuePage = lazy(() =>
   import("./pages/GroundPortalQueuePage").then((m) => ({ default: m.GroundPortalQueuePage })),
 );
@@ -145,6 +151,8 @@ export default function App() {
             <Route path="ground-portal/agreements" element={<GroundPortalAgreementsPage />} />
             <Route path="ground-portal/reports" element={<GroundPortalReportsPage />} />
             <Route path="ground-portal/settlements" element={<GroundPortalSettlementsPage />} />
+            <Route path="airline-portal/login" element={<AirlinePortalLoginPage />} />
+            <Route path="airline-portal/overview" element={<AirlinePortalOverviewPage />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
