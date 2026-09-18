@@ -118,6 +118,82 @@ export interface AirlineAgreementItemRow {
   is_active: boolean;
 }
 
+export interface AirlineFlightOfferDetailRow {
+  deal_id: string;
+  flight_number: string | null;
+  from_airport: string;
+  to_airport: string;
+  departure_date: string;
+  travel_class: string | null;
+  fare_family: string | null;
+  base_fare: number | null;
+  taxes_fees: number | null;
+  price: number;
+  original_price: number | null;
+  child_price: number | null;
+  infant_price: number | null;
+  currency: string;
+  available_seats: number;
+  refundable: boolean | null;
+  changeable: boolean | null;
+  change_fee: number | null;
+  cancellation_fee: number | null;
+  fare_rules: string | null;
+  baggage_kg: number | null;
+  cabin_baggage_kg: number | null;
+  checked_bags_count: number | null;
+  extra_baggage_price: number | null;
+  min_membership_tier: string | null;
+  price_checked_at: string | null;
+  status: string;
+}
+
+export type SettlementStatus = "draft" | "pending" | "paid" | "disputed" | "cancelled";
+
+export interface AirlineSettlementRow {
+  id: string;
+  supplier_id: string;
+  contract_id: string | null;
+  period_start: string;
+  period_end: string;
+  currency: string;
+  gross_customer_amount: number;
+  supplier_cost_total: number;
+  platform_margin_total: number;
+  amount_due_supplier: number;
+  amount_paid: number;
+  items_count: number;
+  status: SettlementStatus;
+  generated_at: string;
+  generated_by: string | null;
+}
+
+/** Full fare detail for one flight/deal — fare rules, baggage, refund/
+ *  change policy. Used by the expandable row in AirlinePortalFlightsPage;
+ *  the RPC itself already existed on the DB (airline-scoped SECURITY
+ *  DEFINER check via linked_airline_code) but had no caller in the front
+ *  end until now. */
+export async function fetchAirlineFlightOfferDetail(dealId: string): Promise<AirlineFlightOfferDetailRow | null> {
+  const { data, error } = await supabase
+    .rpc("get_my_airline_flight_offer_detail", { p_deal_id: dealId } as never)
+    .select("*");
+  if (error) throw error;
+  const rows = (data ?? []) as AirlineFlightOfferDetailRow[];
+  return rows[0] ?? null;
+}
+
+/** كشوف الحساب — `supplier_settlements` RLS is generic per supplier_users
+ *  row (not ground-specific), same table Ground Portal reads from. No new
+ *  backend needed for the airline side to see its own settlements. */
+export async function fetchAirlineSettlements(): Promise<AirlineSettlementRow[]> {
+  const { data, error } = await supabase
+    .from("supplier_settlements")
+    .select("*")
+    .order("period_end", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as AirlineSettlementRow[];
+}
+
 /** Contracts/العقود — read-only on the airline side by design (only the
  *  ground supplier can create/edit an agreement; this matches the real SGHA
  *  relationship and the RLS already in place on these tables). */

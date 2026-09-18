@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import { AirlinePortalShell } from "../components/airlinePortal/AirlinePortalShell";
 import {
   fetchAirlineFlights,
+  fetchAirlineFlightOfferDetail,
   fetchAirlineOverview,
   type AirlineFlightRow,
+  type AirlineFlightOfferDetailRow,
   type AirlineOverviewRow,
 } from "../lib/airlinePortal";
 import "../styles/airline-portal.css";
@@ -32,6 +34,8 @@ export function AirlinePortalFlightsPage() {
   const [filter, setFilter] = useState<StatusFilter>("active");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [details, setDetails] = useState<Record<string, AirlineFlightOfferDetailRow | null>>({});
 
   const load = useCallback(async (statusFilter: StatusFilter) => {
     setLoading(true);
@@ -60,6 +64,22 @@ export function AirlinePortalFlightsPage() {
   useEffect(() => {
     load(filter);
   }, [filter, load]);
+
+  async function toggle(dealId: string) {
+    if (expanded === dealId) {
+      setExpanded(null);
+      return;
+    }
+    setExpanded(dealId);
+    if (!(dealId in details)) {
+      try {
+        const detail = await fetchAirlineFlightOfferDetail(dealId);
+        setDetails((prev) => ({ ...prev, [dealId]: detail }));
+      } catch {
+        setDetails((prev) => ({ ...prev, [dealId]: null }));
+      }
+    }
+  }
 
   return (
     <AirlinePortalShell overview={overview} active="flights">
@@ -96,6 +116,7 @@ export function AirlinePortalFlightsPage() {
           <table className="ap-table">
             <thead>
               <tr>
+                <th></th>
                 <th>رقم الرحلة</th>
                 <th>المسار</th>
                 <th>تاريخ المغادرة</th>
@@ -107,18 +128,65 @@ export function AirlinePortalFlightsPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((f) => (
-                <tr key={f.deal_id}>
-                  <td>{f.flight_number ?? "—"}</td>
-                  <td>{f.from_airport} → {f.to_airport}</td>
-                  <td>{formatDate(f.departure_date)}</td>
-                  <td>{f.travel_class ?? "—"}</td>
-                  <td>{f.available_seats}</td>
-                  <td>{f.price} {f.currency}</td>
-                  <td>{f.booking_count}</td>
-                  <td><span className={`ap-pill ${f.status}`}>{f.status}</span></td>
-                </tr>
-              ))}
+              {rows.map((f) => {
+                const detail = details[f.deal_id];
+                return (
+                  <Fragment key={f.deal_id}>
+                    <tr onClick={() => toggle(f.deal_id)} style={{ cursor: "pointer" }}>
+                      <td style={{ color: "var(--ap-cyan)" }}>{expanded === f.deal_id ? "▾" : "◂"}</td>
+                      <td>{f.flight_number ?? "—"}</td>
+                      <td>{f.from_airport} → {f.to_airport}</td>
+                      <td>{formatDate(f.departure_date)}</td>
+                      <td>{f.travel_class ?? "—"}</td>
+                      <td>{f.available_seats}</td>
+                      <td>{f.price} {f.currency}</td>
+                      <td>{f.booking_count}</td>
+                      <td><span className={`ap-pill ${f.status}`}>{f.status}</span></td>
+                    </tr>
+                    {expanded === f.deal_id && (
+                      <tr>
+                        <td colSpan={9} style={{ background: "var(--ap-panel-raised)", padding: 14 }}>
+                          {!(f.deal_id in details) ? (
+                            <div className="ap-empty">جاري تحميل تفاصيل الفير...</div>
+                          ) : detail == null ? (
+                            <div className="ap-empty">تعذر تحميل تفاصيل هذه الرحلة</div>
+                          ) : (
+                            <div
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns: "repeat(4, 1fr)",
+                                gap: "10px 20px",
+                                fontSize: 12.5,
+                              }}
+                            >
+                              <div><span style={{ color: "var(--ap-mist)" }}>عائلة الفير: </span>{detail.fare_family ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>السعر الأساسي: </span>{detail.base_fare ?? "—"} {detail.currency}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>الضرائب والرسوم: </span>{detail.taxes_fees ?? "—"} {detail.currency}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>سعر الطفل: </span>{detail.child_price ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>سعر الرضيع: </span>{detail.infant_price ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>قابلة للاسترداد: </span>{detail.refundable == null ? "—" : detail.refundable ? "نعم" : "لا"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>قابلة للتغيير: </span>{detail.changeable == null ? "—" : detail.changeable ? "نعم" : "لا"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>رسوم التغيير: </span>{detail.change_fee ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>رسوم الإلغاء: </span>{detail.cancellation_fee ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>الأمتعة المسجلة: </span>{detail.baggage_kg != null ? `${detail.baggage_kg} كجم` : "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>أمتعة الكابينة: </span>{detail.cabin_baggage_kg != null ? `${detail.cabin_baggage_kg} كجم` : "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>عدد الحقائب: </span>{detail.checked_bags_count ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>سعر الوزن الإضافي: </span>{detail.extra_baggage_price ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>أقل فئة عضوية مطلوبة: </span>{detail.min_membership_tier ?? "—"}</div>
+                              <div><span style={{ color: "var(--ap-mist)" }}>آخر تحقق من السعر: </span>{detail.price_checked_at ? formatDate(detail.price_checked_at) : "—"}</div>
+                              {detail.fare_rules && (
+                                <div style={{ gridColumn: "1 / -1", marginTop: 4 }}>
+                                  <span style={{ color: "var(--ap-mist)" }}>قواعد الفير: </span>{detail.fare_rules}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
         )}
