@@ -85,6 +85,9 @@ const GroundPortalQueuePage = lazy(() =>
 const GroundPortalAirlinesPage = lazy(() =>
   import("./pages/GroundPortalAirlinesPage").then((m) => ({ default: m.GroundPortalAirlinesPage })),
 );
+const GroundPortalAgreementsPage = lazy(() =>
+  import("./pages/GroundPortalAgreementsPage").then((m) => ({ default: m.GroundPortalAgreementsPage })),
+);
 const GroundPortalReportsPage = lazy(() =>
   import("./pages/GroundPortalReportsPage").then((m) => ({ default: m.GroundPortalReportsPage })),
 );
@@ -139,6 +142,7 @@ export default function App() {
             <Route path="ground-portal/login" element={<GroundPortalLoginPage />} />
             <Route path="ground-portal/queue" element={<GroundPortalQueuePage />} />
             <Route path="ground-portal/airlines" element={<GroundPortalAirlinesPage />} />
+            <Route path="ground-portal/agreements" element={<GroundPortalAgreementsPage />} />
             <Route path="ground-portal/reports" element={<GroundPortalReportsPage />} />
             <Route path="ground-portal/settlements" element={<GroundPortalSettlementsPage />} />
           </Routes>

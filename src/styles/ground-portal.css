@@ -305,6 +305,108 @@
 }
 .gp-table tr:last-child td { border-bottom: none; }
 
+/* ---------- agreements (Airline Management) ---------- */
+.gp-field select,
+.gp-field textarea {
+  width: 100%;
+  background: var(--gp-ink);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 7px;
+  padding: 10px 12px;
+  color: var(--gp-paper);
+  font-family: var(--gp-font-ui);
+  font-size: 14px;
+}
+.gp-field select:focus,
+.gp-field textarea:focus { outline: none; border-color: var(--gp-brass); }
+
+.gp-toolbar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.gp-btn.ghost { background: transparent; }
+.gp-btn.primary { background: var(--gp-brass); color: var(--gp-ink); border-color: var(--gp-brass); }
+.gp-btn.primary:hover { background: var(--gp-brass-soft); }
+.gp-btn.small { padding: 6px 12px; font-size: 12.5px; }
+
+.gp-agreement-list { display: flex; flex-direction: column; gap: 14px; }
+.gp-agreement-card {
+  background: var(--gp-panel);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.gp-agreement-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--gp-hairline);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.gp-agreement-title { font-weight: 700; font-size: 15px; }
+.gp-agreement-sub { color: var(--gp-mist); font-size: 12.5px; margin-top: 2px; }
+.gp-agreement-body { padding: 14px 16px; }
+
+.gp-pill-status {
+  font-family: var(--gp-font-data);
+  font-size: 11.5px;
+  letter-spacing: .03em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--gp-hairline);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.gp-pill-status.draft { color: var(--gp-mist); }
+.gp-pill-status.active { color: var(--gp-green); border-color: #1f5b41; }
+.gp-pill-status.suspended { color: var(--gp-amber); border-color: #6b5420; }
+.gp-pill-status.ended { color: var(--gp-red); border-color: #6f2b28; }
+
+.gp-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--gp-hairline);
+  font-size: 13.5px;
+}
+.gp-item-row:last-of-type { border-bottom: none; }
+.gp-item-name { flex: 1; }
+.gp-item-price { font-family: var(--gp-font-data); font-weight: 600; margin-inline: 10px; }
+.gp-item-unit { color: var(--gp-mist); font-size: 12px; margin-inline-end: 10px; }
+
+.gp-add-item-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--gp-hairline);
+  flex-wrap: wrap;
+}
+.gp-add-item-form .gp-field { margin-bottom: 0; min-width: 140px; flex: 1; }
+
+.gp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 11, 20, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+.gp-modal {
+  width: 100%;
+  max-width: 420px;
+  background: var(--gp-panel-raised);
+  border: 1px solid var(--gp-hairline);
+  border-radius: 12px;
+  padding: 24px;
+}
+.gp-modal-title { font-weight: 700; font-size: 16px; margin-bottom: 16px; }
+.gp-modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+
 @media (max-width: 720px) {
   .gp-row { grid-template-columns: 6px 1fr auto; }
   .gp-passenger { display: none; }

@@ -156,3 +156,160 @@ export async function fetchSettlements(): Promise<SettlementRow[]> {
   if (error) throw error;
   return (data ?? []) as SettlementRow[];
 }
+
+// ---------------------------------------------------------------------
+// Airline Management (SGHA-style agreements) — Phase 8 addition.
+// ground_service_agreements / ground_service_agreement_items were added
+// directly on the production DB (same convention as the queue/report/
+// settlement types above) and are not in src/types/database.ts.
+// ---------------------------------------------------------------------
+
+export type AgreementStatus = "draft" | "active" | "suspended" | "ended";
+export type BillingUnit = "per_pax" | "per_flight" | "flat";
+
+export interface AirlineSupplierOption {
+  id: string;
+  name: string;
+  linked_airline_code: string | null;
+}
+
+export interface ServiceCatalogOption {
+  id: string;
+  type: string;
+  generic_name: string;
+}
+
+export interface AgreementItemRow {
+  id: string;
+  agreement_id: string;
+  service_catalog_id: string;
+  billing_unit: BillingUnit;
+  cost_price: number;
+  is_active: boolean;
+  service_catalog?: ServiceCatalogOption | null;
+}
+
+export interface AgreementRow {
+  id: string;
+  ground_supplier_id: string;
+  airline_supplier_id: string;
+  airport_code: string;
+  status: AgreementStatus;
+  sla_hours: number | null;
+  sla_notes: string | null;
+  currency: string;
+  starts_at: string | null;
+  ends_at: string | null;
+  created_at: string;
+  airline?: { id: string; name: string; linked_airline_code: string | null } | null;
+  items?: AgreementItemRow[];
+}
+
+/** Active airline suppliers, for the "airline" picker when creating an agreement. */
+export async function fetchActiveAirlineSuppliers(): Promise<AirlineSupplierOption[]> {
+  const { data, error } = await supabase
+    .from("suppliers")
+    .select("id, name, linked_airline_code")
+    .eq("type", "airline")
+    .eq("status", "active")
+    .order("name");
+  if (error) throw error;
+  return (data ?? []) as AirlineSupplierOption[];
+}
+
+/**
+ * Airport-facing service types only (lounge/fast_track/meet_assist/
+ * wheelchair/check_in_assistance/boarding_assistance/arrival_assistance/
+ * immigration_assistance). Ground transportation (airport_transfer/
+ * private_car/shuttle) is GOAIR's domain, not a ground handler's — kept
+ * out of this picker deliberately per the Airline/Agency/Ground Handler
+ * role split.
+ */
+export async function fetchAirportServiceCatalog(): Promise<ServiceCatalogOption[]> {
+  const { data, error } = await supabase
+    .from("service_catalog")
+    .select("id, type, generic_name")
+    .eq("category", "airport")
+    .order("generic_name");
+  if (error) throw error;
+  return (data ?? []) as ServiceCatalogOption[];
+}
+
+/** All agreements belonging to the logged-in ground provider, with airline + pricing items. */
+export async function fetchMyAgreements(): Promise<AgreementRow[]> {
+  const supplierId = await getMySupplierId();
+  if (!supplierId) return [];
+
+  const { data, error } = await supabase
+    .from("ground_service_agreements")
+    .select(
+      "id, ground_supplier_id, airline_supplier_id, airport_code, status, sla_hours, sla_notes, currency, starts_at, ends_at, created_at, " +
+        "airline:suppliers!ground_service_agreements_airline_supplier_id_fkey(id, name, linked_airline_code), " +
+        "items:ground_service_agreement_items(id, agreement_id, service_catalog_id, billing_unit, cost_price, is_active, service_catalog:service_catalog(id, type, generic_name))",
+    )
+    .eq("ground_supplier_id", supplierId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as AgreementRow[];
+}
+
+export async function createAgreement(input: {
+  airlineSupplierId: string;
+  airportCode: string;
+  slaHours: number | null;
+  currency: string;
+}): Promise<string> {
+  const supplierId = await getMySupplierId();
+  if (!supplierId) throw new Error("لا يوجد حساب مورد مرتبط بالمستخدم الحالي");
+
+  const { data, error } = await supabase
+    .from("ground_service_agreements")
+    .insert({
+      ground_supplier_id: supplierId,
+      airline_supplier_id: input.airlineSupplierId,
+      airport_code: input.airportCode,
+      sla_hours: input.slaHours,
+      currency: input.currency,
+      status: "draft",
+    } as never)
+    .select("id")
+    .single();
+  if (error) throw error;
+  return (data as { id: string }).id;
+}
+
+export async function updateAgreementStatus(agreementId: string, status: AgreementStatus) {
+  const { error } = await supabase
+    .from("ground_service_agreements")
+    .update({ status } as never)
+    .eq("id", agreementId);
+  if (error) throw error;
+}
+
+export async function addAgreementItem(input: {
+  agreementId: string;
+  serviceCatalogId: string;
+  billingUnit: BillingUnit;
+  costPrice: number;
+}) {
+  const { error } = await supabase.from("ground_service_agreement_items").insert({
+    agreement_id: input.agreementId,
+    service_catalog_id: input.serviceCatalogId,
+    billing_unit: input.billingUnit,
+    cost_price: input.costPrice,
+  } as never);
+  if (error) throw error;
+}
+
+export async function toggleAgreementItemActive(itemId: string, isActive: boolean) {
+  const { error } = await supabase
+    .from("ground_service_agreement_items")
+    .update({ is_active: isActive } as never)
+    .eq("id", itemId);
+  if (error) throw error;
+}
+
+export async function deleteAgreementItem(itemId: string) {
+  const { error } = await supabase.from("ground_service_agreement_items").delete().eq("id", itemId);
+  if (error) throw error;
+}
