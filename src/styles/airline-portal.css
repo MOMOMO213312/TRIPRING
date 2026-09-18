@@ -149,6 +149,42 @@
   text-align: center;
 }
 
+/* ---------- report cards ---------- */
+.ap-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+.ap-card {
+  background: var(--ap-panel);
+  border: 1px solid var(--ap-hairline);
+  border-radius: 10px;
+  padding: 16px;
+}
+.ap-card-label { color: var(--ap-mist); font-size: 12.5px; margin-bottom: 8px; }
+.ap-card-value {
+  font-family: var(--ap-font-data);
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ap-cyan);
+}
+.ap-card-value.red { color: var(--ap-red); }
+.ap-card-value.green { color: var(--ap-green); }
+
+.ap-bar-track {
+  background: var(--ap-panel-raised);
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+  min-width: 60px;
+}
+.ap-bar-fill {
+  background: var(--ap-cyan);
+  height: 100%;
+  border-radius: 999px;
+}
+
+@media (max-width: 900px) {
+  .ap-cards { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* ---------- status pills ---------- */
 .ap-pill {
   display: inline-block;

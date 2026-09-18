@@ -100,6 +100,9 @@ const AirlinePortalAgreementsPage = lazy(() =>
 const AirlinePortalSettlementsPage = lazy(() =>
   import("./pages/AirlinePortalSettlementsPage").then((m) => ({ default: m.AirlinePortalSettlementsPage })),
 );
+const AirlinePortalReportsPage = lazy(() =>
+  import("./pages/AirlinePortalReportsPage").then((m) => ({ default: m.AirlinePortalReportsPage })),
+);
 const GroundPortalQueuePage = lazy(() =>
   import("./pages/GroundPortalQueuePage").then((m) => ({ default: m.GroundPortalQueuePage })),
 );
@@ -164,6 +167,7 @@ export default function App() {
               <Route path="airline-portal/ground" element={<AirlinePortalGroundPage />} />
               <Route path="airline-portal/agreements" element={<AirlinePortalAgreementsPage />} />
               <Route path="airline-portal/settlements" element={<AirlinePortalSettlementsPage />} />
+              <Route path="airline-portal/reports" element={<AirlinePortalReportsPage />} />
             </Route>
 
             {/* Ground Provider Portal — its own chrome, outside the customer Layout */}

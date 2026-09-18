@@ -251,6 +251,100 @@ export async function fetchAirlineBookings(statusFilter: string | null = null): 
   return (data ?? []) as AirlineBookingRow[];
 }
 
+export interface AirlineRoutePerformanceRow {
+  route: string;
+  bookings: number;
+  revenue: number;
+  avgPrice: number;
+}
+
+export interface AirlineMonthlyPerformanceRow {
+  month: string; // YYYY-MM
+  bookings: number;
+  revenue: number;
+}
+
+export interface AirlinePerformanceReport {
+  currency: string | null;
+  totalBookings: number;
+  ticketIssuedCount: number;
+  cancelledCount: number;
+  cancellationRate: number; // 0..1
+  totalRevenue: number;
+  avgBookingValue: number;
+  byRoute: AirlineRoutePerformanceRow[];
+  byMonth: AirlineMonthlyPerformanceRow[];
+}
+
+const CANCELLED_STATUSES = new Set(["cancelled", "canceled"]);
+
+/** Pure aggregation over already-fetched bookings — no new RPC needed.
+ *  get_my_airline_bookings() already returns everything this report needs
+ *  (route, total_price, currency, status, created_at) per booking; this
+ *  just groups/sums it client-side. If the volume ever outgrows that,
+ *  move this logic into a SQL view/RPC without changing the page. */
+export function buildAirlinePerformanceReport(bookings: AirlineBookingRow[]): AirlinePerformanceReport {
+  const currencyCounts = new Map<string, number>();
+  for (const b of bookings) {
+    if (b.currency) currencyCounts.set(b.currency, (currencyCounts.get(b.currency) ?? 0) + 1);
+  }
+  let currency: string | null = null;
+  let bestCount = 0;
+  for (const [cur, count] of currencyCounts) {
+    if (count > bestCount) {
+      currency = cur;
+      bestCount = count;
+    }
+  }
+
+  const priced = bookings.filter((b) => b.total_price != null && (currency == null || b.currency === currency));
+
+  let ticketIssuedCount = 0;
+  let cancelledCount = 0;
+  for (const b of bookings) {
+    if (CANCELLED_STATUSES.has(b.status)) cancelledCount += 1;
+    else ticketIssuedCount += 1;
+  }
+
+  const totalRevenue = priced.reduce((sum, b) => sum + (b.total_price ?? 0), 0);
+
+  const routeMap = new Map<string, { bookings: number; revenue: number }>();
+  for (const b of priced) {
+    const key = `${b.from_airport} → ${b.to_airport}`;
+    const entry = routeMap.get(key) ?? { bookings: 0, revenue: 0 };
+    entry.bookings += 1;
+    entry.revenue += b.total_price ?? 0;
+    routeMap.set(key, entry);
+  }
+  const byRoute: AirlineRoutePerformanceRow[] = [...routeMap.entries()]
+    .map(([route, v]) => ({ route, bookings: v.bookings, revenue: v.revenue, avgPrice: v.revenue / v.bookings }))
+    .sort((a, b) => b.revenue - a.revenue);
+
+  const monthMap = new Map<string, { bookings: number; revenue: number }>();
+  for (const b of priced) {
+    const month = b.created_at.slice(0, 7);
+    const entry = monthMap.get(month) ?? { bookings: 0, revenue: 0 };
+    entry.bookings += 1;
+    entry.revenue += b.total_price ?? 0;
+    monthMap.set(month, entry);
+  }
+  const byMonth: AirlineMonthlyPerformanceRow[] = [...monthMap.entries()]
+    .map(([month, v]) => ({ month, bookings: v.bookings, revenue: v.revenue }))
+    .sort((a, b) => a.month.localeCompare(b.month));
+
+  return {
+    currency,
+    totalBookings: bookings.length,
+    ticketIssuedCount,
+    cancelledCount,
+    cancellationRate: bookings.length > 0 ? cancelledCount / bookings.length : 0,
+    totalRevenue,
+    avgBookingValue: priced.length > 0 ? totalRevenue / priced.length : 0,
+    byRoute,
+    byMonth,
+  };
+}
+
 export async function fetchAirlineGroundRequests(
   executionStatusFilter: string | null = null,
 ): Promise<AirlineGroundRequestRow[]> {
