@@ -123,6 +123,9 @@ export function DealCard({
             <span className="text-sm font-medium text-slate-700">
               {airlineName(deal.airline_code, airlines)}
             </span>
+            {agency?.name ? (
+              <span className="text-[11px] font-medium text-slate-500">بواسطة {agency.name}</span>
+            ) : null}
             {agency?.is_active ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-[#E5F4FB] px-2 py-0.5 text-[11px] font-semibold text-[#0C7BB3]">
                 <VerifiedIcon className="size-3" />
