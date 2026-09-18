@@ -157,6 +157,13 @@ export default function App() {
               <Route path="become-a-supplier" element={<BecomeSupplierPage />} />
               <Route path="terms" element={<TermsPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
+              <Route path="airline-portal/login" element={<AirlinePortalLoginPage />} />
+              <Route path="airline-portal/overview" element={<AirlinePortalOverviewPage />} />
+              <Route path="airline-portal/flights" element={<AirlinePortalFlightsPage />} />
+              <Route path="airline-portal/bookings" element={<AirlinePortalBookingsPage />} />
+              <Route path="airline-portal/ground" element={<AirlinePortalGroundPage />} />
+              <Route path="airline-portal/agreements" element={<AirlinePortalAgreementsPage />} />
+              <Route path="airline-portal/settlements" element={<AirlinePortalSettlementsPage />} />
             </Route>
 
             {/* Ground Provider Portal — its own chrome, outside the customer Layout */}
@@ -166,13 +173,6 @@ export default function App() {
             <Route path="ground-portal/agreements" element={<GroundPortalAgreementsPage />} />
             <Route path="ground-portal/reports" element={<GroundPortalReportsPage />} />
             <Route path="ground-portal/settlements" element={<GroundPortalSettlementsPage />} />
-            <Route path="airline-portal/login" element={<AirlinePortalLoginPage />} />
-            <Route path="airline-portal/overview" element={<AirlinePortalOverviewPage />} />
-            <Route path="airline-portal/flights" element={<AirlinePortalFlightsPage />} />
-            <Route path="airline-portal/bookings" element={<AirlinePortalBookingsPage />} />
-            <Route path="airline-portal/ground" element={<AirlinePortalGroundPage />} />
-            <Route path="airline-portal/agreements" element={<AirlinePortalAgreementsPage />} />
-            <Route path="airline-portal/settlements" element={<AirlinePortalSettlementsPage />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
