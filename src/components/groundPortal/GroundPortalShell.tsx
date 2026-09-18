@@ -7,7 +7,7 @@ import "../../styles/ground-portal.css";
 interface Props {
   supplierName?: string;
   queue?: GroundQueueRow[]; // pass the live queue in to drive the ticker
-  active: "queue" | "reports" | "settlements";
+  active: "queue" | "airlines" | "reports" | "settlements";
   children: ReactNode;
 }
 
@@ -40,6 +40,12 @@ export function GroundPortalShell({ supplierName, queue = [], active, children }
               style={{ color: active === "queue" ? "#c9a227" : "#93a4c2" }}
             >
               الطابور
+            </Link>
+            <Link
+              to="/ground-portal/airlines"
+              style={{ color: active === "airlines" ? "#c9a227" : "#93a4c2" }}
+            >
+              شركات الطيران
             </Link>
             <Link
               to="/ground-portal/reports"
