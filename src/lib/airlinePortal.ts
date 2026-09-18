@@ -92,6 +92,48 @@ export interface AirlineGroundRequestRow {
   customer_phone: string;
 }
 
+export interface AirlineAgreementRow {
+  agreement_id: string;
+  airline_supplier_id: string;
+  ground_supplier_id: string;
+  ground_supplier_name: string;
+  airport_code: string;
+  status: "draft" | "active" | "suspended" | "ended";
+  sla_hours: number | null;
+  sla_notes: string | null;
+  currency: string;
+  starts_at: string | null;
+  ends_at: string | null;
+  item_count: number;
+  created_at: string;
+}
+
+export interface AirlineAgreementItemRow {
+  item_id: string;
+  agreement_id: string;
+  service_type: string;
+  service_name: string;
+  billing_unit: "per_pax" | "per_flight" | "flat";
+  cost_price: number;
+  is_active: boolean;
+}
+
+/** Contracts/العقود — read-only on the airline side by design (only the
+ *  ground supplier can create/edit an agreement; this matches the real SGHA
+ *  relationship and the RLS already in place on these tables). */
+export async function fetchAirlineAgreements(): Promise<AirlineAgreementRow[]> {
+  const { data, error } = await supabase.rpc("get_my_airline_agreements" as never).select("*");
+  if (error) throw error;
+  return (data ?? []) as AirlineAgreementRow[];
+}
+
+export async function fetchAirlineAgreementItems(agreementId: string): Promise<AirlineAgreementItemRow[]> {
+  const { data, error } = await supabase
+    .rpc("get_my_airline_agreement_items", { p_agreement_id: agreementId } as never)
+    .select("*");
+  if (error) throw error;
+  return (data ?? []) as AirlineAgreementItemRow[];
+}
 /** Which supplier does the currently logged-in user belong to?
  *  Identical query to getMySupplierId in groundPortal.ts — a user's
  *  supplier_users row doesn't carry a type by itself, so the login page

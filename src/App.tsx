@@ -94,6 +94,9 @@ const AirlinePortalBookingsPage = lazy(() =>
 const AirlinePortalGroundPage = lazy(() =>
   import("./pages/AirlinePortalGroundPage").then((m) => ({ default: m.AirlinePortalGroundPage })),
 );
+const AirlinePortalAgreementsPage = lazy(() =>
+  import("./pages/AirlinePortalAgreementsPage").then((m) => ({ default: m.AirlinePortalAgreementsPage })),
+);
 const GroundPortalQueuePage = lazy(() =>
   import("./pages/GroundPortalQueuePage").then((m) => ({ default: m.GroundPortalQueuePage })),
 );
@@ -165,6 +168,7 @@ export default function App() {
             <Route path="airline-portal/flights" element={<AirlinePortalFlightsPage />} />
             <Route path="airline-portal/bookings" element={<AirlinePortalBookingsPage />} />
             <Route path="airline-portal/ground" element={<AirlinePortalGroundPage />} />
+            <Route path="airline-portal/agreements" element={<AirlinePortalAgreementsPage />} />
           </Routes>
         </Suspense>
       </ErrorBoundary>
