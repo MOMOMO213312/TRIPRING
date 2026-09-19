@@ -141,8 +141,9 @@ export function GroundPortalAgreementsPage() {
     try {
       await updateAgreementStatus(agreementId, status);
       await load();
-    } catch {
-      setError("تعذر تغيير حالة العقد");
+    } catch (e: any) {
+      // 23505 = the airline already has another active ground handler at this airport
+      setError(e?.code === "23505" && e?.message ? e.message : "تعذر تغيير حالة العقد");
     }
   }
 

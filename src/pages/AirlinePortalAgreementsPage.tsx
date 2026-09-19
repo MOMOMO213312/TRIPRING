@@ -95,8 +95,9 @@ export function AirlinePortalAgreementsPage() {
     try {
       await reviewGroundAgreement(agreementId, approve, (notes[agreementId] ?? "").trim() || null);
       await load();
-    } catch {
-      setError("تعذر تسجيل قرارك على الاتفاقية");
+    } catch (e: any) {
+      // 23505 = airline already has an active ground handler at this airport
+      setError(e?.code === "23505" && e?.message ? e.message : "تعذر تسجيل قرارك على الاتفاقية");
     } finally {
       setBusyId(null);
     }
