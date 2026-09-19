@@ -291,11 +291,15 @@ export function AirlinePortalServicesPage() {
     setSavingNew(true);
     setError(null);
     try {
-      await upsertAirlineService(draftToUpsertInput(newDraft));
+      const newId = await upsertAirlineService(draftToUpsertInput(newDraft));
       setShowNewForm(false);
       const firstType = AIRLINE_SERVICE_GROUPS.find((x) => x.id === activeGroup)?.types[0].type;
       setNewDraft(emptyDraft(firstType ?? newDraft.type));
       await load();
+      // Straight into "قواعد الإتاحة" for the service just created — a
+      // freshly-saved service has zero rules, so it's invisible to
+      // customers on any flight until the airline adds at least one.
+      await openRules(newId);
     } catch (e: any) {
       setError(e?.message ?? "تعذر إضافة الخدمة");
     } finally {
