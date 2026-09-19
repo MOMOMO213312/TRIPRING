@@ -555,6 +555,46 @@ export async function lookupBooking(
   return (data as BookingLookupResult | null) ?? null;
 }
 
+/** Active add-on catalog for the post-booking screen (adds fulfillment_type so ground services can ask for the airport leg). */
+export async function fetchBookableAddOns(): Promise<AdditionalServiceRow[]> {
+  const { data, error } = await supabase
+    .from("additional_services")
+    .select("id,type,name,description,price,category,is_active,fulfillment_type")
+    .eq("is_active", true)
+    .order("price", { ascending: true });
+  if (error) return [];
+  return (data ?? []) as AdditionalServiceRow[];
+}
+
+export type AddServicesResult = {
+  ok: boolean;
+  added_amount: number;
+  total_price: number;
+  currency: string;
+  status: string;
+};
+
+/**
+ * Adds services to an existing booking (guest path — same booking_number +
+ * phone/email check as lookupBooking). Prices are always recomputed
+ * server-side; only service_id / quantity / airport_leg are sent.
+ */
+export async function addServicesToBooking(
+  bookingNumber: string,
+  contact: string,
+  services: { service_id: string; quantity?: number; airport_leg?: "departure" | "arrival" | null }[],
+): Promise<AddServicesResult> {
+  const num = parseInt(bookingNumber.replace(/\D/g, ""), 10);
+  if (Number.isNaN(num)) throw new Error("رقم الحجز غير صالح");
+  const { data, error } = await supabase.rpc("add_services_to_booking_by_contact", {
+    p_booking_number: num,
+    p_contact: contact.trim(),
+    p_services: services,
+  } as never);
+  if (error) throw new Error(error.message);
+  return data as AddServicesResult;
+}
+
 const PAYMENT_PROOF_MAX_BYTES = 5 * 1024 * 1024;
 const PAYMENT_PROOF_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 

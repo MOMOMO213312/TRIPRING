@@ -8,6 +8,7 @@ import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/EmptyState";
 import { Input } from "../components/ui/Input";
 import { JourneyPanel } from "../components/JourneyPanel";
+import { AddServicesToTrip } from "../components/AddServicesToTrip";
 import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { lookupBooking } from "../lib/api";
 import { setSessionContact } from "../lib/session";
@@ -187,6 +188,17 @@ export function MyTripsPage() {
                 ))}
               </ul>
             </div>
+          ) : null}
+          {booking.status !== "cancelled" &&
+          (!booking.deal?.departure_date || booking.deal.departure_date >= new Date().toISOString().slice(0, 10)) ? (
+            <AddServicesToTrip
+              bookingNumber={String(booking.booking_number)}
+              contact={contact}
+              currency={booking.currency}
+              bookingStatus={booking.status}
+              existingServiceNames={booking.services.map((s) => s.name)}
+              onAdded={() => runSearch(bookingNumber, contact)}
+            />
           ) : null}
           {booking.status === "ticket_issued" && booking.ticket_url ? (
             <div className="mt-4 border-t border-slate-100 pt-4">
