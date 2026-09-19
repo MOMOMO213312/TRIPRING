@@ -52,6 +52,18 @@ export interface GroundQueueRow {
   sla_hours: number | null;
   sla_deadline: string | null;
   sla_state: SlaState;
+  // enriched — full ticket/request completeness for the ground handler's queue.
+  booking_id: string | null;
+  booking_number: number | null;
+  quantity: number;
+  airport_leg: "departure" | "arrival" | null;
+  delivery_location: string | null;
+  delivery_method: string | null;
+  terms: string | null;
+  max_weight_kg: number | null;
+  agency_name: string | null;
+  booking_notes: string | null;
+  passenger_names: string | null;
 }
 
 export interface SupplierReportRow {

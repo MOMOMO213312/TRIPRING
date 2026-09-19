@@ -102,10 +102,11 @@ export function AirlinePortalGroundPage() {
               <tr>
                 <th>الرحلة</th>
                 <th>المسار / التاريخ</th>
+                <th>التذكرة / الراكب</th>
                 <th>الخدمة</th>
-                <th>المرحلة</th>
+                <th>تفاصيل التسليم</th>
+                <th>الوكالة</th>
                 <th>مزوّد الخدمة الأرضية</th>
-                <th>الراكب</th>
                 <th>حالة الحجز</th>
                 <th>حالة التنفيذ</th>
               </tr>
@@ -115,10 +116,32 @@ export function AirlinePortalGroundPage() {
                 <tr key={g.order_item_id}>
                   <td>{g.flight_number ?? "—"}</td>
                   <td>{g.from_airport ?? "؟"} → {g.to_airport ?? "؟"}<br /><span style={{ color: "var(--ap-mist)", fontSize: 11 }}>{formatDate(g.departure_date)}</span></td>
-                  <td>{g.service_name}</td>
-                  <td>{g.airport_leg === "departure" ? "مغادرة" : g.airport_leg === "arrival" ? "وصول" : "—"}</td>
-                  <td>{g.ground_supplier_name ?? "لم يُسند بعد"}</td>
-                  <td>{g.customer_name}<br /><span style={{ color: "var(--ap-mist)", fontSize: 11 }}>{g.customer_phone}</span></td>
+                  <td>
+                    {g.booking_number != null ? `#${g.booking_number}` : "—"}
+                    <br />
+                    <span style={{ color: "var(--ap-mist)", fontSize: 11 }}>
+                      {g.passenger_names ?? g.customer_name}
+                    </span>
+                  </td>
+                  <td>
+                    {g.service_name}
+                    {g.quantity > 1 && ` × ${g.quantity}`}
+                    <br />
+                    <span style={{ color: "var(--ap-mist)", fontSize: 11 }}>
+                      {g.airport_leg === "departure" ? "مغادرة" : g.airport_leg === "arrival" ? "وصول" : "—"}
+                    </span>
+                  </td>
+                  <td style={{ fontSize: 11.5 }}>
+                    {g.delivery_location ?? "—"}
+                    {g.delivery_method && <><br /><span style={{ color: "var(--ap-mist)" }}>{g.delivery_method}</span></>}
+                  </td>
+                  <td>{g.agency_name ?? "—"}</td>
+                  <td>
+                    {g.ground_supplier_name ?? "لم يُسند بعد"}
+                    {g.sla_hours != null && (
+                      <><br /><span style={{ color: "var(--ap-mist)", fontSize: 11 }}>SLA: {g.sla_hours} ساعة</span></>
+                    )}
+                  </td>
                   <td><span className={`ap-pill ${g.fulfillment_status}`}>{g.fulfillment_status}</span></td>
                   <td><span className={`ap-pill ${g.execution_status}`}>{g.execution_status}</span></td>
                 </tr>

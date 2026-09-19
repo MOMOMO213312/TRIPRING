@@ -131,8 +131,27 @@ export function GroundPortalQueuePage() {
               </div>
 
               <div className="gp-passenger">
-                <div className="gp-passenger-name">{row.customer_name ?? "بدون اسم"}</div>
-                <div className="gp-service">{row.service_name}</div>
+                <div className="gp-passenger-name">
+                  {row.passenger_names ?? row.customer_name ?? "بدون اسم"}
+                  {row.booking_number != null && (
+                    <span style={{ opacity: 0.6, fontSize: 11, marginInlineStart: 6 }}>
+                      #{row.booking_number}
+                    </span>
+                  )}
+                </div>
+                <div className="gp-service">
+                  {row.service_name}
+                  {row.quantity > 1 && ` × ${row.quantity}`}
+                  {row.airport_leg && (
+                    <span style={{ opacity: 0.6 }}> — {row.airport_leg === "departure" ? "مغادرة" : "وصول"}</span>
+                  )}
+                </div>
+                {row.delivery_location && (
+                  <div style={{ fontSize: 11, opacity: 0.7 }}>{row.delivery_location}</div>
+                )}
+                {row.agency_name && (
+                  <div style={{ fontSize: 11, opacity: 0.6 }}>الوكالة: {row.agency_name}</div>
+                )}
               </div>
 
               <div className="gp-status">

@@ -90,6 +90,28 @@ export interface AirlineGroundRequestRow {
   to_airport: string | null;
   customer_name: string;
   customer_phone: string;
+  // enriched — ensures the request carries the full ticket/service data,
+  // not just a flight+customer stub (booking_id/booking_number = "ticket").
+  booking_id: string | null;
+  booking_number: number | null;
+  quantity: number;
+  customer_price: number | null;
+  currency: string | null;
+  payment_status: string | null;
+  execution_note: string | null;
+  delivery_location: string | null;
+  delivery_method: string | null;
+  terms: string | null;
+  max_weight_kg: number | null;
+  ground_supplier_id: string | null;
+  ground_supplier_phone: string | null;
+  sla_hours: number | null;
+  sla_deadline: string | null;
+  departure_time: string | null;
+  customer_email: string | null;
+  agency_name: string | null;
+  booking_notes: string | null;
+  passenger_names: string | null;
 }
 
 export interface AirlineAgreementRow {
