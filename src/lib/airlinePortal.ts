@@ -359,6 +359,65 @@ export function buildAirlinePerformanceReport(bookings: AirlineBookingRow[]): Ai
   };
 }
 
+/** Ancillary types an airline can self-serve in v1. Not ground-handling
+ *  execution (meet_assist/lounge/fast_track — those live under a ground
+ *  handler's agreement) and not agency-affiliate categories (hotel/
+ *  car_rental/etc.) — only the unambiguous "airline owns and prices this"
+ *  product types, per the agreed Phase A/B decision. */
+export const AIRLINE_ANCILLARY_TYPES = ["extra_baggage", "priority_boarding", "seat_selection"] as const;
+export type AirlineAncillaryType = (typeof AIRLINE_ANCILLARY_TYPES)[number];
+
+export interface AirlineServiceRow {
+  id: string;
+  type: string;
+  name: string;
+  description: string | null;
+  price: number;
+  is_active: boolean;
+  category: string | null;
+}
+
+/** الخدمات الإضافية — the airline's own ancillary catalog (extra baggage,
+ *  priority boarding, seat selection). Read-scoped to the caller's own
+ *  airline_supplier_id server-side inside the RPC. */
+export async function fetchAirlineServices(): Promise<AirlineServiceRow[]> {
+  const { data, error } = await supabase.rpc("get_my_airline_services" as never).select("*");
+  if (error) throw error;
+  return (data ?? []) as AirlineServiceRow[];
+}
+
+/** Create (p_id omitted) or update (p_id set) one of the airline's own
+ *  ancillary services. Ownership/type-whitelist are enforced server-side —
+ *  the client can't create a service outside AIRLINE_ANCILLARY_TYPES or
+ *  edit another supplier's row. */
+export async function upsertAirlineService(input: {
+  id?: string;
+  type?: AirlineAncillaryType;
+  name?: string;
+  description?: string | null;
+  price?: number;
+  isActive?: boolean;
+}): Promise<string> {
+  const { data, error } = await supabase.rpc("airline_upsert_service" as never, {
+    p_id: input.id ?? null,
+    p_type: input.type ?? null,
+    p_name: input.name ?? null,
+    p_description: input.description ?? null,
+    p_price: input.price ?? null,
+    p_is_active: input.isActive ?? true,
+  } as never);
+  if (error) throw error;
+  return data as string;
+}
+
+export async function setAirlineServiceActive(id: string, isActive: boolean): Promise<void> {
+  const { error } = await supabase.rpc("airline_set_service_active" as never, {
+    p_id: id,
+    p_is_active: isActive,
+  } as never);
+  if (error) throw error;
+}
+
 export async function fetchAirlineGroundRequests(
   executionStatusFilter: string | null = null,
 ): Promise<AirlineGroundRequestRow[]> {

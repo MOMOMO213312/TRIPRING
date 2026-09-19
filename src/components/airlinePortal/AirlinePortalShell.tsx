@@ -6,7 +6,7 @@ import "../../styles/airline-portal.css";
 
 interface Props {
   overview?: AirlineOverviewRow | null;
-  active: "overview" | "flights" | "bookings" | "ground" | "agreements" | "settlements" | "reports";
+  active: "overview" | "flights" | "bookings" | "ground" | "agreements" | "services" | "settlements" | "reports";
   children: ReactNode;
 }
 
@@ -45,6 +45,9 @@ export function AirlinePortalShell({ overview, active, children }: Props) {
             </Link>
             <Link to="/airline-portal/agreements" style={{ color: active === "agreements" ? "#3ec6e0" : "#8fa8c4" }}>
               العقود
+            </Link>
+            <Link to="/airline-portal/services" style={{ color: active === "services" ? "#3ec6e0" : "#8fa8c4" }}>
+              الخدمات الإضافية
             </Link>
             <Link to="/airline-portal/settlements" style={{ color: active === "settlements" ? "#3ec6e0" : "#8fa8c4" }}>
               كشوف الحساب
