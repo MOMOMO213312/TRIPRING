@@ -38,19 +38,19 @@ export function GroundPortalReportsPage() {
         <div className="gp-cards">
           <div className="gp-card">
             <div className="gp-card-label">مكتملة</div>
-            <div className="gp-card-value" style={{ color: "#3fae7a" }}>
+            <div className="gp-card-value" style={{ color: "#0e9f6e" }}>
               {report.completed_count}
             </div>
           </div>
           <div className="gp-card">
             <div className="gp-card-label">فشلت / لم يحضر الراكب</div>
-            <div className="gp-card-value" style={{ color: "#e1524b" }}>
+            <div className="gp-card-value" style={{ color: "#dc3a36" }}>
               {report.failed_count + report.no_show_count}
             </div>
           </div>
           <div className="gp-card">
             <div className="gp-card-label">قيد التنفيذ حاليًا</div>
-            <div className="gp-card-value" style={{ color: "#c9a227" }}>
+            <div className="gp-card-value" style={{ color: "#5b4bdb" }}>
               {report.open_count}
             </div>
           </div>
@@ -58,7 +58,7 @@ export function GroundPortalReportsPage() {
             <div className="gp-card-label">تجاوزات SLA</div>
             <div
               className="gp-card-value"
-              style={{ color: report.sla_breaches > 0 ? "#e1524b" : "#ede7d9" }}
+              style={{ color: report.sla_breaches > 0 ? "#dc3a36" : undefined }}
             >
               {report.sla_breaches}
             </div>

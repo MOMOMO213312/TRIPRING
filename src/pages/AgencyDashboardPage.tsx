@@ -14,6 +14,9 @@ import { AgencyLoginGate } from "../components/agency/AgencyLoginGate";
 import { NotificationBell } from "../components/notifications/NotificationBell";
 import { fetchMyAgencyProfile, type AgencyProfile } from "../lib/agency";
 import { signOut, useAuth } from "../lib/auth";
+import { PortalShell } from "../components/portal/PortalShell";
+import type { PortalNavItem } from "../components/portal/PortalShell";
+import type { PortalIconName } from "../components/portal/PortalIcon";
 import { Button } from "../components/ui/Button";
 
 // 6 top-level sections (the agreed IA), each holding one or more of the
@@ -33,23 +36,26 @@ type SubTab =
 type Group = {
   key: string;
   label: string;
+  icon: PortalIconName;
   subTabs: { key: SubTab; label: string }[];
 };
 
 const GROUPS: Group[] = [
-  { key: "home", label: "الرئيسية", subTabs: [{ key: "home", label: "الرئيسية" }] },
+  { key: "home", icon: "dashboard", label: "الرئيسية", subTabs: [{ key: "home", label: "الرئيسية" }] },
   {
     key: "search",
+    icon: "search",
     label: "البحث والحجز",
     subTabs: [
       { key: "deals", label: "العروض" },
       { key: "tripgo", label: "🚐 TripGo" },
     ],
   },
-  { key: "customers", label: "العملاء", subTabs: [{ key: "customers", label: "العملاء" }] },
-  { key: "trips", label: "رحلاتي", subTabs: [{ key: "bookings", label: "الحجوزات والتذاكر" }] },
+  { key: "customers", icon: "users", label: "العملاء", subTabs: [{ key: "customers", label: "العملاء" }] },
+  { key: "trips", icon: "plane", label: "رحلاتي", subTabs: [{ key: "bookings", label: "الحجوزات والتذاكر" }] },
   {
     key: "services_group",
+    icon: "star",
     label: "الخدمات",
     subTabs: [
       { key: "services", label: "خدماتي" },
@@ -58,6 +64,7 @@ const GROUPS: Group[] = [
   },
   {
     key: "admin",
+    icon: "sliders",
     label: "الإدارة",
     subTabs: [
       { key: "payments", label: "الدفع/الحالة" },
@@ -100,73 +107,63 @@ export function AgencyDashboardPage() {
   }, [user, authLoading]);
 
   if (authLoading || profileLoading) {
-    return <div className="py-16 text-center text-sm text-slate-500">جاري التحميل...</div>;
+    return <div className="pt-center text-sm text-slate-500">جاري التحميل...</div>;
   }
 
   if (!user) {
-    return <AgencyLoginGate />;
+    return (
+      <div className="pt-center">
+        <AgencyLoginGate />
+      </div>
+    );
   }
 
   if (!profile) {
     return (
-      <div className="mx-auto max-w-lg space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
-        <p className="font-bold text-amber-900">هذا الحساب غير مفعّل كحساب وكالة</p>
-        <p className="text-sm text-amber-800">
-          تواصل مع إدارة TripRing لتفعيل صلاحيات الوكالة على هذا الحساب.
-        </p>
-        <Button variant="outline" onClick={() => signOut().then(() => window.location.reload())}>
-          تسجيل الخروج
-        </Button>
+      <div className="pt-center">
+        <div className="mx-auto max-w-lg space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
+          <p className="font-bold text-amber-900">هذا الحساب غير مفعّل كحساب وكالة</p>
+          <p className="text-sm text-amber-800">
+            تواصل مع إدارة TripRing لتفعيل صلاحيات الوكالة على هذا الحساب.
+          </p>
+          <Button variant="outline" onClick={() => signOut().then(() => window.location.reload())}>
+            تسجيل الخروج
+          </Button>
+        </div>
       </div>
     );
   }
 
   const activeGroup = groupOf(tab);
 
+  const nav: PortalNavItem[] = GROUPS.map((g) => ({
+    key: g.key,
+    label: g.label,
+    icon: g.icon,
+    onClick: () => setTab(g.subTabs[0].key),
+  }));
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-extrabold text-slate-900">لوحة الوكالة</h1>
-          <p className="text-sm text-slate-500">
-            {profile.agency_name ?? "وكالتك"} — {profile.full_name ?? "مستخدم"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <NotificationBell />
-          <Button variant="outline" onClick={() => signOut().then(() => window.location.reload())}>
-            تسجيل الخروج
-          </Button>
-        </div>
-      </div>
-
-      {/* Level 1: the 6 sections */}
-      <div className="flex flex-wrap gap-1 rounded-xl border border-slate-200 bg-white p-1">
-        {GROUPS.map((g) => (
-          <button
-            key={g.key}
-            type="button"
-            onClick={() => setTab(g.subTabs[0].key)}
-            className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
-              activeGroup.key === g.key ? "bg-[#0C7BB3] text-white" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            {g.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Level 2: sub-tabs, only shown when the active section has more than one */}
+    <PortalShell
+      portal="agency"
+      portalLabel="Partner Portal"
+      roleLabel="وكالة سفر"
+      orgName={profile.agency_name ?? "وكالتك"}
+      userName={profile.full_name ?? "مستخدم"}
+      nav={nav}
+      activeKey={activeGroup.key}
+      topbarExtra={<NotificationBell />}
+      onSignOut={() => signOut().then(() => window.location.reload())}
+    >
+      {/* Sub-tabs, only shown when the active section has more than one */}
       {activeGroup.subTabs.length > 1 ? (
-        <div className="flex flex-wrap gap-1 border-b border-slate-200 pb-2">
+        <div className="pt-tabs">
           {activeGroup.subTabs.map((s) => (
             <button
               key={s.key}
               type="button"
               onClick={() => setTab(s.key)}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                tab === s.key ? "bg-[#E5F4FB] text-[#0C7BB3]" : "text-slate-500 hover:bg-slate-50"
-              }`}
+              className={`pt-tab${tab === s.key ? " active" : ""}`}
             >
               {s.label}
             </button>
@@ -210,6 +207,6 @@ export function AgencyDashboardPage() {
           key={`team-${refreshKey}`}
         />
       ) : null}
-    </div>
+    </PortalShell>
   );
 }

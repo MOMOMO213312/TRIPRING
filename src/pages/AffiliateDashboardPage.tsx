@@ -5,6 +5,8 @@ import { ResellerDealBrowser } from "../components/affiliate/ResellerDealBrowser
 import { ResellerOrdersHistory } from "../components/affiliate/ResellerOrdersHistory";
 import { ResellerSubscriptionCard } from "../components/affiliate/ResellerSubscriptionCard";
 import { NotificationBell } from "../components/notifications/NotificationBell";
+import { PortalShell } from "../components/portal/PortalShell";
+import type { PortalNavItem } from "../components/portal/PortalShell";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { fetchAirports } from "../lib/api";
@@ -18,32 +20,68 @@ import {
   resellerSubscriptionIsActive,
   type AffiliateLedgerEntry,
 } from "../lib/affiliate";
-import { signOut } from "../lib/auth";
+import { signOut, useAuth } from "../lib/auth";
 import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { friendlyErrorMessage } from "../lib/errors";
 import { whatsAppLink } from "../lib/utils";
 import type { AffiliateResellerSubscriptionRow, AffiliateRow, AirportRow, BookingRow } from "../types/database";
 
-export function AffiliateDashboardPage() {
-  return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">لوحة الأفلييت</h1>
-        <p className="mt-1 text-slate-600">تابع عمولتك ورابط الإحالة الخاص بيك</p>
-      </div>
+type AffiliateTab = "referral" | "reseller";
 
-      <AuthGate title="سجّل الدخول عشان تشوف لوحة الأفلييت بتاعتك">
-        {() => <AffiliateBody />}
-      </AuthGate>
-    </div>
+const NAV_ITEMS: { key: AffiliateTab; label: string; icon: "link" | "briefcase" }[] = [
+  { key: "referral", label: "برنامج الإحالة", icon: "link" },
+  { key: "reseller", label: "برنامج السعر الرسمي", icon: "briefcase" },
+];
+
+export function AffiliateDashboardPage() {
+  const { user, loading } = useAuth();
+  const [tab, setTab] = useState<AffiliateTab>("referral");
+
+  if (loading) {
+    return <div className="pt-center text-sm text-slate-500">جاري التحميل...</div>;
+  }
+
+  // Signed-out: show only the sign-in card (no dashboard chrome yet).
+  if (!user) {
+    return (
+      <div className="pt-center">
+        <div className="w-full max-w-sm space-y-4">
+          <div className="text-center">
+            <h1 className="text-xl font-bold text-slate-900">لوحة الأفلييت</h1>
+            <p className="mt-1 text-sm text-slate-600">تابع عمولتك ورابط الإحالة الخاص بيك</p>
+          </div>
+          <AuthGate title="سجّل الدخول عشان تشوف لوحة الأفلييت بتاعتك">{() => null}</AuthGate>
+        </div>
+      </div>
+    );
+  }
+
+  const nav: PortalNavItem[] = NAV_ITEMS.map((n) => ({ ...n, onClick: () => setTab(n.key) }));
+  const meta = user.user_metadata as { full_name?: string } | undefined;
+
+  return (
+    <PortalShell
+      portal="affiliate"
+      portalLabel="Affiliate Portal"
+      roleLabel="أفلييت"
+      orgName="تابع عمولتك ورابط الإحالة الخاص بيك"
+      userName={meta?.full_name ?? user.email ?? undefined}
+      nav={nav}
+      activeKey={tab}
+      topbarExtra={<NotificationBell />}
+      onSignOut={() => signOut().then(() => window.location.reload())}
+    >
+      <div className="mx-auto max-w-4xl">
+        <AffiliateBody tab={tab} />
+      </div>
+    </PortalShell>
   );
 }
 
-function AffiliateBody() {
+function AffiliateBody({ tab }: { tab: AffiliateTab }) {
   const [affiliate, setAffiliate] = useState<AffiliateRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-  const [tab, setTab] = useState<"referral" | "reseller">("referral");
 
   useEffect(() => {
     let cancelled = false;
@@ -95,34 +133,6 @@ function AffiliateBody() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-end gap-2">
-        <NotificationBell />
-        <Button variant="outline" onClick={() => signOut().then(() => window.location.reload())}>
-          تسجيل الخروج
-        </Button>
-      </div>
-
-      <div className="flex gap-2 rounded-xl bg-slate-100 p-1">
-        <button
-          type="button"
-          onClick={() => setTab("referral")}
-          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
-            tab === "referral" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
-          }`}
-        >
-          برنامج الإحالة
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("reseller")}
-          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
-            tab === "reseller" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
-          }`}
-        >
-          برنامج السعر الرسمي
-        </button>
-      </div>
-
       {tab === "referral" ? (
         <div className="space-y-6">
           <Card>

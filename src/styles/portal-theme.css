@@ -1,0 +1,319 @@
+/* ============================================================
+   TripRing dashboards — one shared design system
+   Dark sidebar + white topbar + light content, a distinct accent
+   per portal (airline blue / agency green / ground purple /
+   admin slate / affiliate orange). Used via <PortalShell>.
+   Tokens live on [data-portal]; everything below reads them.
+   ============================================================ */
+
+.pt-root {
+  --pt-bg: #f3f6fb;
+  --pt-card: #ffffff;
+  --pt-line: #e3e9f2;
+  --pt-text: #0f1b33;
+  --pt-muted: #6b7a93;
+  --pt-green: #0e9f6e;
+  --pt-amber: #d9860b;
+  --pt-red: #dc3a36;
+  --pt-radius: 14px;
+  --pt-shadow: 0 1px 2px rgba(15, 27, 51, 0.04), 0 4px 14px rgba(15, 27, 51, 0.05);
+
+  direction: rtl;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 252px minmax(0, 1fr);
+  background: var(--pt-bg);
+  color: var(--pt-text);
+  font-family: var(--font-sans-ar, "IBM Plex Sans Arabic"), "Inter", system-ui, sans-serif;
+}
+
+/* ---------- per-portal accent ---------- */
+.pt-root[data-portal="airline"] {
+  --pt-accent: #1f6feb;
+  --pt-accent-hover: #1859bf;
+  --pt-accent-soft: #e6f0fe;
+  --pt-side-bg: linear-gradient(180deg, #0b1b3a 0%, #08142b 100%);
+  --pt-side-active: #1f6feb;
+}
+.pt-root[data-portal="agency"] {
+  --pt-accent: #0e9f6e;
+  --pt-accent-hover: #0b805a;
+  --pt-accent-soft: #e3f6ee;
+  --pt-side-bg: linear-gradient(180deg, #0c1f2b 0%, #08151e 100%);
+  --pt-side-active: #0e9f6e;
+}
+.pt-root[data-portal="ground"] {
+  --pt-accent: #5b4bdb;
+  --pt-accent-hover: #4638b8;
+  --pt-accent-soft: #eeecfc;
+  --pt-side-bg: linear-gradient(180deg, #1a1848 0%, #120f35 100%);
+  --pt-side-active: #5b4bdb;
+}
+.pt-root[data-portal="admin"] {
+  --pt-accent: #1e293b;
+  --pt-accent-hover: #0f172a;
+  --pt-accent-soft: #eef2f7;
+  --pt-side-bg: linear-gradient(180deg, #141b2b 0%, #0d1220 100%);
+  --pt-side-active: rgba(255, 255, 255, 0.14);
+}
+.pt-root[data-portal="affiliate"] {
+  --pt-accent: #e8730c;
+  --pt-accent-hover: #c45f08;
+  --pt-accent-soft: #fef1e4;
+  --pt-side-bg: linear-gradient(180deg, #2b1a0e 0%, #1b1008 100%);
+  --pt-side-active: #e8730c;
+}
+
+/* ---------- sidebar ---------- */
+.pt-side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 12px 20px;
+  background: var(--pt-side-bg);
+  color: #c4cfe4;
+  overflow-y: auto;
+  z-index: 60;
+}
+.pt-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 8px 16px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+}
+.pt-logo img { border-radius: 9px; background: #fff; }
+.pt-logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+.pt-logo-text b { color: #fff; font-size: 17px; font-weight: 700; letter-spacing: 0.01em; }
+.pt-logo-text small { color: rgba(255, 255, 255, 0.55); font-size: 11.5px; margin-top: 3px; }
+
+.pt-nav { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; }
+.pt-nav-section {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+  margin: 16px 12px 6px;
+  letter-spacing: 0.02em;
+}
+.pt-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13.5px;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.pt-nav-item svg { flex-shrink: 0; opacity: 0.85; }
+.pt-nav-item:hover { background: rgba(255, 255, 255, 0.07); color: #fff; }
+.pt-nav-item.active { background: var(--pt-side-active); color: #fff; font-weight: 600; }
+.pt-nav-item.active svg { opacity: 1; }
+
+/* ---------- main column ---------- */
+.pt-main { min-width: 0; display: flex; flex-direction: column; }
+.pt-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  min-height: 64px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--pt-line);
+}
+.pt-topbar-start, .pt-topbar-end { display: flex; align-items: center; gap: 12px; }
+.pt-title { font-size: 17px; font-weight: 700; line-height: 1.2; }
+.pt-subtitle { font-size: 12.5px; color: var(--pt-muted); margin-top: 2px; }
+.pt-burger {
+  display: none;
+  border: 1px solid var(--pt-line);
+  background: #fff;
+  border-radius: 9px;
+  padding: 7px;
+  color: var(--pt-text);
+  cursor: pointer;
+}
+
+.pt-user { position: relative; }
+.pt-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: var(--pt-text);
+}
+.pt-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--pt-line);
+  border-radius: 9px;
+  font-size: 13px;
+  color: var(--pt-text);
+}
+.pt-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--pt-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.pt-menu {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 8px);
+  min-width: 200px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--pt-line);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 27, 51, 0.14);
+  z-index: 70;
+}
+.pt-menu-name { padding: 8px 10px; font-size: 13px; color: var(--pt-muted); border-bottom: 1px solid var(--pt-line); margin-bottom: 4px; }
+.pt-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--pt-red);
+  cursor: pointer;
+}
+.pt-menu-item:hover { background: #fdf0ef; }
+
+.pt-content { padding: 24px; width: 100%; max-width: 1280px; margin: 0 auto; }
+
+/* ---------- stat cards ---------- */
+.pt-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.pt-stat {
+  background: var(--pt-card);
+  border: 1px solid var(--pt-line);
+  border-radius: var(--pt-radius);
+  padding: 16px 18px;
+  box-shadow: var(--pt-shadow);
+}
+.pt-stat-label { font-size: 12.5px; color: var(--pt-muted); }
+.pt-stat-value { margin-top: 8px; font-size: 28px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.pt-stat-value.default { color: var(--pt-text); }
+.pt-stat-value.green { color: var(--pt-green); }
+.pt-stat-value.amber { color: var(--pt-amber); }
+.pt-stat-value.red { color: var(--pt-red); }
+
+/* ---------- reusable bits for tab-based dashboards ---------- */
+.pt-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.pt-tab {
+  padding: 7px 14px;
+  border: 1px solid var(--pt-line);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pt-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pt-tab:hover { color: var(--pt-text); border-color: #cbd5e6; }
+.pt-tab.active { background: var(--pt-accent-soft); border-color: var(--pt-accent); color: var(--pt-accent); font-weight: 600; }
+.pt-root[data-portal="admin"] .pt-tab.active { color: #0f172a; border-color: #94a3b8; }
+.pt-center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; background: var(--pt-bg, #f3f6fb); }
+
+/* ---------- re-theme existing Tailwind content inside a portal ----------
+   Dashboard tab components hardcode the customer-site blue (#0C7BB3).
+   Inside a portal, map those to the portal's own accent. */
+.pt-root .bg-\[\#0C7BB3\] { background-color: var(--pt-accent); }
+.pt-root .hover\:bg-\[\#095E8A\]:hover { background-color: var(--pt-accent-hover); }
+.pt-root .text-\[\#0C7BB3\] { color: var(--pt-accent); }
+.pt-root .border-\[\#0C7BB3\] { border-color: var(--pt-accent); }
+.pt-root .bg-\[\#E5F4FB\] { background-color: var(--pt-accent-soft); }
+.pt-root .focus\:border-\[\#0C7BB3\]:focus { border-color: var(--pt-accent); }
+
+/* ---------- legacy Airline / Ground pages: light re-skin ---------- */
+.pt-root[data-portal="ground"] {
+  --gp-ink: #ffffff;
+  --gp-panel: #ffffff;
+  --gp-panel-raised: #f8fafd;
+  --gp-hairline: #e3e9f2;
+  --gp-brass: var(--pt-accent);
+  --gp-brass-soft: #b9b1f0;
+  --gp-paper: #0f1b33;
+  --gp-mist: #6b7a93;
+  --gp-green: #0e9f6e;
+  --gp-amber: #d9860b;
+  --gp-red: #dc3a36;
+  --gp-font-ui: var(--font-sans-ar, "IBM Plex Sans Arabic"), "Inter", system-ui, sans-serif;
+  --gp-font-data: var(--gp-font-ui);
+}
+.pt-root[data-portal="airline"] {
+  --ap-ink: #ffffff;
+  --ap-panel: #ffffff;
+  --ap-panel-raised: #f8fafd;
+  --ap-hairline: #e3e9f2;
+  --ap-cyan: var(--pt-accent);
+  --ap-cyan-soft: #9cc0f5;
+  --ap-paper: #0f1b33;
+  --ap-mist: #6b7a93;
+  --ap-green: #0e9f6e;
+  --ap-amber: #d9860b;
+  --ap-red: #dc3a36;
+  --ap-font-ui: var(--font-sans-ar, "IBM Plex Sans Arabic"), "Inter", system-ui, sans-serif;
+  --ap-font-data: var(--ap-font-ui);
+}
+
+/* white cards get the same soft shadow as the new stat cards */
+.pt-root .ap-panel, .pt-root .ap-card, .pt-root .gp-card, .pt-root .gp-agreement-card, .pt-root .gp-board {
+  box-shadow: var(--pt-shadow);
+  border-radius: var(--pt-radius);
+}
+.pt-root .ap-table th, .pt-root .gp-table th { background: #f8fafd; }
+
+/* ---------- responsive ---------- */
+.pt-overlay { display: none; }
+@media (max-width: 960px) {
+  .pt-root { grid-template-columns: minmax(0, 1fr); }
+  .pt-side {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    inset-inline-start: 0;
+    width: 262px;
+    height: auto;
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+  }
+  .pt-side.open { transform: none; box-shadow: -12px 0 40px rgba(0, 0, 0, 0.3); }
+  .pt-overlay { display: block; position: fixed; inset: 0; background: rgba(15, 27, 51, 0.45); z-index: 55; }
+  .pt-burger { display: inline-flex; }
+  .pt-topbar { padding: 0 14px; }
+  .pt-content { padding: 16px 14px 40px; }
+  .pt-role-label { display: none; }
+}

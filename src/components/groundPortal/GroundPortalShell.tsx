@@ -1,16 +1,29 @@
-import { ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { supabase } from "../../lib/supabase";
 import type { GroundQueueRow } from "../../lib/groundPortal";
+import { PortalShell } from "../portal/PortalShell";
+import type { PortalNavItem, PortalStat } from "../portal/PortalShell";
 import "../../styles/ground-portal.css";
 
 interface Props {
   supplierName?: string;
-  queue?: GroundQueueRow[]; // pass the live queue in to drive the ticker
+  queue?: GroundQueueRow[]; // pass the live queue in to drive the top stats
   active: "queue" | "airlines" | "agreements" | "reports" | "settlements";
   children: ReactNode;
 }
 
+const NAV: PortalNavItem[] = [
+  { key: "queue", label: "الطابور", icon: "list", to: "/ground-portal/queue" },
+  { key: "airlines", label: "شركات الطيران", icon: "plane", to: "/ground-portal/airlines" },
+  { key: "agreements", label: "العقود والتسعير", icon: "file", to: "/ground-portal/agreements" },
+  { key: "reports", label: "التقارير", icon: "chart", to: "/ground-portal/reports" },
+  { key: "settlements", label: "كشف الحساب", icon: "wallet", to: "/ground-portal/settlements" },
+];
+
+/** Ground Handling chrome — thin wrapper over the shared <PortalShell>.
+ *  Props API unchanged so the five ground pages did not need to change. */
 export function GroundPortalShell({ supplierName, queue = [], active, children }: Props) {
   const navigate = useNavigate();
 
@@ -26,72 +39,29 @@ export function GroundPortalShell({ supplierName, queue = [], active, children }
     navigate("/ground-portal/login");
   }
 
+  const stats: PortalStat[] | undefined =
+    active === "queue"
+      ? [
+          { label: "بانتظار البدء", value: pending, tone: "amber" },
+          { label: "جاري التنفيذ", value: inProgress },
+          { label: "خطر SLA", value: slaRisk, tone: slaRisk > 0 ? "red" : "green" },
+          { label: "تم إنجازها", value: doneToday, tone: "green" },
+        ]
+      : undefined;
+
   return (
-    <div data-ground-portal>
-      <div className="gp-shell">
-        <div className="gp-topbar">
-          <div className="gp-brand">
-            <span className="gp-brand-mark">GROUND OPS</span>
-            <span className="gp-brand-sub">{supplierName ?? "—"}</span>
-          </div>
-          <nav style={{ display: "flex", gap: 16, fontSize: 13 }}>
-            <Link
-              to="/ground-portal/queue"
-              style={{ color: active === "queue" ? "#c9a227" : "#93a4c2" }}
-            >
-              الطابور
-            </Link>
-            <Link
-              to="/ground-portal/airlines"
-              style={{ color: active === "airlines" ? "#c9a227" : "#93a4c2" }}
-            >
-              شركات الطيران
-            </Link>
-            <Link
-              to="/ground-portal/agreements"
-              style={{ color: active === "agreements" ? "#c9a227" : "#93a4c2" }}
-            >
-              العقود والتسعير
-            </Link>
-            <Link
-              to="/ground-portal/reports"
-              style={{ color: active === "reports" ? "#c9a227" : "#93a4c2" }}
-            >
-              التقارير
-            </Link>
-            <Link
-              to="/ground-portal/settlements"
-              style={{ color: active === "settlements" ? "#c9a227" : "#93a4c2" }}
-            >
-              كشف الحساب
-            </Link>
-          </nav>
-          <button className="gp-signout" onClick={handleSignOut}>
-            تسجيل الخروج
-          </button>
-        </div>
-
-        <div className="gp-ticker">
-          <div className="gp-ticker-cell">
-            <div className="gp-ticker-num brass">{pending}</div>
-            <div className="gp-ticker-label">بانتظار البدء</div>
-          </div>
-          <div className="gp-ticker-cell">
-            <div className="gp-ticker-num">{inProgress}</div>
-            <div className="gp-ticker-label">جاري التنفيذ</div>
-          </div>
-          <div className="gp-ticker-cell">
-            <div className={`gp-ticker-num ${slaRisk > 0 ? "red" : "green"}`}>{slaRisk}</div>
-            <div className="gp-ticker-label">خطر SLA</div>
-          </div>
-          <div className="gp-ticker-cell">
-            <div className="gp-ticker-num green">{doneToday}</div>
-            <div className="gp-ticker-label">تم إنجازها</div>
-          </div>
-        </div>
-
-        {children}
-      </div>
-    </div>
+    <PortalShell
+      portal="ground"
+      portalLabel="Ground Handling"
+      roleLabel="خدمات أرضية"
+      orgName={supplierName}
+      userName={supplierName}
+      nav={NAV}
+      activeKey={active}
+      stats={stats}
+      onSignOut={handleSignOut}
+    >
+      {children}
+    </PortalShell>
   );
 }

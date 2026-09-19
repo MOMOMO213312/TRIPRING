@@ -16,6 +16,8 @@ import { AdminResellerPlansTab } from "../components/admin/AdminResellerPlansTab
 import { AdminResellerSubscriptionsTab } from "../components/admin/AdminResellerSubscriptionsTab";
 import { AgencyLoginGate } from "../components/agency/AgencyLoginGate";
 import { NotificationBell } from "../components/notifications/NotificationBell";
+import { PortalShell } from "../components/portal/PortalShell";
+import type { PortalNavItem } from "../components/portal/PortalShell";
 import { Button } from "../components/ui/Button";
 import { fetchMyAdminProfile } from "../lib/admin";
 import { signOut, useAuth } from "../lib/auth";
@@ -65,76 +67,74 @@ export function AdminDashboardPage() {
   }, [user, authLoading]);
 
   if (authLoading || profileLoading) {
-    return <div className="py-16 text-center text-sm text-slate-500">جاري التحميل...</div>;
+    return <div className="pt-center text-sm text-slate-500">جاري التحميل...</div>;
   }
 
   // Same login form used by the agency dashboard — one email/password gate,
   // the role decides which dashboard the account actually sees.
   if (!user) {
-    return <AgencyLoginGate title="دخول لوحة الأدمن" subtitle="هذه اللوحة مخصصة لإدارة TripRing فقط." />;
-  }
-
-  if (!profile) {
     return (
-      <div className="mx-auto max-w-lg space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
-        <p className="font-bold text-amber-900">هذا الحساب مش عنده صلاحيات أدمن</p>
-        <p className="text-sm text-amber-800">
-          لازم يكون role الحساب في جدول profiles = admin. يتحدد يدويًا من قاعدة البيانات حاليًا.
-        </p>
-        <Button variant="outline" onClick={() => signOut().then(() => window.location.reload())}>
-          تسجيل الخروج
-        </Button>
+      <div className="pt-center">
+        <AgencyLoginGate title="دخول لوحة الأدمن" subtitle="هذه اللوحة مخصصة لإدارة TripRing فقط." />
       </div>
     );
   }
 
-  const tabs: { key: Tab; label: string }[] = [
-    { key: "suppliers", label: "الموردين والعقود" },
-    { key: "supplier_applications", label: "طلبات الانضمام كمورد" },
-    { key: "fulfillment", label: "مراقبة التنفيذ" },
-    { key: "settlements", label: "التسويات المالية" },
-    { key: "agencies", label: "الوكالات" },
-    { key: "bookings", label: "كل الحجوزات" },
-    { key: "resale", label: "مراجعة إعادة البيع" },
-    { key: "notifications", label: "الإشعارات" },
-    { key: "reseller_plans", label: "باقات الأفلييت" },
-    { key: "reseller_subscriptions", label: "مراجعة اشتراكات الأفلييت" },
-    { key: "reseller_orders", label: "طلبات بيع الأفلييت" },
-    { key: "membership_tiers", label: "باقات الاشتراك" },
-    { key: "customer_subscriptions", label: "مراجعة اشتراكات العملاء" },
-    { key: "fare_package_tiers", label: "باقات الرحلة" },
-  ];
-
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-extrabold text-slate-900">لوحة الأدمن</h1>
-          <p className="text-sm text-slate-500">{profile.full_name ?? "مستخدم"} — صلاحية إدارة كاملة</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <NotificationBell />
+  if (!profile) {
+    return (
+      <div className="pt-center">
+        <div className="mx-auto max-w-lg space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
+          <p className="font-bold text-amber-900">هذا الحساب مش عنده صلاحيات أدمن</p>
+          <p className="text-sm text-amber-800">
+            لازم يكون role الحساب في جدول profiles = admin. يتحدد يدويًا من قاعدة البيانات حاليًا.
+          </p>
           <Button variant="outline" onClick={() => signOut().then(() => window.location.reload())}>
             تسجيل الخروج
           </Button>
         </div>
       </div>
+    );
+  }
 
-      <div className="flex gap-1 rounded-xl border border-slate-200 bg-white p-1">
-        {tabs.map((t) => (
-          <button
-            key={t.key}
-            type="button"
-            onClick={() => setTab(t.key)}
-            className={`flex-1 rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
-              tab === t.key ? "bg-[#0C7BB3] text-white" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+  // Same 14 tabs as before, now driven from the sidebar and grouped by
+  // function. Tab components themselves are untouched.
+  const nav: PortalNavItem[] = (
+    [
+      ["suppliers", "الموردين والعقود", "truck", "الشركاء والموردون"],
+      ["supplier_applications", "طلبات الانضمام كمورد", "mail", "الشركاء والموردون"],
+      ["agencies", "الوكالات", "building", "الشركاء والموردون"],
+      ["fulfillment", "مراقبة التنفيذ", "activity", "العمليات"],
+      ["bookings", "كل الحجوزات", "list", "العمليات"],
+      ["resale", "مراجعة إعادة البيع", "refresh", "العمليات"],
+      ["notifications", "الإشعارات", "bell", "العمليات"],
+      ["settlements", "التسويات المالية", "wallet", "المالية"],
+      ["reseller_plans", "باقات الأفلييت", "tag", "الأفلييت والاشتراكات"],
+      ["reseller_subscriptions", "مراجعة اشتراكات الأفلييت", "shield", "الأفلييت والاشتراكات"],
+      ["reseller_orders", "طلبات بيع الأفلييت", "box", "الأفلييت والاشتراكات"],
+      ["membership_tiers", "باقات الاشتراك", "star", "الأفلييت والاشتراكات"],
+      ["customer_subscriptions", "مراجعة اشتراكات العملاء", "users", "الأفلييت والاشتراكات"],
+      ["fare_package_tiers", "باقات الرحلة", "layers", "الأفلييت والاشتراكات"],
+    ] as const
+  ).map(([key, label, icon, section]) => ({
+    key,
+    label,
+    icon,
+    section,
+    onClick: () => setTab(key),
+  }));
 
+  return (
+    <PortalShell
+      portal="admin"
+      portalLabel="TripRing Admin"
+      roleLabel="أدمن"
+      orgName="صلاحية إدارة كاملة"
+      userName={profile.full_name ?? "مستخدم"}
+      nav={nav}
+      activeKey={tab}
+      topbarExtra={<NotificationBell />}
+      onSignOut={() => signOut().then(() => window.location.reload())}
+    >
       {tab === "suppliers" ? <AdminSuppliersTab /> : null}
       {tab === "supplier_applications" ? <AdminSupplierApplicationsTab /> : null}
       {tab === "fulfillment" ? <AdminFulfillmentTab /> : null}
@@ -149,6 +149,6 @@ export function AdminDashboardPage() {
       {tab === "membership_tiers" ? <AdminMembershipTiersTab /> : null}
       {tab === "customer_subscriptions" ? <AdminCustomerSubscriptionsTab /> : null}
       {tab === "fare_package_tiers" ? <AdminFarePackageTiersTab /> : null}
-    </div>
+    </PortalShell>
   );
 }

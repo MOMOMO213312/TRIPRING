@@ -108,7 +108,7 @@ export function GroundPortalAirlinesPage() {
                   <td>{a.pending}</td>
                   <td>{a.inProgress}</td>
                   <td>{a.completed}</td>
-                  <td style={{ color: a.slaRisk > 0 ? "#e1524b" : undefined }}>{a.slaRisk}</td>
+                  <td style={{ color: a.slaRisk > 0 ? "#dc3a36" : undefined }}>{a.slaRisk}</td>
                   <td>{formatTime(a.nextDeparture)}</td>
                 </tr>
               ))}

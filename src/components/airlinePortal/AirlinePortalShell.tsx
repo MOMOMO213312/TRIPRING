@@ -1,19 +1,42 @@
-import { ReactNode } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { supabase } from "../../lib/supabase";
 import type { AirlineOverviewRow } from "../../lib/airlinePortal";
+import { PortalShell } from "../portal/PortalShell";
+import type { PortalNavItem, PortalStat } from "../portal/PortalShell";
 import "../../styles/airline-portal.css";
+
+type ActiveKey =
+  | "overview"
+  | "flights"
+  | "bookings"
+  | "ground"
+  | "agreements"
+  | "services"
+  | "settlements"
+  | "reports";
 
 interface Props {
   overview?: AirlineOverviewRow | null;
-  active: "overview" | "flights" | "bookings" | "ground" | "agreements" | "services" | "settlements" | "reports";
+  active: ActiveKey;
   children: ReactNode;
 }
 
-/** Same structural pattern as GroundPortalShell (topbar + ticker/KPI strip
- *  + nav + children), themed distinctly (see airline-portal.css) since
- *  this is a different supplier role (airline = owner of the flight
- *  product, not a ground execution desk). */
+const NAV: PortalNavItem[] = [
+  { key: "overview", label: "نظرة عامة", icon: "dashboard", to: "/airline-portal/overview" },
+  { key: "flights", label: "الرحلات", icon: "plane", to: "/airline-portal/flights" },
+  { key: "bookings", label: "الحجوزات", icon: "list", to: "/airline-portal/bookings" },
+  { key: "ground", label: "الخدمات الأرضية", icon: "truck", to: "/airline-portal/ground" },
+  { key: "agreements", label: "العقود", icon: "file", to: "/airline-portal/agreements" },
+  { key: "services", label: "الخدمات الإضافية", icon: "layers", to: "/airline-portal/services" },
+  { key: "settlements", label: "كشوف الحساب", icon: "wallet", to: "/airline-portal/settlements" },
+  { key: "reports", label: "التقارير", icon: "chart", to: "/airline-portal/reports" },
+];
+
+/** Airline Control Center chrome — now a thin wrapper over the shared
+ *  <PortalShell> (same sidebar/topbar as the other four dashboards). The
+ *  props API is unchanged, so none of the airline pages had to change. */
 export function AirlinePortalShell({ overview, active, children }: Props) {
   const navigate = useNavigate();
 
@@ -22,74 +45,34 @@ export function AirlinePortalShell({ overview, active, children }: Props) {
     navigate("/airline-portal/login");
   }
 
+  const stats: PortalStat[] | undefined =
+    overview && active === "overview"
+      ? [
+          { label: "رحلات نشطة", value: overview.active_flights },
+          { label: "مغادرات خلال 30 يوم", value: overview.departures_next_30d },
+          { label: "حجوزات فعّالة", value: overview.active_bookings, tone: "green" },
+          { label: "إجمالي الحجوزات", value: overview.total_bookings },
+          {
+            label: "طلبات خدمة أرضية مفتوحة",
+            value: overview.ground_requests_open,
+            tone: overview.ground_requests_open > 0 ? "amber" : "green",
+          },
+        ]
+      : undefined;
+
   return (
-    <div data-airline-portal>
-      <div className="ap-shell">
-        <div className="ap-topbar">
-          <div className="ap-brand">
-            <span className="ap-brand-mark">AIRLINE CONTROL</span>
-            <span className="ap-brand-sub">{overview?.airline_name ?? "—"}</span>
-          </div>
-          <nav style={{ display: "flex", gap: 16, fontSize: 13 }}>
-            <Link to="/airline-portal/overview" style={{ color: active === "overview" ? "#3ec6e0" : "#8fa8c4" }}>
-              نظرة عامة
-            </Link>
-            <Link to="/airline-portal/flights" style={{ color: active === "flights" ? "#3ec6e0" : "#8fa8c4" }}>
-              الرحلات
-            </Link>
-            <Link to="/airline-portal/bookings" style={{ color: active === "bookings" ? "#3ec6e0" : "#8fa8c4" }}>
-              الحجوزات
-            </Link>
-            <Link to="/airline-portal/ground" style={{ color: active === "ground" ? "#3ec6e0" : "#8fa8c4" }}>
-              الخدمات الأرضية
-            </Link>
-            <Link to="/airline-portal/agreements" style={{ color: active === "agreements" ? "#3ec6e0" : "#8fa8c4" }}>
-              العقود
-            </Link>
-            <Link to="/airline-portal/services" style={{ color: active === "services" ? "#3ec6e0" : "#8fa8c4" }}>
-              الخدمات الإضافية
-            </Link>
-            <Link to="/airline-portal/settlements" style={{ color: active === "settlements" ? "#3ec6e0" : "#8fa8c4" }}>
-              كشوف الحساب
-            </Link>
-            <Link to="/airline-portal/reports" style={{ color: active === "reports" ? "#3ec6e0" : "#8fa8c4" }}>
-              التقارير
-            </Link>
-          </nav>
-          <button className="ap-signout" onClick={handleSignOut}>
-            تسجيل الخروج
-          </button>
-        </div>
-
-        {overview ? (
-          <div className="ap-kpis">
-            <div className="ap-kpi-cell">
-              <div className="ap-kpi-num">{overview.active_flights}</div>
-              <div className="ap-kpi-label">رحلات نشطة</div>
-            </div>
-            <div className="ap-kpi-cell">
-              <div className="ap-kpi-num">{overview.departures_next_30d}</div>
-              <div className="ap-kpi-label">مغادرات خلال 30 يوم</div>
-            </div>
-            <div className="ap-kpi-cell">
-              <div className="ap-kpi-num green">{overview.active_bookings}</div>
-              <div className="ap-kpi-label">حجوزات فعّالة</div>
-            </div>
-            <div className="ap-kpi-cell">
-              <div className="ap-kpi-num">{overview.total_bookings}</div>
-              <div className="ap-kpi-label">إجمالي الحجوزات</div>
-            </div>
-            <div className="ap-kpi-cell">
-              <div className={`ap-kpi-num ${overview.ground_requests_open > 0 ? "amber" : "green"}`}>
-                {overview.ground_requests_open}
-              </div>
-              <div className="ap-kpi-label">طلبات خدمة أرضية مفتوحة</div>
-            </div>
-          </div>
-        ) : null}
-
-        {children}
-      </div>
-    </div>
+    <PortalShell
+      portal="airline"
+      portalLabel="Airline Portal"
+      roleLabel="شركة طيران"
+      orgName={overview?.airline_name ?? undefined}
+      userName={overview?.airline_name ?? undefined}
+      nav={NAV}
+      activeKey={active}
+      stats={stats}
+      onSignOut={handleSignOut}
+    >
+      {children}
+    </PortalShell>
   );
 }

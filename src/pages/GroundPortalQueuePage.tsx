@@ -95,7 +95,7 @@ export function GroundPortalQueuePage() {
           </>
         );
       default:
-        return <span style={{ color: "#93a4c2", fontSize: 12.5 }}>—</span>;
+        return <span style={{ color: "#6b7a93", fontSize: 12.5 }}>—</span>;
     }
   }
 

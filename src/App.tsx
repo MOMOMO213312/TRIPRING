@@ -156,23 +156,26 @@ export default function App() {
               <Route path="membership" element={<MembershipPage />} />
               <Route path="alerts" element={<AlertsPage />} />
               <Route path="resale" element={<TicketResalePage />} />
-              <Route path="agency" element={<AgencyDashboardPage />} />
-              <Route path="admin" element={<AdminDashboardPage />} />
-              <Route path="affiliate" element={<AffiliateDashboardPage />} />
               <Route path="faq" element={<FaqPage />} />
               <Route path="become-a-supplier" element={<BecomeSupplierPage />} />
               <Route path="terms" element={<TermsPage />} />
               <Route path="privacy" element={<PrivacyPage />} />
-              <Route path="airline-portal/login" element={<AirlinePortalLoginPage />} />
-              <Route path="airline-portal/overview" element={<AirlinePortalOverviewPage />} />
-              <Route path="airline-portal/flights" element={<AirlinePortalFlightsPage />} />
-              <Route path="airline-portal/bookings" element={<AirlinePortalBookingsPage />} />
-              <Route path="airline-portal/ground" element={<AirlinePortalGroundPage />} />
-              <Route path="airline-portal/agreements" element={<AirlinePortalAgreementsPage />} />
-              <Route path="airline-portal/services" element={<AirlinePortalServicesPage />} />
-              <Route path="airline-portal/settlements" element={<AirlinePortalSettlementsPage />} />
-              <Route path="airline-portal/reports" element={<AirlinePortalReportsPage />} />
             </Route>
+
+            {/* Dashboards — own chrome (sidebar + topbar), outside the customer Layout */}
+            <Route path="agency" element={<AgencyDashboardPage />} />
+            <Route path="admin" element={<AdminDashboardPage />} />
+            <Route path="affiliate" element={<AffiliateDashboardPage />} />
+            <Route path="airline-portal/login" element={<AirlinePortalLoginPage />} />
+            <Route path="airline-portal/overview" element={<AirlinePortalOverviewPage />} />
+            <Route path="airline-portal/flights" element={<AirlinePortalFlightsPage />} />
+            <Route path="airline-portal/bookings" element={<AirlinePortalBookingsPage />} />
+            <Route path="airline-portal/ground" element={<AirlinePortalGroundPage />} />
+            <Route path="airline-portal/agreements" element={<AirlinePortalAgreementsPage />} />
+            <Route path="airline-portal/services" element={<AirlinePortalServicesPage />} />
+            <Route path="airline-portal/settlements" element={<AirlinePortalSettlementsPage />} />
+            <Route path="airline-portal/reports" element={<AirlinePortalReportsPage />} />
+
 
             {/* Ground Provider Portal — its own chrome, outside the customer Layout */}
             <Route path="ground-portal/login" element={<GroundPortalLoginPage />} />
