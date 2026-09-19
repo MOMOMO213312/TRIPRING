@@ -195,6 +195,8 @@ export interface AgreementRow {
   airline_supplier_id: string;
   airport_code: string;
   status: AgreementStatus;
+  airline_approved: boolean;
+  airline_review_note: string | null;
   sla_hours: number | null;
   sla_notes: string | null;
   currency: string;
@@ -243,7 +245,7 @@ export async function fetchMyAgreements(): Promise<AgreementRow[]> {
   const { data, error } = await supabase
     .from("ground_service_agreements")
     .select(
-      "id, ground_supplier_id, airline_supplier_id, airport_code, status, sla_hours, sla_notes, currency, starts_at, ends_at, created_at, " +
+      "id, ground_supplier_id, airline_supplier_id, airport_code, status, airline_approved, airline_review_note, sla_hours, sla_notes, currency, starts_at, ends_at, created_at, " +
         "airline:suppliers!ground_service_agreements_airline_supplier_id_fkey(id, name, linked_airline_code), " +
         "items:ground_service_agreement_items(id, agreement_id, service_catalog_id, billing_unit, cost_price, is_active, service_catalog:service_catalog(id, type, generic_name))",
     )

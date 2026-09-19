@@ -252,7 +252,16 @@ export function GroundPortalAgreementsPage() {
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span className={`gp-pill-status ${a.status}`}>{STATUS_LABEL[a.status]}</span>
-                    {NEXT_STATUS[a.status].map((s) => (
+                    {!a.airline_approved && (
+                      <span style={{ color: "var(--gp-amber)", fontSize: 12.5 }}>
+                        {a.airline_review_note
+                          ? `رفضتها شركة الطيران: ${a.airline_review_note}`
+                          : "بانتظار اعتماد شركة الطيران — مفيش خدمات هتتوجّه لك قبل الاعتماد"}
+                      </span>
+                    )}
+                    {NEXT_STATUS[a.status]
+                      .filter((s) => s !== "active" || a.airline_approved)
+                      .map((s) => (
                       <button
                         key={s}
                         className={`gp-btn small ${s === "ended" ? "danger" : ""}`}

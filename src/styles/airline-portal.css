@@ -210,3 +210,41 @@
   color: var(--ap-red);
   border-color: var(--ap-red);
 }
+
+
+/* ---------- agreement review ---------- */
+.ap-review-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--ap-hairline);
+  border-radius: 8px;
+  background: var(--ap-panel);
+}
+.ap-review-line { font-size: 12.5px; color: var(--ap-mist); }
+.ap-review-actions { display: flex; gap: 8px; }
+.ap-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--ap-hairline);
+  background: var(--ap-ink);
+  color: var(--ap-paper);
+  font-family: var(--ap-font-ui);
+  font-size: 13px;
+}
+.ap-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--ap-hairline);
+  background: transparent;
+  color: var(--ap-paper);
+  font-family: var(--ap-font-ui);
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.ap-btn:disabled { opacity: 0.5; cursor: default; }
+.ap-btn.primary { border-color: var(--ap-green); color: var(--ap-green); }
+.ap-btn.danger { border-color: var(--ap-red); color: var(--ap-red); }

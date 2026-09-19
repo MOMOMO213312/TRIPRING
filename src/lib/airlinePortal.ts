@@ -99,6 +99,9 @@ export interface AirlineAgreementRow {
   ground_supplier_name: string;
   airport_code: string;
   status: "draft" | "active" | "suspended" | "ended";
+  airline_approved: boolean;
+  airline_approved_at: string | null;
+  airline_review_note: string | null;
   sla_hours: number | null;
   sla_notes: string | null;
   currency: string;
@@ -201,6 +204,17 @@ export async function fetchAirlineAgreements(): Promise<AirlineAgreementRow[]> {
   const { data, error } = await supabase.rpc("get_my_airline_agreements" as never).select("*");
   if (error) throw error;
   return (data ?? []) as AirlineAgreementRow[];
+}
+
+/** The contracting airline approves (or rejects) a ground-handler agreement.
+ *  Only an approved agreement is used to route ground services to that handler.
+ *  Authorization is enforced inside the SECURITY DEFINER RPC (airline owner or admin). */
+export async function reviewGroundAgreement(agreementId: string, approve: boolean, note: string | null) {
+  const { error } = await supabase.rpc(
+    "review_ground_service_agreement" as never,
+    { p_agreement_id: agreementId, p_approve: approve, p_note: note } as never,
+  );
+  if (error) throw error;
 }
 
 export async function fetchAirlineAgreementItems(agreementId: string): Promise<AirlineAgreementItemRow[]> {

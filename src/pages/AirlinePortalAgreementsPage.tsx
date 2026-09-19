@@ -5,6 +5,7 @@ import {
   fetchAirlineAgreements,
   fetchAirlineAgreementItems,
   fetchAirlineOverview,
+  reviewGroundAgreement,
   type AirlineAgreementRow,
   type AirlineAgreementItemRow,
   type AirlineOverviewRow,
@@ -23,9 +24,9 @@ function formatDate(d: string | null) {
 }
 
 /** "العقود" tab — SGHA-style ground-handling agreements per airport.
- *  Read-only from the airline side: the ground supplier proposes/manages
- *  agreement terms (per RLS), the airline reviews them here — matches the
- *  real-world relationship, not a missing feature. */
+ *  The ground supplier proposes/manages the terms; the airline reviews and
+ *  approves (or rejects) each agreement here. Ground services are only routed
+ *  to a handler under an approved agreement. */
 export function AirlinePortalAgreementsPage() {
   const navigate = useNavigate();
   const [overview, setOverview] = useState<AirlineOverviewRow | null>(null);
@@ -34,6 +35,8 @@ export function AirlinePortalAgreementsPage() {
   const [items, setItems] = useState<Record<string, AirlineAgreementItemRow[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -78,6 +81,27 @@ export function AirlinePortalAgreementsPage() {
     }
   }
 
+  async function review(agreementId: string, approve: boolean) {
+    if (!approve && !(notes[agreementId] ?? "").trim()) {
+      setError("اكتب سبب الرفض في خانة الملاحظة قبل ما ترفض الاتفاقية");
+      return;
+    }
+    const msg = approve
+      ? "اعتماد الاتفاقية ده هيخلي خدمات المزوّد الأرضي تتوجّه لركّاب رحلاتك في المطار ده. متأكد؟"
+      : "رفض الاتفاقية هيوقّف توجيه الخدمات لهذا المزوّد. متأكد؟";
+    if (!window.confirm(msg)) return;
+    setBusyId(agreementId);
+    setError(null);
+    try {
+      await reviewGroundAgreement(agreementId, approve, (notes[agreementId] ?? "").trim() || null);
+      await load();
+    } catch {
+      setError("تعذر تسجيل قرارك على الاتفاقية");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <AirlinePortalShell overview={overview} active="agreements">
       <div className="ap-panel">
@@ -95,6 +119,7 @@ export function AirlinePortalAgreementsPage() {
                 <th>المطار</th>
                 <th>مزوّد الخدمة الأرضية</th>
                 <th>الحالة</th>
+                <th>اعتماد شركة الطيران</th>
                 <th>SLA</th>
                 <th>بداية السريان</th>
                 <th>عدد البنود</th>
@@ -112,16 +137,59 @@ export function AirlinePortalAgreementsPage() {
                     <td>{a.airport_code}</td>
                     <td>{a.ground_supplier_name}</td>
                     <td><span className={`ap-pill ${a.status}`}>{a.status}</span></td>
+                    <td>
+                      {a.airline_approved ? (
+                        <span className="ap-pill active">معتمدة</span>
+                      ) : a.airline_review_note ? (
+                        <span className="ap-pill failed">مرفوضة</span>
+                      ) : (
+                        <span className="ap-pill in_progress">بانتظار اعتمادك</span>
+                      )}
+                    </td>
                     <td>{a.sla_hours != null ? `${a.sla_hours} ساعة` : "—"}</td>
                     <td>{formatDate(a.starts_at)}</td>
                     <td>{a.item_count}</td>
                   </tr>
                   {expanded === a.agreement_id && (
                     <tr key={`${a.agreement_id}-detail`}>
-                      <td colSpan={7} style={{ background: "var(--ap-panel-raised)", padding: 12 }}>
+                      <td colSpan={8} style={{ background: "var(--ap-panel-raised)", padding: 12 }}>
                         {a.sla_notes && (
                           <div style={{ fontSize: 12.5, color: "var(--ap-mist)", marginBottom: 10 }}>{a.sla_notes}</div>
                         )}
+                        <div className="ap-review-box">
+                          {a.airline_approved && a.airline_approved_at && (
+                            <div className="ap-review-line">اعتُمدت بتاريخ {formatDate(a.airline_approved_at)}</div>
+                          )}
+                          {a.airline_review_note && (
+                            <div className="ap-review-line">ملاحظتك: {a.airline_review_note}</div>
+                          )}
+                          <input
+                            className="ap-input"
+                            placeholder="ملاحظة على الاتفاقية (اختياري)"
+                            value={notes[a.agreement_id] ?? ""}
+                            onChange={(e) => setNotes((prev) => ({ ...prev, [a.agreement_id]: e.target.value }))}
+                          />
+                          <div className="ap-review-actions">
+                            {!a.airline_approved && (
+                              <button
+                                className="ap-btn primary"
+                                disabled={busyId === a.agreement_id}
+                                onClick={() => review(a.agreement_id, true)}
+                              >
+                                اعتماد الاتفاقية
+                              </button>
+                            )}
+                            {(a.airline_approved || !a.airline_review_note) && (
+                              <button
+                                className="ap-btn danger"
+                                disabled={busyId === a.agreement_id}
+                                onClick={() => review(a.agreement_id, false)}
+                              >
+                                {a.airline_approved ? "سحب الاعتماد" : "رفض"}
+                              </button>
+                            )}
+                          </div>
+                        </div>
                         {!items[a.agreement_id] ? (
                           <div className="ap-empty">جاري تحميل البنود...</div>
                         ) : items[a.agreement_id].length === 0 ? (
