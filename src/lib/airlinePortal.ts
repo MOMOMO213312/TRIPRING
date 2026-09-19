@@ -359,13 +359,135 @@ export function buildAirlinePerformanceReport(bookings: AirlineBookingRow[]): Ai
   };
 }
 
-/** Ancillary types an airline can self-serve in v1. Not ground-handling
- *  execution (meet_assist/lounge/fast_track — those live under a ground
- *  handler's agreement) and not agency-affiliate categories (hotel/
- *  car_rental/etc.) — only the unambiguous "airline owns and prices this"
- *  product types, per the agreed Phase A/B decision. */
-export const AIRLINE_ANCILLARY_TYPES = ["extra_baggage", "priority_boarding", "seat_selection"] as const;
+/** Ancillary types an airline can self-serve — enforced server-side inside
+ *  `airline_upsert_service` (v_allowed_types); this list must stay in sync
+ *  with that function. Excludes agency-affiliate categories (hotel/
+ *  car_rental/travel_insurance/etc.) — only the unambiguous "airline owns
+ *  and prices this" product/assistance/ground-execution types, per the
+ *  agreed Phase A/B/(rules) decision. 19 types total, grouped for display
+ *  to match the agreed reference image (7 groups) — the grouping below is
+ *  a UI/display choice only, not enforced by the database. */
+export const AIRLINE_ANCILLARY_TYPES = [
+  "fast_track",
+  "priority_boarding",
+  "priority_baggage",
+  "check_in_assistance",
+  "lounge",
+  "meet_assist",
+  "seat_selection",
+  "meal_upgrade",
+  "extra_baggage",
+  "baggage_wrapping",
+  "baggage_storage",
+  "connection_protection",
+  "arrival_assistance",
+  "immigration_assistance",
+  "unaccompanied_minor",
+  "family_seating",
+  "wheelchair",
+  "boarding_assistance",
+  "flight_change_option",
+] as const;
 export type AirlineAncillaryType = (typeof AIRLINE_ANCILLARY_TYPES)[number];
+
+export type AirlineServiceGroupId =
+  | "priority_speed"
+  | "comfort"
+  | "baggage"
+  | "transit"
+  | "family_kids"
+  | "senior_prm"
+  | "flexible";
+
+export interface AirlineServiceTypeMeta {
+  type: AirlineAncillaryType;
+  label: string;
+  /** Optional type-specific keys for the free-form `attributes` jsonb field —
+   *  purely a UI convenience over a generic object column; not validated by
+   *  a per-type schema on the server. */
+  attributeFields?: { key: string; label: string; placeholder?: string }[];
+}
+
+export interface AirlineServiceGroup {
+  id: AirlineServiceGroupId;
+  label: string;
+  types: AirlineServiceTypeMeta[];
+}
+
+/** 7 display groups matching the reference image (منتجات الإيرادات الإضافية
+ *  في خدمات المناولة الأرضية). Order here is the tab order in the UI. */
+export const AIRLINE_SERVICE_GROUPS: AirlineServiceGroup[] = [
+  {
+    id: "priority_speed",
+    label: "الأولوية والسرعة",
+    types: [
+      { type: "fast_track", label: "المسار السريع (Fast Track)" },
+      { type: "priority_boarding", label: "أولوية الصعود للطائرة" },
+      { type: "priority_baggage", label: "أولوية استلام الأمتعة" },
+      { type: "check_in_assistance", label: "أولوية إنهاء إجراءات السفر" },
+    ],
+  },
+  {
+    id: "comfort",
+    label: "الراحة والرفاهية",
+    types: [
+      { type: "lounge", label: "صالة كبار الشخصيات (VIP Lounge)", attributeFields: [{ key: "lounge_name", label: "اسم الصالة" }] },
+      { type: "meet_assist", label: "خدمات الاستقبال والمساعدة", attributeFields: [{ key: "meeting_point", label: "نقطة اللقاء" }] },
+      { type: "seat_selection", label: "اختيار المقعد", attributeFields: [{ key: "seat_zone", label: "نوع المقعد (نافذة / ممر / صف مخرج طوارئ)" }] },
+      { type: "meal_upgrade", label: "ترقية الوجبة", attributeFields: [{ key: "meal_type", label: "نوع الوجبة" }] },
+    ],
+  },
+  {
+    id: "baggage",
+    label: "خدمات الأمتعة",
+    types: [
+      { type: "extra_baggage", label: "حقيبة إضافية" },
+      { type: "baggage_wrapping", label: "تغليف الأمتعة" },
+      { type: "baggage_storage", label: "تخزين الأمتعة", attributeFields: [{ key: "storage_duration_hours", label: "مدة التخزين (ساعات)" }] },
+    ],
+  },
+  {
+    id: "transit",
+    label: "الترانزيت والربط",
+    types: [
+      { type: "connection_protection", label: "ضمان ضد فوات الرحلة", attributeFields: [{ key: "min_connection_minutes", label: "أقل وقت ربط مضمون (دقيقة)" }] },
+      { type: "arrival_assistance", label: "استقبال ومساعدة عند الوصول" },
+      { type: "immigration_assistance", label: "تسهيل إجراءات الجوازات والعبور" },
+    ],
+  },
+  {
+    id: "family_kids",
+    label: "العائلات والأطفال",
+    types: [
+      { type: "unaccompanied_minor", label: "خدمة الأطفال غير المصحوبين", attributeFields: [{ key: "age_range", label: "الفئة العمرية" }] },
+      { type: "family_seating", label: "مقاعد متجاورة للعائلة", attributeFields: [{ key: "max_group_size", label: "أقصى عدد أفراد" }] },
+    ],
+  },
+  {
+    id: "senior_prm",
+    label: "كبار السن وذوي الإعاقة",
+    types: [
+      { type: "wheelchair", label: "مساعدة كبار السن وذوي الإعاقة (كرسي متحرك)", attributeFields: [{ key: "assistance_level", label: "مستوى المساعدة" }] },
+      { type: "boarding_assistance", label: "مرافقة من الباب للطائرة" },
+    ],
+  },
+  {
+    id: "flexible",
+    label: "الخدمات الخاصة والمرنة",
+    types: [{ type: "flight_change_option", label: "خيار تغيير موعد الرحلة", attributeFields: [{ key: "advance_notice_hours", label: "مهلة الإخطار قبل التغيير (ساعات)" }] }],
+  },
+];
+
+/** Flat type → label / group lookup built from AIRLINE_SERVICE_GROUPS, so
+ *  the rest of the app (table cells, filters) doesn't have to re-walk the
+ *  groups array. */
+export const AIRLINE_SERVICE_TYPE_META: Record<AirlineAncillaryType, AirlineServiceTypeMeta> = Object.fromEntries(
+  AIRLINE_SERVICE_GROUPS.flatMap((g) => g.types.map((t) => [t.type, t])),
+) as Record<AirlineAncillaryType, AirlineServiceTypeMeta>;
+
+export const AIRLINE_SERVICE_TYPE_GROUP: Record<AirlineAncillaryType, AirlineServiceGroupId> = Object.fromEntries(
+  AIRLINE_SERVICE_GROUPS.flatMap((g) => g.types.map((t) => [t.type, g.id])),
+) as Record<AirlineAncillaryType, AirlineServiceGroupId>;
 
 export interface AirlineServiceRow {
   id: string;
@@ -375,11 +497,18 @@ export interface AirlineServiceRow {
   price: number;
   is_active: boolean;
   category: string | null;
+  delivery_location: string | null;
+  delivery_method: string | null;
+  terms: string | null;
+  max_weight_kg: number | null;
+  max_quantity_per_pax: number | null;
+  capacity_per_flight: number | null;
+  attributes: Record<string, string> | null;
+  active_rules_count: number;
 }
 
-/** الخدمات الإضافية — the airline's own ancillary catalog (extra baggage,
- *  priority boarding, seat selection). Read-scoped to the caller's own
- *  airline_supplier_id server-side inside the RPC. */
+/** الخدمات الإضافية — the airline's own ancillary catalog. Read-scoped to
+ *  the caller's own airline_supplier_id server-side inside the RPC. */
 export async function fetchAirlineServices(): Promise<AirlineServiceRow[]> {
   const { data, error } = await supabase.rpc("get_my_airline_services" as never).select("*");
   if (error) throw error;
@@ -387,9 +516,10 @@ export async function fetchAirlineServices(): Promise<AirlineServiceRow[]> {
 }
 
 /** Create (p_id omitted) or update (p_id set) one of the airline's own
- *  ancillary services. Ownership/type-whitelist are enforced server-side —
- *  the client can't create a service outside AIRLINE_ANCILLARY_TYPES or
- *  edit another supplier's row. */
+ *  ancillary services. Ownership/type-whitelist/field-length/limit checks
+ *  are enforced server-side — the client can't create a service outside
+ *  AIRLINE_ANCILLARY_TYPES or edit another supplier's row. On update, type
+ *  can't be changed (matches the RPC, which ignores p_type when p_id is set). */
 export async function upsertAirlineService(input: {
   id?: string;
   type?: AirlineAncillaryType;
@@ -397,6 +527,13 @@ export async function upsertAirlineService(input: {
   description?: string | null;
   price?: number;
   isActive?: boolean;
+  deliveryLocation?: string | null;
+  deliveryMethod?: string | null;
+  terms?: string | null;
+  maxWeightKg?: number | null;
+  maxQuantityPerPax?: number | null;
+  capacityPerFlight?: number | null;
+  attributes?: Record<string, string> | null;
 }): Promise<string> {
   const { data, error } = await supabase.rpc("airline_upsert_service" as never, {
     p_id: input.id ?? null,
@@ -405,6 +542,13 @@ export async function upsertAirlineService(input: {
     p_description: input.description ?? null,
     p_price: input.price ?? null,
     p_is_active: input.isActive ?? true,
+    p_delivery_location: input.deliveryLocation ?? null,
+    p_delivery_method: input.deliveryMethod ?? null,
+    p_terms: input.terms ?? null,
+    p_max_weight_kg: input.maxWeightKg ?? null,
+    p_max_quantity_per_pax: input.maxQuantityPerPax ?? null,
+    p_capacity_per_flight: input.capacityPerFlight ?? null,
+    p_attributes: input.attributes ?? null,
   } as never);
   if (error) throw error;
   return data as string;
@@ -415,6 +559,79 @@ export async function setAirlineServiceActive(id: string, isActive: boolean): Pr
     p_id: id,
     p_is_active: isActive,
   } as never);
+  if (error) throw error;
+}
+
+export type AirlineServiceRuleAirportRole = "any" | "departure" | "arrival";
+
+export interface AirlineServiceRuleRow {
+  id: string;
+  airport_code: string | null;
+  airport_role: AirlineServiceRuleAirportRole;
+  travel_class: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
+  is_active: boolean;
+  flight_number: string | null;
+  from_airport: string | null;
+  to_airport: string | null;
+  deal_id: string | null;
+  cutoff_hours: number | null;
+  note: string | null;
+}
+
+/** قواعد الإتاحة لخدمة معيّنة — على أنهي رحلات/مسارات/مطارات تظهر الخدمة.
+ *  Bug fix applied server-side this session; this is the first caller. */
+export async function fetchAirlineServiceRules(additionalServiceId: string): Promise<AirlineServiceRuleRow[]> {
+  const { data, error } = await supabase
+    .rpc("get_my_service_rules", { p_additional_service_id: additionalServiceId } as never)
+    .select("*");
+  if (error) throw error;
+  return (data ?? []) as AirlineServiceRuleRow[];
+}
+
+/** Create (p_id omitted) or update (p_id set) one availability rule.
+ *  Ownership of the parent service, and — when a specific deal_id is given —
+ *  that the flight actually belongs to this airline, are both enforced
+ *  server-side. */
+export async function upsertAirlineServiceRule(input: {
+  id?: string;
+  additionalServiceId: string;
+  airportCode?: string | null;
+  airportRole?: AirlineServiceRuleAirportRole;
+  travelClass?: string | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  isActive?: boolean;
+  flightNumber?: string | null;
+  fromAirport?: string | null;
+  toAirport?: string | null;
+  dealId?: string | null;
+  cutoffHours?: number | null;
+  note?: string | null;
+}): Promise<string> {
+  const { data, error } = await supabase.rpc("airline_upsert_service_rule" as never, {
+    p_id: input.id ?? null,
+    p_additional_service_id: input.additionalServiceId,
+    p_airport_code: input.airportCode ?? null,
+    p_travel_class: input.travelClass ?? null,
+    p_starts_at: input.startsAt ?? null,
+    p_ends_at: input.endsAt ?? null,
+    p_is_active: input.isActive ?? true,
+    p_flight_number: input.flightNumber ?? null,
+    p_from_airport: input.fromAirport ?? null,
+    p_to_airport: input.toAirport ?? null,
+    p_airport_role: input.airportRole ?? "any",
+    p_deal_id: input.dealId ?? null,
+    p_cutoff_hours: input.cutoffHours ?? null,
+    p_note: input.note ?? null,
+  } as never);
+  if (error) throw error;
+  return data as string;
+}
+
+export async function deleteAirlineServiceRule(id: string): Promise<void> {
+  const { error } = await supabase.rpc("airline_delete_service_rule" as never, { p_id: id } as never);
   if (error) throw error;
 }
 

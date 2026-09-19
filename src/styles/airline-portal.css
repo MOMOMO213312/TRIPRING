@@ -142,3 +142,35 @@
 .ap-btn:disabled { opacity: 0.5; cursor: default; }
 .ap-btn.primary { border-color: var(--ap-green); color: var(--ap-green); }
 .ap-btn.danger { border-color: var(--ap-red); color: var(--ap-red); }
+
+/* ---------- group tabs (Additional Services page) ---------- */
+.ap-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 14px;
+  border-bottom: 1px solid var(--ap-hairline);
+  padding-bottom: 10px;
+}
+.ap-tab {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--ap-hairline);
+  background: transparent;
+  color: var(--ap-mist);
+  font-family: var(--ap-font-ui);
+  font-size: 12.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ap-tab.active {
+  color: var(--ap-cyan);
+  border-color: var(--ap-cyan);
+}
+.ap-tab-count {
+  font-family: var(--ap-font-data);
+  font-size: 11px;
+  opacity: 0.8;
+}
