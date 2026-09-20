@@ -3,9 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { addServicesToBooking, fetchBookableAddOns } from "../lib/api";
 import { friendlyErrorMessage } from "../lib/errors";
 import { serviceDisplayLabel } from "../lib/servicePackages";
-import { formatPrice } from "../lib/utils";
+
 import type { AdditionalServiceRow } from "../types/database";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Leg = "departure" | "arrival";
 
@@ -30,6 +31,7 @@ export function AddServicesToTrip({
   existingServiceNames: string[];
   onAdded: () => void;
 }) {
+  const { fmt } = useCurrency();
   const [open, setOpen] = useState(false);
   const [catalog, setCatalog] = useState<AdditionalServiceRow[] | null>(null);
   const [checked, setChecked] = useState<Set<string>>(new Set());
@@ -92,7 +94,7 @@ export function AddServicesToTrip({
       <div className="mt-4 border-t border-slate-100 pt-4">
         {doneAmount !== null ? (
           <p className="mb-2 text-sm font-semibold text-green-700">
-            ✓ تمت إضافة الخدمات ({formatPrice(doneAmount, currency)})
+            ✓ تمت إضافة الخدمات ({fmt(doneAmount, currency)})
             {alreadyPaid ? " — هنتواصل معاك لتحصيل فرق السعر" : ""}
           </p>
         ) : null}
@@ -125,7 +127,7 @@ export function AddServicesToTrip({
                 <input type="checkbox" checked={checked.has(s.id)} onChange={() => toggle(s.id)} />
                 {serviceDisplayLabel(s)}
               </span>
-              <span className="font-latin text-sm text-slate-500">+{formatPrice(s.price, currency)}</span>
+              <span className="font-latin text-sm text-slate-500">+{fmt(s.price, currency)}</span>
             </label>
             {isGround(s) && checked.has(s.id) ? (
               <select
@@ -148,7 +150,7 @@ export function AddServicesToTrip({
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
       <Button type="button" fullWidth disabled={submitting || selected.length === 0 || missingLeg} onClick={submit}>
-        {submitting ? "جاري الإضافة..." : selected.length > 0 ? `تأكيد الإضافة (${formatPrice(total, currency)})` : "اختر خدمة"}
+        {submitting ? "جاري الإضافة..." : selected.length > 0 ? `تأكيد الإضافة (${fmt(total, currency)})` : "اختر خدمة"}
       </Button>
     </div>
   );

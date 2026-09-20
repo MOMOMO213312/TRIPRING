@@ -3,8 +3,9 @@ import { useEffect, useRef } from "react";
 import { classifyService, dedupeByKey, includedServicesFor, packagePrice, usePackageOptions } from "../lib/packages";
 import type { PackageOption, PackageTier, ServiceKey } from "../lib/packages";
 import { RECOMMENDED_SERVICE_KEYS, serviceDisplayLabel } from "../lib/servicePackages";
-import { cn, formatPrice } from "../lib/utils";
+import { cn } from "../lib/utils";
 import type { AdditionalServiceRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   basePrice: number;
@@ -41,6 +42,7 @@ export function PackageAndServicesSelector({
   checkedServiceIds,
   onToggleService,
 }: Props) {
+  const { fmt } = useCurrency();
   const packageOptions = usePackageOptions();
   const activePkg = packageOptions.find((p) => p.id === selectedPackage) ?? packageOptions[0];
   const displayServices = dedupeByKey(services);
@@ -99,7 +101,7 @@ export function PackageAndServicesSelector({
                     <p className="mt-0.5 text-xs text-slate-500">{pkg.perks.join(" + ")}</p>
                   </div>
                 </div>
-                <span className="font-latin shrink-0 font-bold text-slate-900">{formatPrice(price, currency)}</span>
+                <span className="font-latin shrink-0 font-bold text-slate-900">{fmt(price, currency)}</span>
               </label>
             );
           })}
@@ -137,7 +139,7 @@ export function PackageAndServicesSelector({
                     ) : null}
                   </span>
                   <span className="font-latin text-sm text-slate-500">
-                    {included ? "—" : `+${formatPrice(service.price, currency)}`}
+                    {included ? "—" : `+${fmt(service.price, currency)}`}
                   </span>
                 </label>
               );
@@ -148,7 +150,7 @@ export function PackageAndServicesSelector({
 
       <div className="flex items-center justify-between border-t border-slate-100 pt-4">
         <span className="font-bold text-slate-900">الإجمالي</span>
-        <span className="font-latin text-2xl font-extrabold text-[#0C7BB3]">{formatPrice(total, currency)}</span>
+        <span className="font-latin text-2xl font-extrabold text-[#0C7BB3]">{fmt(total, currency)}</span>
       </div>
     </div>
   );

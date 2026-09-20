@@ -76,6 +76,17 @@ export function Footer() {
 
       <div className="border-t border-slate-100 py-5 text-center text-sm text-slate-500">
         © {new Date().getFullYear()} TripRing — سوق فرص السفر
+        <p className="mt-1 text-xs text-slate-400">
+          أسعار الصرف التقديرية من{" "}
+          <a
+            href="https://www.exchangerate-api.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-latin underline hover:text-[#0C7BB3]"
+          >
+            Rates By Exchange Rate API
+          </a>
+        </p>
       </div>
     </footer>
   );

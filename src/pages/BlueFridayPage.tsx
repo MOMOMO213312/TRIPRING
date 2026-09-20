@@ -6,10 +6,12 @@ import { Button } from "../components/ui/Button";
 import { fetchActiveDeals } from "../lib/api";
 import { airportLabel, formatRouteCities } from "../lib/deal-utils";
 import { hoursUntil } from "../lib/filters";
-import { formatPrice } from "../lib/utils";
+
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
+import { comparablePrice } from "../lib/deal-utils";
 
 const PROMO_CODE = "BLUEFRIDAY";
 const MIN_DISCOUNT_PCT = 15; // a deal only counts as "Blue Friday" if it's at least this % off original_price
@@ -56,6 +58,7 @@ function getBlueFridayWindow(now: number) {
 }
 
 export function BlueFridayPage() {
+  const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,7 +95,7 @@ export function BlueFridayPage() {
 
   // Cheapest real prices first — this is the whole point of the sale.
   const bestFlightDeals = useMemo(() => {
-    return [...blueFridayDeals].sort((a, b) => a.price - b.price).slice(0, 8);
+    return [...blueFridayDeals].sort((a, b) => comparablePrice(a) - comparablePrice(b)).slice(0, 8);
   }, [blueFridayDeals]);
 
   // Deals closest to expiring — the actual "flash" hours.
@@ -109,14 +112,14 @@ export function BlueFridayPage() {
   const destinations = useMemo(() => {
     const byCountry = new Map<
       string,
-      { airport: (typeof catalog.airports)[number]; minPrice: number; currency: string }
+      { airport: (typeof catalog.airports)[number]; minPrice: number; minComparable: number; currency: string }
     >();
     for (const d of blueFridayDeals) {
       const airport = catalog.airports.find((a) => a.code === d.to_airport);
       if (!airport) continue;
       const existing = byCountry.get(airport.country);
-      if (!existing || d.price < existing.minPrice)
-        byCountry.set(airport.country, { airport, minPrice: d.price, currency: d.currency ?? "USD" });
+      if (!existing || comparablePrice(d) < existing.minComparable)
+        byCountry.set(airport.country, { airport, minPrice: d.price, minComparable: comparablePrice(d), currency: d.currency ?? "USD" });
     }
     return [...byCountry.values()].slice(0, 6);
   }, [blueFridayDeals, catalog.airports]);
@@ -131,7 +134,7 @@ export function BlueFridayPage() {
     e.preventDefault();
     const max = Number(budget);
     if (!max || max <= 0) return;
-    const inBudget = blueFridayDeals.filter((d) => d.price <= max);
+    const inBudget = blueFridayDeals.filter((d) => comparablePrice(d) <= max);
     const shuffled = [...inBudget].sort(() => Math.random() - 0.5);
     setMysteryDeals(shuffled.slice(0, 3));
   }
@@ -318,7 +321,7 @@ export function BlueFridayPage() {
               >
                 <p className="font-bold text-slate-900">{airport.city}</p>
                 <p className="text-xs text-slate-400">{airport.country}</p>
-                <p className="font-latin mt-2 text-sm font-bold text-blue-600">من {formatPrice(minPrice, currency)}</p>
+                <p className="font-latin mt-2 text-sm font-bold text-blue-600">من {fmt(minPrice, currency)}</p>
               </Link>
             ))}
           </div>
@@ -357,6 +360,7 @@ function BlueFridayDealCard({
   tag: string;
   blurred?: boolean;
 }) {
+  const { fmt } = useCurrency();
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
   const hoursLeft = hoursUntil(deal.expires_at);
 
@@ -389,7 +393,7 @@ function BlueFridayDealCard({
         </p>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">
-            {formatPrice(deal.price, deal.currency ?? "USD")}
+            {fmt(deal.price, deal.currency ?? "USD")}
           </span>
         </div>
       </div>

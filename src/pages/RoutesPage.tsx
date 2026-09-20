@@ -5,13 +5,15 @@ import { EmptyState } from "../components/EmptyState";
 import { LineSkeleton } from "../components/LoadingSkeleton";
 import { fetchActiveDeals } from "../lib/api";
 import { buildRouteQuotes } from "../lib/routeQuotes";
-import { formatPrice } from "../lib/utils";
+
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import { usePageMeta } from "../hooks/usePageMeta";
 import type { DealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 export function RoutesPage() {
+  const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +85,7 @@ export function RoutesPage() {
                   <>
                     <p className="text-[11px] text-slate-400">يبدأ من</p>
                     <p className="font-latin text-lg font-extrabold text-[#0C7BB3]">
-                      {formatPrice(route.bestDeal.price, route.bestDeal.currency ?? "USD")}
+                      {fmt(route.bestDeal.price, route.bestDeal.currency ?? "USD")}
                     </p>
                   </>
                 ) : (

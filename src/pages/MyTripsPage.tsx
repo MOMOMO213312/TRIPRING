@@ -12,11 +12,12 @@ import { AddServicesToTrip } from "../components/AddServicesToTrip";
 import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { lookupBooking } from "../lib/api";
 import { setSessionContact } from "../lib/session";
-import { formatDate, formatPrice } from "../lib/utils";
+import { formatDate } from "../lib/utils";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import { BOOKING_SERVICE_STATUS_LABELS, type BookingLookupResult, type BookingServiceStatus } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 function serviceStatusTone(status: BookingServiceStatus): "default" | "flash" | "empty_seat" | "urgent" {
   if (status === "confirmed_with_supplier") return "empty_seat";
@@ -38,6 +39,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export function MyTripsPage() {
+  const { fmt } = useCurrency();
   const catalog = useCatalog();
   const location = useLocation();
   const prefill = (location.state as PrefillState | null) ?? null;
@@ -146,7 +148,7 @@ export function MyTripsPage() {
             {booking.total_price ? (
               <div className="flex justify-between">
                 <dt className="text-slate-500">المبلغ</dt>
-                <dd>{formatPrice(booking.total_price, booking.currency)}</dd>
+                <dd>{fmt(booking.total_price, booking.currency)}</dd>
               </div>
             ) : null}
             {booking.payment_method ? (
@@ -181,7 +183,7 @@ export function MyTripsPage() {
                   <li key={i} className="flex flex-wrap items-center justify-between gap-1">
                     <span>{s.name} × {s.quantity}</span>
                     <div className="flex items-center gap-2">
-                      <span>{formatPrice(s.unit_price * s.quantity, booking.currency)}</span>
+                      <span>{fmt(s.unit_price * s.quantity, booking.currency)}</span>
                       <Badge tone={serviceStatusTone(s.status)}>{BOOKING_SERVICE_STATUS_LABELS[s.status]}</Badge>
                     </div>
                   </li>

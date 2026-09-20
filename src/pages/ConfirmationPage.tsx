@@ -9,10 +9,11 @@ import { useCatalog } from "../hooks/useCatalog";
 import { getAgencyWhatsApp, lookupBooking } from "../lib/api";
 import { formatRoute } from "../lib/deal-utils";
 import { getLastBooking } from "../lib/session";
-import { formatPrice, whatsAppLink } from "../lib/utils";
+import { whatsAppLink } from "../lib/utils";
 import { transferKindLabel } from "../lib/tripgo";
 import type { CreateBookingResult } from "../lib/api";
 import type { BookingLookupResult, DealRow, PaymentMethod, TripGoDealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 type TripGoState = {
   pickupLocation: string;
@@ -108,6 +109,11 @@ function ConfirmationBody({
   infants,
   tripGo,
 }: LocationState) {
+  const { fmtIn } = useCurrency();
+  // What the customer must actually transfer: the charge amount in the currency chosen at checkout (total × the rate
+  // locked at booking time). Bookings created before multi-currency have no charge fields and are paid in the booking currency.
+  const payableCurrency = booking.charge_currency ?? booking.currency;
+  const payableAmount = booking.charge_amount != null ? Number(booking.charge_amount) : booking.total_price;
   const catalog = useCatalog();
   // The create_booking RPC returns only the top-level booking fields —
   // order_items (and therefore the per-item journey) are created by a DB
@@ -141,7 +147,7 @@ function ConfirmationBody({
     `المسافرون: ${travelerSummary}`,
     tripGo ? `مكان الاستلام: ${tripGo.pickupLocation}` : null,
     tripGo?.transport ? `وسيلة النقل: ${transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type)}` : null,
-    `المبلغ: ${formatPrice(booking.total_price, booking.currency)}`,
+    `المبلغ: ${fmtIn(payableAmount, payableCurrency, true)}`,
   ]
     .filter(Boolean)
     .join("\n");
@@ -166,8 +172,14 @@ function ConfirmationBody({
             <dd className="font-semibold">{formatRoute(deal)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">المبلغ</dt>
-            <dd className="font-semibold">{formatPrice(booking.total_price, booking.currency)}</dd>
+            <dt className="text-sm text-slate-500">المبلغ المطلوب تحويله</dt>
+            <dd className="font-latin text-lg font-bold">{fmtIn(payableAmount, payableCurrency, true)}</dd>
+            {payableCurrency !== booking.currency ? (
+              <p className="mt-1 text-xs text-slate-500">
+                سعر الحجز {fmtIn(booking.total_price, booking.currency, true)} — اتحوّل لـ {payableCurrency} بسعر الصرف اللي اتثبّت وقت الحجز
+                {booking.fx_rate ? ` (${Number(booking.fx_rate)})` : ""}.
+              </p>
+            ) : null}
           </div>
           <div>
             <dt className="text-sm text-slate-500">طريقة الدفع</dt>

@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { hoursUntil } from "../lib/filters";
-import { formatPrice } from "../lib/utils";
+
 import type { AirportRow, DealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 /** Picks the best real "flash"-style deal to headline the hero corner card:
  *  prefers an actual discount (original_price > price) and, among those, the
@@ -17,6 +18,7 @@ function pickFlashDeal(deals: DealRow[]): DealRow | null {
 }
 
 export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airports: AirportRow[] }) {
+  const { fmt } = useCurrency();
   const deal = useMemo(() => pickFlashDeal(deals), [deals]);
   const [hoursLeft, setHoursLeft] = useState<number | null>(() => (deal ? hoursUntil(deal.expires_at) : null));
 
@@ -64,7 +66,7 @@ export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airpo
 
       <div className="mt-3 border-t border-white/10 pt-3">
         <p className="text-[10px] text-white/50">يبدأ من</p>
-        <p className="font-latin text-xl font-extrabold text-white">{formatPrice(deal.price, deal.currency ?? "USD")}</p>
+        <p className="font-latin text-xl font-extrabold text-white">{fmt(deal.price, deal.currency ?? "USD")}</p>
       </div>
 
       <Link

@@ -1,5 +1,6 @@
 import { airportLabel } from "./deal-utils";
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
+import { comparablePrice } from "./deal-utils";
 
 export type RouteQuote = {
   key: string;
@@ -28,7 +29,7 @@ export function buildRouteQuotes(
   return references.map((ref) => {
     const liveDeals = deals
       .filter((d) => d.from_airport === ref.from_airport && d.to_airport === ref.to_airport)
-      .sort((a, b) => a.price - b.price);
+      .sort((a, b) => comparablePrice(a) - comparablePrice(b));
 
     const bestDeal = liveDeals[0] ?? null;
 
@@ -75,8 +76,8 @@ export function buildRouteQuotesByTripType(
         (d) => d.from_airport === ref.from_airport && d.to_airport === ref.to_airport,
       );
 
-      const oneWayDeals = routeDeals.filter((d) => !d.return_date).sort((a, b) => a.price - b.price);
-      const roundTripDeals = routeDeals.filter((d) => d.return_date).sort((a, b) => a.price - b.price);
+      const oneWayDeals = routeDeals.filter((d) => !d.return_date).sort((a, b) => comparablePrice(a) - comparablePrice(b));
+      const roundTripDeals = routeDeals.filter((d) => d.return_date).sort((a, b) => comparablePrice(a) - comparablePrice(b));
 
       return {
         key: ref.id,

@@ -9,7 +9,10 @@ import {
   createBooking,
   fetchAdditionalServices,
   fetchDealById,
+  fetchPaymentMethods,
 } from "../lib/api";
+import { roundTo } from "../lib/currency";
+import { useCurrency } from "../hooks/useCurrency";
 import { PAYMENT_METHODS } from "../lib/payment-config";
 import { formatRoute, hasPriceBreakdown } from "../lib/deal-utils";
 import { classifyService, dedupeByKey, packagePrice, usePackageOptions } from "../lib/packages";
@@ -18,7 +21,7 @@ import { RECOMMENDED_SERVICE_KEYS, serviceDisplayLabel } from "../lib/servicePac
 import { friendlyErrorMessage } from "../lib/errors";
 import { fetchZonesForDeal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
-import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
+import { isValidEmail, isValidPhone } from "../lib/utils";
 import type { AdditionalServiceRow, DealRow, PaymentMethod, TransportZoneRow } from "../types/database";
 
 type DealSelectionState = {
@@ -60,6 +63,52 @@ export function BookingPage() {
   const [transportZones, setTransportZones] = useState<TransportZoneRow[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<string>("");
   const packageOptions = usePackageOptions();
+
+  // ── Currency ────────────────────────────────────────────────────────────────
+  // Three different currencies can be in play: the deal's own (all server math), the visitor's display currency
+  // (what they browse in) and the currency they PAY in (must be one the payment side can collect — see
+  // currencies.is_chargeable). Totals below are computed in the deal's currency exactly like the server does
+  // (create_booking converts every service/zone into the deal's currency), then only *displayed* converted.
+  const { fmt, fmtIn, currencies, currency: displayCurrency, convertTo, estimate, rates } = useCurrency();
+  const dealCur = deal?.currency ?? "USD";
+  const chargeableCurrencies = currencies.filter((c) => c.is_chargeable);
+  const autoChargeCurrency =
+    chargeableCurrencies.find((c) => c.code === displayCurrency)?.code ??
+    chargeableCurrencies.find((c) => c.code === dealCur)?.code ??
+    "USD";
+  const [chargeChoice, setChargeChoice] = useState<string | null>(null);
+  const chargeCurrency =
+    chargeChoice && chargeableCurrencies.some((c) => c.code === chargeChoice) ? chargeChoice : autoChargeCurrency;
+  const [methodCodes, setMethodCodes] = useState<string[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchPaymentMethods(chargeCurrency)
+      .then((rows) => {
+        if (!cancelled) setMethodCodes(rows.map((r) => r.code));
+      })
+      // Catalog unreachable: show every method rather than none — the server still validates the choice at submit.
+      .catch(() => {
+        if (!cancelled) setMethodCodes(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [chargeCurrency]);
+
+  const availableMethods = PAYMENT_METHODS.filter((pm) => !methodCodes || methodCodes.includes(pm.value));
+  useEffect(() => {
+    if (availableMethods.length > 0 && !availableMethods.some((pm) => pm.value === paymentMethod)) {
+      setPaymentMethod(availableMethods[0].value);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [methodCodes]);
+
+  /** Amount priced in `from` → the deal's currency, rounded like the server's convert_currency(). */
+  function inDealCurrency(amount: number, from: string): number {
+    const converted = convertTo(amount, from, dealCur);
+    return converted == null ? amount : roundTo(converted, rates[dealCur]?.decimals ?? 2);
+  }
 
   useEffect(() => {
     if (!dealId) return;
@@ -156,7 +205,8 @@ export function BookingPage() {
   function servicesTotal(): number {
     return services.reduce((sum, s) => {
       const qty = selectedServices[s.id] ?? 0;
-      return sum + s.price * qty;
+      // Service prices carry their own currency (USD by default) — never add them to a deal-currency total raw.
+      return sum + inDealCurrency(s.price, s.currency ?? "USD") * qty;
     }, 0);
   }
 
@@ -169,7 +219,8 @@ export function BookingPage() {
 
   function zonePrice(): number {
     if (!selectedZoneId) return 0;
-    return transportZones.find((z) => z.id === selectedZoneId)?.price_addon ?? 0;
+    const zone = transportZones.find((z) => z.id === selectedZoneId);
+    return zone ? inDealCurrency(zone.price_addon, zone.currency ?? "EGP") : 0;
   }
 
   function estimatedTotal(): number {
@@ -185,6 +236,9 @@ export function BookingPage() {
       (deal.infant_price ?? 0) * infants;
     return base + packageMarkup() + servicesTotal() + zonePrice();
   }
+
+  // Estimate only — the real amount is total × the rate the server locks when the booking is created.
+  const chargeEstimate = deal ? estimate(estimatedTotal(), dealCur, chargeCurrency) : null;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -233,7 +287,7 @@ export function BookingPage() {
       if (priceChanged) {
         setDeal(fresh);
         setError(
-          `تنبيه: سعر هذا العرض تغيّر منذ ما فتحت الصفحة (كان ${formatPrice(deal.price, deal.currency ?? "USD")}، بقى ${formatPrice(fresh.price, fresh.currency ?? "USD")}). راجع الإجمالي الجديد بالأسفل واضغط "تأكيد الحجز" تاني للمتابعة.`,
+          `تنبيه: سعر هذا العرض تغيّر منذ ما فتحت الصفحة (كان ${fmt(deal.price, dealCur)}، بقى ${fmt(fresh.price, fresh.currency ?? "USD")}). راجع الإجمالي الجديد بالأسفل واضغط "تأكيد الحجز" تاني للمتابعة.`,
         );
         setSubmitting(false);
         return;
@@ -276,6 +330,8 @@ export function BookingPage() {
         services: servicePayload,
         farePackageTier: selectedPackage,
         transportZoneId: selectedZoneId || undefined,
+        dealCurrency: dealCur,
+        chargeCurrency,
       });
       setLastBooking(result.booking_number, customerPhone || customerEmail || "");
       navigate("/confirmation", {
@@ -318,7 +374,7 @@ export function BookingPage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">إتمام الحجز</h1>
-        <p className="text-slate-600">{formatRoute(deal)} · {formatPrice(deal.price, deal.currency ?? "USD")}</p>
+        <p className="text-slate-600">{formatRoute(deal)} · {fmt(deal.price, dealCur)}</p>
       </div>
 
       {/* Single scrollable page instead of a multi-step wizard — every
@@ -397,7 +453,7 @@ export function BookingPage() {
                   className={`flex items-center justify-between rounded-lg border p-3 ${recommended ? "border-[#16A34A]/40 bg-[#F0FBF4]" : "border-slate-100"}`}
                 >
                   <span className="flex items-center gap-2">
-                    {serviceDisplayLabel(s)} — {formatPrice(s.price, deal.currency ?? "USD")}
+                    {serviceDisplayLabel(s)} — {fmt(s.price, s.currency ?? "USD")}
                     {recommended ? <span className="text-xs font-semibold text-[#16A34A]">موصى به</span> : null}
                   </span>
                   <input
@@ -450,7 +506,7 @@ export function BookingPage() {
                     className="me-2"
                   />
                   <span className="font-semibold">{z.zone_name}</span>
-                  <span className="text-slate-600"> — +{formatPrice(z.price_addon, z.currency)}</span>
+                  <span className="text-slate-600"> — +{fmt(z.price_addon, z.currency)}</span>
                 </label>
               ))}
             </div>
@@ -469,11 +525,11 @@ export function BookingPage() {
               <>
                 <div className="flex justify-between text-xs text-slate-500">
                   <dt>السعر الأساسي</dt>
-                  <dd className="font-latin">{formatPrice(deal.base_fare!, deal.currency ?? "USD")}</dd>
+                  <dd className="font-latin">{fmt(deal.base_fare!, dealCur)}</dd>
                 </div>
                 <div className="flex justify-between text-xs text-slate-500">
                   <dt>ضرائب ورسوم</dt>
-                  <dd className="font-latin">{formatPrice(deal.taxes_fees!, deal.currency ?? "USD")}</dd>
+                  <dd className="font-latin">{fmt(deal.taxes_fees!, dealCur)}</dd>
                 </div>
               </>
             ) : null}
@@ -483,7 +539,7 @@ export function BookingPage() {
                 <dd className="font-semibold">
                   {packageOptions.find((p) => p.id === selectedPackage)?.label}
                   {" · "}
-                  {formatPrice(packagePrice(deal.price, packageOptions.find((p) => p.id === selectedPackage)!), deal.currency ?? "USD")}
+                  {fmt(packagePrice(deal.price, packageOptions.find((p) => p.id === selectedPackage)!), dealCur)}
                 </dd>
               </div>
             ) : null}
@@ -492,19 +548,51 @@ export function BookingPage() {
                 <dt className="text-slate-500">TripGo (نقل)</dt>
                 <dd className="font-semibold">
                   {transportZones.find((z) => z.id === selectedZoneId)?.zone_name} ·{" "}
-                  {formatPrice(zonePrice(), deal.currency ?? "USD")}
+                  {fmt(zonePrice(), dealCur)}
                 </dd>
               </div>
             ) : null}
             <div className="flex justify-between"><dt className="text-slate-500">المسافرون</dt><dd>{adults} بالغ · {children} طفل · {infants} رضيع</dd></div>
             <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
-              <dt>الإجمالي التقديري</dt>
-              <dd>{formatPrice(estimatedTotal(), deal.currency ?? "USD")}</dd>
+              <dt>الإجمالي التقديري (قبل أي خصم عضوية)</dt>
+              <dd className="font-latin">{fmt(estimatedTotal(), dealCur)}</dd>
             </div>
           </dl>
+          {chargeableCurrencies.length > 1 ? (
+            <div className="space-y-2 border-t border-slate-100 pt-4">
+              <p className="text-sm font-medium text-slate-700">ادفع بعملة</p>
+              <div className="flex flex-wrap gap-2">
+                {chargeableCurrencies.map((c) => (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => setChargeChoice(c.code)}
+                    className={`rounded-full border px-4 py-1.5 text-sm ${
+                      chargeCurrency === c.code
+                        ? "border-accent bg-[#E5F4FB] font-semibold text-[#0C7BB3]"
+                        : "border-slate-200 text-slate-600 hover:border-slate-300"
+                    }`}
+                  >
+                    {c.name_ar} <span className="font-latin text-xs">({c.code})</span>
+                  </button>
+                ))}
+              </div>
+              {chargeCurrency !== dealCur && chargeEstimate != null ? (
+                <p className="text-sm text-slate-600">
+                  هتدفع تقريبًا <span className="font-latin font-bold">{fmtIn(chargeEstimate, chargeCurrency, true)}</span> — سعر
+                  الصرف بيتثبّت لـ 30 دقيقة لحظة تأكيد الحجز، والمبلغ النهائي هيظهر في صفحة التأكيد.
+                </p>
+              ) : null}
+              {displayCurrency !== chargeCurrency && !chargeableCurrencies.some((c) => c.code === displayCurrency) ? (
+                <p className="text-xs text-slate-400">
+                  الدفع بعملتك ({displayCurrency}) مش متاح دلوقتي — الأسعار المعروضة بيها تقديرية والدفع بالعملات أعلاه.
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           <div className="space-y-2 border-t border-slate-100 pt-4">
             <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة</p>
-            {PAYMENT_METHODS.map((pm) => (
+            {availableMethods.map((pm) => (
               <label
                 key={pm.value}
                 className={`block cursor-pointer rounded-xl border p-4 ${

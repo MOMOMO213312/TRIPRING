@@ -14,8 +14,9 @@ import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
-import { formatDate, formatPrice, whatsAppLink, WhatsAppIcon } from "../lib/utils";
+import { formatDate, whatsAppLink, WhatsAppIcon } from "../lib/utils";
 import type { ResaleReason } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 const REASON_LABEL: Record<ResaleReason, string> = {
   non_refundable: "غير قابلة للاسترداد",
@@ -31,7 +32,8 @@ const REASON_OPTIONS = (Object.keys(REASON_LABEL) as ResaleReason[]).map((value)
 }));
 
 function ResaleCard({ resale, catalog }: { resale: PublicTicketResaleRow; catalog: ReturnType<typeof useCatalog> }) {
-  const waMessage = `مرحباً، أنا مهتم بتذكرة إعادة البيع: ${resale.from_airport} → ${resale.to_airport} بتاريخ ${resale.departure_date} (${formatPrice(resale.asking_price, resale.currency)})`;
+  const { fmt } = useCurrency();
+  const waMessage = `مرحباً، أنا مهتم بتذكرة إعادة البيع: ${resale.from_airport} → ${resale.to_airport} بتاريخ ${resale.departure_date} (${fmt(resale.asking_price, resale.currency)})`;
   return (
     <Card className="space-y-3">
       <div className="flex items-start justify-between gap-2">
@@ -49,7 +51,7 @@ function ResaleCard({ resale, catalog }: { resale: PublicTicketResaleRow; catalo
       ) : null}
 
       <div className="flex items-baseline gap-2">
-        <p className="text-2xl font-extrabold text-slate-900">{formatPrice(resale.asking_price, resale.currency)}</p>
+        <p className="text-2xl font-extrabold text-slate-900">{fmt(resale.asking_price, resale.currency)}</p>
       </div>
 
       <a

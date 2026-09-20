@@ -375,6 +375,8 @@ export interface Database {
           name: string;
           description: string | null;
           price: number;
+          /** ISO currency the `price` is expressed in (defaults to USD in the DB). Never add it to a booking total without converting. */
+          currency: string;
           category: ServiceCategory | null;
           is_active: boolean;
           provider_id: string | null;
@@ -526,6 +528,8 @@ export interface Database {
           from_airport: string | null;
           to_airport: string | null;
           max_budget: number | null;
+          /** Currency max_budget was entered in (compared to deals in USD when it differs from the deal currency). */
+          currency: string;
           customer_id: string | null;
           phone: string | null;
           email: string | null;
@@ -838,6 +842,27 @@ export interface Database {
           markup_percent: number | null;
           commission_percent: number | null;
           contract_status: string | null;
+          /** price converted to USD with the live rate — the only safe column to sort/filter by when deals are in mixed currencies. */
+          price_usd: number | null;
+          original_price_usd: number | null;
+        };
+      };
+      // Public, read-only exchange-rate table (see currencies + exchange_rates). Added by hand like v_flight_offers.
+      v_currency_rates: {
+        Row: {
+          code: string;
+          name_ar: string;
+          name_en: string;
+          symbol_ar: string;
+          symbol_en: string;
+          decimals: number;
+          rate_per_usd: number | null;
+          fx_spread_pct: number;
+          is_chargeable: boolean;
+          is_stale: boolean;
+          rate_source: string | null;
+          rate_fetched_at: string | null;
+          sort_order: number;
         };
       };
     };

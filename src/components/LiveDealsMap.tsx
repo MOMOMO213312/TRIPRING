@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 
-import { airportLabel } from "../lib/deal-utils";
+import { airportLabel, comparablePrice } from "../lib/deal-utils";
 import { projectAirport } from "../lib/geo";
-import { formatPrice } from "../lib/utils";
+
 import type { AirportRow, DealRow } from "../types/database";
 import { Card } from "./ui/Card";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   deals: DealRow[];
@@ -29,16 +30,23 @@ const CONTINENTS = [
 ];
 
 export function LiveDealsMap({ deals, airports }: Props) {
+  const { fmt } = useCurrency();
   const points = useMemo(() => {
-    const seen = new Map<string, { code: string; count: number; price: number }>();
+    // "Cheapest" is decided on the USD-equivalent price (deals can be in different currencies), but the tooltip
+    // shows that deal's own price + currency so fmt() converts it for the visitor like everywhere else.
+    const seen = new Map<string, { code: string; count: number; price: number; currency: string; comparable: number }>();
     for (const d of deals) {
       const code = d.to_airport;
       const existing = seen.get(code);
       if (existing) {
         existing.count += 1;
-        existing.price = Math.min(existing.price, d.price);
+        if (comparablePrice(d) < existing.comparable) {
+          existing.price = d.price;
+          existing.currency = d.currency ?? "USD";
+          existing.comparable = comparablePrice(d);
+        }
       } else {
-        seen.set(code, { code, count: 1, price: d.price });
+        seen.set(code, { code, count: 1, price: d.price, currency: d.currency ?? "USD", comparable: comparablePrice(d) });
       }
     }
     return [...seen.values()]
@@ -81,7 +89,7 @@ export function LiveDealsMap({ deals, airports }: Props) {
                 </circle>
                 <circle cx={p.pos.x} cy={p.pos.y} r={4} fill={color} stroke="#0B1220" strokeWidth={1.5}>
                   <title>
-                    {airportLabel(p.code, airports)} — {formatPrice(p.price)}
+                    {airportLabel(p.code, airports)} — {fmt(p.price, p.currency)}
                     {p.count > 1 ? ` (${p.count} عروض)` : ""}
                   </title>
                 </circle>

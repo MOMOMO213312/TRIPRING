@@ -2,8 +2,9 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { buildRouteQuotesByTripType } from "../lib/routeQuotes";
-import { formatPrice } from "../lib/utils";
+
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   deals: DealRow[];
@@ -18,6 +19,7 @@ type Props = {
  *  boards, so a customer going CAI→RUH one-way finds it in the one-way board
  *  and a customer going CAI→RUH round-trip finds it in this one. */
 export function RoundTripFareBoard({ deals, references, airports }: Props) {
+  const { fmt } = useCurrency();
   const quotes = useMemo(
     () => buildRouteQuotesByTripType(references, deals, airports).filter((q) => q.roundTripDeal),
     [references, deals, airports],
@@ -37,7 +39,7 @@ export function RoundTripFareBoard({ deals, references, airports }: Props) {
             {q.from} / {q.to}
           </span>
           <span className="text-sm font-extrabold text-white">
-            {formatPrice(q.roundTripDeal!.price, q.roundTripDeal!.currency ?? "USD")}
+            {fmt(q.roundTripDeal!.price, q.roundTripDeal!.currency ?? "USD")}
           </span>
         </Link>
       ))}

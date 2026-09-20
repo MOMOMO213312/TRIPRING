@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { formatPrice } from "../lib/utils";
+
+import { useCurrency } from "../hooks/useCurrency";
 
 export function DestinationCard({
   to,
@@ -22,6 +23,7 @@ export function DestinationCard({
   priceLabel?: string;
   badge?: ReactNode;
 }) {
+  const { fmt } = useCurrency();
   return (
     <Link
       to={to}
@@ -47,7 +49,7 @@ export function DestinationCard({
         {price != null ? (
           <>
             <p className="mt-1 text-xs text-white/70">{priceLabel}</p>
-            <p className="font-latin mt-0.5 text-lg font-extrabold text-white">{formatPrice(price, currency)}</p>
+            <p className="font-latin mt-0.5 text-lg font-extrabold text-white">{fmt(price, currency)}</p>
           </>
         ) : null}
       </div>

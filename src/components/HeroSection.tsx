@@ -8,6 +8,7 @@ import { getDestinationImage } from "../lib/api";
 import type { TripType } from "../lib/api";
 import type { AirportRow, DealRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
 import heroSky from "../assets/hero-sky.jpg";
+import { comparablePrice } from "../lib/deal-utils";
 
 const HERO_IMAGE = heroSky;
 
@@ -77,7 +78,7 @@ function topDestinationImage(
       if (bookingDiff !== 0) return bookingDiff;
       const viewDiff = (b.view_count ?? 0) - (a.view_count ?? 0);
       if (viewDiff !== 0) return viewDiff;
-      return a.price - b.price;
+      return comparablePrice(a) - comparablePrice(b);
     });
 
   for (const deal of ranked) {

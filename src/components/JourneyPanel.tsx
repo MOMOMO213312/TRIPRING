@@ -1,7 +1,8 @@
 import { Badge } from "./ui/Badge";
-import { formatPrice } from "../lib/utils";
+
 import { JOURNEY_ITEM_STATUS_LABELS, JOURNEY_SUMMARY_LABELS } from "../types/database";
 import type { BookingLookupResult } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 const ITEM_TYPE_ICON: Record<string, string> = {
   flight: "✈",
@@ -38,6 +39,7 @@ export function JourneyPanel({
   journey: NonNullable<BookingLookupResult["journey"]>;
   currency: string;
 }) {
+  const { fmt } = useCurrency();
   if (journey.items.length === 0) return null;
 
   return (
@@ -62,7 +64,7 @@ export function JourneyPanel({
             </div>
             <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
               <span>{item.supplier_name ?? "جاري تحديد المزوّد"}</span>
-              <span>{formatPrice(item.customer_price, currency)}</span>
+              <span>{fmt(item.customer_price, currency)}</span>
             </div>
           </li>
         ))}

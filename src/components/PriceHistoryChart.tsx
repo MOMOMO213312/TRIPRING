@@ -1,12 +1,23 @@
 import type { PriceTrendPoint } from "../lib/api";
-import { formatLatinNumber, formatPrice } from "../lib/utils";
+import { formatLatinNumber } from "../lib/utils";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   title: string;
   points: PriceTrendPoint[];
+  /** Currency the points' prices are stored in (the deal's own currency). */
+  currency: string;
 };
 
-export function PriceHistoryChart({ title, points }: Props) {
+export function PriceHistoryChart({ title, points: rawPoints, currency }: Props) {
+  const { fmt, convert, currency: displayCurrency, fmtIn } = useCurrency();
+  // Chart in the visitor's display currency when we can convert; otherwise keep the deal's own currency
+  // (never label an EGP series with "$").
+  const canConvert = currency !== displayCurrency && convert(1, currency) != null;
+  const labelCurrency = canConvert ? displayCurrency : currency;
+  const points = canConvert
+    ? rawPoints.map((p) => ({ ...p, price: convert(p.price, currency) ?? p.price }))
+    : rawPoints;
   if (points.length < 2) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-5">
@@ -35,6 +46,7 @@ export function PriceHistoryChart({ title, points }: Props) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">
       <h3 className="font-bold text-slate-900">{title}</h3>
+      <p className="font-latin mt-0.5 text-[10px] text-slate-400">{labelCurrency}</p>
       <svg viewBox={`0 0 ${width} ${height}`} className="mt-3 w-full max-w-lg" aria-label={title}>
         {[0, 0.5, 1].map((t) => {
           const y = height - pad - t * (height - pad * 2);
@@ -58,7 +70,7 @@ export function PriceHistoryChart({ title, points }: Props) {
         <span>{points[points.length - 1]?.date}</span>
       </div>
       <p className="font-latin mt-1 text-xs text-slate-500">
-        أدنى سعر حالي: {formatPrice(points[points.length - 1]?.price ?? 0)}
+        أدنى سعر حالي: {canConvert ? `\u200E≈ ${fmtIn(points[points.length - 1]?.price ?? 0, labelCurrency)}` : fmt(points[points.length - 1]?.price ?? 0, currency)}
       </p>
     </div>
   );

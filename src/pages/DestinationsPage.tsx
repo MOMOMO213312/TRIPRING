@@ -4,20 +4,25 @@ import { Link } from "react-router-dom";
 import { CardsSkeleton } from "../components/LoadingSkeleton";
 import { EmptyState } from "../components/EmptyState";
 import { fetchActiveDeals, getDestinationImage } from "../lib/api";
-import { formatPrice } from "../lib/utils";
+
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import { usePageMeta } from "../hooks/usePageMeta";
 import type { AirportRow, DealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
+import { comparablePrice } from "../lib/deal-utils";
 
 type DestinationEntry = {
   airport: AirportRow;
   minPrice: number;
+  /** USD-equivalent of minPrice — what "cheapest" is decided on when deals are in different currencies. */
+  minComparable: number;
   currency: string;
   dealCount: number;
 };
 
 export function DestinationsPage() {
+  const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,18 +52,20 @@ export function DestinationsPage() {
         byAirport.set(airport.code, {
           airport,
           minPrice: deal.price,
+          minComparable: comparablePrice(deal),
           currency: deal.currency ?? "USD",
           dealCount: 1,
         });
       } else {
         existing.dealCount += 1;
-        if (deal.price < existing.minPrice) {
+        if (comparablePrice(deal) < existing.minComparable) {
           existing.minPrice = deal.price;
+          existing.minComparable = comparablePrice(deal);
           existing.currency = deal.currency ?? "USD";
         }
       }
     }
-    return [...byAirport.values()].sort((a, b) => a.minPrice - b.minPrice);
+    return [...byAirport.values()].sort((a, b) => a.minComparable - b.minComparable);
   }, [deals, catalog.airports]);
 
   const isLoading = loading || catalog.loading;
@@ -109,7 +116,7 @@ export function DestinationsPage() {
                     {airport.country} · {dealCount} فرصة متاحة
                   </p>
                   <p className="font-latin mt-1 text-lg font-extrabold text-white">
-                    {formatPrice(minPrice, currency)}
+                    {fmt(minPrice, currency)}
                   </p>
                 </div>
               </Link>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
+import { CurrencySwitcher } from "./CurrencySwitcher";
 import { Footer } from "./Footer";
 import { BottomNav } from "./BottomNav";
 import { AnnouncementTicker } from "./notifications/AnnouncementTicker";
@@ -92,12 +93,7 @@ export function Layout() {
               >
                 {lang === "AR" ? "العربية" : "English"}
               </button>
-              <button
-                type="button"
-                className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600 transition hover:border-[#1E3A8A]/40 hover:text-[#1E3A8A]"
-              >
-                EGP
-              </button>
+              <CurrencySwitcher />
             </div>
             <Link
               to="/my-trips"
@@ -155,9 +151,7 @@ export function Layout() {
               >
                 {lang === "AR" ? "العربية" : "English"}
               </button>
-              <button type="button" className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600">
-                EGP
-              </button>
+              <CurrencySwitcher align="start" />
             </div>
           </div>
         )}

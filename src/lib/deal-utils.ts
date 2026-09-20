@@ -211,3 +211,14 @@ export function dealReasons(
 
   return reasons;
 }
+
+
+/**
+ * Price to use when COMPARING deals with each other (cheapest, sort order, "under budget").
+ * `price` is in each deal's own currency, so it is only comparable within one currency; `price_usd`
+ * (added by the v_flight_offers view) is comparable across all of them. Falls back to `price` when a
+ * deal did not come through that view — correct as long as everything compared is in one currency.
+ */
+export function comparablePrice(deal: { price: number; price_usd?: number | null }): number {
+  return deal.price_usd ?? deal.price;
+}

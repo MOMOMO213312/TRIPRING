@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 
 import { airportLabel } from "../lib/deal-utils";
-import { formatPrice } from "../lib/utils";
+
 import type { AirportRow } from "../types/database";
 import type { Tables } from "../types/database";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   alerts: Tables<"price_alerts">[];
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
+  const { fmt } = useCurrency();
   if (loading) {
     return (
       <Card>
@@ -57,7 +59,7 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
               {airportLabel(a.to_airport ?? "", airports).split(" (")[0]}
             </span>
             <span className="font-latin font-semibold text-slate-700">
-              ≤ {formatPrice(a.max_budget ?? 0)}
+              ≤ {fmt(a.max_budget ?? 0, a.currency)}
             </span>
           </li>
         ))}
