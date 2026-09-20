@@ -1,0 +1,41 @@
+{
+  "type": {
+    "flash": "عرض سريع",
+    "last_minute": "آخر لحظة",
+    "empty_seat": "مقعد فارغ",
+    "special_fare": "سعر خاص"
+  },
+  "stops": {
+    "direct": "بدون توقف",
+    "oneStop": "توقف واحد",
+    "multi": "توقفات متعددة"
+  },
+  "timing": {
+    "today": "اليوم",
+    "tomorrow": "غداً",
+    "inDays": "بعد {{count}} أيام"
+  },
+  "seats": {
+    "soldOut": "نفدت المقاعد",
+    "left": "{{count}} مقعد متبقي"
+  },
+  "layover": {
+    "minutes": "{{m}} دقيقة",
+    "hours": "{{h}} ساعة",
+    "hm": "{{h}} س {{m}} د"
+  },
+  "baggage": {
+    "kg": "{{kg}} كجم",
+    "checked": "{{count}}× {{kg}} كجم",
+    "cabin": "كابينة {{kg}} كجم"
+  },
+  "reasons": {
+    "priceDrop": "انخفض السعر {{diff}} {{currency}} مؤخرًا",
+    "limitedSeats": "توفر جيد لكن محدود ({{count}} مقاعد متبقية)",
+    "goodSeats": "توفر مقاعد جيد",
+    "nonstop": "رحلة مباشرة بدون توقف",
+    "verifiedNow": "تم التحقق الآن",
+    "verifiedMin": "تم التحقق منذ {{count}} دقيقة",
+    "verifiedHour": "تم التحقق منذ {{count}} ساعة"
+  }
+}

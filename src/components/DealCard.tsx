@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import {
@@ -43,6 +44,7 @@ export function DealCard({
   comparing,
   onToggleCompare,
 }: Props) {
+  const { t } = useTranslation("home");
   const airline = airlines.find((a) => a.code === deal.airline_code);
   const toAirport = airports.find((a) => a.code === deal.to_airport);
   const agency = agencies.find((a) => a.id === deal.agency_id);
@@ -84,7 +86,7 @@ export function DealCard({
                 comparing ? "bg-[#0C7BB3] text-white" : "bg-white/95 text-slate-700 hover:bg-white",
               )}
             >
-              {comparing ? "✓ في المقارنة" : "قارن"}
+              {comparing ? t("dealCard.comparing") : t("dealCard.compare")}
             </button>
           ) : null}
           <DealCountdown expiresAt={deal.expires_at} />
@@ -124,12 +126,12 @@ export function DealCard({
               {airlineName(deal.airline_code, airlines)}
             </span>
             {agency?.name ? (
-              <span className="text-[11px] font-medium text-slate-500">بواسطة {agency.name}</span>
+              <span className="text-[11px] font-medium text-slate-500">{t("dealCard.by", { name: agency.name })}</span>
             ) : null}
             {agency?.is_active ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-[#E5F4FB] px-2 py-0.5 text-[11px] font-semibold text-[#0C7BB3]">
                 <VerifiedIcon className="size-3" />
-                موثّق
+                {t("dealCard.verified")}
               </span>
             ) : null}
           </div>
@@ -141,8 +143,8 @@ export function DealCard({
               {formatPrice(deal.price, deal.currency ?? "USD")}
             </p>
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-              {deal.stops === "direct" ? <DealBadge tone="good" icon="✈️">مباشرة</DealBadge> : null}
-              {deal.refundable ? <DealBadge tone="excellent">قابلة للاسترداد</DealBadge> : null}
+              {deal.stops === "direct" ? <DealBadge tone="good" icon="✈️">{t("dealCard.direct")}</DealBadge> : null}
+              {deal.refundable ? <DealBadge tone="excellent">{t("dealCard.refundable")}</DealBadge> : null}
               {baggageBadgeLabel(deal) ? (
                 <DealBadge tone="neutral" icon="🧳">
                   {baggageBadgeLabel(deal)}
@@ -176,12 +178,12 @@ export function DealCard({
           {deal.available_seats > 0 ? (
             <Link to={`/deals/${deal.id}`}>
               <Button fullWidth variant="primary">
-                عرض التفاصيل
+                {t("dealCard.viewDetails")}
               </Button>
             </Link>
           ) : (
             <Button fullWidth variant="primary" disabled>
-              نفدت المقاعد
+              {t("dealCard.soldOut")}
             </Button>
           )}
         </div>

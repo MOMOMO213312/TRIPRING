@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { BetaNotice } from "../components/BetaNotice";
@@ -23,6 +24,7 @@ const OPPORTUNITIES_LIMIT = 12;
 const LAST_MINUTE_LIMIT = 10;
 
 export function HomePage() {
+  const { t } = useTranslation("home");
   const navigate = useNavigate();
   const catalog = useCatalog();
   // Fetch every active deal once (sorted by price) instead of only the
@@ -36,7 +38,7 @@ export function HomePage() {
   useEffect(() => {
     fetchActiveDeals({ sort: "price_asc", availableOnly: true })
       .then(setAllActiveDeals)
-      .catch((e) => setDealsError(friendlyErrorMessage(e, "حصل خطأ في تحميل العروض، جرّب تاني.", "HomePage.loadDeals")))
+      .catch((e) => setDealsError(friendlyErrorMessage(e, "home:home.loadError", "HomePage.loadDeals")))
       .finally(() => setLoadingDeals(false));
   }, []);
 
@@ -90,7 +92,7 @@ export function HomePage() {
         <Card className="text-center">
           <p className="text-red-600">{catalog.error}</p>
           <Button className="mt-4" onClick={() => window.location.reload()}>
-            إعادة المحاولة
+            {t("home.retry")}
           </Button>
         </Card>
       </div>
@@ -120,13 +122,13 @@ export function HomePage() {
           <section id="opportunities">
             <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-display text-2xl text-slate-900">أفضل العروض اليوم</h2>
+                <h2 className="font-display text-2xl text-slate-900">{t("home.bestToday")}</h2>
                 <p className="text-sm text-slate-600">
-                  عروض مختارة بعناية لك — الباقي مرتب حسب Deal Score
+                  {t("home.bestTodaySub")}
                 </p>
               </div>
               <Button variant="outline" onClick={() => navigate("/deals")}>
-                عرض كل العروض
+                {t("home.viewAllDeals")}
               </Button>
             </div>
             <DealCarousel deals={opportunities} catalog={catalog} />
@@ -138,11 +140,11 @@ export function HomePage() {
         ) : (
           <EmptyState
             icon="🧭"
-            title="لا توجد فرص نشطة حالياً"
-            subtitle="جرّب توسيع نطاق البحث أو راجع الصفحة بعد قليل — الفرص بتتحدث باستمرار"
+            title={t("home.emptyTitle")}
+            subtitle={t("home.emptySub")}
             suggestions={[
-              { label: "كل العروض", onClick: () => navigate("/deals") },
-              { label: "أي وجهة", onClick: () => navigate("/search?to=any") },
+              { label: t("home.allDeals"), onClick: () => navigate("/deals") },
+              { label: t("home.anyDestination"), onClick: () => navigate("/search?to=any") },
             ]}
           />
         )}
@@ -151,11 +153,11 @@ export function HomePage() {
           <section id="last-minute">
             <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-display text-2xl text-slate-900">🔥 فرص آخر لحظة</h2>
-                <p className="text-sm text-slate-600">عروض محدودة، مقاعد قليلة، ووقت مهم</p>
+                <h2 className="font-display text-2xl text-slate-900">{t("home.lastMinute")}</h2>
+                <p className="text-sm text-slate-600">{t("home.lastMinuteSub")}</p>
               </div>
               <Button variant="outline" onClick={() => navigate("/deals?dealType=last_minute")}>
-                عرض الكل
+                {t("home.viewAll")}
               </Button>
             </div>
             <DealCarousel deals={lastMinuteDeals} catalog={catalog} />

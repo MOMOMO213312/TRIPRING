@@ -1,0 +1,41 @@
+{
+  "type": {
+    "flash": "Şimşek fırsat",
+    "last_minute": "Son dakika",
+    "empty_seat": "Boş koltuk",
+    "special_fare": "Özel fiyat"
+  },
+  "stops": {
+    "direct": "Aktarmasız",
+    "oneStop": "1 aktarma",
+    "multi": "Birden fazla aktarma"
+  },
+  "timing": {
+    "today": "Bugün",
+    "tomorrow": "Yarın",
+    "inDays": "{{count}} gün sonra"
+  },
+  "seats": {
+    "soldOut": "Koltuklar tükendi",
+    "left": "{{count}} koltuk kaldı"
+  },
+  "layover": {
+    "minutes": "{{m}} dk",
+    "hours": "{{h}} sa",
+    "hm": "{{h}} sa {{m}} dk"
+  },
+  "baggage": {
+    "kg": "{{kg}} kg",
+    "checked": "{{count}}× {{kg}} kg",
+    "cabin": "Kabin {{kg}} kg"
+  },
+  "reasons": {
+    "priceDrop": "Fiyat yakın zamanda {{diff}} {{currency}} düştü",
+    "limitedSeats": "Müsaitlik iyi ancak sınırlı ({{count}} koltuk kaldı)",
+    "goodSeats": "İyi koltuk müsaitliği",
+    "nonstop": "Aktarmasız direkt uçuş",
+    "verifiedNow": "Az önce doğrulandı",
+    "verifiedMin": "{{count}} dakika önce doğrulandı",
+    "verifiedHour": "{{count}} saat önce doğrulandı"
+  }
+}

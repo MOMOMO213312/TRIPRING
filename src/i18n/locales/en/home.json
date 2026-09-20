@@ -1,0 +1,82 @@
+{
+  "hero": {
+    "headline": "Discover the best travel opportunities at the best prices",
+    "subline": "TripRing — an opportunity worth searching for",
+    "roundTrip": "Round trip",
+    "oneWay": "One way",
+    "from": "From",
+    "to": "To",
+    "fromPlaceholder": "Where from?",
+    "toPlaceholder": "Where to?",
+    "airportPlaceholder": "Search by city or airport",
+    "anywhere": "Anywhere",
+    "noResults": "No matching results",
+    "swap": "Swap origin and destination",
+    "departDate": "Departure date",
+    "returnDate": "Return date",
+    "travelers": "Travelers",
+    "travelersCount": "Number of travelers",
+    "decrease": "Decrease travelers",
+    "increase": "Increase travelers",
+    "budgetAny": "Any budget",
+    "budgetUpTo": "Up to ${{amount}}",
+    "searching": "Searching for deals...",
+    "cta": "Find the best deals",
+    "perks": "Smart deals · Better prices · Easy booking",
+    "exploreLink": "Or explore the best deals now",
+    "travelerCount_one": "traveler",
+    "travelerCount_other": "travelers"
+  },
+  "trust": {
+    "bestPrice": "Best price guarantee",
+    "bestPriceSub": "We match the lowest price",
+    "secure": "Secure booking",
+    "secureSub": "Your data is 100% protected",
+    "support": "24/7 support",
+    "supportSub": "Here to help anytime",
+    "pay": "Easy payment",
+    "paySub": "Multiple secure payment methods"
+  },
+  "why": {
+    "title": "Why TripRing?",
+    "intro": "We're not a search engine. We find the opportunities that are truly worth it — not just a list of flights.",
+    "beyondPrice": "Beyond the price",
+    "beyondPriceText": "We judge every deal by its real value, not just how cheap it is.",
+    "dealScore": "A Deal Score for every offer",
+    "dealScoreText": "A score out of 100 that shortens your decision to seconds.",
+    "liveData": "Live data",
+    "liveDataText": "Prices and seats updated in real time from trusted partners."
+  },
+  "sidebar": {
+    "alertsTitle": "Price alerts",
+    "alertsText": "Get notified when prices drop on your route",
+    "createAlert": "Create alert",
+    "budgetTitle": "Explore by budget",
+    "budgetText": "Pick what fits your budget",
+    "budgetAll": "All budget options"
+  },
+  "home": {
+    "loadError": "Something went wrong loading deals. Please try again.",
+    "retry": "Try again",
+    "bestToday": "Today's best deals",
+    "bestTodaySub": "Hand-picked deals for you — the rest ranked by Deal Score",
+    "viewAllDeals": "View all deals",
+    "emptyTitle": "No active deals right now",
+    "emptySub": "Try widening your search or check back soon — deals update constantly",
+    "allDeals": "All deals",
+    "anyDestination": "Anywhere",
+    "lastMinute": "🔥 Last-minute deals",
+    "lastMinuteSub": "Limited offers, few seats, and time matters",
+    "viewAll": "View all"
+  },
+  "dealCard": {
+    "comparing": "✓ Comparing",
+    "compare": "Compare",
+    "by": "By {{name}}",
+    "verified": "Verified",
+    "direct": "Direct",
+    "refundable": "Refundable",
+    "viewDetails": "View details",
+    "soldOut": "Sold out"
+  }
+}

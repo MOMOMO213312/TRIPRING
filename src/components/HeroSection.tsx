@@ -1,5 +1,6 @@
 import type { FormEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { OneWayFareBoard } from "./OneWayFareBoard";
@@ -11,13 +12,7 @@ import heroSky from "../assets/hero-sky.jpg";
 
 const HERO_IMAGE = heroSky;
 
-const BUDGET_OPTIONS = [
-  { value: "", label: "أي ميزانية" },
-  { value: "300", label: "حتى 300$" },
-  { value: "500", label: "حتى 500$" },
-  { value: "700", label: "حتى 700$" },
-  { value: "1000", label: "حتى 1000$" },
-];
+const BUDGET_AMOUNTS = ["300", "500", "700", "1000"];
 
 type Props = {
   airports: AirportRow[];
@@ -118,7 +113,7 @@ function AirportField({
   onChange,
   airports,
   allowAnywhere,
-  placeholder = "ابحث بالمدينة أو المطار",
+  placeholder,
   className = "",
 }: {
   icon: ReactNode;
@@ -130,6 +125,8 @@ function AirportField({
   placeholder?: string;
   className?: string;
 }) {
+  const { t } = useTranslation("home");
+  const resolvedPlaceholder = placeholder ?? t("hero.airportPlaceholder");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -149,7 +146,7 @@ function AirportField({
   const displayValue = open
     ? query
     : value === "any"
-      ? "أي وجهة"
+      ? t("hero.anywhere")
       : selected
         ? airportLabel(selected)
         : "";
@@ -171,7 +168,7 @@ function AirportField({
         <input
           type="text"
           value={displayValue}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           onFocus={() => {
             setOpen(true);
             setQuery("");
@@ -192,7 +189,7 @@ function AirportField({
               className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-start text-sm font-semibold text-slate-700 hover:bg-[#FFF1EA]"
             >
               <span aria-hidden className="text-slate-400">🌍</span>
-              أي وجهة
+              {t("hero.anywhere")}
             </button>
           ) : null}
           {results.length > 0 ? (
@@ -217,7 +214,7 @@ function AirportField({
               </button>
             ))
           ) : (
-            <p className="px-3 py-2.5 text-sm text-slate-400">لا توجد نتائج مطابقة</p>
+            <p className="px-3 py-2.5 text-sm text-slate-400">{t("hero.noResults")}</p>
           )}
         </div>
       ) : null}
@@ -229,6 +226,7 @@ function AirportField({
  *  count, 1–6) as the select it replaces, just presented as a +/- control
  *  instead of a dropdown list. */
 function TravelersField({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const { t } = useTranslation("home");
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -243,10 +241,10 @@ function TravelersField({ value, onChange }: { value: number; onChange: (n: numb
   return (
     <div ref={wrapRef} className="relative min-w-0">
       <button type="button" onClick={() => setOpen((o) => !o)} className="w-full text-start">
-        <FieldBox icon="👤" label="المسافرون">
+        <FieldBox icon="👤" label={t("hero.travelers")}>
           <span className="hero-field-input flex items-center justify-between gap-1">
             <span className="truncate">
-              {value} {value === 1 ? "مسافر" : "مسافرين"}
+              {value} {t("hero.travelerCount", { count: value })}
             </span>
             <span aria-hidden className="shrink-0 text-xs font-bold text-slate-400">
               ▾
@@ -258,14 +256,14 @@ function TravelersField({ value, onChange }: { value: number; onChange: (n: numb
       {open ? (
         <div className="absolute inset-x-0 top-full z-30 mt-2 rounded-2xl border border-slate-100 bg-white p-4 shadow-xl">
           <div className="flex items-center justify-between gap-4">
-            <span className="text-sm font-semibold text-slate-700">عدد المسافرين</span>
+            <span className="text-sm font-semibold text-slate-700">{t("hero.travelersCount")}</span>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => onChange(Math.max(1, value - 1))}
                 disabled={value <= 1}
                 className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:border-[#FF7A45] hover:text-[#FF7A45] disabled:opacity-30"
-                aria-label="تقليل عدد المسافرين"
+                aria-label={t("hero.decrease")}
               >
                 −
               </button>
@@ -275,7 +273,7 @@ function TravelersField({ value, onChange }: { value: number; onChange: (n: numb
                 onClick={() => onChange(Math.min(6, value + 1))}
                 disabled={value >= 6}
                 className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition hover:border-[#FF7A45] hover:text-[#FF7A45] disabled:opacity-30"
-                aria-label="زيادة عدد المسافرين"
+                aria-label={t("hero.increase")}
               >
                 +
               </button>
@@ -288,6 +286,7 @@ function TravelersField({ value, onChange }: { value: number; onChange: (n: numb
 }
 
 export function HeroSection({ airports, deals, references, imageCache, onSearch }: Props) {
+  const { t } = useTranslation("home");
   const [tripType, setTripType] = useState<TripType>("round_trip");
   const [from, setFrom] = useState("CAI");
   const [to, setTo] = useState("");
@@ -341,13 +340,13 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               className="font-cairo text-4xl font-extrabold leading-[1.15] tracking-tight text-white sm:text-5xl sm:leading-[1.1]"
               style={{ textShadow: "0 4px 28px rgba(0,0,0,0.45)" }}
             >
-              اكتشف أفضل فرص السفر بأفضل الأسعار
+              {t("hero.headline")}
             </h1>
             <p
               className="mt-3 text-base font-medium text-white/85 sm:text-lg"
               style={{ textShadow: "0 1px 16px rgba(0,0,0,0.35)" }}
             >
-              TripRing، فرصة تستحق البحث
+              {t("hero.subline")}
             </p>
           </div>
         </div>
@@ -362,8 +361,8 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
             <div className="mb-4 inline-flex rounded-full bg-slate-100 p-1">
               {(
                 [
-                  ["round_trip", "ذهاب وعودة"],
-                  ["one_way", "ذهاب فقط"],
+                  ["round_trip", t("hero.roundTrip")],
+                  ["one_way", t("hero.oneWay")],
                 ] as const
               ).map(([key, label]) => (
                 <button
@@ -383,11 +382,11 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-0 lg:divide-x lg:divide-slate-100 rtl:lg:divide-x-reverse lg:rounded-2xl lg:border lg:border-slate-100">
                 <AirportField
                   icon="🛫"
-                  label="من"
+                  label={t("hero.from")}
                   value={from}
                   onChange={setFrom}
                   airports={airports}
-                  placeholder="من أين؟"
+                  placeholder={t("hero.fromPlaceholder")}
                   className="lg:flex-1"
                 />
 
@@ -399,7 +398,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                       setTo(from);
                       setSwapped((s) => !s);
                     }}
-                    aria-label="تبديل الوجهتين"
+                    aria-label={t("hero.swap")}
                     className={`flex size-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm transition duration-300 hover:border-[#FF7A45] hover:text-[#FF7A45] ${
                       swapped ? "rotate-[270deg]" : "rotate-90"
                     } lg:rotate-0`}
@@ -410,16 +409,16 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
 
                 <AirportField
                   icon="🛬"
-                  label="إلى"
+                  label={t("hero.to")}
                   value={to}
                   onChange={setTo}
                   airports={airports}
                   allowAnywhere
-                  placeholder="إلى أين؟"
+                  placeholder={t("hero.toPlaceholder")}
                   className="lg:flex-1"
                 />
 
-                <FieldBox icon="📅" label="تاريخ الذهاب" className="lg:flex-1">
+                <FieldBox icon="📅" label={t("hero.departDate")} className="lg:flex-1">
                   <input
                     type="date"
                     dir="ltr"
@@ -431,7 +430,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                 </FieldBox>
 
                 {tripType === "round_trip" ? (
-                  <FieldBox icon="📅" label="تاريخ العودة" className="lg:flex-1">
+                  <FieldBox icon="📅" label={t("hero.returnDate")} className="lg:flex-1">
                     <input
                       type="date"
                       dir="ltr"
@@ -459,9 +458,10 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                     onChange={(e) => setBudget(e.target.value)}
                     className="cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-slate-600 outline-none"
                   >
-                    {BUDGET_OPTIONS.map((b) => (
-                      <option key={b.value} value={b.value}>
-                        {b.label}
+                    <option value="">{t("hero.budgetAny")}</option>
+                    {BUDGET_AMOUNTS.map((amount) => (
+                      <option key={amount} value={amount}>
+                        {t("hero.budgetUpTo", { amount })}
                       </option>
                     ))}
                   </select>
@@ -475,12 +475,12 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
                   {submitting ? (
                     <>
                       <span className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden />
-                      جارِ البحث عن الفرص...
+                      {t("hero.searching")}
                     </>
                   ) : (
                     <>
                       <span aria-hidden>✨</span>
-                      اكتشف أفضل الفرص
+                      {t("hero.cta")}
                     </>
                   )}
                 </button>
@@ -488,7 +488,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
             </form>
 
             <p className="mt-3 text-center text-xs font-medium text-slate-400 sm:text-start">
-              عروض ذكية · أسعار أفضل · حجز سهل
+              {t("hero.perks")}
             </p>
           </div>
 
@@ -497,7 +497,7 @@ export function HeroSection({ airports, deals, references, imageCache, onSearch 
               to="/deals"
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 underline decoration-slate-300 underline-offset-4 transition hover:text-[#FF7A45] hover:decoration-[#FF7A45]"
             >
-              أو استكشف أفضل العروض الآن
+              {t("hero.exploreLink")}
             </Link>
           </div>
         </div>

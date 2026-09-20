@@ -1,15 +1,10 @@
+import i18n from "../i18n";
 import type { DealType, StopType } from "../types/database";
 import type { AirlineRow, AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 
-const DEAL_TYPE_LABELS: Record<DealType, string> = {
-  flash: "عرض سريع",
-  last_minute: "آخر لحظة",
-  empty_seat: "مقعد فارغ",
-  special_fare: "سعر خاص",
-};
-
 export function dealTypeLabel(type: DealType): string {
-  return DEAL_TYPE_LABELS[type] ?? type;
+  const key = `deals:type.${type}`;
+  return i18n.exists(key) ? i18n.t(key) : type;
 }
 
 /** Badge color per deal type — shared between the homepage rail card and the main deal card. */
@@ -63,9 +58,9 @@ export function rankBadgeStyle(rank: number): { bg: string; text: string } {
 }
 
 export function stopsMetaLabel(stops: StopType): string {
-  if (stops === "direct") return "بدون توقف";
-  if (stops === "one_stop") return "توقف واحد";
-  return "توقفات متعددة";
+  if (stops === "direct") return i18n.t("deals:stops.direct");
+  if (stops === "one_stop") return i18n.t("deals:stops.oneStop");
+  return i18n.t("deals:stops.multi");
 }
 
 export function departureTimingLabel(departureDate: string): string {
@@ -73,15 +68,15 @@ export function departureTimingLabel(departureDate: string): string {
   today.setHours(0, 0, 0, 0);
   const dep = new Date(departureDate + "T00:00:00");
   const diffDays = Math.round((dep.getTime() - today.getTime()) / 86400000);
-  if (diffDays === 0) return "اليوم";
-  if (diffDays === 1) return "غداً";
-  if (diffDays > 1 && diffDays <= 7) return `بعد ${diffDays} أيام`;
+  if (diffDays === 0) return i18n.t("deals:timing.today");
+  if (diffDays === 1) return i18n.t("deals:timing.tomorrow");
+  if (diffDays > 1 && diffDays <= 7) return i18n.t("deals:timing.inDays", { count: diffDays });
   return departureDate;
 }
 
 export function seatsLeftLabel(seats: number): string {
-  if (seats <= 0) return "نفدت المقاعد";
-  return `${seats} مقعد متبقي`;
+  if (seats <= 0) return i18n.t("deals:seats.soldOut");
+  return i18n.t("deals:seats.left", { count: seats });
 }
 
 export function isLowSeats(seats: number): boolean {
@@ -102,14 +97,14 @@ export function stopsLabel(stops: StopType): string {
   return stopsMetaLabel(stops);
 }
 
-/** Formats layover_minutes as "س / د" — returns null when there's nothing to show. */
+/** Formats layover_minutes as hours / minutes — returns null when there's nothing to show. */
 export function layoverLabel(minutes: number | null): string | null {
   if (!minutes || minutes <= 0) return null;
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
-  if (h === 0) return `${m} دقيقة`;
-  if (m === 0) return `${h} ساعة`;
-  return `${h} س ${m} د`;
+  if (h === 0) return i18n.t("deals:layover.minutes", { m });
+  if (m === 0) return i18n.t("deals:layover.hours", { h });
+  return i18n.t("deals:layover.hm", { h, m });
 }
 
 /** True when a deal has any of the flight-identity fields worth their own card. */
@@ -142,10 +137,10 @@ export function hasPriceBreakdown(deal: DealRow): boolean {
 /** Short baggage label for compact card display — prefers checked-bag detail, falls back to legacy baggage_kg. */
 export function baggageBadgeLabel(deal: DealRow): string | null {
   if (deal.checked_bags_count != null && deal.baggage_kg) {
-    return `${deal.checked_bags_count}× ${deal.baggage_kg} كجم`;
+    return i18n.t("deals:baggage.checked", { count: deal.checked_bags_count, kg: deal.baggage_kg });
   }
-  if (deal.baggage_kg) return `${deal.baggage_kg} كجم`;
-  if (deal.cabin_baggage_kg) return `كابينة ${deal.cabin_baggage_kg} كجم`;
+  if (deal.baggage_kg) return i18n.t("deals:baggage.kg", { kg: deal.baggage_kg });
+  if (deal.cabin_baggage_kg) return i18n.t("deals:baggage.cabin", { kg: deal.cabin_baggage_kg });
   return null;
 }
 
@@ -186,27 +181,27 @@ export function dealReasons(
   )[0];
   if (lastDrop && lastDrop.new_price < lastDrop.old_price) {
     const diff = Math.round(lastDrop.old_price - lastDrop.new_price);
-    reasons.push({ icon: "down", text: `انخفض السعر ${diff} ${deal.currency ?? "USD"} مؤخرًا` });
+    reasons.push({ icon: "down", text: i18n.t("deals:reasons.priceDrop", { diff, currency: deal.currency ?? "USD" }) });
   }
 
   if (deal.available_seats > 0 && deal.available_seats <= 6) {
-    reasons.push({ icon: "seats", text: `توفر جيد لكن محدود (${deal.available_seats} مقاعد متبقية)` });
+    reasons.push({ icon: "seats", text: i18n.t("deals:reasons.limitedSeats", { count: deal.available_seats }) });
   } else if (deal.available_seats > 6) {
-    reasons.push({ icon: "seats", text: "توفر مقاعد جيد" });
+    reasons.push({ icon: "seats", text: i18n.t("deals:reasons.goodSeats") });
   }
 
   if (deal.stops === "direct") {
-    reasons.push({ icon: "nonstop", text: "رحلة مباشرة بدون توقف" });
+    reasons.push({ icon: "nonstop", text: i18n.t("deals:reasons.nonstop") });
   }
 
   const updated = new Date(deal.updated_at).getTime();
   const minutesAgo = Math.max(0, Math.round((Date.now() - updated) / 60000));
   const freshnessText =
     minutesAgo < 1
-      ? "تم التحقق الآن"
+      ? i18n.t("deals:reasons.verifiedNow")
       : minutesAgo < 60
-        ? `تم التحقق منذ ${minutesAgo} دقيقة`
-        : `تم التحقق منذ ${Math.round(minutesAgo / 60)} ساعة`;
+        ? i18n.t("deals:reasons.verifiedMin", { count: minutesAgo })
+        : i18n.t("deals:reasons.verifiedHour", { count: Math.round(minutesAgo / 60) });
   reasons.push({ icon: "fresh", text: freshnessText });
 
   return reasons;

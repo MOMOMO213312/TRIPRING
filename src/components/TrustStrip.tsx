@@ -1,24 +1,27 @@
+import { useTranslation } from "react-i18next";
+
 const ITEMS = [
-  { icon: TagIcon, title: "أفضل سعر مضمون", subtitle: "نطابق أقل سعر" },
-  { icon: ShieldIcon, title: "حجز آمن", subtitle: "بياناتك محمية 100%" },
-  { icon: HeadsetIcon, title: "دعم على مدار الساعة", subtitle: "هنا لمساعدتك في أي وقت" },
-  { icon: CardIcon, title: "دفع سهل", subtitle: "طرق دفع متعددة وآمنة" },
-];
+  { icon: TagIcon, titleKey: "trust.bestPrice", subtitleKey: "trust.bestPriceSub" },
+  { icon: ShieldIcon, titleKey: "trust.secure", subtitleKey: "trust.secureSub" },
+  { icon: HeadsetIcon, titleKey: "trust.support", subtitleKey: "trust.supportSub" },
+  { icon: CardIcon, titleKey: "trust.pay", subtitleKey: "trust.paySub" },
+] as const;
 
 export function TrustStrip() {
+  const { t } = useTranslation("home");
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
       {ITEMS.map((item) => (
         <div
-          key={item.title}
+          key={item.titleKey}
           className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm"
         >
           <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FFEDE3] text-[#FF7A45]">
             <item.icon className="size-5" />
           </span>
           <div className="min-w-0">
-            <p className="text-sm font-bold text-slate-900">{item.title}</p>
-            <p className="truncate text-xs text-slate-500">{item.subtitle}</p>
+            <p className="text-sm font-bold text-slate-900">{t(item.titleKey)}</p>
+            <p className="truncate text-xs text-slate-500">{t(item.subtitleKey)}</p>
           </div>
         </div>
       ))}

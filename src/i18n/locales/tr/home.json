@@ -1,0 +1,82 @@
+{
+  "hero": {
+    "headline": "En iyi seyahat fırsatlarını en iyi fiyatlarla keşfedin",
+    "subline": "TripRing — aramaya değer bir fırsat",
+    "roundTrip": "Gidiş-dönüş",
+    "oneWay": "Tek yön",
+    "from": "Nereden",
+    "to": "Nereye",
+    "fromPlaceholder": "Nereden?",
+    "toPlaceholder": "Nereye?",
+    "airportPlaceholder": "Şehir veya havalimanı ara",
+    "anywhere": "Herhangi bir yer",
+    "noResults": "Eşleşen sonuç yok",
+    "swap": "Kalkış ve varışı değiştir",
+    "departDate": "Gidiş tarihi",
+    "returnDate": "Dönüş tarihi",
+    "travelers": "Yolcular",
+    "travelersCount": "Yolcu sayısı",
+    "decrease": "Yolcu sayısını azalt",
+    "increase": "Yolcu sayısını artır",
+    "budgetAny": "Herhangi bir bütçe",
+    "budgetUpTo": "{{amount}}$'a kadar",
+    "searching": "Fırsatlar aranıyor...",
+    "cta": "En iyi fırsatları keşfet",
+    "perks": "Akıllı fırsatlar · Daha iyi fiyatlar · Kolay rezervasyon",
+    "exploreLink": "Veya en iyi fırsatları şimdi keşfedin",
+    "travelerCount_one": "yolcu",
+    "travelerCount_other": "yolcu"
+  },
+  "trust": {
+    "bestPrice": "En iyi fiyat garantisi",
+    "bestPriceSub": "En düşük fiyatı eşleriz",
+    "secure": "Güvenli rezervasyon",
+    "secureSub": "Verileriniz %100 korunur",
+    "support": "7/24 destek",
+    "supportSub": "Her zaman yardıma hazırız",
+    "pay": "Kolay ödeme",
+    "paySub": "Birden fazla güvenli ödeme yöntemi"
+  },
+  "why": {
+    "title": "Neden TripRing?",
+    "intro": "Biz bir arama motoru değiliz. Yalnızca uçuş listesi değil, gerçekten değer olan fırsatları buluyoruz.",
+    "beyondPrice": "Fiyatın ötesinde",
+    "beyondPriceText": "Her fırsatı yalnızca ucuzluğuna göre değil, gerçek değerine göre değerlendiririz.",
+    "dealScore": "Her teklif için Deal Score",
+    "dealScoreText": "Kararınızı saniyelere indiren 100 üzerinden bir puan.",
+    "liveData": "Canlı veriler",
+    "liveDataText": "Güvenilir iş ortaklarından anlık güncellenen fiyatlar ve koltuklar."
+  },
+  "sidebar": {
+    "alertsTitle": "Fiyat uyarıları",
+    "alertsText": "Rotanızda fiyatlar düştüğünde bildirim alın",
+    "createAlert": "Uyarı oluştur",
+    "budgetTitle": "Bütçeye göre keşfet",
+    "budgetText": "Bütçenize uygun olanı seçin",
+    "budgetAll": "Tüm bütçe seçenekleri"
+  },
+  "home": {
+    "loadError": "Fırsatlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+    "retry": "Tekrar dene",
+    "bestToday": "Bugünün en iyi fırsatları",
+    "bestTodaySub": "Sizin için özenle seçilmiş fırsatlar — diğerleri Deal Score'a göre sıralı",
+    "viewAllDeals": "Tüm fırsatları gör",
+    "emptyTitle": "Şu anda aktif fırsat yok",
+    "emptySub": "Aramanızı genişletin veya birazdan tekrar bakın — fırsatlar sürekli güncellenir",
+    "allDeals": "Tüm fırsatlar",
+    "anyDestination": "Herhangi bir yer",
+    "lastMinute": "🔥 Son dakika fırsatları",
+    "lastMinuteSub": "Sınırlı teklifler, az koltuk ve zaman önemli",
+    "viewAll": "Tümünü gör"
+  },
+  "dealCard": {
+    "comparing": "✓ Karşılaştırmada",
+    "compare": "Karşılaştır",
+    "by": "{{name}} tarafından",
+    "verified": "Doğrulanmış",
+    "direct": "Direkt",
+    "refundable": "İade edilebilir",
+    "viewDetails": "Detayları gör",
+    "soldOut": "Koltuklar tükendi"
+  }
+}

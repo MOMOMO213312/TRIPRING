@@ -3,11 +3,17 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
 import arCommon from "./locales/ar/common.json";
+import arDeals from "./locales/ar/deals.json";
 import arErrors from "./locales/ar/errors.json";
+import arHome from "./locales/ar/home.json";
 import enCommon from "./locales/en/common.json";
+import enDeals from "./locales/en/deals.json";
 import enErrors from "./locales/en/errors.json";
+import enHome from "./locales/en/home.json";
 import trCommon from "./locales/tr/common.json";
+import trDeals from "./locales/tr/deals.json";
 import trErrors from "./locales/tr/errors.json";
+import trHome from "./locales/tr/home.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -41,11 +47,11 @@ void i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ar: { common: arCommon, errors: arErrors },
-      en: { common: enCommon, errors: enErrors },
-      tr: { common: trCommon, errors: trErrors },
+      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals },
+      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals },
+      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals },
     },
-    ns: ["common", "errors"],
+    ns: ["common", "errors", "home", "deals"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],

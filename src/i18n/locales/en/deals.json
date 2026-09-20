@@ -1,0 +1,41 @@
+{
+  "type": {
+    "flash": "Flash deal",
+    "last_minute": "Last minute",
+    "empty_seat": "Empty seat",
+    "special_fare": "Special fare"
+  },
+  "stops": {
+    "direct": "Non-stop",
+    "oneStop": "1 stop",
+    "multi": "Multiple stops"
+  },
+  "timing": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "inDays": "In {{count}} days"
+  },
+  "seats": {
+    "soldOut": "Sold out",
+    "left": "{{count}} seat(s) left"
+  },
+  "layover": {
+    "minutes": "{{m}} min",
+    "hours": "{{h}} h",
+    "hm": "{{h}} h {{m}} min"
+  },
+  "baggage": {
+    "kg": "{{kg}} kg",
+    "checked": "{{count}}× {{kg}} kg",
+    "cabin": "Cabin {{kg}} kg"
+  },
+  "reasons": {
+    "priceDrop": "Price recently dropped by {{diff}} {{currency}}",
+    "limitedSeats": "Good but limited availability ({{count}} seats left)",
+    "goodSeats": "Good seat availability",
+    "nonstop": "Direct non-stop flight",
+    "verifiedNow": "Verified just now",
+    "verifiedMin": "Verified {{count}} min ago",
+    "verifiedHour": "Verified {{count}} h ago"
+  }
+}
