@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "badge": "⚡ TripRing'in gelişmiş ürünü",
+    "title": "TripGo",
+    "subline1": "Biletin + havalimanı transferin tek rezervasyonda — artık taksi aramana gerek yok.",
+    "subline2": "Uçuş ve transferi kapsayan tek bir kesin fiyat. Rezervasyon sırasında özel araç veya paylaşımlı transfer seç, seni karşılamaya geliyoruz."
+  },
+  "search": {
+    "oneWayBadge": "🎫 Tek yön seyahat",
+    "from": "Nereden",
+    "to": "Nereye",
+    "toPlaceholder": "Herhangi bir varış noktası",
+    "swap": "Nereden ve nereyeyi değiştir",
+    "date": "Tarih",
+    "passengers": "Yolcular",
+    "cta": "🔍 TripGo'da ara",
+    "errorFrom": "Listeden bir kalkış havalimanı seçin",
+    "errorTo": "Listeden bir varış noktası seçin veya herhangi bir yer için boş bırakın"
+  },
+  "valueProps": {
+    "ticketTitle": "Uçak bileti",
+    "ticketDesc": "Güvenilir havayollarından ve acentelerden en iyi fiyatlar",
+    "transferTitle": "Havalimanı transferi",
+    "transferDesc": "Her seyahatte dahil — özel araç veya paylaşımlı transfer seç, kendin eklemen gereken isteğe bağlı bir hizmet değil",
+    "experienceTitle": "Tek bir kesintisiz yolculuk",
+    "experienceDesc": "Kapından havalimanına, havalimanından varış noktana"
+  }
+}

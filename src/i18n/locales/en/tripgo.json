@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "badge": "⚡ TripRing's advanced product",
+    "title": "TripGo",
+    "subline1": "Your ticket + your airport transfer in one booking — no more hunting for a taxi afterwards.",
+    "subline2": "One final price covering the flight and the transfer. Pick a private car or a shared ride at booking time, and we'll be there to greet you."
+  },
+  "search": {
+    "oneWayBadge": "🎫 One-way trip",
+    "from": "From",
+    "to": "To",
+    "toPlaceholder": "Any destination",
+    "swap": "Swap from and to",
+    "date": "Date",
+    "passengers": "Passengers",
+    "cta": "🔍 Search TripGo",
+    "errorFrom": "Choose a departure airport from the list",
+    "errorTo": "Choose a destination from the list, or leave it blank for any destination"
+  },
+  "valueProps": {
+    "ticketTitle": "Flight ticket",
+    "ticketDesc": "The best prices from trusted airlines and agencies",
+    "transferTitle": "Airport transfer",
+    "transferDesc": "Included with every trip — choose a private car or a shared ride, not an optional add-on you have to book yourself",
+    "experienceTitle": "One seamless trip",
+    "experienceDesc": "From your door to the airport, and from the airport to your destination"
+  }
+}

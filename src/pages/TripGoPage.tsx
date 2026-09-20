@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import { AirportAutocomplete } from "../components/ui/AirportAutocomplete";
@@ -7,6 +8,7 @@ import { Input } from "../components/ui/Input";
 import { useCatalog } from "../hooks/useCatalog";
 
 export function TripGoPage() {
+  const { t } = useTranslation("tripgo");
   const catalog = useCatalog();
   const navigate = useNavigate();
   const [from, setFrom] = useState("CAI");
@@ -25,11 +27,11 @@ export function TripGoPage() {
     e.preventDefault();
     const validCode = (code: string) => catalog.airports.some((a) => a.code === code);
     if (!from || !validCode(from)) {
-      setError("اختر مطار المغادرة من القائمة");
+      setError(t("search.errorFrom"));
       return;
     }
     if (to && !validCode(to)) {
-      setError("اختر الوجهة من القائمة أو اتركها فارغة لأي وجهة");
+      setError(t("search.errorTo"));
       return;
     }
     setError(null);
@@ -52,15 +54,11 @@ export function TripGoPage() {
 
         <div className="relative">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-bold backdrop-blur">
-            ⚡ منتج TripRing المتقدم
+            {t("hero.badge")}
           </span>
-          <h1 className="font-display mt-4 text-4xl font-extrabold sm:text-5xl">TripGo</h1>
-          <p className="mt-3 text-lg font-bold text-white/95 sm:text-xl">
-            تذكرتك + نقلك من وإلى المطار في حجز واحد، من غير ما تدوّر على تاكسي بعد كده.
-          </p>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-white/80 sm:text-base">
-            سعر واحد نهائي شامل الرحلة والنقل. اختار عربية خاصة أو نقل تشاركي وقت الحجز، وإحنا هنكون في استقبالك.
-          </p>
+          <h1 className="font-display mt-4 text-4xl font-extrabold sm:text-5xl">{t("hero.title")}</h1>
+          <p className="mt-3 text-lg font-bold text-white/95 sm:text-xl">{t("hero.subline1")}</p>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-white/80 sm:text-base">{t("hero.subline2")}</p>
         </div>
 
         {/* Search bar */}
@@ -70,13 +68,13 @@ export function TripGoPage() {
         >
           <div className="mb-2 flex items-center justify-between">
             <span className="inline-flex items-center gap-1 rounded-full bg-[#0C7BB3]/10 px-2.5 py-1 text-[11px] font-bold text-[#0C7BB3]">
-              🎫 رحلة ذهاب فقط
+              {t("search.oneWayBadge")}
             </span>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-12 sm:items-end sm:gap-2">
             <div className="sm:col-span-3">
-              <AirportAutocomplete label="من" value={from} onChange={setFrom} airports={catalog.airports} />
+              <AirportAutocomplete label={t("search.from")} value={from} onChange={setFrom} airports={catalog.airports} />
             </div>
 
             <div className="flex items-end justify-center pb-0.5 sm:col-span-1">
@@ -84,8 +82,8 @@ export function TripGoPage() {
                 type="button"
                 onClick={swapAirports}
                 disabled={!to}
-                aria-label="تبديل من وإلى"
-                title="تبديل من وإلى"
+                aria-label={t("search.swap")}
+                title={t("search.swap")}
                 className="flex size-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 ⇄
@@ -94,22 +92,22 @@ export function TripGoPage() {
 
             <div className="sm:col-span-3">
               <AirportAutocomplete
-                label="إلى"
+                label={t("search.to")}
                 value={to}
                 onChange={setTo}
                 airports={catalog.airports}
-                placeholder="أي وجهة"
+                placeholder={t("search.toPlaceholder")}
                 allowClear
               />
             </div>
 
             <div className="sm:col-span-2">
-              <Input label="التاريخ" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              <Input label={t("search.date")} type="date" value={date} onChange={(e) => setDate(e.target.value)} />
             </div>
 
             <div className="sm:col-span-1">
               <Input
-                label="المسافرون"
+                label={t("search.passengers")}
                 type="number"
                 min={1}
                 value={passengers}
@@ -122,7 +120,7 @@ export function TripGoPage() {
                 type="submit"
                 className="w-full rounded-xl bg-gradient-to-r from-[#0C7BB3] to-[#1E3A8A] px-4 py-2.5 text-sm font-bold text-white shadow-md transition hover:opacity-90"
               >
-                🔍 ابحث عن TripGo
+                {t("search.cta")}
               </button>
             </div>
           </div>
@@ -135,20 +133,18 @@ export function TripGoPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
           <span className="text-3xl">🎟️</span>
-          <p className="mt-2 font-bold text-slate-900">تذكرة طيران</p>
-          <p className="mt-1 text-sm text-slate-500">أفضل الأسعار من شركات الطيران والوكالات الموثوقة</p>
+          <p className="mt-2 font-bold text-slate-900">{t("valueProps.ticketTitle")}</p>
+          <p className="mt-1 text-sm text-slate-500">{t("valueProps.ticketDesc")}</p>
         </div>
         <div className="rounded-2xl border border-[#16A34A]/25 bg-[#F0FDF4] p-5 text-center">
           <span className="text-3xl">🚐</span>
-          <p className="mt-2 font-bold text-slate-900">نقل من وإلى المطار</p>
-          <p className="mt-1 text-sm text-slate-500">
-            مضمون مع كل رحلة — اختار عربية خاصة أو نقل تشاركي، مش خدمة اختيارية بتضيفها بنفسك
-          </p>
+          <p className="mt-2 font-bold text-slate-900">{t("valueProps.transferTitle")}</p>
+          <p className="mt-1 text-sm text-slate-500">{t("valueProps.transferDesc")}</p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 text-center">
           <span className="text-3xl">✅</span>
-          <p className="mt-2 font-bold text-slate-900">تجربة سفر واحدة</p>
-          <p className="mt-1 text-sm text-slate-500">من الباب لحد المطار، ومن المطار لحد وجهتك</p>
+          <p className="mt-2 font-bold text-slate-900">{t("valueProps.experienceTitle")}</p>
+          <p className="mt-1 text-sm text-slate-500">{t("valueProps.experienceDesc")}</p>
         </div>
       </div>
     </div>

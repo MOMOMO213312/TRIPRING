@@ -1,0 +1,37 @@
+{
+  "page": {
+    "title": "TRIPRING Üyeliği",
+    "subtitle": "Rezervasyonlarda indirim, ücretsiz hizmetler ve fırsat bildirimlerinde öncelik."
+  },
+  "card": {
+    "loadFailed": "Abonelik durumu yüklenemedi",
+    "yourSubscription": "Aboneliğin",
+    "pendingPayment": "Talebin, ödeme kanıtının onaylanması için yönetici incelemesini bekliyor.",
+    "activeUntil": "{{date}} tarihine kadar aktif",
+    "discountLine": "Rezervasyonlarda %{{percent}} indirim",
+    "priorityLine": " · herkesten {{minutes}} dakika önce öncelikli bildirim"
+  },
+  "form": {
+    "loadTiersFailed": "Mevcut paketler yüklenemedi",
+    "loadingTiers": "Paketler yükleniyor...",
+    "noTiers": "Şu anda mevcut paket yok.",
+    "pickTierFirst": "Önce bir paket seç",
+    "uploadProofFirst": "Ödeme kanıtını yükle",
+    "submitFailed": "Abonelik talebi gönderilemedi",
+    "title": "TRIPRING Üyeliğine Abone Ol",
+    "subtitle": "Rezervasyonlarda indirim + ücretsiz hizmetler + fırsat bildirimlerinde öncelik.",
+    "monthly": "Aylık",
+    "yearly": "Yıllık (2 ay tasarruf et)",
+    "priceMonth": "ay",
+    "priceYear": "yıl",
+    "priceLine": "{{price}} EGP / {{period}} · %{{percent}} indirim",
+    "choosePaymentMethod": "Bir ödeme yöntemi seç ve paket tutarını gönder",
+    "paymentRefLabel": "Ödeme referansı (işlem numarası) — isteğe bağlı",
+    "uploadProof": "📎 Ödeme kanıtını yükle (görsel veya PDF)",
+    "uploadedFile": "✓ {{filename}}",
+    "authGateTitle": "Aboneliğini tamamlamak için giriş yap",
+    "authGateDescription": "Paket seçimin ve ödeme bilgilerin kaydedildi — talebi gönderebilmemiz için giriş yap veya hesap oluştur.",
+    "submitting": "Gönderiliyor...",
+    "submit": "Abonelik talebini gönder"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "page": {
+    "title": "TRIPRING Membership",
+    "subtitle": "Discounts on bookings, free services, and priority deal notifications."
+  },
+  "card": {
+    "loadFailed": "Couldn't load your subscription status",
+    "yourSubscription": "Your subscription",
+    "pendingPayment": "Your request is waiting for admin review of the payment proof.",
+    "activeUntil": "Active until {{date}}",
+    "discountLine": "{{percent}}% discount on bookings",
+    "priorityLine": " · priority notifications {{minutes}} minutes before everyone else"
+  },
+  "form": {
+    "loadTiersFailed": "Couldn't load the available plans",
+    "loadingTiers": "Loading plans...",
+    "noTiers": "No plans are available right now.",
+    "pickTierFirst": "Choose a plan first",
+    "uploadProofFirst": "Upload proof of payment",
+    "submitFailed": "Couldn't submit your subscription request",
+    "title": "Subscribe to TRIPRING Membership",
+    "subtitle": "Discounts on bookings + free services + priority deal notifications.",
+    "monthly": "Monthly",
+    "yearly": "Yearly (save 2 months)",
+    "priceMonth": "month",
+    "priceYear": "year",
+    "priceLine": "{{price}} EGP / {{period}} · {{percent}}% off",
+    "choosePaymentMethod": "Choose a payment method and transfer the plan amount",
+    "paymentRefLabel": "Payment reference (transaction number) — optional",
+    "uploadProof": "📎 Upload proof of payment (image or PDF)",
+    "uploadedFile": "✓ {{filename}}",
+    "authGateTitle": "Sign in to complete your subscription",
+    "authGateDescription": "Your plan choice and payment details are saved — sign in or create an account so we can send the request.",
+    "submitting": "Submitting...",
+    "submit": "Submit subscription request"
+  }
+}

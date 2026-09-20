@@ -8,21 +8,27 @@ import arDeals from "./locales/ar/deals.json";
 import arErrors from "./locales/ar/errors.json";
 import arExplore from "./locales/ar/explore.json";
 import arHome from "./locales/ar/home.json";
+import arMembership from "./locales/ar/membership.json";
 import arSearch from "./locales/ar/search.json";
+import arTripgo from "./locales/ar/tripgo.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDeals from "./locales/en/deals.json";
 import enErrors from "./locales/en/errors.json";
 import enExplore from "./locales/en/explore.json";
 import enHome from "./locales/en/home.json";
+import enMembership from "./locales/en/membership.json";
 import enSearch from "./locales/en/search.json";
+import enTripgo from "./locales/en/tripgo.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDeals from "./locales/tr/deals.json";
 import trErrors from "./locales/tr/errors.json";
 import trExplore from "./locales/tr/explore.json";
 import trHome from "./locales/tr/home.json";
+import trMembership from "./locales/tr/membership.json";
 import trSearch from "./locales/tr/search.json";
+import trTripgo from "./locales/tr/tripgo.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -56,11 +62,11 @@ void i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals, booking: arBooking, search: arSearch, explore: arExplore },
-      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals, booking: enBooking, search: enSearch, explore: enExplore },
-      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals, booking: trBooking, search: trSearch, explore: trExplore },
+      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals, booking: arBooking, search: arSearch, explore: arExplore, tripgo: arTripgo, membership: arMembership },
+      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals, booking: enBooking, search: enSearch, explore: enExplore, tripgo: enTripgo, membership: enMembership },
+      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals, booking: trBooking, search: trSearch, explore: trExplore, tripgo: trTripgo, membership: trMembership },
     },
-    ns: ["common", "errors", "home", "deals", "booking", "search", "explore"],
+    ns: ["common", "errors", "home", "deals", "booking", "search", "explore", "tripgo", "membership"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],
