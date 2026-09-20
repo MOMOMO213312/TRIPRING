@@ -12,11 +12,12 @@ import {
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { cn, formatPrice } from "../lib/utils";
+import { cn } from "../lib/utils";
 import type { AgencyRow, AirlineRow, AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 import { DealBadge } from "./DealBadge";
 import { DealCountdown } from "./DealCountdown";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   deal: DealRow;
@@ -45,6 +46,7 @@ export function DealCard({
   onToggleCompare,
 }: Props) {
   const { t } = useTranslation("home");
+  const { fmt } = useCurrency();
   const airline = airlines.find((a) => a.code === deal.airline_code);
   const toAirport = airports.find((a) => a.code === deal.to_airport);
   const agency = agencies.find((a) => a.id === deal.agency_id);
@@ -140,7 +142,7 @@ export function DealCard({
         <div className="flex items-end justify-between gap-3">
           <div className="min-w-0 flex-1">
             <p className="font-latin text-2xl font-extrabold text-[#0C7BB3]">
-              {formatPrice(deal.price, deal.currency ?? "USD")}
+              {fmt(deal.price, deal.currency ?? "USD")}
             </p>
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
               {deal.stops === "direct" ? <DealBadge tone="good" icon="✈️">{t("dealCard.direct")}</DealBadge> : null}

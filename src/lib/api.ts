@@ -37,12 +37,17 @@ export const DEAL_COLUMNS =
 
 // Same as DEAL_COLUMNS plus the Offer Normalization Layer's ranking/supplier columns — only
 // available when reading from the v_flight_offers view (not the deals table directly).
-const OFFER_COLUMNS = `${DEAL_COLUMNS},offer_score,supplier_name` as const;
+const OFFER_COLUMNS = `${DEAL_COLUMNS},offer_score,supplier_name,price_usd` as const;
 
 /** Result of a v_flight_offers-backed search: a normal DealRow plus the Offer Engine's
  *  ranking score and the supplier that offered it (currently always "Tourism TripRing",
  *  but this is what makes multi-supplier ranking a non-breaking addition later). */
-export type OfferDealRow = DealRow & { offer_score: number | null; supplier_name: string | null };
+export type OfferDealRow = DealRow & {
+  offer_score: number | null;
+  supplier_name: string | null;
+  /** Live USD equivalent of `price` — compare/sort/filter on THIS across deals (their own `currency` can differ). */
+  price_usd: number | null;
+};
 
 // Guests and free-tier customers only see 'free' deals; a signed-in customer with an
 // active paid subscription also sees deals gated at or below their own tier (early
@@ -58,8 +63,9 @@ export type DealSearchParams = {
    *  picking a region and a specific airport never silently conflict. */
   toAirports?: string[];
   departureDate?: string;
-  minPrice?: number;
-  maxPrice?: number;
+  /** Bounds are in USD (matched against v_flight_offers.price_usd) so deals in different currencies filter consistently. */
+  minPriceUsd?: number;
+  maxPriceUsd?: number;
   sort?: "price_asc" | "price_desc" | "best_match";
   dealType?: DealType | "any";
   availableOnly?: boolean;
@@ -98,6 +104,10 @@ export type CreateBookingInput = {
   farePackageTier?: string | null;
   /** Instant TripGo private-car add-on (see lib/tripgo.ts) — a transport_zones.id, if the customer picked a pickup zone. */
   transportZoneId?: string | null;
+  /** The deal's own currency — needed to know whether an FX quote is required. */
+  dealCurrency: string;
+  /** Currency the customer will actually pay in (must be a chargeable currency). Defaults to the deal's currency. */
+  chargeCurrency?: string | null;
 };
 
 export type CreateBookingResult = {
@@ -105,7 +115,31 @@ export type CreateBookingResult = {
   total_price: number;
   currency: string;
   status: string;
+  /** What the customer owes and in which currency (charge_amount is total_price × the FX rate locked at booking time). */
+  charge_currency?: string | null;
+  charge_amount?: number | null;
+  fx_rate?: number | null;
+  payment_method_code?: string | null;
 };
+
+export type PaymentMethodOption = {
+  code: string;
+  name_ar: string;
+  name_en: string;
+  kind: string;
+  provider: string;
+  requires_proof: boolean;
+};
+
+/** Payment methods that can collect `currency` (catalog lives in the DB — a new gateway is a new row, not a deploy). */
+export async function fetchPaymentMethods(currency: string, country?: string | null): Promise<PaymentMethodOption[]> {
+  const { data, error } = await supabase.rpc("get_payment_methods", {
+    p_currency: currency,
+    p_country: country ?? null,
+  } as never);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as PaymentMethodOption[];
+}
 
 export type MarketStats = {
   activeDealsCount: number;
@@ -175,8 +209,8 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean, all
   if (params.toAirports?.length) query = query.in("to_airport", params.toAirports);
   else if (params.to) query = query.eq("to_airport", params.to);
   if (params.departureDate) query = query.eq("departure_date", params.departureDate);
-  if (params.minPrice != null) query = query.gte("price", params.minPrice);
-  if (params.maxPrice != null) query = query.lte("price", params.maxPrice);
+  if (params.minPriceUsd != null) query = query.gte("price_usd", params.minPriceUsd);
+  if (params.maxPriceUsd != null) query = query.lte("price_usd", params.maxPriceUsd);
   if (params.dealType && params.dealType !== "any") query = query.eq("deal_type", params.dealType);
   // Filtered server-side (rather than with a post-fetch .filter() in JS) so
   // pagination/.range() and the returned "total" count are both accurate —
@@ -187,16 +221,18 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean, all
   else if (params.tripType === "round_trip") query = query.not("return_date", "is", null);
 
   switch (params.sort) {
+    // Sorted on price_usd, not price: `price` is in each deal's own currency, so ordering by it
+    // would put EGP 5,000 "below" USD 200 as soon as deals in different currencies coexist.
     case "price_desc":
-      query = query.order("price", { ascending: false });
+      query = query.order("price_usd", { ascending: false });
       break;
     case "best_match":
       // Ranking Engine order — highest offer_score first, nulls (unscored) last, price as tiebreaker.
-      query = query.order("offer_score", { ascending: false, nullsFirst: false }).order("price", { ascending: true });
+      query = query.order("offer_score", { ascending: false, nullsFirst: false }).order("price_usd", { ascending: true });
       break;
     case "price_asc":
     default:
-      query = query.order("price", { ascending: true });
+      query = query.order("price_usd", { ascending: true });
       break;
   }
 
@@ -229,27 +265,32 @@ export async function fetchActiveDealsPage(
   return { deals: (data ?? []) as OfferDealRow[], total: count ?? (data ?? []).length };
 }
 
-/** Real min/max active price, used to size the DealsCenterPage price slider — never a hardcoded guess. */
+/**
+ * Real min/max active price in USD, used to size the DealsCenterPage price slider — never a hardcoded guess.
+ * USD because that is the only unit comparable across deals in different currencies; the page converts it
+ * to the visitor's display currency for the slider.
+ */
 export async function fetchActivePriceBounds(): Promise<{ min: number; max: number }> {
   const allowedTiers = await fetchAllowedMembershipTiers();
   const base = () =>
     supabase
-      .from("deals")
-      .select("price")
+      .from("v_flight_offers")
+      .select("price_usd")
       .eq("status", "active")
       .in("min_membership_tier", allowedTiers)
       .gt("expires_at", new Date().toISOString())
-      .gt("available_seats", 0);
+      .gt("available_seats", 0)
+      .not("price_usd", "is", null);
 
   const [{ data: lowest }, { data: highest }] = await Promise.all([
-    base().order("price", { ascending: true }).limit(1),
-    base().order("price", { ascending: false }).limit(1),
+    base().order("price_usd", { ascending: true }).limit(1),
+    base().order("price_usd", { ascending: false }).limit(1),
   ]);
-  const lowestRow = (lowest as { price: number }[] | null)?.[0];
-  const highestRow = (highest as { price: number }[] | null)?.[0];
+  const lowestRow = (lowest as { price_usd: number }[] | null)?.[0];
+  const highestRow = (highest as { price_usd: number }[] | null)?.[0];
   return {
-    min: lowestRow ? Math.floor(lowestRow.price) : 0,
-    max: highestRow ? Math.ceil(highestRow.price) : 1000,
+    min: lowestRow ? Math.floor(lowestRow.price_usd) : 0,
+    max: highestRow ? Math.ceil(highestRow.price_usd) : 1000,
   };
 }
 
@@ -328,7 +369,7 @@ export async function fetchDealPriceDrops(
 export async function fetchAdditionalServices(): Promise<AdditionalServiceRow[]> {
   const { data, error } = await supabase
     .from("additional_services")
-    .select("id,type,name,description,price,category,is_active")
+    .select("id,type,name,description,price,currency,category,is_active")
     .eq("is_active", true)
     .order("price", { ascending: true });
   if (error) return [];
@@ -506,7 +547,6 @@ export async function fetchRouteDatePrices(fromAirport: string, toAirport: strin
 }
 
 export async function createBooking(input: CreateBookingInput): Promise<CreateBookingResult> {
-  type RpcArgs = Database["public"]["Functions"]["create_booking"]["Args"];
   // NOTE: the generated types/database.ts still calls this field
   // "passport_number", but the live create_booking() SQL function (and the
   // booking_travelers.passport_no column it inserts into) reads the JSON key
@@ -519,7 +559,23 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     traveler_type: t.traveler_type,
     passport_no: t.passport_number,
   }));
-  const args: RpcArgs = {
+  const chargeCurrency = (input.chargeCurrency || input.dealCurrency).toUpperCase();
+
+  // A different charge currency needs a locked rate first (single-use, valid ~30 min). Same currency needs none.
+  let fxQuoteId: string | null = null;
+  if (chargeCurrency !== input.dealCurrency.toUpperCase()) {
+    const { data: quote, error: quoteError } = await supabase.rpc("create_fx_quote", {
+      p_base_currency: input.dealCurrency,
+      p_charge_currency: chargeCurrency,
+      p_lock_minutes: 30,
+    } as never);
+    if (quoteError) throw new Error(quoteError.message);
+    const q = (Array.isArray(quote) ? quote[0] : quote) as { quote_id?: string } | undefined;
+    if (!q?.quote_id) throw new Error("FX_QUOTE_INVALID");
+    fxQuoteId = q.quote_id;
+  }
+
+  const args = {
     p_deal_id: input.dealId,
     p_customer_name: input.customerName,
     p_customer_phone: input.customerPhone,
@@ -533,8 +589,10 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     p_services: input.services,
     p_fare_package_tier: input.farePackageTier ?? null,
     p_transport_zone_id: input.transportZoneId ?? null,
+    p_charge_currency: chargeCurrency,
+    p_fx_quote_id: fxQuoteId,
   };
-  const { data, error } = await supabase.rpc("create_booking", args as never);
+  const { data, error } = await supabase.rpc("create_booking_with_charge", args as never);
   if (error) throw dbError(error);
   const row = (Array.isArray(data) ? data[0] : data) as CreateBookingResult | undefined;
   if (!row?.booking_number) throw new Error("لم يتم إنشاء الحجز");
@@ -560,7 +618,7 @@ export async function lookupBooking(
 export async function fetchBookableAddOns(): Promise<AdditionalServiceRow[]> {
   const { data, error } = await supabase
     .from("additional_services")
-    .select("id,type,name,description,price,category,is_active,fulfillment_type")
+    .select("id,type,name,description,price,currency,category,is_active,fulfillment_type")
     .eq("is_active", true)
     .order("price", { ascending: true });
   if (error) return [];
@@ -651,6 +709,8 @@ export async function createPriceAlert(input: {
   fromAirport: string;
   toAirport: string;
   maxBudget: number;
+  /** Currency the budget was typed in — stored with the alert so it is matched against deal prices correctly. */
+  currency: string;
   email?: string;
   phone?: string;
   dealId?: string;
@@ -660,6 +720,7 @@ export async function createPriceAlert(input: {
       from_airport: input.fromAirport,
       to_airport: input.toAirport,
       max_budget: input.maxBudget,
+      currency: input.currency,
       email: input.email ?? null,
       phone: input.phone ?? null,
       deal_id: input.dealId ?? null,

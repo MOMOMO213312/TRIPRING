@@ -6,10 +6,12 @@ import {
   formatRouteCities,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { cn, formatPrice } from "../lib/utils";
+import { cn } from "../lib/utils";
 import type { Catalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
+import { comparablePrice } from "../lib/deal-utils";
 
 type Props = {
   open: boolean;
@@ -36,6 +38,7 @@ function durationLabel(deal: DealRow): string {
 }
 
 export function DealComparisonModal({ open, onClose, deals, catalog, onRemove }: Props) {
+  const { fmt } = useCurrency();
   if (!open || deals.length === 0) return null;
 
   const rows: Row[] = [
@@ -43,10 +46,10 @@ export function DealComparisonModal({ open, onClose, deals, catalog, onRemove }:
       label: "السعر",
       cell: (d) => (
         <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">
-          {formatPrice(d.price, d.currency ?? "USD")}
+          {fmt(d.price, d.currency ?? "USD")}
         </span>
       ),
-      bestDealId: (ds) => ds.reduce((min, d) => (d.price < min.price ? d : min)).id,
+      bestDealId: (ds) => ds.reduce((min, d) => (comparablePrice(d) < comparablePrice(min) ? d : min)).id,
     },
     {
       label: "شركة الطيران",

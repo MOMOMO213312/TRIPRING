@@ -52,7 +52,8 @@ export function SearchResultsPage() {
       from: from || undefined,
       to: effectiveTo || undefined,
       departureDate: date || undefined,
-      maxPrice: budget && budget !== "1000plus" ? Number(budget) : undefined,
+      // Budget chips are labelled in USD ($300…), so they filter on the deals' USD-equivalent price.
+      maxPriceUsd: budget && budget !== "1000plus" ? Number(budget) : undefined,
       sort,
       availableOnly: true,
       tripType,

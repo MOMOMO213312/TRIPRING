@@ -10,13 +10,17 @@ import { setSessionContact } from "../lib/session";
 import { airportLabel } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
-import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
+import { isValidEmail, isValidPhone } from "../lib/utils";
+import { useCurrency } from "../hooks/useCurrency";
 
 export function AlertsPage() {
+  const { fmt, currency: displayCurrency, usdToDisplay } = useCurrency();
+  // Budget is typed in the display currency (stored with the alert); if there is no rate for it, fall back to USD.
+  const alertCurrency = usdToDisplay(1) != null ? displayCurrency : "USD";
   const catalog = useCatalog();
   const [from, setFrom] = useState("CAI");
   const [to, setTo] = useState("");
-  const [maxBudget, setMaxBudget] = useState(300);
+  const [maxBudget, setMaxBudget] = useState<number | null>(null);
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [lookupContact, setLookupContact] = useState("");
@@ -34,6 +38,10 @@ export function AlertsPage() {
     e.preventDefault();
     if (!to) {
       setError("اختر وجهة");
+      return;
+    }
+    if (!maxBudget || maxBudget <= 0) {
+      setError("أدخل الحد الأقصى للسعر");
       return;
     }
     const trimmedPhone = phone.trim();
@@ -58,6 +66,7 @@ export function AlertsPage() {
         fromAirport: from,
         toAirport: to,
         maxBudget,
+        currency: alertCurrency,
         phone: trimmedPhone || undefined,
         email: trimmedEmail || undefined,
       });
@@ -109,11 +118,11 @@ export function AlertsPage() {
               placeholder="اختر الوجهة"
             />
             <Input
-              label="الحد الأقصى للسعر (USD)"
+              label={`الحد الأقصى للسعر (${alertCurrency})`}
               type="number"
-              min={50}
-              value={maxBudget}
-              onChange={(e) => setMaxBudget(Number(e.target.value))}
+              min={1}
+              value={maxBudget ?? ""}
+              onChange={(e) => setMaxBudget(e.target.value === "" ? null : Number(e.target.value))}
             />
             <Input label="رقم الهاتف" type="tel" placeholder="+20xxxxxxxxxx" value={phone} onChange={(e) => setPhone(e.target.value)} />
             <Input label="البريد الإلكتروني" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -145,7 +154,7 @@ export function AlertsPage() {
                     {airportLabel(a.from_airport ?? "", catalog.airports)} →{" "}
                     {airportLabel(a.to_airport ?? "", catalog.airports)}
                   </p>
-                  <p className="text-slate-600">حد أقصى: {formatPrice(a.max_budget ?? 0)}</p>
+                  <p className="text-slate-600">حد أقصى: {fmt(a.max_budget ?? 0, a.currency)}</p>
                 </li>
               ))}
             </ul>

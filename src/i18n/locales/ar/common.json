@@ -33,7 +33,13 @@
     "agencyPortal": "لوحة الوكالة",
     "affiliatePortal": "لوحة الأفلييت",
     "becomeSupplier": "انضم كمورد",
-    "copyright": "© {{year}} TripRing — سوق فرص السفر"
+    "copyright": "© {{year}} TripRing — سوق فرص السفر",
+    "fxAttribution": "أسعار الصرف التقديرية من"
+  },
+  "currency": {
+    "label": "عملة العرض",
+    "pick": "اختر عملة العرض",
+    "disclaimer": "الأسعار المعروضة تقديرية بسعر الصرف الحالي — العملة النهائية للدفع بتتحدد وقت الحجز."
   },
   "actions": {
     "save": "حفظ",

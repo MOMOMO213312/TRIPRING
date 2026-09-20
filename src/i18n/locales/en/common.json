@@ -33,7 +33,13 @@
     "agencyPortal": "Agency Dashboard",
     "affiliatePortal": "Affiliate Dashboard",
     "becomeSupplier": "Become a Supplier",
-    "copyright": "© {{year}} TripRing — Travel Opportunity Marketplace"
+    "copyright": "© {{year}} TripRing — Travel Opportunity Marketplace",
+    "fxAttribution": "Estimated exchange rates from"
+  },
+  "currency": {
+    "label": "Display currency",
+    "pick": "Choose display currency",
+    "disclaimer": "Prices shown are estimates at the current exchange rate — the final payment currency is set at booking time."
   },
   "actions": {
     "save": "Save",

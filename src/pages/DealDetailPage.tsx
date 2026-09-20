@@ -32,11 +32,13 @@ import {
 } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
-import { cn, formatDate, formatPrice, formatTime } from "../lib/utils";
+import { cn, formatDate, formatTime } from "../lib/utils";
 import type { AdditionalServiceRow, DealPriceHistoryRow, DealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 export function DealDetailPage() {
   const { t } = useTranslation("booking");
+  const { fmt } = useCurrency();
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
   const catalog = useCatalog();
@@ -147,11 +149,11 @@ export function DealDetailPage() {
         <div className="space-y-1 border-b border-slate-100 pb-3 text-xs text-slate-500">
           <div className="flex justify-between">
             <span>{t("f.baseFare")}</span>
-            <span className="font-latin">{formatPrice(deal.base_fare!, currency)}</span>
+            <span className="font-latin">{fmt(deal.base_fare!, currency)}</span>
           </div>
           <div className="flex justify-between">
             <span>{t("f.taxes")}</span>
-            <span className="font-latin">{formatPrice(deal.taxes_fees!, currency)}</span>
+            <span className="font-latin">{fmt(deal.taxes_fees!, currency)}</span>
           </div>
         </div>
       ) : null}
@@ -316,7 +318,7 @@ export function DealDetailPage() {
               {deal.extra_baggage_price ? (
                 <div>
                   <dt className="text-xs text-slate-500">{t("deal.f.extraBag")}</dt>
-                  <dd className="font-semibold text-slate-800">{formatPrice(deal.extra_baggage_price, currency)}</dd>
+                  <dd className="font-semibold text-slate-800">{fmt(deal.extra_baggage_price, currency)}</dd>
                 </div>
               ) : null}
             </dl>
@@ -338,10 +340,10 @@ export function DealDetailPage() {
                 </div>
                 {deal.change_fee != null || deal.cancellation_fee != null ? (
                   <p className="mt-2 text-sm text-slate-600">
-                    {deal.change_fee != null ? t("deal.fare.changeFee", { fee: formatPrice(deal.change_fee, currency) }) : null}
+                    {deal.change_fee != null ? t("deal.fare.changeFee", { fee: fmt(deal.change_fee, currency) }) : null}
                     {deal.change_fee != null && deal.cancellation_fee != null ? " · " : null}
                     {deal.cancellation_fee != null
-                      ? t("deal.fare.cancelFee", { fee: formatPrice(deal.cancellation_fee, currency) })
+                      ? t("deal.fare.cancelFee", { fee: fmt(deal.cancellation_fee, currency) })
                       : null}
                   </p>
                 ) : null}
@@ -357,7 +359,7 @@ export function DealDetailPage() {
               {cheaperAlternative ? (
                 <p className="mb-3 rounded-lg bg-[#F0FDF4] px-3 py-2 text-xs font-semibold text-[#16A34A]">
                   {t("deal.flex.save", {
-                    amount: formatPrice(deal.price - cheaperAlternative.price, currency),
+                    amount: fmt(deal.price - cheaperAlternative.price, currency),
                     date: formatDate(cheaperAlternative.date),
                   })}
                 </p>
@@ -385,7 +387,7 @@ export function DealDetailPage() {
                           isCurrent ? "text-[#0C7BB3]" : d.price < deal.price ? "text-[#16A34A]" : "text-slate-800",
                         )}
                       >
-                        {formatPrice(d.price, currency)}
+                        {fmt(d.price, currency)}
                       </p>
                       {isCurrent ? <p className="text-[10px] font-semibold text-[#0C7BB3]">{t("deal.flex.yourTrip")}</p> : null}
                     </Link>
@@ -413,7 +415,7 @@ export function DealDetailPage() {
              card above collapse by default to keep the page short. */}
 
           {trendPoints.length >= 2 ? (
-            <PriceHistoryChart title={t("chart.title", { route: formatRoute(deal) })} points={trendPoints} />
+            <PriceHistoryChart title={t("chart.title", { route: formatRoute(deal) })} points={trendPoints} currency={currency} />
           ) : null}
 
           {deal.notes ? (
@@ -438,8 +440,13 @@ export function DealDetailPage() {
 
 function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () => void; deal: DealRow }) {
   const { t } = useTranslation("booking");
+  const { currency: displayCurrency, convert } = useCurrency();
+  const dealCurrency = deal.currency ?? "USD";
+  // The budget is typed in the visitor's display currency when the deal price can be converted to it, otherwise in the deal's own.
+  const convertedPrice = convert(deal.price, dealCurrency);
+  const alertCurrency = convertedPrice != null ? displayCurrency : dealCurrency;
   const [contact, setContact] = useState("");
-  const [budget, setBudget] = useState(String(deal.price));
+  const [budget, setBudget] = useState(String(Math.round(convertedPrice ?? deal.price)));
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -456,7 +463,8 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
       await createPriceAlert({
         fromAirport: deal.from_airport,
         toAirport: deal.to_airport,
-        maxBudget: Number(budget) || deal.price,
+        maxBudget: Number(budget) || Math.round(convertedPrice ?? deal.price),
+        currency: alertCurrency,
         dealId: deal.id,
         ...(isEmail ? { email: contact.trim() } : { phone: contact.trim() }),
       });
@@ -472,7 +480,7 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
     <Modal open={open} onClose={onClose} title={t("deal.alert.title")}>
       {done ? (
         <p className="rounded-lg bg-green-50 p-4 text-center text-sm font-semibold text-green-700">
-          {t("deal.alert.done", { route: formatRoute(deal), budget, currency: deal.currency ?? "USD" })}
+          {t("deal.alert.done", { route: formatRoute(deal), budget, currency: alertCurrency })}
         </p>
       ) : (
         <div className="space-y-3">
@@ -487,7 +495,7 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
             />
           </label>
           <label className="block space-y-1.5">
-            <span className="text-sm font-medium text-slate-700">{t("deal.alert.budgetLabel")}</span>
+            <span className="text-sm font-medium text-slate-700">{t("deal.alert.budgetLabel", { currency: alertCurrency })}</span>
             <input
               type="number"
               value={budget}

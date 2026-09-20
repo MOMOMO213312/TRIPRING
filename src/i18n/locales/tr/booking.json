@@ -179,11 +179,15 @@
     },
     "summary": {
       "estimateWarning": "⚠️ Fiyat tahminidir ve kesin değildir. \"Rezervasyonu onayla\"ya basmak acenteye onaylı bir bilet değil, bir <strong>rezervasyon talebi</strong> gönderir — gerçek ödemeden önce fiyatı ve koltuğu onaylamak için seninle iletişime geçecekler.",
+      "estimatedTotalBeforeDiscount": "Tahmini toplam (üyelik indirimi öncesi)",
       "package": "Paket",
       "tripgoTransport": "TripGo (transfer)",
       "estimatedTotal": "Tahmini toplam",
       "manualPayment": "Ödeme manuel yapılır — havaleyi tamamla, acente onayladıktan sonra dekontu WhatsApp ile gönder"
     },
+    "payIn": "Ödeme para birimi",
+    "chargeEstimate": "Yaklaşık <amount>{{amount}}</amount> ödeyeceksin — döviz kuru rezervasyonu onayladığın anda 30 dakika boyunca sabitlenir, kesin tutar onay sayfasında görünür.",
+    "chargeUnavailable": "Para biriminle ({{currency}}) ödeme şu anda mümkün değil — bu para biriminde gösterilen fiyatlar tahminidir, ödeme yukarıdaki para birimleriyle yapılır.",
     "submit": {
       "checking": "Rezervasyon kontrol ediliyor...",
       "confirm": "Rezervasyonu onayla"
@@ -197,6 +201,8 @@
     "tripgoBadge": "🚐 TripGo seyahati — Uçuş + Transfer",
     "bookingNumber": "Rezervasyon numarası",
     "amount": "Tutar",
+    "amountDue": "Havale edilecek tutar",
+    "fxNote": "Rezervasyon fiyatı {{price}} — rezervasyon anında sabitlenen kurla {{currency}} para birimine çevrildi{{rate}}.",
     "paymentMethod": "Ödeme yöntemi",
     "status": {
       "label": "Durum",
@@ -273,7 +279,7 @@
       "done": "Tamam! {{route}} fiyatı {{budget}} {{currency}} altına düştüğünde sana haber vereceğiz",
       "contactLabel": "Telefon numarası veya e-posta",
       "contactPlaceholder": "01000000000 veya you@email.com",
-      "budgetLabel": "Maksimum bütçe (USD)",
+      "budgetLabel": "Maksimum bütçe ({{currency}})",
       "creating": "Oluşturuluyor...",
       "create": "Uyarı oluştur",
       "failed": "Bir hata oluştu, lütfen tekrar dene"

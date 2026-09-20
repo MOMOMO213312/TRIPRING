@@ -179,11 +179,15 @@
     },
     "summary": {
       "estimateWarning": "⚠️ السعر تقديري وغير نهائي، والضغط على \"تأكيد الحجز\" يرسل <strong>طلب حجز</strong> للوكالة وليس تذكرة مؤكدة — هيتواصلوا معاك لتأكيد السعر والمقعد قبل الدفع الفعلي.",
+      "estimatedTotalBeforeDiscount": "الإجمالي التقديري (قبل أي خصم عضوية)",
       "package": "الباقة",
       "tripgoTransport": "TripGo (نقل)",
       "estimatedTotal": "الإجمالي التقديري",
       "manualPayment": "الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة"
     },
+    "payIn": "ادفع بعملة",
+    "chargeEstimate": "هتدفع تقريبًا <amount>{{amount}}</amount> — سعر الصرف بيتثبّت لـ 30 دقيقة لحظة تأكيد الحجز، والمبلغ النهائي هيظهر في صفحة التأكيد.",
+    "chargeUnavailable": "الدفع بعملتك ({{currency}}) مش متاح دلوقتي — الأسعار المعروضة بيها تقديرية والدفع بالعملات أعلاه.",
     "submit": {
       "checking": "جاري التأكد من الحجز...",
       "confirm": "تأكيد الحجز"
@@ -197,6 +201,8 @@
     "tripgoBadge": "🚐 رحلة TripGo — Flight + Transfer",
     "bookingNumber": "رقم الحجز",
     "amount": "المبلغ",
+    "amountDue": "المبلغ المطلوب تحويله",
+    "fxNote": "سعر الحجز {{price}} — اتحوّل لـ {{currency}} بسعر الصرف اللي اتثبّت وقت الحجز{{rate}}.",
     "paymentMethod": "طريقة الدفع",
     "status": {
       "label": "الحالة",
@@ -273,7 +279,7 @@
       "done": "تمام! هنبعتلك تنبيه لما سعر {{route}} ينزل تحت {{budget}} {{currency}}",
       "contactLabel": "رقم تليفون أو إيميل",
       "contactPlaceholder": "01000000000 أو you@email.com",
-      "budgetLabel": "الميزانية القصوى (USD)",
+      "budgetLabel": "الميزانية القصوى ({{currency}})",
       "creating": "جاري الإنشاء...",
       "create": "إنشاء التنبيه",
       "failed": "حصل خطأ، حاول تاني"

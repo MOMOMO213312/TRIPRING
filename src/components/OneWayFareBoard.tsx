@@ -2,8 +2,9 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 
 import { buildRouteQuotesByTripType } from "../lib/routeQuotes";
-import { formatPrice } from "../lib/utils";
+
 import type { AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   deals: DealRow[];
@@ -18,6 +19,7 @@ type Props = {
  *  customer can tell at a glance which board their trip type belongs in,
  *  instead of hunting for an OW/RT badge inside a single mixed ticker. */
 export function OneWayFareBoard({ deals, references, airports }: Props) {
+  const { fmt } = useCurrency();
   const quotes = useMemo(
     () => buildRouteQuotesByTripType(references, deals, airports).filter((q) => q.oneWayDeal),
     [references, deals, airports],
@@ -37,7 +39,7 @@ export function OneWayFareBoard({ deals, references, airports }: Props) {
             {q.from} / {q.to}
           </span>
           <span className="text-sm font-extrabold text-white">
-            {formatPrice(q.oneWayDeal!.price, q.oneWayDeal!.currency ?? "USD")}
+            {fmt(q.oneWayDeal!.price, q.oneWayDeal!.currency ?? "USD")}
           </span>
         </Link>
       ))}

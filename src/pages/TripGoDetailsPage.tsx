@@ -14,10 +14,11 @@ import { airlineName, baggageBadgeLabel, formatRoute, stopsMetaLabel } from "../
 import { bookTripGo, fetchTripGoBundleById, transferKindLabel, transportUnitsNeeded, tripGoTotal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
 import { formatTravelerSummary } from "../lib/travelerSummary";
-import { cn, formatDate, formatPrice, formatTime, isValidEmail, isValidPhone, whatsAppLink } from "../lib/utils";
+import { cn, formatDate, formatTime, isValidEmail, isValidPhone, whatsAppLink } from "../lib/utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import type { PaymentMethod, TripGoBundleJoined } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Traveler = {
   full_name: string;
@@ -39,6 +40,7 @@ const STEPS = [
 
 export function TripGoDetailsPage() {
   const { t } = useTranslation("booking");
+  const { fmt } = useCurrency();
   const paymentMethods = usePaymentMethods();
   const { bundleId } = useParams<{ bundleId: string }>();
   const navigate = useNavigate();
@@ -420,21 +422,21 @@ export function TripGoDetailsPage() {
               <Row label={t("f.pickupLocation")} value={pickupLocation || "—"} />
               <Row
                 label={t("f.transportKind")}
-                value={`${transferKindLabel(transport.transport_type, transport.vehicle_type)} — ${formatPrice(transferPrice, currency)}`}
+                value={`${transferKindLabel(transport.transport_type, transport.vehicle_type)} — ${fmt(transferPrice, currency)}`}
               />
             </dl>
             <div className="space-y-1 border-t border-slate-100 pt-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-500">{t("tripgo.review.flightTicket")}</span>
-                <span className="font-latin">{formatPrice(flightSubtotal, currency)}</span>
+                <span className="font-latin">{fmt(flightSubtotal, currency)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">{t("tripgo.review.transfer")}</span>
-                <span className="font-latin">{formatPrice(transferPrice, currency)}</span>
+                <span className="font-latin">{fmt(transferPrice, currency)}</span>
               </div>
               <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
                 <span>{t("tripgo.review.total")}</span>
-                <span className="font-latin text-[#0C7BB3]">{formatPrice(total, currency)}</span>
+                <span className="font-latin text-[#0C7BB3]">{fmt(total, currency)}</span>
               </div>
             </div>
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
@@ -468,7 +470,7 @@ export function TripGoDetailsPage() {
             ))}
             <div className="flex items-center justify-between rounded-xl bg-[#0C7BB3]/5 px-4 py-3">
               <span className="text-sm font-medium text-slate-700">{t("tripgo.review.total")}</span>
-              <span className="text-lg font-extrabold text-[#0C7BB3]">{formatPrice(total, currency)}</span>
+              <span className="text-lg font-extrabold text-[#0C7BB3]">{fmt(total, currency)}</span>
             </div>
           </Card>
         ) : null}

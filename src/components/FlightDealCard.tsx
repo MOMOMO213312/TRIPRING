@@ -13,9 +13,10 @@ import {
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { formatPrice } from "../lib/utils";
+
 import type { DealRow, DealType } from "../types/database";
 import { DealCountdown } from "./DealCountdown";
+import { useCurrency } from "../hooks/useCurrency";
 
 // Homepage-only badge color override: dealTypeBadgeClass is shared with
 // DealCard.tsx (used on /search and /deals, which stay on the blue theme),
@@ -37,6 +38,7 @@ function homeBadgeClass(type: DealType): string {
  * date · stops → airline → price row (price, seats-left) at the bottom.
  */
 export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Catalog }) {
+  const { fmt } = useCurrency();
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
   const lowSeats = isLowSeats(deal.available_seats);
 
@@ -112,7 +114,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
         <div className="mt-3 flex items-end justify-between gap-2 border-t border-slate-100 pt-3">
           <div className="flex items-baseline gap-1.5">
             <span className="font-latin text-lg font-extrabold text-[#FF7A45]">
-              {formatPrice(deal.price, deal.currency ?? "USD")}
+              {fmt(deal.price, deal.currency ?? "USD")}
             </span>
           </div>
           <span

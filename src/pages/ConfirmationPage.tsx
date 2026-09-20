@@ -14,10 +14,11 @@ import i18n from "../i18n";
 import { formatRoute } from "../lib/deal-utils";
 import { getLastBooking } from "../lib/session";
 import { formatTravelerSummary } from "../lib/travelerSummary";
-import { formatPrice, whatsAppLink } from "../lib/utils";
+import { whatsAppLink } from "../lib/utils";
 import { transferKindLabel } from "../lib/tripgo";
 import type { CreateBookingResult } from "../lib/api";
 import type { BookingLookupResult, DealRow, PaymentMethod, TripGoDealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 type TripGoState = {
   pickupLocation: string;
@@ -99,6 +100,11 @@ function ConfirmationBody({
   tripGo,
 }: LocationState) {
   const { t } = useTranslation("booking");
+  const { fmtIn } = useCurrency();
+  // What the customer must actually transfer: the charge amount in the currency chosen at checkout (total × the rate
+  // locked at booking time). Bookings created before multi-currency have no charge fields and are paid in the booking currency.
+  const payableCurrency = booking.charge_currency ?? booking.currency;
+  const payableAmount = booking.charge_amount != null ? Number(booking.charge_amount) : booking.total_price;
   const catalog = useCatalog();
   // The create_booking RPC returns only the top-level booking fields —
   // order_items (and therefore the per-item journey) are created by a DB
@@ -136,7 +142,7 @@ function ConfirmationBody({
           value: transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type, AGENCY_MESSAGE_LANG),
         })
       : null,
-    tAgency("whatsapp.amount", { value: formatPrice(booking.total_price, booking.currency) }),
+    tAgency("whatsapp.amount", { value: fmtIn(payableAmount, payableCurrency, true) }),
   ]
     .filter(Boolean)
     .join("\n");
@@ -161,8 +167,17 @@ function ConfirmationBody({
             <dd className="font-semibold">{formatRoute(deal)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">{t("confirmation.amount")}</dt>
-            <dd className="font-semibold">{formatPrice(booking.total_price, booking.currency)}</dd>
+            <dt className="text-sm text-slate-500">{t("confirmation.amountDue")}</dt>
+            <dd className="font-latin text-lg font-bold">{fmtIn(payableAmount, payableCurrency, true)}</dd>
+            {payableCurrency !== booking.currency ? (
+              <p className="mt-1 text-xs text-slate-500">
+                {t("confirmation.fxNote", {
+                  price: fmtIn(booking.total_price, booking.currency, true),
+                  currency: payableCurrency,
+                  rate: booking.fx_rate ? ` (${Number(booking.fx_rate)})` : "",
+                })}
+              </p>
+            ) : null}
           </div>
           <div>
             <dt className="text-sm text-slate-500">{t("confirmation.paymentMethod")}</dt>

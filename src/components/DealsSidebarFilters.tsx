@@ -2,10 +2,11 @@ import { useState } from "react";
 
 import type { AdvancedFilters, DurationBucket, TimeSlot } from "../lib/filters";
 import { EMPTY_FILTERS } from "../lib/filters";
-import { formatPrice } from "../lib/utils";
+
 import { REGIONS } from "../lib/regions";
 import type { AirlineRow, StopType } from "../types/database";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
 
 const STOP_OPTIONS: { value: StopType | ""; label: string }[] = [
   { value: "", label: "الكل" },
@@ -56,6 +57,7 @@ export function DealsSidebarFilters({
   isOpen,
   onClose,
 }: Props) {
+  const { fmtIn } = useCurrency();
   const [airlineSearch, setAirlineSearch] = useState("");
 
   function toggleAirline(code: string) {
@@ -134,8 +136,8 @@ export function DealsSidebarFilters({
             />
           </div>
           <div className="font-latin mt-3 flex items-center justify-between text-xs font-semibold text-slate-600">
-            <span>{formatPrice(minPrice, currency)}</span>
-            <span>{formatPrice(maxPrice, currency)}{maxPrice >= priceBounds.max ? "+" : ""}</span>
+            <span>{fmtIn(minPrice, currency)}</span>
+            <span>{fmtIn(maxPrice, currency)}{maxPrice >= priceBounds.max ? "+" : ""}</span>
           </div>
         </div>
       </FilterSection>

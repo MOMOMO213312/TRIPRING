@@ -182,11 +182,15 @@
     },
     "summary": {
       "estimateWarning": "⚠️ The price is an estimate and not final. Pressing \"Confirm booking\" sends a <strong>booking request</strong> to the agency, not a confirmed ticket — they will contact you to confirm the price and seat before actual payment.",
+      "estimatedTotalBeforeDiscount": "Estimated total (before any membership discount)",
       "package": "Package",
       "tripgoTransport": "TripGo (transfer)",
       "estimatedTotal": "Estimated total",
       "manualPayment": "Payment is manual — complete the transfer, then send the receipt via WhatsApp after the agency confirms"
     },
+    "payIn": "Pay in",
+    "chargeEstimate": "You'll pay approximately <amount>{{amount}}</amount> — the exchange rate is locked for 30 minutes when you confirm the booking, and the final amount will appear on the confirmation page.",
+    "chargeUnavailable": "Paying in your currency ({{currency}}) isn't available right now — prices shown in it are estimates and payment is made in the currencies above.",
     "submit": {
       "checking": "Checking your booking...",
       "confirm": "Confirm booking"
@@ -200,6 +204,8 @@
     "tripgoBadge": "🚐 TripGo trip — Flight + Transfer",
     "bookingNumber": "Booking number",
     "amount": "Amount",
+    "amountDue": "Amount to transfer",
+    "fxNote": "Booking price {{price}} — converted to {{currency}} at the exchange rate locked when you booked{{rate}}.",
     "paymentMethod": "Payment method",
     "status": {
       "label": "Status",
@@ -276,7 +282,7 @@
       "done": "Done! We'll notify you when the price of {{route}} drops below {{budget}} {{currency}}",
       "contactLabel": "Phone number or email",
       "contactPlaceholder": "01000000000 or you@email.com",
-      "budgetLabel": "Maximum budget (USD)",
+      "budgetLabel": "Maximum budget ({{currency}})",
       "creating": "Creating...",
       "create": "Create alert",
       "failed": "Something went wrong, please try again"

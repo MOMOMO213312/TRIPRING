@@ -10,11 +10,12 @@ import {
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { cn, formatPrice } from "../lib/utils";
+import { cn } from "../lib/utils";
 import type { AgencyRow, AirlineRow, AirportRow, DealRow } from "../types/database";
 import { DealCountdown } from "./DealCountdown";
 import { DealScoreRing } from "./DealScoreRing";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   deal: DealRow;
@@ -38,6 +39,7 @@ export function DealOpportunityCard({
   comparing,
   onToggleCompare,
 }: Props) {
+  const { fmt } = useCurrency();
   const airline = airlines.find((a) => a.code === deal.airline_code);
   const toAirport = airports.find((a) => a.code === deal.to_airport);
   const agency = agencies.find((a) => a.id === deal.agency_id);
@@ -133,7 +135,7 @@ export function DealOpportunityCard({
         <div className="mt-1 flex items-end justify-between gap-3 border-t border-slate-100 pt-3">
           <div className="min-w-0">
             <p className="font-latin text-xl font-extrabold text-[#0C7BB3]">
-              {formatPrice(deal.price, deal.currency ?? "USD")}
+              {fmt(deal.price, deal.currency ?? "USD")}
             </p>
             {priceDrop ? (
               <p className="mt-0.5 flex items-center gap-1 text-[11px] font-semibold text-[#16A34A]">

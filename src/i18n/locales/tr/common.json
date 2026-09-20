@@ -33,7 +33,13 @@
     "agencyPortal": "Acente Paneli",
     "affiliatePortal": "Ortaklık Paneli",
     "becomeSupplier": "Tedarikçi Ol",
-    "copyright": "© {{year}} TripRing — Seyahat Fırsatları Pazarı"
+    "copyright": "© {{year}} TripRing — Seyahat Fırsatları Pazarı",
+    "fxAttribution": "Tahmini döviz kurları:"
+  },
+  "currency": {
+    "label": "Görüntüleme para birimi",
+    "pick": "Görüntüleme para birimini seç",
+    "disclaimer": "Gösterilen fiyatlar güncel kura göre tahminidir — ödeme para birimi rezervasyon sırasında belirlenir."
   },
   "actions": {
     "save": "Kaydet",
