@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import type { AdditionalServiceRow } from "../types/database";
 
 /**
@@ -21,15 +22,20 @@ export type PackageServiceKey =
   | "parking"
   | "insurance";
 
-export const SERVICE_KEY_LABELS: Record<PackageServiceKey, string> = {
-  transfer: "الانتقال من وإلى المطار",
-  lounge: "صالة المطار (Lounge)",
-  fast_track: "Fast Track",
-  meet_assist: "استقبال ومرافقة (Meet & Assist)",
-  baggage: "خدمات الأمتعة",
-  parking: "موقف سيارات المطار",
-  insurance: "تأمين السفر",
-};
+export const SERVICE_KEYS: PackageServiceKey[] = [
+  "transfer",
+  "lounge",
+  "fast_track",
+  "meet_assist",
+  "baggage",
+  "parking",
+  "insurance",
+];
+
+/** Display label for a service key in the active UI language (`packages:serviceKey.*`). */
+export function serviceKeyLabel(key: PackageServiceKey): string {
+  return i18n.t(`packages:serviceKey.${key}`);
+}
 
 export const SERVICE_KEY_ICONS: Record<PackageServiceKey, string> = {
   transfer: "🚐",
@@ -74,13 +80,38 @@ const FALLBACK_PRICE: Record<PackageServiceKey, number> = {
 };
 
 /**
- * Arabic display label for a real catalog service. `additional_services.name`
- * already holds a proper Arabic label per row (e.g. "تأمين سفر شامل") — this
- * just falls back to the raw `type` slug for any older row where `name`
- * wasn't filled in, so nothing ever renders blank.
+ * Raw catalogue name for a service: `additional_services.name` (an Arabic label per
+ * row), falling back to the `type` slug for older rows without one. Use this — not
+ * the translated label — whenever comparing against names stored on bookings.
+ */
+export function serviceRawName(service: AdditionalServiceRow): string {
+  return service.name?.trim() || service.type;
+}
+
+/** Catalogue `type` slugs that map one-to-one to a translated label in `packages:serviceType.*`. */
+const TRANSLATABLE_SERVICE_TYPES = new Set([
+  "travel_insurance",
+  "hotel",
+  "car_rental",
+  "lounge",
+  "fast_track",
+  "airport_transfer",
+  "private_car",
+  "shuttle",
+  "meet_assist",
+]);
+
+/**
+ * Display label for a real catalogue service in the active language. Arabic shows the
+ * DB name as-is; English/Turkish use the translation for well-known `type` slugs and
+ * fall back to the DB name for rows that can't be mapped one-to-one (e.g. several
+ * `extra_baggage` variants) until the catalogue gets per-language names.
  */
 export function serviceDisplayLabel(service: AdditionalServiceRow): string {
-  return service.name?.trim() || service.type;
+  if (!i18n.language.startsWith("ar") && TRANSLATABLE_SERVICE_TYPES.has(service.type)) {
+    return i18n.t(`packages:serviceType.${service.type}`);
+  }
+  return serviceRawName(service);
 }
 
 export function classifyPackageService(service: AdditionalServiceRow): PackageServiceKey | null {
@@ -183,7 +214,7 @@ export function resolvePackageItems(
     const service = cheapestForKey(key, services);
     return {
       key,
-      label: SERVICE_KEY_LABELS[key],
+      label: serviceKeyLabel(key),
       icon: SERVICE_KEY_ICONS[key],
       price: service?.price ?? FALLBACK_PRICE[key],
       service,

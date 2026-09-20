@@ -50,5 +50,25 @@
     "loading": "Yükleniyor…",
     "viewAll": "Tümünü gör",
     "book": "Rezervasyon yap"
+  },
+  "payment": {
+    "bank_transfer": {
+      "label": "Banka havalesi",
+      "details": "Banka: {{bank}} · IBAN: {{iban}} · Hesap adı: {{account}}"
+    },
+    "instapay": {
+      "label": "InstaPay",
+      "details": "InstaPay kullanıcı adı: {{handle}}"
+    },
+    "vodafone_cash": {
+      "label": "Vodafone Cash",
+      "details": "Cüzdan numarası: {{number}}"
+    }
+  },
+  "transfer": {
+    "private": "🚗 Özel araç",
+    "privateWith": "🚗 Özel araç · {{vehicle}}",
+    "shared": "🚐 Paylaşımlı transfer",
+    "sharedWith": "🚐 Paylaşımlı transfer · {{vehicle}}"
   }
 }

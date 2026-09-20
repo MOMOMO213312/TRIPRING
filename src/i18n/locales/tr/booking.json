@@ -1,0 +1,200 @@
+{
+  "booking": {
+    "title": "Rezervasyonu tamamla",
+    "loading": "Yükleniyor…",
+    "error": {
+      "dealUnavailable": "Bu teklif mevcut değil",
+      "loadFailed": "Teklif yüklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+      "notFound": "Teklif bulunamadı",
+      "dealGone": "Üzgünüz, bu teklif artık mevcut değil.",
+      "soldOutNow": "Üzgünüz, bu teklifteki koltuklar az önce tükendi.",
+      "seatsFewer": "Şu anda yalnızca {{available}} koltuk müsait; yolcu sayısı ({{needed}}) bundan fazla.",
+      "priceChanged": "Dikkat: sayfayı açtığınızdan beri bu teklifin fiyatı değişti (önceki {{oldPrice}}, şimdi {{newPrice}}). Aşağıdaki yeni toplamı kontrol edip devam etmek için tekrar “Rezervasyonu onayla”ya basın.",
+      "createFailed": "Rezervasyon oluşturulamadı. Lütfen tekrar deneyin veya bizimle iletişime geçin."
+    },
+    "validation": {
+      "name": "Lütfen ad soyadınızı girin",
+      "phone": "Lütfen telefon numaranızı girin",
+      "phoneInvalid": "Geçersiz telefon numarası — uluslararası biçimde girin, örn. +20xxxxxxxxxx",
+      "emailInvalid": "Geçersiz e-posta adresi",
+      "travelerName": "Lütfen {{n}}. yolcunun adını pasaporttaki gibi girin"
+    },
+    "soldOut": "Üzgünüz, bu teklifteki koltuklar tükendi. Başka bir teklif aramayı deneyin.",
+    "contact": {
+      "heading": "İletişim ve yolcu bilgileri",
+      "fullName": "Ad soyad",
+      "phone": "Telefon numarası",
+      "email": "E-posta (isteğe bağlı)",
+      "adults": "Yetişkin",
+      "children": "Çocuk",
+      "infants": "Bebek"
+    },
+    "traveler": {
+      "title": "Yolcu {{n}} ({{type}})",
+      "type": {
+        "adult": "yetişkin",
+        "child": "çocuk",
+        "infant": "bebek"
+      },
+      "name": "Pasaporttaki ad",
+      "dob": "Doğum tarihi",
+      "passport": "Pasaport numarası"
+    },
+    "services": {
+      "heading": "Ek hizmetler (isteğe bağlı)",
+      "recommended": "Önerilen"
+    },
+    "tripgo": {
+      "heading": "🚗 Anında TripGo — özel araç sizi bulunduğunuz yerden alır (isteğe bağlı)",
+      "hint": "Bölgenizi seçin; araç ücreti bilet fiyatının üzerine otomatik eklenir.",
+      "none": "Transfer yok — ulaşımımı kendim ayarlarım"
+    },
+    "summary": {
+      "heading": "Özet ve ödeme yöntemi",
+      "warning": "⚠️ Fiyat tahminidir ve kesin değildir. “Rezervasyonu onayla”ya basmak acenteye bir <b>rezervasyon talebi</b> gönderir, onaylı bir bilet değildir — gerçek ödemeden önce fiyatı ve koltuğu onaylamak için sizinle iletişime geçecekler.",
+      "route": "Güzergâh",
+      "baseFare": "Temel ücret",
+      "taxes": "Vergi ve harçlar",
+      "package": "Paket",
+      "transfer": "TripGo (transfer)",
+      "travelers": "Yolcular",
+      "travelersValue": "{{adults}} yetişkin · {{children}} çocuk · {{infants}} bebek",
+      "total": "Tahmini toplam"
+    },
+    "payment": {
+      "note": "Ödeme manueldir — havaleyi tamamlayın, ardından acente onayından sonra dekontu WhatsApp ile gönderin"
+    },
+    "submit": "Rezervasyonu onayla",
+    "submitting": "Rezervasyon kontrol ediliyor…"
+  },
+  "confirmation": {
+    "noData": "Bu sayfada rezervasyon verisi yok (sayfa yenilenmiş olabilir).",
+    "lastBooking": "Son rezervasyonunuz:",
+    "viewMyBooking": "Rezervasyonumu Seyahatlerim'de görüntüle",
+    "title": "Rezervasyon başarıyla oluşturuldu",
+    "tripgoBadge": "🚐 TripGo seyahati — Uçuş + Transfer",
+    "bookingNumber": "Rezervasyon numarası",
+    "route": "Güzergâh",
+    "amount": "Tutar",
+    "paymentMethod": "Ödeme yöntemi",
+    "statusLabel": "Durum",
+    "status": {
+      "new": "Yeni — iletişim bekleniyor",
+      "contacted": "Sizinle iletişime geçildi",
+      "awaiting_payment": "Ödeme bekleniyor",
+      "payment_uploaded": "Ödeme kanıtı alındı",
+      "paid": "Ödeme onaylandı",
+      "ticket_issued": "Bilet düzenlendi",
+      "cancelled": "İptal edildi"
+    },
+    "transfer": {
+      "heading": "Havalimanı transfer detayları",
+      "pickupLocation": "Alış noktası",
+      "area": "Bölge",
+      "flightNumber": "Uçuş numarası",
+      "transport": "Ulaşım türü"
+    },
+    "requestNotice": "⚠️ Bu henüz onaylı bir bilet değil, bir <b>rezervasyon talebidir</b>. Acente ekibi fiyatı ve koltuk müsaitliğini onaylamak için sizinle iletişime geçecek. Acente nihai fiyatı onaylamadan banka havalesi göndermeyin.",
+    "afterConfirm": "Acente onayından sonra seçtiğiniz ödeme yöntemiyle havaleyi tamamlayın, ardından dekontu WhatsApp ile gönderin veya doğrudan buraya yükleyin.",
+    "sendWhatsApp": "WhatsApp ile gönder",
+    "viewInMyTrips": "Seyahatlerim'de görüntüle",
+    "saveNote": "Daha sonra aramak için rezervasyon numaranızı {{number}} ve telefon numaranızı {{phone}} not edin",
+    "wa": {
+      "greeting": "Merhaba, {{number}} numaralı rezervasyon için havale gönderdim",
+      "name": "Ad: {{name}}",
+      "route": "Güzergâh: {{route}}",
+      "travelers": "Yolcular: {{summary}}",
+      "pickup": "Alış noktası: {{location}}",
+      "transport": "Ulaşım türü: {{transport}}",
+      "amount": "Tutar: {{amount}}",
+      "adults": "{{count}} yetişkin",
+      "children": "{{count}} çocuk",
+      "infants": "{{count}} bebek"
+    }
+  },
+  "myTrips": {
+    "title": "Seyahatlerim",
+    "subtitle": "Rezervasyon numarası ve telefon ya da e-posta ile arama yapın — giriş gerekmez",
+    "bookingNumber": "Rezervasyon numarası",
+    "bookingNumberPlaceholder": "örn. 1001",
+    "contact": "Telefon numarası veya e-posta",
+    "search": "Ara",
+    "searching": "Aranıyor…",
+    "notFound": "Bu bilgilerle rezervasyon bulunamadı",
+    "searchFailed": "Arama sırasında bir hata oluştu. Lütfen tekrar deneyin.",
+    "details": "Rezervasyon detayları",
+    "status": "Durum",
+    "trip": "Uçuş",
+    "travelDate": "Seyahat tarihi",
+    "airline": "Havayolu",
+    "amount": "Tutar",
+    "paymentMethod": "Ödeme yöntemi",
+    "travelers": "Yolcular",
+    "extraServices": "İstenen ek hizmetler",
+    "extraServicesNote": "Bunlar talep ettiğiniz hizmetlerdir — fiilen etkinleşmeleri havayolunun/sağlayıcının onayına bağlıdır, otomatik değildir.",
+    "viewTicket": "🎫 Bileti görüntüle / indir",
+    "emptyTitle": "Sonuç yok",
+    "emptySubtitle": "Rezervasyon numarasını ve iletişim bilgilerini kontrol edip tekrar deneyin",
+    "bookingStatus": {
+      "new": "Yeni",
+      "contacted": "İletişime geçildi",
+      "awaiting_payment": "Ödeme bekleniyor",
+      "payment_uploaded": "Ödeme kanıtı yüklendi",
+      "paid": "Ödendi",
+      "ticket_issued": "Bilet düzenlendi",
+      "cancelled": "İptal edildi"
+    },
+    "serviceStatus": {
+      "pending_confirmation": "Onay bekleniyor",
+      "confirmed_with_supplier": "Tedarikçiyle onaylandı",
+      "failed": "Gerçekleştirilemedi",
+      "refunded": "İade edildi"
+    }
+  },
+  "journey": {
+    "title": "Yolculuğunuz",
+    "itemStatus": {
+      "pending_assignment": "Ayarlanıyor",
+      "assigned": "Onaylanıyor",
+      "confirmed": "Onaylandı",
+      "fulfilled": "Onaylandı ✓",
+      "failed": "Sizin için yeniden ayarlıyoruz",
+      "reassigning": "Sizin için yeniden ayarlıyoruz",
+      "cancelled": "İptal edildi"
+    },
+    "summary": {
+      "pending_assignment": "Yolculuğunuz ayarlanıyor",
+      "partially_assigned": "Yolculuğunuz ayarlanıyor",
+      "fully_assigned": "Yolculuğunuzun tüm öğeleri onaylanıyor",
+      "partially_fulfilled": "Yolculuğunuzun bir kısmı onaylandı",
+      "fully_fulfilled": "Yolculuğunuz tamamen onaylandı ✓",
+      "needs_attention": "Ekibimiz yolculuğunuzdaki bir öğeyi inceliyor",
+      "cancelled": "İptal edildi"
+    },
+    "supplierPending": "Sağlayıcı belirleniyor…",
+    "footnote": "Yolculuğunuzdaki her öğe ayrı ayrı onaylanır. Bir öğede sorun çıkarsa, seyahatinizin geri kalanını iptal etmeden otomatik olarak alternatif ararız."
+  },
+  "proof": {
+    "failed": "Dosya yüklenemedi. Lütfen tekrar deneyin.",
+    "done": "✓ Ödeme kanıtı başarıyla yüklendi",
+    "uploading": "Yükleniyor…",
+    "upload": "📎 Ödeme kanıtı yükle (görsel veya PDF)"
+  },
+  "addServices": {
+    "failed": "Hizmetler eklenemedi. Lütfen tekrar deneyin.",
+    "added": "✓ Hizmetler eklendi ({{amount}})",
+    "addedPaidSuffix": " — fiyat farkını tahsil etmek için sizinle iletişime geçeceğiz",
+    "open": "➕ Seyahatinize hizmet ekleyin",
+    "heading": "Seyahatinize hizmet ekleyin",
+    "close": "Kapat",
+    "loading": "Yükleniyor…",
+    "none": "Şu anda ek hizmet bulunmuyor.",
+    "chooseAirport": "Havalimanı seçin…",
+    "departureAirport": "Kalkış havalimanı",
+    "arrivalAirport": "Varış havalimanı",
+    "paidNote": "Bu rezervasyon zaten ödendi — fiyat farkı sizinle iletişime geçilerek tahsil edilecek.",
+    "confirm": "Eklemeyi onayla ({{amount}})",
+    "chooseService": "Bir hizmet seçin",
+    "adding": "Ekleniyor…"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "loading": "جاري التحميل...",
+  "error": {
+    "unavailable": "العرض غير متاح أو انتهت صلاحيته",
+    "loadFailed": "حصل خطأ في تحميل العرض، جرّب تاني أو ارجع للرئيسية.",
+    "notFound": "العرض غير موجود"
+  },
+  "backHome": "العودة للرئيسية",
+  "rail": {
+    "baseFare": "السعر الأساسي",
+    "taxes": "ضرائب ورسوم",
+    "continue": "متابعة",
+    "soldOut": "نفدت المقاعد",
+    "copied": "تم النسخ ✓",
+    "share": "🔗 مشاركة",
+    "priceAlert": "🔔 تنبيه سعر"
+  },
+  "hero": {
+    "kicker": "فرصة TripRing"
+  },
+  "seatsLeft": "{{count}} مقاعد متبقية",
+  "info": {
+    "departure": "المغادرة",
+    "return": "العودة",
+    "availableSeats": "المقاعد المتاحة",
+    "class": "الدرجة",
+    "flightNumber": "رقم الرحلة",
+    "aircraft": "نوع الطائرة",
+    "operatingCarrier": "الناقل المشغّل",
+    "arrivalDate": "تاريخ الوصول",
+    "layover": "مدة التوقف",
+    "baggage": "الأمتعة",
+    "baggageKg": "{{kg}} كجم",
+    "cabinBag": "شنطة الكابينة",
+    "checkedBags": "عدد الشنط المسجّلة",
+    "extraBagPrice": "سعر الشنطة الإضافية"
+  },
+  "fare": {
+    "refundable": "قابلة للاسترداد",
+    "nonRefundable": "غير قابلة للاسترداد",
+    "changeable": "يمكن تغييرها",
+    "nonChangeable": "لا يمكن تغييرها",
+    "changeFee": "رسوم التغيير: {{amount}}",
+    "cancellationFee": "رسوم الإلغاء: {{amount}}"
+  },
+  "flexible": {
+    "title": "تواريخ مرنة",
+    "subtitle": "أسعار نفس المسار في تواريخ قريبة من رحلتك",
+    "save": "💡 وفّر {{amount}} لو سافرت يوم {{date}}",
+    "yourTrip": "رحلتك"
+  },
+  "reasons": {
+    "title": "ليه دي فرصة كويسة؟"
+  },
+  "priceHistory": "تاريخ سعر {{route}}",
+  "notes": "ملاحظات",
+  "alert": {
+    "title": "إنشاء تنبيه سعر",
+    "needContact": "أدخل رقم تليفون أو إيميل",
+    "failed": "حصل خطأ، حاول تاني",
+    "done": "تمام! هنبعتلك تنبيه لما سعر {{route}} ينزل تحت {{budget}} {{currency}}",
+    "intro": "هنبعتلك تنبيه لما سعر {{route}} ينزل عن الميزانية دي.",
+    "contactLabel": "رقم تليفون أو إيميل",
+    "contactPlaceholder": "01000000000 أو you@email.com",
+    "budgetLabel": "الميزانية القصوى (USD)",
+    "create": "إنشاء التنبيه",
+    "creating": "جاري الإنشاء..."
+  }
+}

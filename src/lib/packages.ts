@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
+import i18n from "../i18n";
 import { fetchFarePackageTiers } from "./api";
 import type { AdditionalServiceRow, FarePackageTierRow } from "../types/database";
 
 /**
- * "Fare bundle" tiers shown on the deal-detail page (تذكرة فقط / Smart Trip / Premium Trip).
+ * "Fare bundle" tiers shown on the deal-detail page (Ticket only / Smart Trip / Premium Trip).
  *
  * The source of truth for pricing (label + markup_percent + which tiers are
  * active/what order) is the `fare_package_tiers` table — never hardcode those
  * numbers here. What IS hardcoded here is purely presentational metadata that
- * has no column in the DB: the "الأكثر اختياراً" badge, the bundled
+ * has no column in the DB: the "most popular" badge, the bundled
  * `additional_services` keys, and the bullet-point perks copy. `usePackageOptions`
  * merges the two: live numbers from Supabase + local display metadata by tier id.
  *
- * `FALLBACK_PACKAGE_OPTIONS` is only used before the live fetch resolves (or if
+ * `FALLBACK_TIERS` is only used before the live fetch resolves (or if
  * it fails) so the UI never blocks on network — it mirrors the DB's current
  * values but is not the source of truth once the fetch succeeds.
  */
@@ -29,92 +31,96 @@ export interface PackageOption {
   perks: string[];
 }
 
-const DISPLAY_META: Record<PackageTier, { badge?: string; includedServiceKeys: ServiceKey[]; perks: string[] }> = {
-  basic: {
-    includedServiceKeys: [],
-    perks: ["تذكرة الطيران فقط"],
-  },
-  smart: {
-    badge: "الأكثر اختياراً",
-    includedServiceKeys: ["transfer"],
-    perks: ["تذكرة الطيران", "حقيبة واحدة", "الانتقال من وإلى المطار", "دعم الرحلة"],
-  },
-  premium: {
-    includedServiceKeys: ["transfer", "lounge", "fast_track", "insurance"],
-    perks: [
-      "تذكرة الطيران",
-      "حقيبة واحدة",
-      "الانتقال من وإلى المطار",
-      "صالة المطار (Lounge)",
-      "Fast Track",
-      "تأمين السفر",
-      "دعم الرحلة",
-    ],
-  },
+/**
+ * Presentational metadata with no DB column. The human-readable text (label,
+ * badge, perks) lives in the `packages` i18n namespace, keyed by tier id.
+ */
+const DISPLAY_META: Record<PackageTier, { hasBadge: boolean; includedServiceKeys: ServiceKey[] }> = {
+  basic: { hasBadge: false, includedServiceKeys: [] },
+  smart: { hasBadge: true, includedServiceKeys: ["transfer"] },
+  premium: { hasBadge: false, includedServiceKeys: ["transfer", "lounge", "fast_track", "insurance"] },
 };
 
-export const FALLBACK_PACKAGE_OPTIONS: PackageOption[] = [
-  { id: "basic", label: "تذكرة فقط", markupPercent: 0, ...DISPLAY_META.basic },
-  { id: "smart", label: "Smart Trip", markupPercent: 0.076, ...DISPLAY_META.smart },
-  { id: "premium", label: "Premium Trip", markupPercent: 0.238, ...DISPLAY_META.premium },
+/** Tier data before localisation: live numbers from the DB plus (optionally) the DB's own label. */
+type BaseTier = { id: PackageTier; dbLabel?: string; markupPercent: number };
+
+// Only used before the live fetch resolves (or if it fails) — mirrors the DB's current values.
+const FALLBACK_TIERS: BaseTier[] = [
+  { id: "basic", markupPercent: 0 },
+  { id: "smart", markupPercent: 0.076 },
+  { id: "premium", markupPercent: 0.238 },
 ];
 
-/** @deprecated Use `usePackageOptions()` to get live values from `fare_package_tiers`. */
-export const PACKAGE_OPTIONS = FALLBACK_PACKAGE_OPTIONS;
+/**
+ * Builds a display-ready tier in the active language. For Arabic the label stays
+ * whatever `fare_package_tiers.label` says (the DB is the source of truth there);
+ * English/Turkish use the translation for that tier id.
+ */
+function localiseTier(base: BaseTier): PackageOption {
+  const meta = DISPLAY_META[base.id];
+  const perks = i18n.t(`packages:tier.${base.id}.perks`, { returnObjects: true });
+  const useDbLabel = i18n.language.startsWith("ar") && !!base.dbLabel;
+  return {
+    id: base.id,
+    label: useDbLabel ? (base.dbLabel as string) : i18n.t(`packages:tier.${base.id}.label`),
+    badge: meta.hasBadge ? i18n.t(`packages:tier.${base.id}.badge`) : undefined,
+    markupPercent: base.markupPercent,
+    includedServiceKeys: meta.includedServiceKeys,
+    perks: Array.isArray(perks) ? (perks as string[]) : [],
+  };
+}
 
 function isPackageTier(tier: string): tier is PackageTier {
   return tier === "basic" || tier === "smart" || tier === "premium";
 }
 
-function mergeTiers(rows: FarePackageTierRow[]): PackageOption[] {
+function mergeTiers(rows: FarePackageTierRow[]): BaseTier[] {
   const merged = rows
     .filter((r): r is FarePackageTierRow & { tier: PackageTier } => isPackageTier(r.tier))
-    .map((r) => ({
-      id: r.tier,
-      label: r.label,
-      markupPercent: Number(r.markup_percent),
-      ...(DISPLAY_META[r.tier] ?? { includedServiceKeys: [], perks: [r.label] }),
-    }));
-  return merged.length > 0 ? merged : FALLBACK_PACKAGE_OPTIONS;
+    .map((r) => ({ id: r.tier, dbLabel: r.label, markupPercent: Number(r.markup_percent) }));
+  return merged.length > 0 ? merged : FALLBACK_TIERS;
 }
 
 // Module-level cache so every component calling the hook shares one fetch
 // instead of each re-querying Supabase independently.
-let cachedOptions: PackageOption[] | null = null;
-let inFlight: Promise<PackageOption[]> | null = null;
+let cachedTiers: BaseTier[] | null = null;
+let inFlight: Promise<BaseTier[]> | null = null;
 
-async function loadPackageOptions(): Promise<PackageOption[]> {
-  if (cachedOptions) return cachedOptions;
+async function loadTiers(): Promise<BaseTier[]> {
+  if (cachedTiers) return cachedTiers;
   if (!inFlight) {
     inFlight = fetchFarePackageTiers()
       .then((rows) => {
-        cachedOptions = mergeTiers(rows);
-        return cachedOptions;
+        cachedTiers = mergeTiers(rows);
+        return cachedTiers;
       })
-      .catch(() => FALLBACK_PACKAGE_OPTIONS);
+      .catch(() => FALLBACK_TIERS);
   }
   return inFlight;
 }
 
 /**
- * Live package tiers, sourced from `fare_package_tiers`. Returns
- * `FALLBACK_PACKAGE_OPTIONS` synchronously on first render (no loading
- * flicker), then swaps in the live DB values once the fetch resolves.
+ * Live package tiers, sourced from `fare_package_tiers`, localised to the active
+ * UI language. Returns the fallback tiers synchronously on first render (no
+ * loading flicker), then swaps in the live DB values once the fetch resolves.
  */
 export function usePackageOptions(): PackageOption[] {
-  const [options, setOptions] = useState<PackageOption[]>(cachedOptions ?? FALLBACK_PACKAGE_OPTIONS);
+  const { i18n: inst } = useTranslation("packages");
+  const [tiers, setTiers] = useState<BaseTier[]>(cachedTiers ?? FALLBACK_TIERS);
 
   useEffect(() => {
     let cancelled = false;
-    loadPackageOptions().then((opts) => {
-      if (!cancelled) setOptions(opts);
+    loadTiers().then((t) => {
+      if (!cancelled) setTiers(t);
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  return options;
+  // Re-localise whenever the language changes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => tiers.map(localiseTier), [tiers, inst.language]);
 }
 
 const SERVICE_KEYWORDS: Record<ServiceKey, string[]> = {

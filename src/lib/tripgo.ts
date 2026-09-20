@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import { supabase } from "./supabase";
 import type {
   BookingChannel,
@@ -83,9 +84,11 @@ export function tripGoTotal(flightPrice: number, transferPrice: number): number 
   return Math.round((flightPrice + transferPrice) * 100) / 100;
 }
 
-export function transferKindLabel(transportType: TransportType, vehicleType?: string | null): string {
-  if (transportType === "private") return vehicleType ? `🚗 عربية خاصة · ${vehicleType}` : "🚗 عربية خاصة";
-  return vehicleType ? `🚐 نقل تشاركي · ${vehicleType}` : "🚐 نقل تشاركي";
+export function transferKindLabel(transportType: TransportType, vehicleType?: string | null, lng?: string): string {
+  const base = transportType === "private" ? "private" : "shared";
+  return vehicleType
+    ? i18n.t(`common:transfer.${base}With`, { vehicle: vehicleType, lng })
+    : i18n.t(`common:transfer.${base}`, { lng });
 }
 
 // ── Booking (customer-facing) ───────────────────────────────────────────

@@ -50,5 +50,25 @@
     "loading": "جاري التحميل…",
     "viewAll": "عرض الكل",
     "book": "احجز"
+  },
+  "payment": {
+    "bank_transfer": {
+      "label": "تحويل بنكي",
+      "details": "البنك: {{bank}} · IBAN: {{iban}} · اسم الحساب: {{account}}"
+    },
+    "instapay": {
+      "label": "InstaPay",
+      "details": "معرّف InstaPay: {{handle}}"
+    },
+    "vodafone_cash": {
+      "label": "Vodafone Cash",
+      "details": "رقم المحفظة: {{number}}"
+    }
+  },
+  "transfer": {
+    "private": "🚗 عربية خاصة",
+    "privateWith": "🚗 عربية خاصة · {{vehicle}}",
+    "shared": "🚐 نقل تشاركي",
+    "sharedWith": "🚐 نقل تشاركي · {{vehicle}}"
   }
 }

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { friendlyErrorMessage } from "../lib/errors";
 import { uploadPaymentProof } from "../lib/api";
@@ -20,6 +21,7 @@ export function PaymentProofUpload({
   contact: string;
   onUploaded?: (status: string) => void;
 }) {
+  const { t } = useTranslation("booking");
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,14 +35,14 @@ export function PaymentProofUpload({
       setDone(true);
       onUploaded?.(result.status);
     } catch (err) {
-      setError(friendlyErrorMessage(err, "تعذر رفع الملف، جرّب تاني.", "PaymentProofUpload.upload"));
+      setError(friendlyErrorMessage(err, "booking:proof.failed", "PaymentProofUpload.upload"));
     } finally {
       setUploading(false);
     }
   }
 
   if (done) {
-    return <p className="text-sm font-semibold text-green-700">✓ تم رفع إثبات الدفع بنجاح</p>;
+    return <p className="text-sm font-semibold text-green-700">{t("proof.done")}</p>;
   }
 
   return (
@@ -62,7 +64,7 @@ export function PaymentProofUpload({
         disabled={uploading || !bookingNumber || !contact}
         onClick={() => inputRef.current?.click()}
       >
-        {uploading ? "جاري الرفع..." : "📎 رفع إثبات الدفع (صورة أو PDF)"}
+        {uploading ? t("proof.uploading") : t("proof.upload")}
       </Button>
       {error ? <p className="text-xs text-red-600">{error}</p> : null}
     </div>

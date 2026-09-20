@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { AgencyReviewsPanel } from "../components/AgencyReviewsPanel";
@@ -35,6 +36,7 @@ import { cn, formatDate, formatPrice, formatTime } from "../lib/utils";
 import type { AdditionalServiceRow, DealPriceHistoryRow, DealRow } from "../types/database";
 
 export function DealDetailPage() {
+  const { t } = useTranslation("dealDetail");
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
   const catalog = useCatalog();
@@ -67,7 +69,7 @@ export function DealDetailPage() {
         setHistory(h);
         setServices(s);
         if (!d) {
-          setError("العرض غير متاح أو انتهت صلاحيته");
+          setError(t("error.unavailable"));
           return;
         }
         // Flexible Dates — best-effort, never blocks the page.
@@ -81,20 +83,20 @@ export function DealDetailPage() {
         // returned") — log it for debugging and show a friendly Arabic
         // message instead.
         console.error("[DealDetailPage] failed to load deal:", e);
-        setError("حصل خطأ في تحميل العرض، جرّب تاني أو ارجع للرئيسية.");
+        setError(t("error.loadFailed"));
       })
       .finally(() => setLoading(false));
   }, [dealId]);
 
   const imageUrl = useDealImage(deal?.to_airport ?? "", catalog, deal?.id);
 
-  if (loading || catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
+  if (loading || catalog.loading) return <p className="text-slate-500">{t("loading")}</p>;
   if (error || !deal) {
     return (
       <Card className="text-center">
-        <p className="text-red-600">{error ?? "العرض غير موجود"}</p>
+        <p className="text-red-600">{error ?? t("error.notFound")}</p>
         <Link to="/" className="mt-4 inline-block text-[#0C7BB3]">
-          العودة للرئيسية
+          {t("backHome")}
         </Link>
       </Card>
     );
@@ -144,11 +146,11 @@ export function DealDetailPage() {
       {hasPriceBreakdown(deal) ? (
         <div className="space-y-1 border-b border-slate-100 pb-3 text-xs text-slate-500">
           <div className="flex justify-between">
-            <span>السعر الأساسي</span>
+            <span>{t("rail.baseFare")}</span>
             <span className="font-latin">{formatPrice(deal.base_fare!, currency)}</span>
           </div>
           <div className="flex justify-between">
-            <span>ضرائب ورسوم</span>
+            <span>{t("rail.taxes")}</span>
             <span className="font-latin">{formatPrice(deal.taxes_fees!, currency)}</span>
           </div>
         </div>
@@ -171,11 +173,11 @@ export function DealDetailPage() {
       <div className="flex flex-col gap-2.5 border-t border-slate-100 pt-3">
         {deal.available_seats > 0 ? (
           <Button fullWidth onClick={handleContinue}>
-            متابعة
+            {t("rail.continue")}
           </Button>
         ) : (
           <Button fullWidth disabled>
-            نفدت المقاعد
+            {t("rail.soldOut")}
           </Button>
         )}
       </div>
@@ -186,14 +188,14 @@ export function DealDetailPage() {
           onClick={handleShare}
           className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
         >
-          {shareCopied ? "تم النسخ ✓" : "🔗 مشاركة"}
+          {shareCopied ? t("rail.copied") : t("rail.share")}
         </button>
         <button
           type="button"
           onClick={() => setAlertOpen(true)}
           className="flex-1 rounded-lg border border-slate-200 py-2 font-semibold text-slate-600 transition hover:border-[#0C7BB3] hover:text-[#0C7BB3]"
         >
-          🔔 تنبيه سعر
+          {t("rail.priceAlert")}
         </button>
       </div>
     </div>
@@ -211,7 +213,7 @@ export function DealDetailPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 sm:p-5">
           <div>
-            <p className="text-[11px] font-semibold text-white/80">فرصة TripRing</p>
+            <p className="text-[11px] font-semibold text-white/80">{t("hero.kicker")}</p>
             <h1 className="font-display text-2xl font-extrabold text-white sm:text-3xl">{formatRoute(deal)}</h1>
             <p className="mt-0.5 text-sm text-white/85">
               {airlineName(deal.airline_code, catalog.airlines)} · {stopsLabel(deal.stops)}
@@ -224,7 +226,7 @@ export function DealDetailPage() {
         <DealBadge tone="good">{dealTypeLabel(deal.deal_type)}</DealBadge>
         {isLowSeats(deal.available_seats) ? (
           <DealBadge tone="urgent" icon="⏳">
-            {deal.available_seats} مقاعد متبقية
+            {t("seatsLeft", { count: deal.available_seats })}
           </DealBadge>
         ) : null}
       </div>
@@ -238,41 +240,41 @@ export function DealDetailPage() {
           <Card className="space-y-4">
             <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <div>
-                <dt className="text-xs text-slate-500">المغادرة</dt>
+                <dt className="text-xs text-slate-500">{t("info.departure")}</dt>
                 <dd className="font-bold text-slate-900">{formatDate(deal.departure_date)}</dd>
                 <dd className="text-sm text-slate-600">{formatTime(deal.departure_time)}</dd>
               </div>
               {deal.return_date ? (
                 <div>
-                  <dt className="text-xs text-slate-500">العودة</dt>
+                  <dt className="text-xs text-slate-500">{t("info.return")}</dt>
                   <dd className="font-bold text-slate-900">{formatDate(deal.return_date)}</dd>
                 </div>
               ) : null}
               <div>
-                <dt className="text-xs text-slate-500">المقاعد المتاحة</dt>
+                <dt className="text-xs text-slate-500">{t("info.availableSeats")}</dt>
                 <dd className="text-xl font-extrabold text-slate-900">{deal.available_seats}</dd>
               </div>
               {deal.travel_class ? (
                 <div>
-                  <dt className="text-xs text-slate-500">الدرجة</dt>
+                  <dt className="text-xs text-slate-500">{t("info.class")}</dt>
                   <dd className="font-semibold text-slate-800">{deal.travel_class}</dd>
                 </div>
               ) : null}
               {deal.flight_number ? (
                 <div>
-                  <dt className="text-xs text-slate-500">رقم الرحلة</dt>
+                  <dt className="text-xs text-slate-500">{t("info.flightNumber")}</dt>
                   <dd className="font-latin font-semibold text-slate-800">{deal.flight_number}</dd>
                 </div>
               ) : null}
               {deal.aircraft_type ? (
                 <div>
-                  <dt className="text-xs text-slate-500">نوع الطائرة</dt>
+                  <dt className="text-xs text-slate-500">{t("info.aircraft")}</dt>
                   <dd className="font-semibold text-slate-800">{deal.aircraft_type}</dd>
                 </div>
               ) : null}
               {deal.operating_airline_code && deal.operating_airline_code !== deal.airline_code ? (
                 <div>
-                  <dt className="text-xs text-slate-500">الناقل المشغّل</dt>
+                  <dt className="text-xs text-slate-500">{t("info.operatingCarrier")}</dt>
                   <dd className="font-semibold text-slate-800">
                     {airlineName(deal.operating_airline_code, catalog.airlines)}
                   </dd>
@@ -280,7 +282,7 @@ export function DealDetailPage() {
               ) : null}
               {deal.arrival_date ? (
                 <div>
-                  <dt className="text-xs text-slate-500">تاريخ الوصول</dt>
+                  <dt className="text-xs text-slate-500">{t("info.arrivalDate")}</dt>
                   <dd className="font-semibold text-slate-800">
                     {formatDate(deal.arrival_date)}
                     {deal.arrival_time ? ` · ${formatTime(deal.arrival_time)}` : ""}
@@ -289,31 +291,31 @@ export function DealDetailPage() {
               ) : null}
               {layoverLabel(deal.layover_minutes) ? (
                 <div>
-                  <dt className="text-xs text-slate-500">مدة التوقف</dt>
+                  <dt className="text-xs text-slate-500">{t("info.layover")}</dt>
                   <dd className="font-semibold text-slate-800">{layoverLabel(deal.layover_minutes)}</dd>
                 </div>
               ) : null}
               {deal.baggage_kg ? (
                 <div>
-                  <dt className="text-xs text-slate-500">الأمتعة</dt>
-                  <dd className="font-semibold text-slate-800">{deal.baggage_kg} كجم</dd>
+                  <dt className="text-xs text-slate-500">{t("info.baggage")}</dt>
+                  <dd className="font-semibold text-slate-800">{t("info.baggageKg", { kg: deal.baggage_kg })}</dd>
                 </div>
               ) : null}
               {deal.cabin_baggage_kg ? (
                 <div>
-                  <dt className="text-xs text-slate-500">شنطة الكابينة</dt>
-                  <dd className="font-semibold text-slate-800">{deal.cabin_baggage_kg} كجم</dd>
+                  <dt className="text-xs text-slate-500">{t("info.cabinBag")}</dt>
+                  <dd className="font-semibold text-slate-800">{t("info.baggageKg", { kg: deal.cabin_baggage_kg })}</dd>
                 </div>
               ) : null}
               {deal.checked_bags_count != null ? (
                 <div>
-                  <dt className="text-xs text-slate-500">عدد الشنط المسجّلة</dt>
+                  <dt className="text-xs text-slate-500">{t("info.checkedBags")}</dt>
                   <dd className="font-semibold text-slate-800">{deal.checked_bags_count}</dd>
                 </div>
               ) : null}
               {deal.extra_baggage_price ? (
                 <div>
-                  <dt className="text-xs text-slate-500">سعر الشنطة الإضافية</dt>
+                  <dt className="text-xs text-slate-500">{t("info.extraBagPrice")}</dt>
                   <dd className="font-semibold text-slate-800">{formatPrice(deal.extra_baggage_price, currency)}</dd>
                 </div>
               ) : null}
@@ -325,21 +327,21 @@ export function DealDetailPage() {
                   {deal.fare_family ? <DealBadge tone="good">{deal.fare_family}</DealBadge> : null}
                   {deal.refundable != null ? (
                     <DealBadge tone={deal.refundable ? "excellent" : "neutral"}>
-                      {deal.refundable ? "قابلة للاسترداد" : "غير قابلة للاسترداد"}
+                      {deal.refundable ? t("fare.refundable") : t("fare.nonRefundable")}
                     </DealBadge>
                   ) : null}
                   {deal.changeable != null ? (
                     <DealBadge tone={deal.changeable ? "excellent" : "neutral"}>
-                      {deal.changeable ? "يمكن تغييرها" : "لا يمكن تغييرها"}
+                      {deal.changeable ? t("fare.changeable") : t("fare.nonChangeable")}
                     </DealBadge>
                   ) : null}
                 </div>
                 {deal.change_fee != null || deal.cancellation_fee != null ? (
                   <p className="mt-2 text-sm text-slate-600">
-                    {deal.change_fee != null ? `رسوم التغيير: ${formatPrice(deal.change_fee, currency)}` : null}
+                    {deal.change_fee != null ? t("fare.changeFee", { amount: formatPrice(deal.change_fee, currency) }) : null}
                     {deal.change_fee != null && deal.cancellation_fee != null ? " · " : null}
                     {deal.cancellation_fee != null
-                      ? `رسوم الإلغاء: ${formatPrice(deal.cancellation_fee, currency)}`
+                      ? t("fare.cancellationFee", { amount: formatPrice(deal.cancellation_fee, currency) })
                       : null}
                   </p>
                 ) : null}
@@ -350,12 +352,14 @@ export function DealDetailPage() {
 
           {nearbyDates.length > 1 ? (
             <Card>
-              <h2 className="mb-1 font-bold text-slate-900">تواريخ مرنة</h2>
-              <p className="mb-3 text-xs text-slate-500">أسعار نفس المسار في تواريخ قريبة من رحلتك</p>
+              <h2 className="mb-1 font-bold text-slate-900">{t("flexible.title")}</h2>
+              <p className="mb-3 text-xs text-slate-500">{t("flexible.subtitle")}</p>
               {cheaperAlternative ? (
                 <p className="mb-3 rounded-lg bg-[#F0FDF4] px-3 py-2 text-xs font-semibold text-[#16A34A]">
-                  💡 وفّر {formatPrice(deal.price - cheaperAlternative.price, currency)} لو سافرت يوم{" "}
-                  {formatDate(cheaperAlternative.date)}
+                  {t("flexible.save", {
+                    amount: formatPrice(deal.price - cheaperAlternative.price, currency),
+                    date: formatDate(cheaperAlternative.date),
+                  })}
                 </p>
               ) : null}
               <div className="-mx-1 flex gap-2 overflow-x-auto pb-1">
@@ -383,7 +387,7 @@ export function DealDetailPage() {
                       >
                         {formatPrice(d.price, currency)}
                       </p>
-                      {isCurrent ? <p className="text-[10px] font-semibold text-[#0C7BB3]">رحلتك</p> : null}
+                      {isCurrent ? <p className="text-[10px] font-semibold text-[#0C7BB3]">{t("flexible.yourTrip")}</p> : null}
                     </Link>
                   );
                 })}
@@ -393,7 +397,7 @@ export function DealDetailPage() {
 
           {dealReasons(deal, history).length > 0 ? (
             <Card>
-              <h2 className="mb-3 font-bold text-slate-900">ليه دي فرصة كويسة؟</h2>
+              <h2 className="mb-3 font-bold text-slate-900">{t("reasons.title")}</h2>
               <ul className="grid gap-2.5 sm:grid-cols-2">
                 {dealReasons(deal, history).map((r) => (
                   <li key={r.text} className="flex items-center gap-2.5 text-sm text-slate-700">
@@ -409,12 +413,12 @@ export function DealDetailPage() {
              card above collapse by default to keep the page short. */}
 
           {trendPoints.length >= 2 ? (
-            <PriceHistoryChart title={`تاريخ سعر ${formatRoute(deal)}`} points={trendPoints} />
+            <PriceHistoryChart title={t("priceHistory", { route: formatRoute(deal) })} points={trendPoints} />
           ) : null}
 
           {deal.notes ? (
             <Card>
-              <h2 className="mb-2 font-bold">ملاحظات</h2>
+              <h2 className="mb-2 font-bold">{t("notes")}</h2>
               <p className="text-slate-600">{deal.notes}</p>
             </Card>
           ) : null}
@@ -433,6 +437,7 @@ export function DealDetailPage() {
 
 
 function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () => void; deal: DealRow }) {
+  const { t } = useTranslation("dealDetail");
   const [contact, setContact] = useState("");
   const [budget, setBudget] = useState(String(deal.price));
   const [submitting, setSubmitting] = useState(false);
@@ -441,7 +446,7 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
 
   async function submit() {
     if (!contact.trim()) {
-      setError("أدخل رقم تليفون أو إيميل");
+      setError(t("alert.needContact"));
       return;
     }
     setSubmitting(true);
@@ -457,32 +462,32 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
       });
       setDone(true);
     } catch (e) {
-      setError(friendlyErrorMessage(e, "حصل خطأ، حاول تاني", "PriceAlertModal.submit"));
+      setError(friendlyErrorMessage(e, "dealDetail:alert.failed", "PriceAlertModal.submit"));
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="إنشاء تنبيه سعر">
+    <Modal open={open} onClose={onClose} title={t("alert.title")}>
       {done ? (
         <p className="rounded-lg bg-green-50 p-4 text-center text-sm font-semibold text-green-700">
-          تمام! هنبعتلك تنبيه لما سعر {formatRoute(deal)} ينزل تحت {budget} {deal.currency ?? "USD"}
+          {t("alert.done", { route: formatRoute(deal), budget, currency: deal.currency ?? "USD" })}
         </p>
       ) : (
         <div className="space-y-3">
-          <p className="text-sm text-slate-600">هنبعتلك تنبيه لما سعر {formatRoute(deal)} ينزل عن الميزانية دي.</p>
+          <p className="text-sm text-slate-600">{t("alert.intro", { route: formatRoute(deal) })}</p>
           <label className="block space-y-1.5">
-            <span className="text-sm font-medium text-slate-700">رقم تليفون أو إيميل</span>
+            <span className="text-sm font-medium text-slate-700">{t("alert.contactLabel")}</span>
             <input
               value={contact}
               onChange={(e) => setContact(e.target.value)}
-              placeholder="01000000000 أو you@email.com"
+              placeholder={t("alert.contactPlaceholder")}
               className="field-input"
             />
           </label>
           <label className="block space-y-1.5">
-            <span className="text-sm font-medium text-slate-700">الميزانية القصوى (USD)</span>
+            <span className="text-sm font-medium text-slate-700">{t("alert.budgetLabel")}</span>
             <input
               type="number"
               value={budget}
@@ -492,7 +497,7 @@ function PriceAlertModal({ open, onClose, deal }: { open: boolean; onClose: () =
           </label>
           {error ? <p className="text-xs text-red-600">{error}</p> : null}
           <Button fullWidth onClick={submit} disabled={submitting}>
-            {submitting ? "جاري الإنشاء..." : "إنشاء التنبيه"}
+            {submitting ? t("alert.creating") : t("alert.create")}
           </Button>
         </div>
       )}

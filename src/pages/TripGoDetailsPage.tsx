@@ -6,7 +6,7 @@ import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { getAgencyWhatsApp } from "../lib/api";
-import { PAYMENT_METHODS } from "../lib/payment-config";
+import { usePaymentMethods } from "../lib/payment-config";
 import { airlineName, baggageBadgeLabel, formatRoute, stopsMetaLabel } from "../lib/deal-utils";
 import { bookTripGo, fetchTripGoBundleById, transferKindLabel, transportUnitsNeeded, tripGoTotal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
@@ -33,6 +33,7 @@ const STEPS = [
 ] as const;
 
 export function TripGoDetailsPage() {
+  const PAYMENT_METHODS = usePaymentMethods();
   const { bundleId } = useParams<{ bundleId: string }>();
   const navigate = useNavigate();
   const catalog = useCatalog();

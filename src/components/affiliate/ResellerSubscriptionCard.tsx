@@ -6,7 +6,7 @@ import {
   submitResellerSubscription,
 } from "../../lib/affiliate";
 import { friendlyErrorMessage } from "../../lib/errors";
-import { PAYMENT_METHODS } from "../../lib/payment-config";
+import { usePaymentMethods } from "../../lib/payment-config";
 import { RESELLER_SUBSCRIPTION_STATUS_LABELS } from "../../lib/admin";
 import type { AffiliateResellerSubscriptionRow, PaymentMethod, ResellerSubscriptionPlanRow } from "../../types/database";
 import { Badge } from "../ui/Badge";
@@ -76,6 +76,7 @@ export function ResellerSubscriptionCard({
 }
 
 function SubscribeForm({ affiliateId, onDone }: { affiliateId: string; onDone: () => void }) {
+  const PAYMENT_METHODS = usePaymentMethods();
   const [plans, setPlans] = useState<ResellerSubscriptionPlanRow[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");

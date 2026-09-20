@@ -1,0 +1,59 @@
+{
+  "tier": {
+    "basic": {
+      "label": "Ticket only",
+      "perks": [
+        "Flight ticket only"
+      ]
+    },
+    "smart": {
+      "label": "Smart Trip",
+      "badge": "Most popular",
+      "perks": [
+        "Flight ticket",
+        "One bag",
+        "Airport transfers",
+        "Trip support"
+      ]
+    },
+    "premium": {
+      "label": "Premium Trip",
+      "perks": [
+        "Flight ticket",
+        "One bag",
+        "Airport transfers",
+        "Airport lounge",
+        "Fast Track",
+        "Travel insurance",
+        "Trip support"
+      ]
+    }
+  },
+  "serviceKey": {
+    "transfer": "Airport transfers",
+    "lounge": "Airport lounge",
+    "fast_track": "Fast Track",
+    "meet_assist": "Meet & Assist",
+    "baggage": "Baggage services",
+    "parking": "Airport parking",
+    "insurance": "Travel insurance"
+  },
+  "selector": {
+    "chooseTrip": "Choose your trip",
+    "addServices": "Add your services",
+    "included": "Included ✓",
+    "recommended": "Recommended",
+    "total": "Total"
+  },
+  "serviceType": {
+    "travel_insurance": "Comprehensive travel insurance",
+    "hotel": "Discounted hotel booking",
+    "car_rental": "Car rental",
+    "lounge": "Airport lounge access",
+    "fast_track": "Airport Fast Track",
+    "airport_transfer": "Airport transfer (to/from)",
+    "private_car": "VIP private car",
+    "shuttle": "Shared transfer",
+    "meet_assist": "Meet & Assist"
+  }
+}

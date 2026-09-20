@@ -10,7 +10,7 @@ import {
   subscriptionIsActive,
 } from "../../lib/membership";
 import { friendlyErrorMessage } from "../../lib/errors";
-import { PAYMENT_METHODS } from "../../lib/payment-config";
+import { usePaymentMethods } from "../../lib/payment-config";
 import type { BillingPeriod, CustomerSubscriptionRow, MembershipTierRow, PaymentMethod } from "../../types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
@@ -91,6 +91,7 @@ export function MembershipSubscriptionCard() {
 }
 
 function SubscribeForm({ onDone }: { onDone: () => void }) {
+  const PAYMENT_METHODS = usePaymentMethods();
   const [tiers, setTiers] = useState<MembershipTierRow[]>([]);
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "../components/ui/Button";
@@ -8,6 +9,7 @@ import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { useCatalog } from "../hooks/useCatalog";
 import { getAgencyWhatsApp, lookupBooking } from "../lib/api";
 import { formatRoute } from "../lib/deal-utils";
+import { paymentMethodLabel } from "../lib/payment-config";
 import { getLastBooking } from "../lib/session";
 import { formatPrice, whatsAppLink } from "../lib/utils";
 import { transferKindLabel } from "../lib/tripgo";
@@ -34,23 +36,8 @@ type LocationState = {
   tripGo?: TripGoState;
 };
 
-const PAYMENT_LABELS: Record<PaymentMethod, string> = {
-  bank_transfer: "تحويل بنكي",
-  instapay: "InstaPay",
-  vodafone_cash: "Vodafone Cash",
-};
-
-const STATUS_LABELS: Record<CreateBookingResult["status"], string> = {
-  new: "جديد — بانتظار التواصل",
-  contacted: "تم التواصل معك",
-  awaiting_payment: "بانتظار الدفع",
-  payment_uploaded: "تم استلام إثبات الدفع",
-  paid: "تم تأكيد الدفع",
-  ticket_issued: "تم إصدار التذكرة",
-  cancelled: "ملغي",
-};
-
 export function ConfirmationPage() {
+  const { t } = useTranslation("booking");
   const location = useLocation();
   const state = location.state as LocationState | null;
 
@@ -61,10 +48,10 @@ export function ConfirmationPage() {
     const lastBooking = getLastBooking();
     return (
       <Card className="text-center">
-        <p className="text-slate-600">لا توجد بيانات حجز في هذه الصفحة (ربما بسبب تحديث الصفحة).</p>
+        <p className="text-slate-600">{t("confirmation.noData")}</p>
         {lastBooking ? (
           <p className="mt-2 text-sm text-slate-500">
-            آخر حجز عندك: <span className="font-bold text-accent">{lastBooking.bookingNumber}</span>
+            {t("confirmation.lastBooking")} <span className="font-bold text-accent">{lastBooking.bookingNumber}</span>
           </p>
         ) : null}
         <Link
@@ -72,7 +59,7 @@ export function ConfirmationPage() {
           state={lastBooking ? { bookingNumber: lastBooking.bookingNumber, contact: lastBooking.contact, autoSearch: true } : undefined}
           className="mt-4 inline-block"
         >
-          <Button>عرض حجزي في رحلاتي</Button>
+          <Button>{t("confirmation.viewMyBooking")}</Button>
         </Link>
       </Card>
     );
@@ -108,6 +95,7 @@ function ConfirmationBody({
   infants,
   tripGo,
 }: LocationState) {
+  const { t } = useTranslation("booking");
   const catalog = useCatalog();
   // The create_booking RPC returns only the top-level booking fields —
   // order_items (and therefore the per-item journey) are created by a DB
@@ -127,21 +115,29 @@ function ConfirmationBody({
       });
   }, [booking.booking_number, customerPhone, customerEmail]);
 
+  // The WhatsApp message is read by the agency team (Arabic-speaking), so it is always
+  // composed in Arabic regardless of the customer's UI language.
+  const ar = { lng: "ar" };
   const travelerSummary = [
-    `${adults} بالغ`,
-    children ? `${children} طفل` : null,
-    infants ? `${infants} رضيع` : null,
+    t("confirmation.wa.adults", { ...ar, count: adults }),
+    children ? t("confirmation.wa.children", { ...ar, count: children }) : null,
+    infants ? t("confirmation.wa.infants", { ...ar, count: infants }) : null,
   ]
     .filter(Boolean)
     .join(" · ");
   const waMessage = [
-    `مرحباً، أرسلت تحويلاً للحجز رقم ${booking.booking_number}`,
-    `الاسم: ${customerName}`,
-    `المسار: ${formatRoute(deal)}`,
-    `المسافرون: ${travelerSummary}`,
-    tripGo ? `مكان الاستلام: ${tripGo.pickupLocation}` : null,
-    tripGo?.transport ? `وسيلة النقل: ${transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type)}` : null,
-    `المبلغ: ${formatPrice(booking.total_price, booking.currency)}`,
+    t("confirmation.wa.greeting", { ...ar, number: booking.booking_number }),
+    t("confirmation.wa.name", { ...ar, name: customerName }),
+    t("confirmation.wa.route", { ...ar, route: formatRoute(deal) }),
+    t("confirmation.wa.travelers", { ...ar, summary: travelerSummary }),
+    tripGo ? t("confirmation.wa.pickup", { ...ar, location: tripGo.pickupLocation }) : null,
+    tripGo?.transport
+      ? t("confirmation.wa.transport", {
+          ...ar,
+          transport: transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type, "ar"),
+        })
+      : null,
+    t("confirmation.wa.amount", { ...ar, amount: formatPrice(booking.total_price, booking.currency) }),
   ]
     .filter(Boolean)
     .join("\n");
@@ -149,33 +145,35 @@ function ConfirmationBody({
   return (
     <div className="mx-auto max-w-lg space-y-6 text-center">
       <div className="rounded-full bg-green-100 p-4 text-4xl">✓</div>
-      <h1 className="text-2xl font-bold text-slate-900">تم إنشاء الحجز بنجاح</h1>
+      <h1 className="text-2xl font-bold text-slate-900">{t("confirmation.title")}</h1>
       <Card className="text-start">
         {tripGo ? (
           <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#0C7BB3] to-[#1E3A8A] px-3 py-1 text-xs font-bold text-white">
-            🚐 رحلة TripGo — Flight + Transfer
+            {t("confirmation.tripgoBadge")}
           </span>
         ) : null}
         <dl className="space-y-3">
           <div>
-            <dt className="text-sm text-slate-500">رقم الحجز</dt>
+            <dt className="text-sm text-slate-500">{t("confirmation.bookingNumber")}</dt>
             <dd className="text-2xl font-extrabold text-accent">{booking.booking_number}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">المسار</dt>
+            <dt className="text-sm text-slate-500">{t("confirmation.route")}</dt>
             <dd className="font-semibold">{formatRoute(deal)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">المبلغ</dt>
+            <dt className="text-sm text-slate-500">{t("confirmation.amount")}</dt>
             <dd className="font-semibold">{formatPrice(booking.total_price, booking.currency)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">طريقة الدفع</dt>
-            <dd>{PAYMENT_LABELS[paymentMethod]}</dd>
+            <dt className="text-sm text-slate-500">{t("confirmation.paymentMethod")}</dt>
+            <dd>{paymentMethodLabel(paymentMethod)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">الحالة</dt>
-            <dd className="font-semibold text-amber-700">{STATUS_LABELS[booking.status] ?? booking.status}</dd>
+            <dt className="text-sm text-slate-500">{t("confirmation.statusLabel")}</dt>
+            <dd className="font-semibold text-amber-700">
+              {t(`confirmation.status.${booking.status}`, { defaultValue: booking.status })}
+            </dd>
           </div>
         </dl>
 
@@ -190,27 +188,27 @@ function ConfirmationBody({
         {tripGo ? (
           <div className="mt-4 space-y-2 rounded-2xl border border-[#16A34A]/25 bg-[#F0FDF4] p-3 text-sm">
             <p className="flex items-center gap-1.5 font-extrabold text-[#16A34A]">
-              <span aria-hidden>✓</span> تفاصيل نقل المطار
+              <span aria-hidden>✓</span> {t("confirmation.transfer.heading")}
             </p>
             <div className="flex justify-between">
-              <span className="text-slate-500">مكان الاستلام</span>
+              <span className="text-slate-500">{t("confirmation.transfer.pickupLocation")}</span>
               <span className="font-semibold text-slate-800">{tripGo.pickupLocation || "—"}</span>
             </div>
             {tripGo.pickupArea ? (
               <div className="flex justify-between">
-                <span className="text-slate-500">المنطقة</span>
+                <span className="text-slate-500">{t("confirmation.transfer.area")}</span>
                 <span className="font-semibold text-slate-800">{tripGo.pickupArea}</span>
               </div>
             ) : null}
             {tripGo.flightNumber ? (
               <div className="flex justify-between">
-                <span className="text-slate-500">رقم الرحلة</span>
+                <span className="text-slate-500">{t("confirmation.transfer.flightNumber")}</span>
                 <span className="font-latin font-semibold text-slate-800">{tripGo.flightNumber}</span>
               </div>
             ) : null}
             {tripGo.transport ? (
               <div className="flex justify-between">
-                <span className="text-slate-500">وسيلة النقل</span>
+                <span className="text-slate-500">{t("confirmation.transfer.transport")}</span>
                 <span className="font-semibold text-slate-800">
                   {transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type)}
                 </span>
@@ -220,26 +218,26 @@ function ConfirmationBody({
         ) : null}
       </Card>
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-        ⚠️ هذا <strong>طلب حجز</strong> وليس تذكرة مؤكدة بعد. سيتواصل معك فريق الوكالة لتأكيد السعر وتوفر المقعد. لا ترسل التحويل البنكي إلا بعد تأكيد الوكالة للسعر النهائي.
+        <Trans i18nKey="confirmation.requestNotice" ns="booking" components={{ b: <strong /> }} />
       </div>
       <p className="text-sm text-slate-600">
-        بعد تأكيد الوكالة، أكمل التحويل باستخدام طريقة الدفع المختارة، ثم أرسل إيصال التحويل عبر واتساب أو ارفعه هنا مباشرة.
+        {t("confirmation.afterConfirm")}
       </p>
       <div className="flex flex-col gap-3">
         <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer">
           <Button fullWidth variant="whatsapp">
-            إرسال عبر واتساب
+            {t("confirmation.sendWhatsApp")}
           </Button>
         </a>
         <PaymentProofUpload bookingNumber={String(booking.booking_number)} contact={customerPhone} />
         <Link to="/my-trips">
           <Button fullWidth variant="outline">
-            عرض في رحلاتي
+            {t("confirmation.viewInMyTrips")}
           </Button>
         </Link>
       </div>
       <p className="text-xs text-slate-500">
-        احفظ رقم الحجز {booking.booking_number} ورقم هاتفك {customerPhone} للبحث لاحقاً
+        {t("confirmation.saveNote", { number: booking.booking_number, phone: customerPhone })}
       </p>
     </div>
   );

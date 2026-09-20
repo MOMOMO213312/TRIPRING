@@ -1,0 +1,59 @@
+{
+  "tier": {
+    "basic": {
+      "label": "تذكرة فقط",
+      "perks": [
+        "تذكرة الطيران فقط"
+      ]
+    },
+    "smart": {
+      "label": "Smart Trip",
+      "badge": "الأكثر اختياراً",
+      "perks": [
+        "تذكرة الطيران",
+        "حقيبة واحدة",
+        "الانتقال من وإلى المطار",
+        "دعم الرحلة"
+      ]
+    },
+    "premium": {
+      "label": "Premium Trip",
+      "perks": [
+        "تذكرة الطيران",
+        "حقيبة واحدة",
+        "الانتقال من وإلى المطار",
+        "صالة المطار (Lounge)",
+        "Fast Track",
+        "تأمين السفر",
+        "دعم الرحلة"
+      ]
+    }
+  },
+  "serviceKey": {
+    "transfer": "الانتقال من وإلى المطار",
+    "lounge": "صالة المطار (Lounge)",
+    "fast_track": "Fast Track",
+    "meet_assist": "استقبال ومرافقة (Meet & Assist)",
+    "baggage": "خدمات الأمتعة",
+    "parking": "موقف سيارات المطار",
+    "insurance": "تأمين السفر"
+  },
+  "selector": {
+    "chooseTrip": "اختر رحلتك",
+    "addServices": "أضف خدماتك",
+    "included": "مُضمّن ✓",
+    "recommended": "موصى به",
+    "total": "الإجمالي"
+  },
+  "serviceType": {
+    "travel_insurance": "تأمين سفر شامل",
+    "hotel": "حجز فندق مخفّض",
+    "car_rental": "تأجير سيارة",
+    "lounge": "دخول Lounge بالمطار",
+    "fast_track": "Fast Track بالمطار",
+    "airport_transfer": "نقل من وإلى المطار",
+    "private_car": "سيارة خاصة VIP",
+    "shuttle": "نقل تشاركي",
+    "meet_assist": "Meet & Assist"
+  }
+}

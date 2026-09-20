@@ -1,3 +1,7 @@
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+import i18n from "../i18n";
 import type { PaymentMethod } from "../types/database";
 
 /**
@@ -24,20 +28,33 @@ export const PAYMENT_DETAILS_ARE_PLACEHOLDER =
   INSTAPAY_HANDLE === "tripring@instapay" ||
   VODAFONE_CASH_NUMBER === "01000000000";
 
-export const PAYMENT_METHODS: { value: PaymentMethod; label: string; details: string }[] = [
-  {
-    value: "bank_transfer",
-    label: "تحويل بنكي",
-    details: `البنك: ${BANK_NAME} · IBAN: ${BANK_IBAN} · اسم الحساب: ${BANK_ACCOUNT_NAME}`,
-  },
-  {
-    value: "instapay",
-    label: "InstaPay",
-    details: `معرّف InstaPay: ${INSTAPAY_HANDLE}`,
-  },
-  {
-    value: "vodafone_cash",
-    label: "Vodafone Cash",
-    details: `رقم المحفظة: ${VODAFONE_CASH_NUMBER}`,
-  },
-];
+export type PaymentMethodOption = { value: PaymentMethod; label: string; details: string };
+
+const PAYMENT_METHOD_VALUES: PaymentMethod[] = ["bank_transfer", "instapay", "vodafone_cash"];
+
+const DETAIL_PARAMS: Record<PaymentMethod, Record<string, string>> = {
+  bank_transfer: { bank: BANK_NAME, iban: BANK_IBAN, account: BANK_ACCOUNT_NAME },
+  instapay: { handle: INSTAPAY_HANDLE },
+  vodafone_cash: { number: VODAFONE_CASH_NUMBER },
+};
+
+/** Translated payment methods (label + where-to-send details) in the active UI language. */
+export function usePaymentMethods(): PaymentMethodOption[] {
+  const { t, i18n } = useTranslation("common");
+  return useMemo(
+    () =>
+      PAYMENT_METHOD_VALUES.map((value) => ({
+        value,
+        label: t(`payment.${value}.label`),
+        details: t(`payment.${value}.details`, DETAIL_PARAMS[value]),
+      })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, i18n.language],
+  );
+}
+
+/** Label for a stored payment_method value (falls back to the raw value for unknown methods). */
+export function paymentMethodLabel(method: string): string {
+  const key = `common:payment.${method}.label`;
+  return i18n.exists(key) ? i18n.t(key) : method;
+}

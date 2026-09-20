@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 import { classifyService, dedupeByKey, includedServicesFor, packagePrice, usePackageOptions } from "../lib/packages";
 import type { PackageOption, PackageTier, ServiceKey } from "../lib/packages";
@@ -41,6 +42,7 @@ export function PackageAndServicesSelector({
   checkedServiceIds,
   onToggleService,
 }: Props) {
+  const { t } = useTranslation("packages");
   const packageOptions = usePackageOptions();
   const activePkg = packageOptions.find((p) => p.id === selectedPackage) ?? packageOptions[0];
   const displayServices = dedupeByKey(services);
@@ -66,7 +68,7 @@ export function PackageAndServicesSelector({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="mb-3 font-bold text-slate-900">اختر رحلتك</h2>
+        <h2 className="mb-3 font-bold text-slate-900">{t("selector.chooseTrip")}</h2>
         <div className="space-y-2.5">
           {packageOptions.map((pkg) => {
             const price = packagePrice(basePrice, pkg);
@@ -108,7 +110,7 @@ export function PackageAndServicesSelector({
 
       {displayServices.length > 0 ? (
         <div className="border-t border-slate-100 pt-4">
-          <h2 className="mb-3 font-bold text-slate-900">أضف خدماتك</h2>
+          <h2 className="mb-3 font-bold text-slate-900">{t("selector.addServices")}</h2>
           <div className="space-y-2">
             {displayServices.map((service) => {
               const included = includedIds.has(service.id);
@@ -131,9 +133,9 @@ export function PackageAndServicesSelector({
                       onChange={() => onToggleService(service.id)}
                     />
                     {serviceDisplayLabel(service)}
-                    {included ? <span className="text-xs font-semibold text-[#16A34A]">مُضمّن ✓</span> : null}
+                    {included ? <span className="text-xs font-semibold text-[#16A34A]">{t("selector.included")}</span> : null}
                     {!included && recommended ? (
-                      <span className="text-xs font-semibold text-[#16A34A]">موصى به</span>
+                      <span className="text-xs font-semibold text-[#16A34A]">{t("selector.recommended")}</span>
                     ) : null}
                   </span>
                   <span className="font-latin text-sm text-slate-500">
@@ -147,7 +149,7 @@ export function PackageAndServicesSelector({
       ) : null}
 
       <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-        <span className="font-bold text-slate-900">الإجمالي</span>
+        <span className="font-bold text-slate-900">{t("selector.total")}</span>
         <span className="font-latin text-2xl font-extrabold text-[#0C7BB3]">{formatPrice(total, currency)}</span>
       </div>
     </div>

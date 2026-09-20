@@ -1,0 +1,59 @@
+{
+  "tier": {
+    "basic": {
+      "label": "Yalnızca bilet",
+      "perks": [
+        "Yalnızca uçuş bileti"
+      ]
+    },
+    "smart": {
+      "label": "Smart Trip",
+      "badge": "En çok tercih edilen",
+      "perks": [
+        "Uçuş bileti",
+        "Bir bavul",
+        "Havalimanı transferleri",
+        "Seyahat desteği"
+      ]
+    },
+    "premium": {
+      "label": "Premium Trip",
+      "perks": [
+        "Uçuş bileti",
+        "Bir bavul",
+        "Havalimanı transferleri",
+        "Havalimanı lounge",
+        "Fast Track",
+        "Seyahat sigortası",
+        "Seyahat desteği"
+      ]
+    }
+  },
+  "serviceKey": {
+    "transfer": "Havalimanı transferleri",
+    "lounge": "Havalimanı lounge",
+    "fast_track": "Fast Track",
+    "meet_assist": "Karşılama ve refakat (Meet & Assist)",
+    "baggage": "Bagaj hizmetleri",
+    "parking": "Havalimanı otoparkı",
+    "insurance": "Seyahat sigortası"
+  },
+  "selector": {
+    "chooseTrip": "Yolculuğunuzu seçin",
+    "addServices": "Hizmetlerinizi ekleyin",
+    "included": "Dahil ✓",
+    "recommended": "Önerilen",
+    "total": "Toplam"
+  },
+  "serviceType": {
+    "travel_insurance": "Kapsamlı seyahat sigortası",
+    "hotel": "İndirimli otel rezervasyonu",
+    "car_rental": "Araç kiralama",
+    "lounge": "Havalimanı lounge girişi",
+    "fast_track": "Havalimanı Fast Track",
+    "airport_transfer": "Havalimanı transferi (gidiş/geliş)",
+    "private_car": "VIP özel araç",
+    "shuttle": "Paylaşımlı transfer",
+    "meet_assist": "Meet & Assist"
+  }
+}

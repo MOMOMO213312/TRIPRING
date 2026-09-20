@@ -15,7 +15,8 @@ import {
   packageSubtotal,
   resolvePackageItems,
   SERVICE_KEY_ICONS,
-  SERVICE_KEY_LABELS,
+  SERVICE_KEYS,
+  serviceKeyLabel,
   SERVICE_PACKAGES,
   type PackageServiceKey,
   type ResolvedPackageItem,
@@ -664,7 +665,7 @@ function PackageRequestModal({
   onClose: () => void;
   onSuccess: (requestNumber: number, total: number) => void;
 }) {
-  const allKeys = Object.keys(SERVICE_KEY_LABELS) as PackageServiceKey[];
+  const allKeys = SERVICE_KEYS;
   const [customKeys, setCustomKeys] = useState<Set<PackageServiceKey>>(
     () => new Set(pkg.isCustom ? [] : pkg.includedKeys),
   );
@@ -746,7 +747,7 @@ function PackageRequestModal({
                       <span className="text-[#16A34A]">✓</span>
                     )}
                     <span>{SERVICE_KEY_ICONS[key]}</span>
-                    {SERVICE_KEY_LABELS[key]}
+                    {serviceKeyLabel(key)}
                   </span>
                   {item ? <span className="text-xs text-slate-500">{formatPrice(item.price)}</span> : null}
                 </label>
