@@ -21,6 +21,7 @@ import type { PortalNavItem } from "../components/portal/PortalShell";
 import { Button } from "../components/ui/Button";
 import { fetchMyAdminProfile } from "../lib/admin";
 import { signOut, useAuth } from "../lib/auth";
+import { PAYMENT_DETAILS_ARE_PLACEHOLDER } from "../lib/payment-config";
 import type { ProfileRow } from "../types/database";
 
 type Tab =
@@ -135,6 +136,17 @@ export function AdminDashboardPage() {
       topbarExtra={<NotificationBell />}
       onSignOut={() => signOut().then(() => window.location.reload())}
     >
+      {PAYMENT_DETAILS_ARE_PLACEHOLDER ? (
+        <div className="mb-4 rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-900">
+          <p className="font-bold">⚠️ بيانات دفع وهمية (Placeholder) لسه مفعّلة</p>
+          <p className="mt-1">
+            واحد أو أكتر من: رقم IBAN / معرّف InstaPay / رقم Vodafone Cash لسه على القيمة الافتراضية
+            وليس بيانات الشركة الحقيقية. أي عميل يشوف صفحة الدفع دلوقتي ممكن يحول فلوسه لحساب غلط.
+            لازم تتحدد القيم الحقيقية في متغيرات البيئة (VITE_BANK_IBAN, VITE_INSTAPAY_HANDLE,
+            VITE_VODAFONE_CASH_NUMBER) قبل أي إطلاق حقيقي.
+          </p>
+        </div>
+      ) : null}
       {tab === "suppliers" ? <AdminSuppliersTab /> : null}
       {tab === "supplier_applications" ? <AdminSupplierApplicationsTab /> : null}
       {tab === "fulfillment" ? <AdminFulfillmentTab /> : null}
