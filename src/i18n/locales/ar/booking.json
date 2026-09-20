@@ -1,0 +1,349 @@
+{
+  "f": {
+    "route": "المسار",
+    "date": "التاريخ",
+    "travelers": "المسافرون",
+    "fullName": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "email": "البريد الإلكتروني (اختياري)",
+    "adults": "بالغين",
+    "children": "أطفال",
+    "infants": "رضّع",
+    "passportName": "الاسم كما في الجواز",
+    "dob": "تاريخ الميلاد",
+    "passportNumber": "رقم الجواز",
+    "phonePlaceholder": "+20xxxxxxxxxx",
+    "loading": "جاري التحميل...",
+    "total": "الإجمالي",
+    "baseFare": "السعر الأساسي",
+    "taxes": "ضرائب ورسوم",
+    "pickupLocation": "مكان الاستلام",
+    "transportKind": "وسيلة النقل",
+    "flightNumber": "رقم الرحلة"
+  },
+  "traveler": {
+    "adult": "بالغ",
+    "child": "طفل",
+    "infant": "رضيع",
+    "heading": "مسافر {{n}} ({{type}})",
+    "adultsN": "{{count}} بالغ",
+    "childrenN": "{{count}} طفل",
+    "infantsN": "{{count}} رضيع"
+  },
+  "payment": {
+    "bankTransfer": {
+      "label": "تحويل بنكي",
+      "details": "البنك: {{bank}} · IBAN: {{iban}} · اسم الحساب: {{account}}"
+    },
+    "instapay": {
+      "label": "InstaPay",
+      "details": "معرّف InstaPay: {{handle}}"
+    },
+    "vodafoneCash": {
+      "label": "Vodafone Cash",
+      "details": "رقم المحفظة: {{number}}"
+    }
+  },
+  "packages": {
+    "basic": {
+      "label": "تذكرة فقط"
+    },
+    "smart": {
+      "label": "Smart Trip"
+    },
+    "premium": {
+      "label": "Premium Trip"
+    },
+    "badge": {
+      "popular": "الأكثر اختياراً"
+    },
+    "perk": {
+      "ticketOnly": "تذكرة الطيران فقط",
+      "ticket": "تذكرة الطيران",
+      "oneBag": "حقيبة واحدة",
+      "transfer": "الانتقال من وإلى المطار",
+      "support": "دعم الرحلة",
+      "lounge": "صالة المطار (Lounge)",
+      "fastTrack": "Fast Track",
+      "insurance": "تأمين السفر"
+    }
+  },
+  "selector": {
+    "chooseTrip": "اختر رحلتك",
+    "addServices": "أضف خدماتك",
+    "included": "مُضمّن ✓",
+    "recommended": "موصى به"
+  },
+  "journey": {
+    "title": "رحلتك",
+    "pendingSupplier": "جاري تحديد المزوّد",
+    "footer": "كل عنصر في رحلتك بيتأكد لوحده. لو حصلت مشكلة في عنصر، بندوّر على بديل تلقائيًا من غير ما نلغي باقي الرحلة.",
+    "item": {
+      "pending_assignment": "جاري الترتيب",
+      "assigned": "جاري التأكيد",
+      "confirmed": "تم التأكيد",
+      "fulfilled": "مؤكد ✓",
+      "failed": "بنعيد ترتيبها لك",
+      "reassigning": "بنعيد ترتيبها لك",
+      "cancelled": "ملغية"
+    },
+    "summary": {
+      "pending_assignment": "جاري ترتيب رحلتك",
+      "partially_assigned": "جاري ترتيب رحلتك",
+      "fully_assigned": "جاري تأكيد كل عناصر رحلتك",
+      "partially_fulfilled": "تم تأكيد جزء من رحلتك",
+      "fully_fulfilled": "رحلتك مؤكدة بالكامل ✓",
+      "needs_attention": "فريقنا بيراجع عنصر في رحلتك",
+      "cancelled": "ملغية"
+    }
+  },
+  "upload": {
+    "cta": "📎 رفع إثبات الدفع (صورة أو PDF)",
+    "uploading": "جاري الرفع...",
+    "success": "✓ تم رفع إثبات الدفع بنجاح",
+    "failed": "تعذر رفع الملف، جرّب تاني."
+  },
+  "chart": {
+    "title": "تاريخ سعر {{route}}",
+    "noData": "لا توجد بيانات كافية لعرض الرسم البياني",
+    "currentLow": "أدنى سعر حالي: {{price}}"
+  },
+  "auth": {
+    "defaultTitle": "سجّل الدخول للمتابعة",
+    "signIn": "تسجيل الدخول",
+    "signUp": "حساب جديد",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmNotice": "تم إنشاء الحساب — تحقق من بريدك الإلكتروني لتأكيد الدخول",
+    "verifying": "جاري التحقق...",
+    "createAccount": "إنشاء حساب",
+    "login": "دخول",
+    "errors": {
+      "invalidCredentials": "بيانات الدخول غير صحيحة",
+      "alreadyRegistered": "هذا البريد الإلكتروني مسجل بالفعل",
+      "weakPassword": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+      "invalidEmail": "صيغة البريد الإلكتروني غير صحيحة",
+      "generic": "حدث خطأ، حاول مرة أخرى"
+    }
+  },
+  "reviews": {
+    "count": "({{n}} تقييم)",
+    "none": "لا توجد تقييمات بعد",
+    "rate": "قيّم الوكالة",
+    "thanks": "شكرًا لك، تم إرسال تقييمك",
+    "authTitle": "سجّل الدخول لتقييم الوكالة",
+    "authDescription": "نحتاج تسجيل دخولك حتى نربط تقييمك باسمك ونمنع التقييمات الوهمية",
+    "yourRating": "تقييمك",
+    "ratingLabel": "التقييم",
+    "commentPlaceholder": "تعليقك (اختياري)",
+    "sending": "جاري الإرسال...",
+    "send": "إرسال التقييم",
+    "failed": "تعذر إرسال التقييم، جرّب تاني."
+  },
+  "transfer": {
+    "private": "🚗 عربية خاصة",
+    "privateVehicle": "🚗 عربية خاصة · {{vehicle}}",
+    "shared": "🚐 نقل تشاركي",
+    "sharedVehicle": "🚐 نقل تشاركي · {{vehicle}}"
+  },
+  "page": {
+    "title": "إتمام الحجز",
+    "dealUnavailable": "العرض غير متاح",
+    "dealNotFound": "العرض غير موجود",
+    "loadFailed": "حصل خطأ في تحميل بيانات العرض، جرّب تاني.",
+    "soldOut": "عذراً، المقاعد المتاحة في هذا العرض نفدت. جرّب البحث عن عرض آخر.",
+    "createFailed": "فشل إنشاء الحجز، جرّب تاني أو تواصل معانا.",
+    "validation": {
+      "name": "من فضلك أدخل الاسم الكامل",
+      "phone": "من فضلك أدخل رقم الهاتف",
+      "phoneInvalid": "رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx",
+      "emailInvalid": "البريد الإلكتروني غير صالح",
+      "traveler": "من فضلك أدخل اسم المسافر رقم {{n}} كما في الجواز"
+    },
+    "changes": {
+      "gone": "عذراً، هذا العرض لم يعد متاحاً.",
+      "seatsGone": "عذراً، المقاعد المتاحة في هذا العرض نفدت منذ قليل.",
+      "seatsFewer": "عدد المقاعد المتاحة الآن ({{available}}) أقل من عدد المسافرين ({{needed}}).",
+      "priceChanged": "تنبيه: سعر هذا العرض تغيّر منذ ما فتحت الصفحة (كان {{oldPrice}}، بقى {{newPrice}}). راجع الإجمالي الجديد بالأسفل واضغط \"تأكيد الحجز\" تاني للمتابعة."
+    },
+    "section": {
+      "contact": "بيانات التواصل والمسافرين",
+      "services": "خدمات إضافية (اختياري)",
+      "summary": "الملخص وطريقة الدفع"
+    },
+    "tripgo": {
+      "title": "🚗 TripGo الفوري — عربية خاصة تجيبك من مكانك (اختياري)",
+      "desc": "اختار منطقتك وهيتحسب سعر العربية تلقائيًا فوق سعر التذكرة.",
+      "none": "بدون نقل — هدبر مواصلاتي بنفسي"
+    },
+    "summary": {
+      "estimateWarning": "⚠️ السعر تقديري وغير نهائي، والضغط على \"تأكيد الحجز\" يرسل <strong>طلب حجز</strong> للوكالة وليس تذكرة مؤكدة — هيتواصلوا معاك لتأكيد السعر والمقعد قبل الدفع الفعلي.",
+      "package": "الباقة",
+      "tripgoTransport": "TripGo (نقل)",
+      "estimatedTotal": "الإجمالي التقديري",
+      "manualPayment": "الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة"
+    },
+    "submit": {
+      "checking": "جاري التأكد من الحجز...",
+      "confirm": "تأكيد الحجز"
+    }
+  },
+  "confirmation": {
+    "noData": "لا توجد بيانات حجز في هذه الصفحة (ربما بسبب تحديث الصفحة).",
+    "lastBooking": "آخر حجز عندك:",
+    "viewMine": "عرض حجزي في رحلاتي",
+    "title": "تم إنشاء الحجز بنجاح",
+    "tripgoBadge": "🚐 رحلة TripGo — Flight + Transfer",
+    "bookingNumber": "رقم الحجز",
+    "amount": "المبلغ",
+    "paymentMethod": "طريقة الدفع",
+    "status": {
+      "label": "الحالة",
+      "new": "جديد — بانتظار التواصل",
+      "contacted": "تم التواصل معك",
+      "awaiting_payment": "بانتظار الدفع",
+      "payment_uploaded": "تم استلام إثبات الدفع",
+      "paid": "تم تأكيد الدفع",
+      "ticket_issued": "تم إصدار التذكرة",
+      "cancelled": "ملغي"
+    },
+    "transferDetails": "تفاصيل نقل المطار",
+    "area": "المنطقة",
+    "requestNotice": "⚠️ هذا <strong>طلب حجز</strong> وليس تذكرة مؤكدة بعد. سيتواصل معك فريق الوكالة لتأكيد السعر وتوفر المقعد. لا ترسل التحويل البنكي إلا بعد تأكيد الوكالة للسعر النهائي.",
+    "afterConfirm": "بعد تأكيد الوكالة، أكمل التحويل باستخدام طريقة الدفع المختارة، ثم أرسل إيصال التحويل عبر واتساب أو ارفعه هنا مباشرة.",
+    "sendWhatsapp": "إرسال عبر واتساب",
+    "viewInTrips": "عرض في رحلاتي",
+    "saveNote": "احفظ رقم الحجز {{number}} ورقم هاتفك {{phone}} للبحث لاحقاً"
+  },
+  "whatsapp": {
+    "paid": "مرحباً، أرسلت تحويلاً للحجز رقم {{number}}",
+    "name": "الاسم: {{name}}",
+    "route": "المسار: {{route}}",
+    "travelers": "المسافرون: {{value}}",
+    "pickup": "مكان الاستلام: {{value}}",
+    "transport": "وسيلة النقل: {{value}}",
+    "amount": "المبلغ: {{value}}",
+    "tripgoConfirm": "مرحباً، أريد تأكيد رحلة TripGo: {{route}} — استلام من {{pickup}} — وسيلة النقل: {{transport}}"
+  },
+  "deal": {
+    "unavailable": "العرض غير متاح أو انتهت صلاحيته",
+    "loadFailed": "حصل خطأ في تحميل العرض، جرّب تاني أو ارجع للرئيسية.",
+    "backHome": "العودة للرئيسية",
+    "continue": "متابعة",
+    "share": "🔗 مشاركة",
+    "copied": "تم النسخ ✓",
+    "priceAlert": "🔔 تنبيه سعر",
+    "heroLabel": "فرصة TripRing",
+    "seatsLeft": "{{count}} مقاعد متبقية",
+    "f": {
+      "departure": "المغادرة",
+      "return": "العودة",
+      "seatsAvailable": "المقاعد المتاحة",
+      "class": "الدرجة",
+      "aircraft": "نوع الطائرة",
+      "operatedBy": "الناقل المشغّل",
+      "arrival": "تاريخ الوصول",
+      "layover": "مدة التوقف",
+      "baggage": "الأمتعة",
+      "cabinBag": "شنطة الكابينة",
+      "checkedBags": "عدد الشنط المسجّلة",
+      "extraBag": "سعر الشنطة الإضافية"
+    },
+    "fare": {
+      "refundable": "قابلة للاسترداد",
+      "nonRefundable": "غير قابلة للاسترداد",
+      "changeable": "يمكن تغييرها",
+      "nonChangeable": "لا يمكن تغييرها",
+      "changeFee": "رسوم التغيير: {{fee}}",
+      "cancelFee": "رسوم الإلغاء: {{fee}}"
+    },
+    "flex": {
+      "title": "تواريخ مرنة",
+      "subtitle": "أسعار نفس المسار في تواريخ قريبة من رحلتك",
+      "save": "💡 وفّر {{amount}} لو سافرت يوم {{date}}",
+      "yourTrip": "رحلتك"
+    },
+    "why": "ليه دي فرصة كويسة؟",
+    "notes": "ملاحظات",
+    "alert": {
+      "title": "إنشاء تنبيه سعر",
+      "contactRequired": "أدخل رقم تليفون أو إيميل",
+      "intro": "هنبعتلك تنبيه لما سعر {{route}} ينزل عن الميزانية دي.",
+      "done": "تمام! هنبعتلك تنبيه لما سعر {{route}} ينزل تحت {{budget}} {{currency}}",
+      "contactLabel": "رقم تليفون أو إيميل",
+      "contactPlaceholder": "01000000000 أو you@email.com",
+      "budgetLabel": "الميزانية القصوى (USD)",
+      "creating": "جاري الإنشاء...",
+      "create": "إنشاء التنبيه",
+      "failed": "حصل خطأ، حاول تاني"
+    }
+  },
+  "tripgo": {
+    "steps": {
+      "flight": "الرحلة",
+      "pickup": "مكان الاستلام",
+      "transfer": "تفاصيل النقل",
+      "passengers": "المسافرون",
+      "review": "مراجعة الرحلة",
+      "payment": "الدفع"
+    },
+    "notAvailable": "رحلة TripGo غير متاحة",
+    "notFound": "رحلة TripGo غير موجودة",
+    "loadFailed": "حصل خطأ في تحميل الرحلة، جرّب تاني.",
+    "backTo": "العودة لـ TripGo",
+    "unavailableNow": "عذراً، هذه الرحلة أو خدمة النقل الخاصة بها لم تعد متاحة.",
+    "confirmGone": "عذراً، رحلة TripGo دي لم تعد متاحة.",
+    "createFailed": "فشل إنشاء الحجز، جرّب تاني أو تواصل معانا.",
+    "ticketPlusTransfer": "تذكرة + نقل",
+    "validation": {
+      "pickup": "أدخل عنوان الاستلام (المنزل / الفندق)",
+      "name": "أدخل الاسم الكامل",
+      "traveler": "أدخل اسم المسافر رقم {{n}} كما في الجواز",
+      "noCar": "لا توجد عربية متاحة حالياً لهذا الموعد",
+      "seatsFewer": "المقاعد المتاحة ({{available}}) أقل من عدد المسافرين ({{needed}})"
+    },
+    "flight": {
+      "airline": "شركة الطيران",
+      "stops": "التوقفات",
+      "duration": "المدة",
+      "durationValue": "{{hours}} ساعة",
+      "transferIncluded": "✓ النقل من وإلى المطار متضمّن"
+    },
+    "pickup": {
+      "intro": "من فين هنستلمك عشان نوصّلك المطار؟",
+      "addressLabel": "عنوان الاستلام (المنزل / الفندق)",
+      "addressPlaceholder": "مثال: شقة 12، برج النيل، المهندسين",
+      "areaLabel": "المنطقة / الحي (اختياري)",
+      "areaPlaceholder": "مثال: المهندسين، الجيزة"
+    },
+    "transfer": {
+      "intro": "تفاصيل تنسيق النقل — عشان السائق يكون في انتظارك بالظبط.",
+      "flightLabel": "رقم الرحلة (اختياري)",
+      "flightPlaceholder": "مثال: MS 123",
+      "yourAddress": "عنوانك",
+      "toAirport": "{{pickup}} → المطار",
+      "fromAirport": "المطار → {{city}}",
+      "kindLine": "وسيلة النقل: {{kind}}",
+      "pickupTime": " · موعد الاستلام التقريبي: {{time}}"
+    },
+    "passengers": {
+      "seatsInTransport": "المقاعد المتاحة في وسيلة النقل دي حالياً: {{count}}"
+    },
+    "review": {
+      "title": "مراجعة رحلة TripGo",
+      "flightTicket": "تذكرة الطيران",
+      "transfer": "النقل من وإلى المطار",
+      "total": "إجمالي رحلة TripGo",
+      "estimateWarning": "⚠️ السعر تقديري وغير نهائي — الضغط على \"تأكيد حجز TripGo\" يرسل طلب حجز للوكالة، هيتواصلوا معاك لتأكيد السعر والمقعد وتفاصيل الاستلام قبل الدفع الفعلي."
+    },
+    "payment": {
+      "manual": "الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة."
+    },
+    "submit": {
+      "confirming": "جاري تأكيد رحلة TripGo...",
+      "confirm": "تأكيد حجز TripGo"
+    },
+    "whatsappHelp": "محتاج تأكيد تفاصيل الاستلام على واتساب؟ تواصل معنا"
+  }
+}

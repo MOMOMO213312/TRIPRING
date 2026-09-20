@@ -11,6 +11,7 @@ import type {
   TripGoDealRow,
 } from "../types/database";
 
+import i18n from "../i18n";
 import { dbError } from "./errors";
 /**
  * TripGo = Flight Ticket + Transport sold as one bundled product.
@@ -83,9 +84,17 @@ export function tripGoTotal(flightPrice: number, transferPrice: number): number 
   return Math.round((flightPrice + transferPrice) * 100) / 100;
 }
 
-export function transferKindLabel(transportType: TransportType, vehicleType?: string | null): string {
-  if (transportType === "private") return vehicleType ? `🚗 عربية خاصة · ${vehicleType}` : "🚗 عربية خاصة";
-  return vehicleType ? `🚐 نقل تشاركي · ${vehicleType}` : "🚐 نقل تشاركي";
+/**
+ * Display label for a transfer (private car / shared transport). Rendered in the current UI
+ * language unless `lng` is given — used for text that is sent to the agency (WhatsApp), which
+ * must not depend on the customer's browsing language.
+ */
+export function transferKindLabel(transportType: TransportType, vehicleType?: string | null, lng?: string): string {
+  const base = transportType === "private" ? "private" : "shared";
+  const opts = { lng, vehicle: vehicleType ?? "" };
+  return vehicleType
+    ? i18n.t(`booking:transfer.${base}Vehicle`, opts)
+    : i18n.t(`booking:transfer.${base}`, { lng });
 }
 
 // ── Booking (customer-facing) ───────────────────────────────────────────
@@ -120,7 +129,7 @@ export async function bookTripGo(input: TripGoBookingInput): Promise<TripGoBooki
   } as never);
   if (error) throw dbError(error);
   const row = Array.isArray(data) ? data[0] : data;
-  if (!row) throw new Error("تعذر إنشاء حجز TripGo");
+  if (!row) throw new Error("create_tripgo_booking returned no row");
   return row as TripGoBookingResult;
 }
 

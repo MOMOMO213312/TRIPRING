@@ -2,14 +2,17 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
+import arBooking from "./locales/ar/booking.json";
 import arCommon from "./locales/ar/common.json";
 import arDeals from "./locales/ar/deals.json";
 import arErrors from "./locales/ar/errors.json";
 import arHome from "./locales/ar/home.json";
+import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDeals from "./locales/en/deals.json";
 import enErrors from "./locales/en/errors.json";
 import enHome from "./locales/en/home.json";
+import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDeals from "./locales/tr/deals.json";
 import trErrors from "./locales/tr/errors.json";
@@ -47,11 +50,11 @@ void i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals },
-      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals },
-      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals },
+      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals, booking: arBooking },
+      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals, booking: enBooking },
+      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals, booking: trBooking },
     },
-    ns: ["common", "errors", "home", "deals"],
+    ns: ["common", "errors", "home", "deals", "booking"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],

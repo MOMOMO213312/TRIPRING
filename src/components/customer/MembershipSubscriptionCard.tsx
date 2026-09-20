@@ -10,7 +10,7 @@ import {
   subscriptionIsActive,
 } from "../../lib/membership";
 import { friendlyErrorMessage } from "../../lib/errors";
-import { PAYMENT_METHODS } from "../../lib/payment-config";
+import { usePaymentMethods } from "../../lib/payment-config";
 import type { BillingPeriod, CustomerSubscriptionRow, MembershipTierRow, PaymentMethod } from "../../types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
@@ -91,6 +91,7 @@ export function MembershipSubscriptionCard() {
 }
 
 function SubscribeForm({ onDone }: { onDone: () => void }) {
+  const paymentMethods = usePaymentMethods();
   const [tiers, setTiers] = useState<MembershipTierRow[]>([]);
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
@@ -195,7 +196,7 @@ function SubscribeForm({ onDone }: { onDone: () => void }) {
 
       <div className="space-y-2 border-t border-slate-100 pt-3">
         <p className="text-sm text-slate-600">اختار طريقة الدفع وحوّل قيمة الباقة</p>
-        {PAYMENT_METHODS.map((pm) => (
+        {paymentMethods.map((pm) => (
           <label
             key={pm.value}
             className={`block cursor-pointer rounded-xl border p-3 ${

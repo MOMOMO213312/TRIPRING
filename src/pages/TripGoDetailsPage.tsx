@@ -1,15 +1,19 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { getAgencyWhatsApp } from "../lib/api";
-import { PAYMENT_METHODS } from "../lib/payment-config";
+import i18n from "../i18n";
+import { AGENCY_MESSAGE_LANG } from "../lib/constants";
+import { usePaymentMethods } from "../lib/payment-config";
 import { airlineName, baggageBadgeLabel, formatRoute, stopsMetaLabel } from "../lib/deal-utils";
 import { bookTripGo, fetchTripGoBundleById, transferKindLabel, transportUnitsNeeded, tripGoTotal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
+import { formatTravelerSummary } from "../lib/travelerSummary";
 import { cn, formatDate, formatPrice, formatTime, isValidEmail, isValidPhone, whatsAppLink } from "../lib/utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
@@ -23,16 +27,19 @@ type Traveler = {
   traveler_type: "adult" | "child" | "infant";
 };
 
+// Step titles live in the i18n `booking` namespace under tripgo.steps.<key>.
 const STEPS = [
-  { key: "flight", title: "الرحلة", icon: "✈️" },
-  { key: "pickup", title: "مكان الاستلام", icon: "📍" },
-  { key: "transfer", title: "تفاصيل النقل", icon: "🕒" },
-  { key: "passengers", title: "المسافرون", icon: "🧑‍🤝‍🧑" },
-  { key: "review", title: "مراجعة الرحلة", icon: "🧾" },
-  { key: "payment", title: "الدفع", icon: "💳" },
+  { key: "flight", icon: "✈️" },
+  { key: "pickup", icon: "📍" },
+  { key: "transfer", icon: "🕒" },
+  { key: "passengers", icon: "🧑‍🤝‍🧑" },
+  { key: "review", icon: "🧾" },
+  { key: "payment", icon: "💳" },
 ] as const;
 
 export function TripGoDetailsPage() {
+  const { t } = useTranslation("booking");
+  const paymentMethods = usePaymentMethods();
   const { bundleId } = useParams<{ bundleId: string }>();
   const navigate = useNavigate();
   const catalog = useCatalog();
@@ -68,12 +75,12 @@ export function TripGoDetailsPage() {
       .then((b) => {
         setBundle(b);
         if (!b) {
-          setError("رحلة TripGo غير متاحة");
+          setError(t("tripgo.notAvailable"));
           return;
         }
         setFlightNumber(b.deal.flight_number ?? "");
       })
-      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل الرحلة، جرّب تاني.", "TripGoDetailsPage.load")))
+      .catch((e) => setError(friendlyErrorMessage(e, "booking:tripgo.loadFailed", "TripGoDetailsPage.load")))
       .finally(() => setLoading(false));
   }, [bundleId]);
 
@@ -113,18 +120,18 @@ export function TripGoDetailsPage() {
 
   function stepError(): string | null {
     if (STEPS[step].key === "pickup") {
-      if (!pickupLocation.trim()) return "أدخل عنوان الاستلام (المنزل / الفندق)";
+      if (!pickupLocation.trim()) return t("tripgo.validation.pickup");
     }
     if (STEPS[step].key === "passengers") {
-      if (!customerName.trim()) return "أدخل الاسم الكامل";
-      if (!isValidPhone(customerPhone)) return "رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx";
-      if (customerEmail.trim() && !isValidEmail(customerEmail)) return "البريد الإلكتروني غير صالح";
+      if (!customerName.trim()) return t("tripgo.validation.name");
+      if (!isValidPhone(customerPhone)) return t("page.validation.phoneInvalid");
+      if (customerEmail.trim() && !isValidEmail(customerEmail)) return t("page.validation.emailInvalid");
       const emptyTraveler = travelers.findIndex((t) => !t.full_name.trim());
-      if (emptyTraveler !== -1) return `أدخل اسم المسافر رقم ${emptyTraveler + 1} كما في الجواز`;
+      if (emptyTraveler !== -1) return t("tripgo.validation.traveler", { n: emptyTraveler + 1 });
       if (transport && transport.capacity_available < unitsNeeded) {
         return transport.transport_type === "private"
-          ? "لا توجد عربية متاحة حالياً لهذا الموعد"
-          : `المقاعد المتاحة (${transport.capacity_available}) أقل من عدد المسافرين (${unitsNeeded})`;
+          ? t("tripgo.validation.noCar")
+          : t("tripgo.validation.seatsFewer", { available: transport.capacity_available, needed: unitsNeeded });
       }
     }
     return null;
@@ -157,7 +164,7 @@ export function TripGoDetailsPage() {
     try {
       const fresh = await fetchTripGoBundleById(bundle.id);
       if (!fresh) {
-        setError("عذراً، رحلة TripGo دي لم تعد متاحة.");
+        setError(t("tripgo.confirmGone"));
         setSubmitting(false);
         return;
       }
@@ -209,25 +216,25 @@ export function TripGoDetailsPage() {
         },
       });
     } catch (err) {
-      setError(friendlyErrorMessage(err, "فشل إنشاء الحجز، جرّب تاني أو تواصل معانا.", "TripGoDetailsPage.createBooking"));
+      setError(friendlyErrorMessage(err, "booking:tripgo.createFailed", "TripGoDetailsPage.createBooking"));
     } finally {
       setSubmitting(false);
     }
   }
 
-  if (loading || catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
+  if (loading || catalog.loading) return <p className="text-slate-500">{t("f.loading")}</p>;
   if (!bundle || !deal || !transport) {
     return (
       <Card className="text-center">
-        <p className="text-red-600">{error ?? "رحلة TripGo غير موجودة"}</p>
+        <p className="text-red-600">{error ?? t("tripgo.notFound")}</p>
         <Link to="/tripgo" className="mt-4 inline-block text-[#0C7BB3]">
-          العودة لـ TripGo
+          {t("tripgo.backTo")}
         </Link>
       </Card>
     );
   }
   if (deal.available_seats <= 0 || transport.capacity_available <= 0) {
-    return <Card className="text-center text-slate-700">عذراً، هذه الرحلة أو خدمة النقل الخاصة بها لم تعد متاحة.</Card>;
+    return <Card className="text-center text-slate-700">{t("tripgo.unavailableNow")}</Card>;
   }
 
   return (
@@ -235,7 +242,7 @@ export function TripGoDetailsPage() {
       <div>
         <p className="flex items-center gap-1.5 text-xs font-bold text-[#0C7BB3]">🚐 TripGo</p>
         <h1 className="text-2xl font-bold text-slate-900">{formatRoute(deal)}</h1>
-        <p className="text-slate-600">تذكرة + نقل</p>
+        <p className="text-slate-600">{t("tripgo.ticketPlusTransfer")}</p>
       </div>
 
       {/* Stepper */}
@@ -261,7 +268,7 @@ export function TripGoDetailsPage() {
         ))}
       </div>
       <p className="-mt-3 text-sm font-bold text-slate-700">
-        {step + 1}. {STEPS[step].title}
+        {step + 1}. {t(`tripgo.steps.${STEPS[step].key}`)}
       </p>
 
       <form onSubmit={handleConfirm}>
@@ -278,14 +285,14 @@ export function TripGoDetailsPage() {
               <span className="font-latin font-bold">{formatTime(deal.arrival_time)}</span>
             </div>
             <dl className="space-y-2 text-sm">
-              <Row label="التاريخ" value={formatDate(deal.departure_date)} />
-              <Row label="شركة الطيران" value={airlineName(deal.airline_code, catalog.airlines)} />
-              <Row label="التوقفات" value={stopsMetaLabel(deal.stops)} />
-              {deal.duration_hours ? <Row label="المدة" value={`${deal.duration_hours} ساعة`} /> : null}
-              {baggageBadgeLabel(deal) ? <Row label="الأمتعة" value={baggageBadgeLabel(deal)!} /> : null}
+              <Row label={t("f.date")} value={formatDate(deal.departure_date)} />
+              <Row label={t("tripgo.flight.airline")} value={airlineName(deal.airline_code, catalog.airlines)} />
+              <Row label={t("tripgo.flight.stops")} value={stopsMetaLabel(deal.stops)} />
+              {deal.duration_hours ? <Row label={t("tripgo.flight.duration")} value={t("tripgo.flight.durationValue", { hours: deal.duration_hours })} /> : null}
+              {baggageBadgeLabel(deal) ? <Row label={t("deal.f.baggage")} value={baggageBadgeLabel(deal)!} /> : null}
             </dl>
             <div className="flex items-center justify-between rounded-xl border border-[#16A34A]/25 bg-[#F0FDF4] p-3 text-sm font-bold text-[#16A34A]">
-              <span>✓ النقل من وإلى المطار متضمّن</span>
+              <span>{t("tripgo.flight.transferIncluded")}</span>
               <span className="rounded-full bg-white px-2 py-0.5 text-xs shadow-sm">
                 {transferKindLabel(transport.transport_type, transport.vehicle_type)}
               </span>
@@ -295,17 +302,17 @@ export function TripGoDetailsPage() {
 
         {STEPS[step].key === "pickup" ? (
           <Card className="space-y-4">
-            <p className="text-sm text-slate-600">من فين هنستلمك عشان نوصّلك المطار؟</p>
+            <p className="text-sm text-slate-600">{t("tripgo.pickup.intro")}</p>
             <Input
-              label="عنوان الاستلام (المنزل / الفندق)"
+              label={t("tripgo.pickup.addressLabel")}
               required
-              placeholder="مثال: شقة 12، برج النيل، المهندسين"
+              placeholder={t("tripgo.pickup.addressPlaceholder")}
               value={pickupLocation}
               onChange={(e) => setPickupLocation(e.target.value)}
             />
             <Input
-              label="المنطقة / الحي (اختياري)"
-              placeholder="مثال: المهندسين، الجيزة"
+              label={t("tripgo.pickup.areaLabel")}
+              placeholder={t("tripgo.pickup.areaPlaceholder")}
               value={pickupArea}
               onChange={(e) => setPickupArea(e.target.value)}
             />
@@ -314,23 +321,25 @@ export function TripGoDetailsPage() {
 
         {STEPS[step].key === "transfer" ? (
           <Card className="space-y-4">
-            <p className="text-sm text-slate-600">تفاصيل تنسيق النقل — عشان السائق يكون في انتظارك بالظبط.</p>
+            <p className="text-sm text-slate-600">{t("tripgo.transfer.intro")}</p>
             <Input
-              label="رقم الرحلة (اختياري)"
-              placeholder="مثال: MS 123"
+              label={t("tripgo.transfer.flightLabel")}
+              placeholder={t("tripgo.transfer.flightPlaceholder")}
               value={flightNumber}
               onChange={(e) => setFlightNumber(e.target.value)}
             />
             <div className="space-y-2 rounded-xl bg-slate-50 p-3 text-sm text-slate-700">
               <p className="flex items-center gap-1.5 font-semibold">
-                <span aria-hidden>🚐</span> {pickupLocation || "عنوانك"} → المطار
+                <span aria-hidden>🚐</span> {t("tripgo.transfer.toAirport", { pickup: pickupLocation || t("tripgo.transfer.yourAddress") })}
               </p>
               <p className="flex items-center gap-1.5 font-semibold">
-                <span aria-hidden>🚐</span> المطار → {catalog.airports.find((a) => a.code === deal.to_airport)?.city ?? deal.to_airport}
+                <span aria-hidden>🚐</span>{" "}
+                {t("tripgo.transfer.fromAirport", { city: catalog.airports.find((a) => a.code === deal.to_airport)?.city ?? deal.to_airport })}
               </p>
               <p className="flex items-center gap-1.5 text-xs text-slate-500">
-                <span aria-hidden>ℹ️</span> وسيلة النقل: {transferKindLabel(transport.transport_type, transport.vehicle_type)}
-                {transport.pickup_time ? ` · موعد الاستلام التقريبي: ${formatTime(transport.pickup_time)}` : ""}
+                <span aria-hidden>ℹ️</span>{" "}
+                {t("tripgo.transfer.kindLine", { kind: transferKindLabel(transport.transport_type, transport.vehicle_type) })}
+                {transport.pickup_time ? t("tripgo.transfer.pickupTime", { time: formatTime(transport.pickup_time) }) : ""}
               </p>
             </div>
           </Card>
@@ -338,36 +347,36 @@ export function TripGoDetailsPage() {
 
         {STEPS[step].key === "passengers" ? (
           <Card className="space-y-4">
-            <Input label="الاسم الكامل" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+            <Input label={t("f.fullName")} required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
             <Input
-              label="رقم الهاتف"
+              label={t("f.phone")}
               required
               type="tel"
-              placeholder="+20xxxxxxxxxx"
+              placeholder={t("f.phonePlaceholder")}
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
             />
-            <Input label="البريد الإلكتروني (اختياري)" type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
+            <Input label={t("f.email")} type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
             <div className="grid grid-cols-3 gap-3">
-              <Input label="بالغين" type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
-              <Input label="أطفال" type="number" min={0} value={children} onChange={(e) => setChildren(Number(e.target.value))} />
-              <Input label="رضّع" type="number" min={0} value={infants} onChange={(e) => setInfants(Number(e.target.value))} />
+              <Input label={t("f.adults")} type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
+              <Input label={t("f.children")} type="number" min={0} value={children} onChange={(e) => setChildren(Number(e.target.value))} />
+              <Input label={t("f.infants")} type="number" min={0} value={infants} onChange={(e) => setInfants(Number(e.target.value))} />
             </div>
             {transport.transport_type === "shared" ? (
               <p className="text-xs text-slate-500">
-                المقاعد المتاحة في وسيلة النقل دي حالياً: {transport.capacity_available}
+                {t("tripgo.passengers.seatsInTransport", { count: transport.capacity_available })}
               </p>
             ) : null}
             <div className="space-y-3 border-t border-slate-100 pt-4">
-              {travelers.map((t, i) => (
+              {travelers.map((tr, i) => (
                 <div key={i} className="space-y-3 rounded-lg border border-slate-100 p-3">
                   <p className="text-sm font-medium text-slate-600">
-                    مسافر {i + 1} ({t.traveler_type === "adult" ? "بالغ" : t.traveler_type === "child" ? "طفل" : "رضيع"})
+                    {t("traveler.heading", { n: i + 1, type: t(`traveler.${tr.traveler_type}`) })}
                   </p>
                   <Input
-                    label="الاسم كما في الجواز"
+                    label={t("f.passportName")}
                     required
-                    value={t.full_name}
+                    value={tr.full_name}
                     onChange={(e) => {
                       const next = [...travelers];
                       next[i] = { ...next[i], full_name: e.target.value };
@@ -376,9 +385,9 @@ export function TripGoDetailsPage() {
                   />
                   <div className="grid gap-3 sm:grid-cols-2">
                     <Input
-                      label="تاريخ الميلاد"
+                      label={t("f.dob")}
                       type="date"
-                      value={t.date_of_birth}
+                      value={tr.date_of_birth}
                       onChange={(e) => {
                         const next = [...travelers];
                         next[i] = { ...next[i], date_of_birth: e.target.value };
@@ -386,8 +395,8 @@ export function TripGoDetailsPage() {
                       }}
                     />
                     <Input
-                      label="رقم الجواز"
-                      value={t.passport_number}
+                      label={t("f.passportNumber")}
+                      value={tr.passport_number}
                       onChange={(e) => {
                         const next = [...travelers];
                         next[i] = { ...next[i], passport_number: e.target.value };
@@ -403,42 +412,41 @@ export function TripGoDetailsPage() {
 
         {STEPS[step].key === "review" ? (
           <Card className="space-y-4">
-            <h2 className="font-bold text-slate-900">مراجعة رحلة TripGo</h2>
+            <h2 className="font-bold text-slate-900">{t("tripgo.review.title")}</h2>
             <dl className="space-y-2 text-sm">
-              <Row label="المسار" value={formatRoute(deal)} />
-              <Row label="التاريخ" value={formatDate(deal.departure_date)} />
-              <Row label="المسافرون" value={`${adults} بالغ · ${children} طفل · ${infants} رضيع`} />
-              <Row label="مكان الاستلام" value={pickupLocation || "—"} />
+              <Row label={t("f.route")} value={formatRoute(deal)} />
+              <Row label={t("f.date")} value={formatDate(deal.departure_date)} />
+              <Row label={t("f.travelers")} value={formatTravelerSummary(adults, children, infants)} />
+              <Row label={t("f.pickupLocation")} value={pickupLocation || "—"} />
               <Row
-                label="وسيلة النقل"
+                label={t("f.transportKind")}
                 value={`${transferKindLabel(transport.transport_type, transport.vehicle_type)} — ${formatPrice(transferPrice, currency)}`}
               />
             </dl>
             <div className="space-y-1 border-t border-slate-100 pt-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500">تذكرة الطيران</span>
+                <span className="text-slate-500">{t("tripgo.review.flightTicket")}</span>
                 <span className="font-latin">{formatPrice(flightSubtotal, currency)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">النقل من وإلى المطار</span>
+                <span className="text-slate-500">{t("tripgo.review.transfer")}</span>
                 <span className="font-latin">{formatPrice(transferPrice, currency)}</span>
               </div>
               <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
-                <span>إجمالي رحلة TripGo</span>
+                <span>{t("tripgo.review.total")}</span>
                 <span className="font-latin text-[#0C7BB3]">{formatPrice(total, currency)}</span>
               </div>
             </div>
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
-              ⚠️ السعر تقديري وغير نهائي — الضغط على "تأكيد حجز TripGo" يرسل طلب حجز للوكالة، هيتواصلوا معاك لتأكيد
-              السعر والمقعد وتفاصيل الاستلام قبل الدفع الفعلي.
+              {t("tripgo.review.estimateWarning")}
             </div>
           </Card>
         ) : null}
 
         {STEPS[step].key === "payment" ? (
           <Card className="space-y-4">
-            <p className="text-sm text-slate-600">الدفع يدوي — أكمل التحويل ثم أرسل الإيصال عبر واتساب بعد تأكيد الوكالة.</p>
-            {PAYMENT_METHODS.map((pm) => (
+            <p className="text-sm text-slate-600">{t("tripgo.payment.manual")}</p>
+            {paymentMethods.map((pm) => (
               <label
                 key={pm.value}
                 className={cn(
@@ -459,7 +467,7 @@ export function TripGoDetailsPage() {
               </label>
             ))}
             <div className="flex items-center justify-between rounded-xl bg-[#0C7BB3]/5 px-4 py-3">
-              <span className="text-sm font-medium text-slate-700">إجمالي رحلة TripGo</span>
+              <span className="text-sm font-medium text-slate-700">{t("tripgo.review.total")}</span>
               <span className="text-lg font-extrabold text-[#0C7BB3]">{formatPrice(total, currency)}</span>
             </div>
           </Card>
@@ -470,16 +478,16 @@ export function TripGoDetailsPage() {
         <div className="mt-5 flex items-center gap-3">
           {step > 0 ? (
             <Button type="button" variant="outline" onClick={goBack}>
-              رجوع
+              {t("actions.back", { ns: "common" })}
             </Button>
           ) : null}
           {step < STEPS.length - 1 ? (
             <Button type="button" fullWidth onClick={goNext}>
-              التالي
+              {t("actions.next", { ns: "common" })}
             </Button>
           ) : (
             <Button type="submit" fullWidth disabled={submitting}>
-              {submitting ? "جاري تأكيد رحلة TripGo..." : "تأكيد حجز TripGo"}
+              {submitting ? t("tripgo.submit.confirming") : t("tripgo.submit.confirm")}
             </Button>
           )}
         </div>
@@ -489,13 +497,18 @@ export function TripGoDetailsPage() {
         <a
           href={whatsAppLink(
             getAgencyWhatsApp(deal, catalog.agencies),
-            `مرحباً، أريد تأكيد رحلة TripGo: ${formatRoute(deal)} — استلام من ${pickupLocation || "—"} — وسيلة النقل: ${transferKindLabel(transport.transport_type, transport.vehicle_type)}`,
+            i18n.t("booking:whatsapp.tripgoConfirm", {
+              lng: AGENCY_MESSAGE_LANG,
+              route: formatRoute(deal),
+              pickup: pickupLocation || "—",
+              transport: transferKindLabel(transport.transport_type, transport.vehicle_type, AGENCY_MESSAGE_LANG),
+            }),
           )}
           target="_blank"
           rel="noreferrer"
           className="block text-center text-xs font-semibold text-slate-500 hover:text-[#0C7BB3]"
         >
-          محتاج تأكيد تفاصيل الاستلام على واتساب؟ تواصل معنا
+          {t("tripgo.whatsappHelp")}
         </a>
       ) : null}
     </div>

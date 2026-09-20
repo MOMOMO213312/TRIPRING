@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import type { PriceTrendPoint } from "../lib/api";
 import { formatLatinNumber, formatPrice } from "../lib/utils";
 
@@ -7,11 +9,12 @@ type Props = {
 };
 
 export function PriceHistoryChart({ title, points }: Props) {
+  const { t } = useTranslation("booking");
   if (points.length < 2) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-5">
         <h3 className="font-bold text-slate-900">{title}</h3>
-        <p className="mt-2 text-sm text-slate-500">لا توجد بيانات كافية لعرض الرسم البياني</p>
+        <p className="mt-2 text-sm text-slate-500">{t("chart.noData")}</p>
       </div>
     );
   }
@@ -58,7 +61,7 @@ export function PriceHistoryChart({ title, points }: Props) {
         <span>{points[points.length - 1]?.date}</span>
       </div>
       <p className="font-latin mt-1 text-xs text-slate-500">
-        أدنى سعر حالي: {formatPrice(points[points.length - 1]?.price ?? 0)}
+        {t("chart.currentLow", { price: formatPrice(points[points.length - 1]?.price ?? 0) })}
       </p>
     </div>
   );

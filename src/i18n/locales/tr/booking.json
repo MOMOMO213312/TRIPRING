@@ -1,0 +1,349 @@
+{
+  "f": {
+    "route": "Güzergah",
+    "date": "Tarih",
+    "travelers": "Yolcular",
+    "fullName": "Ad soyad",
+    "phone": "Telefon numarası",
+    "email": "E-posta (isteğe bağlı)",
+    "adults": "Yetişkin",
+    "children": "Çocuk",
+    "infants": "Bebek",
+    "passportName": "Pasaporttaki ad",
+    "dob": "Doğum tarihi",
+    "passportNumber": "Pasaport numarası",
+    "phonePlaceholder": "+20xxxxxxxxxx",
+    "loading": "Yükleniyor...",
+    "total": "Toplam",
+    "baseFare": "Temel fiyat",
+    "taxes": "Vergi ve harçlar",
+    "pickupLocation": "Alış noktası",
+    "transportKind": "Ulaşım türü",
+    "flightNumber": "Uçuş numarası"
+  },
+  "traveler": {
+    "adult": "yetişkin",
+    "child": "çocuk",
+    "infant": "bebek",
+    "heading": "Yolcu {{n}} ({{type}})",
+    "adultsN": "{{count}} yetişkin",
+    "childrenN": "{{count}} çocuk",
+    "infantsN": "{{count}} bebek"
+  },
+  "payment": {
+    "bankTransfer": {
+      "label": "Banka havalesi",
+      "details": "Banka: {{bank}} · IBAN: {{iban}} · Hesap adı: {{account}}"
+    },
+    "instapay": {
+      "label": "InstaPay",
+      "details": "InstaPay kimliği: {{handle}}"
+    },
+    "vodafoneCash": {
+      "label": "Vodafone Cash",
+      "details": "Cüzdan numarası: {{number}}"
+    }
+  },
+  "packages": {
+    "basic": {
+      "label": "Sadece bilet"
+    },
+    "smart": {
+      "label": "Smart Trip"
+    },
+    "premium": {
+      "label": "Premium Trip"
+    },
+    "badge": {
+      "popular": "En çok tercih edilen"
+    },
+    "perk": {
+      "ticketOnly": "Sadece uçak bileti",
+      "ticket": "Uçak bileti",
+      "oneBag": "Bir bavul",
+      "transfer": "Havalimanı transferi",
+      "support": "Yolculuk desteği",
+      "lounge": "Havalimanı lounge",
+      "fastTrack": "Fast Track",
+      "insurance": "Seyahat sigortası"
+    }
+  },
+  "selector": {
+    "chooseTrip": "Yolculuğunu seç",
+    "addServices": "Hizmetlerini ekle",
+    "included": "Dahil ✓",
+    "recommended": "Önerilen"
+  },
+  "journey": {
+    "title": "Yolculuğun",
+    "pendingSupplier": "Sağlayıcı atanıyor",
+    "footer": "Yolculuğundaki her öğe kendi başına onaylanır. Bir öğede sorun çıkarsa, seyahatinin geri kalanını iptal etmeden otomatik olarak alternatif ararız.",
+    "item": {
+      "pending_assignment": "Ayarlanıyor",
+      "assigned": "Onaylanıyor",
+      "confirmed": "Onaylandı",
+      "fulfilled": "Onaylandı ✓",
+      "failed": "Senin için yeniden ayarlıyoruz",
+      "reassigning": "Senin için yeniden ayarlıyoruz",
+      "cancelled": "İptal edildi"
+    },
+    "summary": {
+      "pending_assignment": "Yolculuğun ayarlanıyor",
+      "partially_assigned": "Yolculuğun ayarlanıyor",
+      "fully_assigned": "Yolculuğundaki tüm öğeler onaylanıyor",
+      "partially_fulfilled": "Yolculuğunun bir kısmı onaylandı",
+      "fully_fulfilled": "Yolculuğun tamamen onaylandı ✓",
+      "needs_attention": "Ekibimiz yolculuğundaki bir öğeyi inceliyor",
+      "cancelled": "İptal edildi"
+    }
+  },
+  "upload": {
+    "cta": "📎 Ödeme dekontu yükle (görsel veya PDF)",
+    "uploading": "Yükleniyor...",
+    "success": "✓ Ödeme dekontu başarıyla yüklendi",
+    "failed": "Dosya yüklenemedi, lütfen tekrar dene."
+  },
+  "chart": {
+    "title": "{{route}} fiyat geçmişi",
+    "noData": "Grafiği göstermek için yeterli veri yok",
+    "currentLow": "Güncel en düşük fiyat: {{price}}"
+  },
+  "auth": {
+    "defaultTitle": "Devam etmek için giriş yap",
+    "signIn": "Giriş yap",
+    "signUp": "Yeni hesap",
+    "name": "Ad",
+    "email": "E-posta",
+    "password": "Şifre",
+    "confirmNotice": "Hesap oluşturuldu — girişi onaylamak için e-postanı kontrol et",
+    "verifying": "Doğrulanıyor...",
+    "createAccount": "Hesap oluştur",
+    "login": "Giriş",
+    "errors": {
+      "invalidCredentials": "Giriş bilgileri hatalı",
+      "alreadyRegistered": "Bu e-posta zaten kayıtlı",
+      "weakPassword": "Şifre en az 6 karakter olmalı",
+      "invalidEmail": "E-posta biçimi geçersiz",
+      "generic": "Bir hata oluştu, lütfen tekrar dene"
+    }
+  },
+  "reviews": {
+    "count": "({{n}} değerlendirme)",
+    "none": "Henüz değerlendirme yok",
+    "rate": "Acenteyi değerlendir",
+    "thanks": "Teşekkürler, değerlendirmen gönderildi",
+    "authTitle": "Acenteyi değerlendirmek için giriş yap",
+    "authDescription": "Değerlendirmeni adınla eşleştirmek ve sahte değerlendirmeleri önlemek için giriş yapman gerekiyor",
+    "yourRating": "Puanın",
+    "ratingLabel": "Puan",
+    "commentPlaceholder": "Yorumun (isteğe bağlı)",
+    "sending": "Gönderiliyor...",
+    "send": "Değerlendirmeyi gönder",
+    "failed": "Değerlendirme gönderilemedi, lütfen tekrar dene."
+  },
+  "transfer": {
+    "private": "🚗 Özel araç",
+    "privateVehicle": "🚗 Özel araç · {{vehicle}}",
+    "shared": "🚐 Paylaşımlı transfer",
+    "sharedVehicle": "🚐 Paylaşımlı transfer · {{vehicle}}"
+  },
+  "page": {
+    "title": "Rezervasyonu tamamla",
+    "dealUnavailable": "Bu fırsat mevcut değil",
+    "dealNotFound": "Fırsat bulunamadı",
+    "loadFailed": "Fırsat yüklenirken bir hata oluştu, lütfen tekrar dene.",
+    "soldOut": "Üzgünüz, bu fırsattaki koltuklar tükendi. Başka bir fırsat aramayı dene.",
+    "createFailed": "Rezervasyon oluşturulamadı. Lütfen tekrar dene veya bizimle iletişime geç.",
+    "validation": {
+      "name": "Lütfen ad soyadını gir",
+      "phone": "Lütfen telefon numaranı gir",
+      "phoneInvalid": "Telefon numarası geçersiz — uluslararası biçimde gir, örn. +20xxxxxxxxxx",
+      "emailInvalid": "E-posta adresi geçersiz",
+      "traveler": "Lütfen {{n}}. yolcunun adını pasaporttaki gibi gir"
+    },
+    "changes": {
+      "gone": "Üzgünüz, bu fırsat artık mevcut değil.",
+      "seatsGone": "Üzgünüz, bu fırsattaki koltuklar az önce tükendi.",
+      "seatsFewer": "Şu anda müsait koltuk sayısı ({{available}}) yolcu sayısından ({{needed}}) az.",
+      "priceChanged": "Dikkat: sayfayı açtığından beri bu fırsatın fiyatı değişti ({{oldPrice}} idi, şimdi {{newPrice}}). Aşağıdaki yeni toplamı incele ve devam etmek için tekrar \"Rezervasyonu onayla\"ya bas."
+    },
+    "section": {
+      "contact": "İletişim ve yolcu bilgileri",
+      "services": "Ek hizmetler (isteğe bağlı)",
+      "summary": "Özet ve ödeme"
+    },
+    "tripgo": {
+      "title": "🚗 Anında TripGo — özel araç seni bulunduğun yerden alır (isteğe bağlı)",
+      "desc": "Bölgeni seç, araç ücreti bilet fiyatının üzerine otomatik olarak eklenir.",
+      "none": "Transfer istemiyorum — ulaşımımı kendim ayarlarım"
+    },
+    "summary": {
+      "estimateWarning": "⚠️ Fiyat tahminidir ve kesin değildir. \"Rezervasyonu onayla\"ya basmak acenteye onaylı bir bilet değil, bir <strong>rezervasyon talebi</strong> gönderir — gerçek ödemeden önce fiyatı ve koltuğu onaylamak için seninle iletişime geçecekler.",
+      "package": "Paket",
+      "tripgoTransport": "TripGo (transfer)",
+      "estimatedTotal": "Tahmini toplam",
+      "manualPayment": "Ödeme manuel yapılır — havaleyi tamamla, acente onayladıktan sonra dekontu WhatsApp ile gönder"
+    },
+    "submit": {
+      "checking": "Rezervasyon kontrol ediliyor...",
+      "confirm": "Rezervasyonu onayla"
+    }
+  },
+  "confirmation": {
+    "noData": "Bu sayfada rezervasyon verisi yok (muhtemelen sayfa yenilendiği için).",
+    "lastBooking": "Son rezervasyonun:",
+    "viewMine": "Rezervasyonumu Seyahatlerim'de göster",
+    "title": "Rezervasyon başarıyla oluşturuldu",
+    "tripgoBadge": "🚐 TripGo seyahati — Uçuş + Transfer",
+    "bookingNumber": "Rezervasyon numarası",
+    "amount": "Tutar",
+    "paymentMethod": "Ödeme yöntemi",
+    "status": {
+      "label": "Durum",
+      "new": "Yeni — iletişim bekleniyor",
+      "contacted": "Seninle iletişime geçildi",
+      "awaiting_payment": "Ödeme bekleniyor",
+      "payment_uploaded": "Ödeme dekontu alındı",
+      "paid": "Ödeme onaylandı",
+      "ticket_issued": "Bilet düzenlendi",
+      "cancelled": "İptal edildi"
+    },
+    "transferDetails": "Havalimanı transfer detayları",
+    "area": "Bölge",
+    "requestNotice": "⚠️ Bu henüz onaylı bir bilet değil, bir <strong>rezervasyon talebidir</strong>. Acente ekibi fiyatı ve koltuk müsaitliğini onaylamak için seninle iletişime geçecek. Acente nihai fiyatı onaylamadan banka havalesi yapma.",
+    "afterConfirm": "Acente onayladıktan sonra seçtiğin ödeme yöntemiyle havaleyi tamamla, ardından dekontu WhatsApp ile gönder veya doğrudan buraya yükle.",
+    "sendWhatsapp": "WhatsApp ile gönder",
+    "viewInTrips": "Seyahatlerim'de göster",
+    "saveNote": "Daha sonra aramak için rezervasyon numaranı {{number}} ve telefon numaranı {{phone}} kaydet"
+  },
+  "whatsapp": {
+    "paid": "Merhaba, {{number}} numaralı rezervasyon için havale gönderdim",
+    "name": "Ad: {{name}}",
+    "route": "Güzergah: {{route}}",
+    "travelers": "Yolcular: {{value}}",
+    "pickup": "Alış noktası: {{value}}",
+    "transport": "Ulaşım: {{value}}",
+    "amount": "Tutar: {{value}}",
+    "tripgoConfirm": "Merhaba, TripGo seyahatimi onaylamak istiyorum: {{route}} — {{pickup}} noktasından alış — ulaşım: {{transport}}"
+  },
+  "deal": {
+    "unavailable": "Bu fırsat mevcut değil veya süresi doldu",
+    "loadFailed": "Fırsat yüklenirken bir hata oluştu. Lütfen tekrar dene veya ana sayfaya dön.",
+    "backHome": "Ana sayfaya dön",
+    "continue": "Devam",
+    "share": "🔗 Paylaş",
+    "copied": "Kopyalandı ✓",
+    "priceAlert": "🔔 Fiyat uyarısı",
+    "heroLabel": "TripRing fırsatı",
+    "seatsLeft": "{{count}} koltuk kaldı",
+    "f": {
+      "departure": "Kalkış",
+      "return": "Dönüş",
+      "seatsAvailable": "Müsait koltuk",
+      "class": "Sınıf",
+      "aircraft": "Uçak tipi",
+      "operatedBy": "Operatör havayolu",
+      "arrival": "Varış tarihi",
+      "layover": "Aktarma süresi",
+      "baggage": "Bagaj",
+      "cabinBag": "Kabin bagajı",
+      "checkedBags": "Kayıtlı bagaj sayısı",
+      "extraBag": "Ek bagaj ücreti"
+    },
+    "fare": {
+      "refundable": "İade edilebilir",
+      "nonRefundable": "İade edilemez",
+      "changeable": "Değiştirilebilir",
+      "nonChangeable": "Değiştirilemez",
+      "changeFee": "Değişiklik ücreti: {{fee}}",
+      "cancelFee": "İptal ücreti: {{fee}}"
+    },
+    "flex": {
+      "title": "Esnek tarihler",
+      "subtitle": "Seyahatine yakın tarihlerde aynı güzergahın fiyatları",
+      "save": "💡 {{date}} tarihinde seyahat edersen {{amount}} tasarruf et",
+      "yourTrip": "Senin seyahatin"
+    },
+    "why": "Bu neden iyi bir fırsat?",
+    "notes": "Notlar",
+    "alert": {
+      "title": "Fiyat uyarısı oluştur",
+      "contactRequired": "Bir telefon numarası veya e-posta gir",
+      "intro": "{{route}} fiyatı bu bütçenin altına düştüğünde sana haber vereceğiz.",
+      "done": "Tamam! {{route}} fiyatı {{budget}} {{currency}} altına düştüğünde sana haber vereceğiz",
+      "contactLabel": "Telefon numarası veya e-posta",
+      "contactPlaceholder": "01000000000 veya you@email.com",
+      "budgetLabel": "Maksimum bütçe (USD)",
+      "creating": "Oluşturuluyor...",
+      "create": "Uyarı oluştur",
+      "failed": "Bir hata oluştu, lütfen tekrar dene"
+    }
+  },
+  "tripgo": {
+    "steps": {
+      "flight": "Uçuş",
+      "pickup": "Alış noktası",
+      "transfer": "Transfer detayları",
+      "passengers": "Yolcular",
+      "review": "Seyahati incele",
+      "payment": "Ödeme"
+    },
+    "notAvailable": "Bu TripGo seyahati mevcut değil",
+    "notFound": "TripGo seyahati bulunamadı",
+    "loadFailed": "Seyahat yüklenirken bir hata oluştu, lütfen tekrar dene.",
+    "backTo": "TripGo'ya dön",
+    "unavailableNow": "Üzgünüz, bu seyahat veya transfer hizmeti artık mevcut değil.",
+    "confirmGone": "Üzgünüz, bu TripGo seyahati artık mevcut değil.",
+    "createFailed": "Rezervasyon oluşturulamadı. Lütfen tekrar dene veya bizimle iletişime geç.",
+    "ticketPlusTransfer": "Bilet + transfer",
+    "validation": {
+      "pickup": "Alış adresini gir (ev / otel)",
+      "name": "Ad soyadını gir",
+      "traveler": "{{n}}. yolcunun adını pasaporttaki gibi gir",
+      "noCar": "Bu saat için şu anda müsait araç yok",
+      "seatsFewer": "Müsait koltuk sayısı ({{available}}) yolcu sayısından ({{needed}}) az"
+    },
+    "flight": {
+      "airline": "Havayolu",
+      "stops": "Aktarmalar",
+      "duration": "Süre",
+      "durationValue": "{{hours}} sa",
+      "transferIncluded": "✓ Havalimanı transferi dahil"
+    },
+    "pickup": {
+      "intro": "Seni havalimanına götürmek için nereden alalım?",
+      "addressLabel": "Alış adresi (ev / otel)",
+      "addressPlaceholder": "örn. Daire 12, Nil Kulesi, Mohandessin",
+      "areaLabel": "Bölge / semt (isteğe bağlı)",
+      "areaPlaceholder": "örn. Mohandessin, Giza"
+    },
+    "transfer": {
+      "intro": "Transfer koordinasyon bilgileri — şoförün seni tam zamanında beklemesi için.",
+      "flightLabel": "Uçuş numarası (isteğe bağlı)",
+      "flightPlaceholder": "örn. MS 123",
+      "yourAddress": "Adresin",
+      "toAirport": "{{pickup}} → Havalimanı",
+      "fromAirport": "Havalimanı → {{city}}",
+      "kindLine": "Ulaşım: {{kind}}",
+      "pickupTime": " · Tahmini alış saati: {{time}}"
+    },
+    "passengers": {
+      "seatsInTransport": "Bu ulaşım aracında şu anda müsait koltuk: {{count}}"
+    },
+    "review": {
+      "title": "TripGo seyahatini incele",
+      "flightTicket": "Uçak bileti",
+      "transfer": "Havalimanı transferi",
+      "total": "TripGo seyahati toplamı",
+      "estimateWarning": "⚠️ Fiyat tahminidir ve kesin değildir — \"TripGo rezervasyonunu onayla\"ya basmak acenteye bir rezervasyon talebi gönderir; gerçek ödemeden önce fiyatı, koltuğu ve alış detaylarını onaylamak için seninle iletişime geçecekler."
+    },
+    "payment": {
+      "manual": "Ödeme manuel yapılır — havaleyi tamamla, acente onayladıktan sonra dekontu WhatsApp ile gönder."
+    },
+    "submit": {
+      "confirming": "TripGo seyahatin onaylanıyor...",
+      "confirm": "TripGo rezervasyonunu onayla"
+    },
+    "whatsappHelp": "Alış detaylarını WhatsApp'ta onaylamak mı istiyorsun? Bize ulaş"
+  }
+}

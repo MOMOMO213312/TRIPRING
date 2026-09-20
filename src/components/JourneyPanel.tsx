@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 import { Badge } from "./ui/Badge";
 import { formatPrice } from "../lib/utils";
-import { JOURNEY_ITEM_STATUS_LABELS, JOURNEY_SUMMARY_LABELS } from "../types/database";
 import type { BookingLookupResult } from "../types/database";
 
 const ITEM_TYPE_ICON: Record<string, string> = {
@@ -38,14 +39,19 @@ export function JourneyPanel({
   journey: NonNullable<BookingLookupResult["journey"]>;
   currency: string;
 }) {
+  const { t, i18n } = useTranslation("booking");
   if (journey.items.length === 0) return null;
+
+  // Unknown statuses fall back to the raw value rather than rendering a missing-key string.
+  const itemStatus = (s: string) => (i18n.exists(`booking:journey.item.${s}`) ? t(`journey.item.${s}`) : s);
+  const summaryStatus = (s: string) => (i18n.exists(`booking:journey.summary.${s}`) ? t(`journey.summary.${s}`) : s);
 
   return (
     <div className="mt-4 border-t border-slate-100 pt-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-bold text-slate-800">رحلتك</p>
+        <p className="text-sm font-bold text-slate-800">{t("journey.title")}</p>
         <span className="text-xs font-semibold text-[#0C7BB3]">
-          {JOURNEY_SUMMARY_LABELS[journey.fulfillment_summary] ?? journey.fulfillment_summary}
+          {summaryStatus(journey.fulfillment_summary)}
         </span>
       </div>
       <ul className="space-y-2">
@@ -57,18 +63,18 @@ export function JourneyPanel({
                 {item.quantity > 1 ? ` × ${item.quantity}` : ""}
               </span>
               <Badge tone={journeyItemTone(item.fulfillment_status)}>
-                {JOURNEY_ITEM_STATUS_LABELS[item.fulfillment_status] ?? item.fulfillment_status}
+                {itemStatus(item.fulfillment_status)}
               </Badge>
             </div>
             <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
-              <span>{item.supplier_name ?? "جاري تحديد المزوّد"}</span>
+              <span>{item.supplier_name ?? t("journey.pendingSupplier")}</span>
               <span>{formatPrice(item.customer_price, currency)}</span>
             </div>
           </li>
         ))}
       </ul>
       <p className="mt-2 text-xs text-slate-400">
-        كل عنصر في رحلتك بيتأكد لوحده. لو حصلت مشكلة في عنصر، بندوّر على بديل تلقائيًا من غير ما نلغي باقي الرحلة.
+        {t("journey.footer")}
       </p>
     </div>
   );

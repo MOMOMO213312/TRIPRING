@@ -1,3 +1,6 @@
+import { useTranslation } from "react-i18next";
+
+import i18n from "../i18n";
 import type { PaymentMethod } from "../types/database";
 
 /**
@@ -24,20 +27,50 @@ export const PAYMENT_DETAILS_ARE_PLACEHOLDER =
   INSTAPAY_HANDLE === "tripring@instapay" ||
   VODAFONE_CASH_NUMBER === "01000000000";
 
-export const PAYMENT_METHODS: { value: PaymentMethod; label: string; details: string }[] = [
-  {
-    value: "bank_transfer",
-    label: "تحويل بنكي",
-    details: `البنك: ${BANK_NAME} · IBAN: ${BANK_IBAN} · اسم الحساب: ${BANK_ACCOUNT_NAME}`,
-  },
-  {
-    value: "instapay",
-    label: "InstaPay",
-    details: `معرّف InstaPay: ${INSTAPAY_HANDLE}`,
-  },
-  {
-    value: "vodafone_cash",
-    label: "Vodafone Cash",
-    details: `رقم المحفظة: ${VODAFONE_CASH_NUMBER}`,
-  },
-];
+export type PaymentMethodOption = { value: PaymentMethod; label: string; details: string };
+
+/** i18n key segment (booking:payment.<segment>.*) for each DB payment_method value. */
+const METHOD_KEY: Record<PaymentMethod, string> = {
+  bank_transfer: "bankTransfer",
+  instapay: "instapay",
+  vodafone_cash: "vodafoneCash",
+};
+
+/** Localised display name of a payment method (e.g. on the confirmation page). */
+export function paymentMethodLabel(value: PaymentMethod): string {
+  return i18n.t(`booking:payment.${METHOD_KEY[value]}.label`);
+}
+
+/**
+ * Payment options in the CURRENT UI language. Built on every call (not once at import time)
+ * so the labels follow a language switch; the account details themselves stay the same.
+ */
+export function getPaymentMethods(): PaymentMethodOption[] {
+  return [
+    {
+      value: "bank_transfer",
+      label: paymentMethodLabel("bank_transfer"),
+      details: i18n.t("booking:payment.bankTransfer.details", {
+        bank: BANK_NAME,
+        iban: BANK_IBAN,
+        account: BANK_ACCOUNT_NAME,
+      }),
+    },
+    {
+      value: "instapay",
+      label: paymentMethodLabel("instapay"),
+      details: i18n.t("booking:payment.instapay.details", { handle: INSTAPAY_HANDLE }),
+    },
+    {
+      value: "vodafone_cash",
+      label: paymentMethodLabel("vodafone_cash"),
+      details: i18n.t("booking:payment.vodafoneCash.details", { number: VODAFONE_CASH_NUMBER }),
+    },
+  ];
+}
+
+/** Hook version of getPaymentMethods() — re-renders the caller when the language changes. */
+export function usePaymentMethods(): PaymentMethodOption[] {
+  useTranslation("booking");
+  return getPaymentMethods();
+}

@@ -1050,34 +1050,16 @@ export type BookingLookupResult = {
 };
 
 /**
- * Customer-facing wording for order_items.fulfillment_status.
+ * Customer-facing wording for order_items.fulfillment_status (and orders.fulfillment_summary)
+ * lives in the i18n `booking` namespace — `journey.item.*` and `journey.summary.*` — and is
+ * rendered by components/JourneyPanel.tsx.
  *
- * Deliberately NOT the same copy the admin sees. `failed` and `reassigning`
- * are both internal states the Fallback Engine is actively recovering from —
- * telling a customer "فشل" while the engine is mid-recovery causes panic and
- * support calls for something that usually self-heals. The customer is told
- * the truth (something is being re-arranged) without the alarming internal
- * label. The admin Fulfillment Monitor still shows the raw state.
+ * Deliberately NOT the same copy the admin sees. `failed` and `reassigning` are both internal
+ * states the Fallback Engine is actively recovering from — telling a customer "failed" while
+ * the engine is mid-recovery causes panic and support calls for something that usually
+ * self-heals. The customer is told the truth (something is being re-arranged) without the
+ * alarming internal label. The admin Fulfillment Monitor still shows the raw state.
  */
-export const JOURNEY_ITEM_STATUS_LABELS: Record<string, string> = {
-  pending_assignment: "جاري الترتيب",
-  assigned: "جاري التأكيد",
-  confirmed: "تم التأكيد",
-  fulfilled: "مؤكد ✓",
-  failed: "بنعيد ترتيبها لك",
-  reassigning: "بنعيد ترتيبها لك",
-  cancelled: "ملغية",
-};
-
-export const JOURNEY_SUMMARY_LABELS: Record<string, string> = {
-  pending_assignment: "جاري ترتيب رحلتك",
-  partially_assigned: "جاري ترتيب رحلتك",
-  fully_assigned: "جاري تأكيد كل عناصر رحلتك",
-  partially_fulfilled: "تم تأكيد جزء من رحلتك",
-  fully_fulfilled: "رحلتك مؤكدة بالكامل ✓",
-  needs_attention: "فريقنا بيراجع عنصر في رحلتك",
-  cancelled: "ملغية",
-};
 
 /**
  * Lifecycle of an extra service (seat request, extra baggage, transfer, etc)
