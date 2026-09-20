@@ -1,0 +1,191 @@
+{
+  "title": "استكمل رحلتك عبر TripRing بخدمات إضافية أو باقات متكاملة",
+  "promo": {
+    "blueFriday": {
+      "title": "الجمعة السماوي",
+      "subtitle": "خصومات لحد 33% على الطيران — كل جمعة"
+    },
+    "membership": {
+      "title": "عضوية TRIPRING",
+      "subtitle": "خصومات دائمة + خدمات مجانية + أولوية إشعارات"
+    }
+  },
+  "tabs": {
+    "services": {
+      "title": "الخدمات",
+      "subtitle": "اطلب أي خدمة منفردة بسعرها"
+    },
+    "packages": {
+      "title": "الباقات",
+      "subtitle": "باقات متكاملة بسعر أقل من الطلب المنفرد"
+    }
+  },
+  "services": {
+    "note": {
+      "label": "خدمة منفردة:",
+      "text": "اطلب أي خدمة لوحدها بسعرها، من غير ما تحجز باقي، وحتى لو تذكرتك محجوزة من مكان تاني خالص."
+    },
+    "badge": "خدمة منفردة",
+    "loading": "جاري تحميل الخدمات...",
+    "empty": "لا توجد خدمات متاحة في هذا القسم حالياً",
+    "free": "مجاناً",
+    "book": "احجز الآن"
+  },
+  "categories": {
+    "transport": {
+      "title": "النقل",
+      "subtitle": "Airport Transfer · Private Car · Shuttle"
+    },
+    "airport": {
+      "title": "المطار",
+      "subtitle": "Lounge · Fast Track · Meet & Assist"
+    },
+    "destination": {
+      "title": "خدمات الوجهة",
+      "subtitle": "تجارب وخدمات مرتبطة بوجهتك"
+    },
+    "insurance": {
+      "title": "تأمين السفر",
+      "subtitle": "تأمين أساسي أو شامل لرحلتك"
+    }
+  },
+  "packages": {
+    "note": {
+      "label": "باقة جاهزة:",
+      "text": "بتجمع أكتر من خدمة في منتج واحد بسعر إجمالي أوفر من طلب كل خدمة لوحدها."
+    },
+    "badge": "باقة",
+    "save": "وفّر {{amount}}",
+    "customStart": "يبدأ حسب اختيارك",
+    "explore": "استكشف الباقة",
+    "items": {
+      "vip": {
+        "title": "VIP Airport Package",
+        "subtitle": "كل خدمات المطار في باقة واحدة شاملة",
+        "badge": "الأشمل"
+      },
+      "arrival": {
+        "title": "Arrival Package",
+        "subtitle": "استقبال VIP وانتقال مريح من المطار"
+      },
+      "departure": {
+        "title": "Departure Package",
+        "subtitle": "انتقال للمطار مع Fast Track عند السفر"
+      },
+      "family": {
+        "title": "Family Package",
+        "subtitle": "انتقال يناسب العائلة مع خدمات الأمتعة"
+      },
+      "business": {
+        "title": "Business Traveler Package",
+        "subtitle": "صالة VIP وFast Track وانتقال خاص",
+        "badge": "الأكثر طلباً"
+      },
+      "custom": {
+        "title": "Custom Package",
+        "subtitle": "اختر الخدمات اللي تناسبك وكوّن باقتك بنفسك"
+      }
+    }
+  },
+  "serviceKey": {
+    "transfer": "الانتقال من وإلى المطار",
+    "lounge": "صالة المطار (Lounge)",
+    "fast_track": "Fast Track",
+    "meet_assist": "استقبال ومرافقة (Meet & Assist)",
+    "baggage": "خدمات الأمتعة",
+    "parking": "موقف سيارات المطار",
+    "insurance": "تأمين السفر"
+  },
+  "confirm": {
+    "title": "تم إرسال طلبك",
+    "orderLabel": "رقم الطلب",
+    "orderRest": "— هيتواصل معاك فريقنا قريباً لتأكيد التفاصيل والدفع.",
+    "total": "الإجمالي: {{amount}}",
+    "ok": "تمام"
+  },
+  "form": {
+    "optional": "اختياري",
+    "optionalNote": "مش لازم تكون حاجز تذكرتك من TripRing — تقدر تدخل تفاصيل رحلتك من أي مصدر عشان نربط الطلب بيها.",
+    "airline": "شركة الطيران",
+    "choose": "اختر (اختياري)",
+    "flightNumber": "رقم الرحلة",
+    "flightNumberPh": "مثال: MS 123",
+    "flightDate": "تاريخ الرحلة",
+    "arrivalTime": "وقت الوصول",
+    "airport": "المطار",
+    "destination": "الوجهة",
+    "destinationPh": "مثال: جدة",
+    "name": "الاسم",
+    "phone": "رقم الهاتف",
+    "email": "البريد الإلكتروني (اختياري)",
+    "notes": "ملاحظات (اختياري)",
+    "err": {
+      "name": "أدخل اسمك",
+      "phone": "رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx",
+      "email": "البريد الإلكتروني غير صالح"
+    }
+  },
+  "request": {
+    "quantity": "الكمية",
+    "total": "الإجمالي",
+    "submitting": "جاري الإرسال...",
+    "confirm": "تأكيد الطلب",
+    "failed": "فشل إرسال الطلب، جرّب تاني."
+  },
+  "packageModal": {
+    "pickToBuild": "اختار الخدمات اللي تدخل في باقتك:",
+    "included": "الخدمات المشمولة في الباقة:",
+    "individualPrice": "سعر الخدمات منفردة",
+    "total": "إجمالي الباقة",
+    "saved": "وفّرت {{amount}} مقارنة بالطلب منفرد",
+    "confirm": "تأكيد حجز الباقة",
+    "needOne": "اختار خدمة واحدة على الأقل عشان تكوّن باقتك"
+  },
+  "destinations": {
+    "meta": {
+      "title": "أفضل وجهات السفر وأسعار الطيران — TripRing",
+      "description": "استكشف أفضل وجهات السفر المتاحة الآن على TripRing، مع أرخص أسعار الطيران الفعلية لكل وجهة."
+    },
+    "title": "وجهات السفر",
+    "subtitle": {
+      "count": "{{count}} وجهة متاحة الآن بأسعار حقيقية من فرص TripRing الحية",
+      "empty": "تصفح كل الوجهات المتاحة حاليًا على TripRing بأسعار حقيقية ومحدثة"
+    },
+    "loadFailed": "حصل خطأ في تحميل الوجهات، جرّب تاني.",
+    "errorTitle": "حصل خطأ",
+    "emptyTitle": "لا توجد وجهات متاحة حاليًا",
+    "emptyHint": "جرّب تتابعنا لاحقًا، بنضيف فرص جديدة باستمرار.",
+    "dealCount": "{{count}} فرصة متاحة"
+  },
+  "routes": {
+    "meta": {
+      "title": "خطوط الطيران وأسعارها — TripRing",
+      "description": "تصفح كل خطوط الطيران المتاحة على TripRing مع أرخص سعر حقيقي لكل خط سير."
+    },
+    "title": "خطوط الطيران",
+    "subtitle": {
+      "count": "{{count}} خط سير متاح، بأسعار حقيقية محدثة أول بأول",
+      "empty": "تصفح كل خطوط الطيران المتاحة على TripRing"
+    },
+    "loadFailed": "حصل خطأ في تحميل الخطوط، جرّب تاني.",
+    "errorTitle": "حصل خطأ",
+    "emptyTitle": "لا توجد خطوط متاحة حاليًا",
+    "emptyHint": "جرّب تتابعنا لاحقًا، بنضيف خطوط جديدة باستمرار.",
+    "startsFrom": "يبدأ من",
+    "noLiveDeal": "لا يوجد عرض حي حاليًا"
+  },
+  "budget": {
+    "title": "💵 سافر حسب ميزانيتك",
+    "subtitle": "عندك $300؟ نوريك تقدر تروح فين",
+    "orLess": "وأقل"
+  },
+  "travelTo": {
+    "title": "✈️ اختر وجهتك",
+    "subtitle": "اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول",
+    "from": "من",
+    "fromCity": "من {{city}}"
+  },
+  "destinationCard": {
+    "priceLabel": "رحلات ذهاب وعودة ابتداءً من"
+  }
+}

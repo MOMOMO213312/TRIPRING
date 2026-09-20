@@ -3,10 +3,11 @@ import { useTranslation } from "react-i18next";
 
 import { classifyService, dedupeByKey, includedServicesFor, packagePrice, usePackageOptions } from "../lib/packages";
 import type { PackageOption, PackageTier, ServiceKey } from "../lib/packages";
-import { RECOMMENDED_SERVICE_KEYS, serviceDisplayLabel } from "../lib/servicePackages";
+import { RECOMMENDED_SERVICE_KEYS } from "../lib/servicePackages";
 import { cn } from "../lib/utils";
 import type { AdditionalServiceRow } from "../types/database";
 import { useCurrency } from "../hooks/useCurrency";
+import { useLocalizedService } from "../hooks/useLocalizedService";
 
 type Props = {
   basePrice: number;
@@ -45,6 +46,7 @@ export function PackageAndServicesSelector({
 }: Props) {
   const { t } = useTranslation("booking");
   const { fmt } = useCurrency();
+  const localizedService = useLocalizedService();
   const packageOptions = usePackageOptions();
   const activePkg = packageOptions.find((p) => p.id === selectedPackage) ?? packageOptions[0];
   const displayServices = dedupeByKey(services);
@@ -134,7 +136,7 @@ export function PackageAndServicesSelector({
                       disabled={included}
                       onChange={() => onToggleService(service.id)}
                     />
-                    {serviceDisplayLabel(service)}
+                    {localizedService.name(service)}
                     {included ? <span className="text-xs font-semibold text-[#16A34A]">{t("selector.included")}</span> : null}
                     {!included && recommended ? (
                       <span className="text-xs font-semibold text-[#16A34A]">{t("selector.recommended")}</span>

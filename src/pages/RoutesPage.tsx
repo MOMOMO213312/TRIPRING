@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { EmptyState } from "../components/EmptyState";
@@ -13,21 +14,19 @@ import type { DealRow } from "../types/database";
 import { useCurrency } from "../hooks/useCurrency";
 
 export function RoutesPage() {
+  const { t } = useTranslation("explore");
   const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  usePageMeta(
-    "خطوط الطيران وأسعارها — TripRing",
-    "تصفح كل خطوط الطيران المتاحة على TripRing مع أرخص سعر حقيقي لكل خط سير.",
-  );
+  usePageMeta(t("routes.meta.title"), t("routes.meta.description"));
 
   useEffect(() => {
     fetchActiveDeals({ sort: "price_asc", availableOnly: true })
       .then(setDeals)
-      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل الخطوط، جرّب تاني.", "RoutesPage.loadDeals")))
+      .catch((e) => setError(friendlyErrorMessage(e, "explore:routes.loadFailed", "RoutesPage.loadDeals")))
       .finally(() => setLoading(false));
   }, []);
 
@@ -45,20 +44,20 @@ export function RoutesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">خطوط الطيران</h1>
+        <h1 className="text-2xl font-bold text-slate-900">{t("routes.title")}</h1>
         <p className="mt-1 text-sm text-slate-600">
           {quotes.length > 0
-            ? `${quotes.length} خط سير متاح، بأسعار حقيقية محدثة أول بأول`
-            : "تصفح كل خطوط الطيران المتاحة على TripRing"}
+            ? t("routes.subtitle.count", { count: quotes.length })
+            : t("routes.subtitle.empty")}
         </p>
       </div>
 
       {isLoading ? (
         <LineSkeleton count={8} />
       ) : error ? (
-        <EmptyState title="حصل خطأ" subtitle={error} />
+        <EmptyState title={t("routes.errorTitle")} subtitle={error} />
       ) : quotes.length === 0 ? (
-        <EmptyState title="لا توجد خطوط متاحة حاليًا" subtitle="جرّب تتابعنا لاحقًا، بنضيف خطوط جديدة باستمرار." />
+        <EmptyState title={t("routes.emptyTitle")} subtitle={t("routes.emptyHint")} />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {quotes.map((route) => (
@@ -83,13 +82,13 @@ export function RoutesPage() {
               <div className="shrink-0 text-end">
                 {route.bestDeal ? (
                   <>
-                    <p className="text-[11px] text-slate-400">يبدأ من</p>
+                    <p className="text-[11px] text-slate-400">{t("routes.startsFrom")}</p>
                     <p className="font-latin text-lg font-extrabold text-[#0C7BB3]">
                       {fmt(route.bestDeal.price, route.bestDeal.currency ?? "USD")}
                     </p>
                   </>
                 ) : (
-                  <p className="text-xs text-slate-400">لا يوجد عرض حي حاليًا</p>
+                  <p className="text-xs text-slate-400">{t("routes.noLiveDeal")}</p>
                 )}
               </div>
             </Link>

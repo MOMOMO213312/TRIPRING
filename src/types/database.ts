@@ -3,6 +3,9 @@
  * Re-run introspection if backend columns change — do not hand-edit column names.
  */
 
+/** DB-stored translations of one text field, keyed by UI language code (ar text lives in the plain column). */
+export type LocalizedTextMap = Partial<Record<"ar" | "en" | "tr", string>>;
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type DealType = "flash" | "last_minute" | "empty_seat" | "special_fare";
@@ -381,6 +384,14 @@ export interface Database {
           is_active: boolean;
           provider_id: string | null;
           fulfillment_type: ServiceFulfillmentType;
+          /**
+           * Per-language overrides of `name` / `description` / `terms`, e.g. `{ "en": "Airport Lounge Access" }`.
+           * The plain columns stay the Arabic source of truth AND the fallback, so a missing language just shows Arabic.
+           * Optional because queries only select them where a customer-facing screen needs them.
+           */
+          name_i18n?: LocalizedTextMap;
+          description_i18n?: LocalizedTextMap;
+          terms_i18n?: LocalizedTextMap;
         };
         Insert: Omit<Database["public"]["Tables"]["additional_services"]["Row"], "id"> & {
           id?: string;

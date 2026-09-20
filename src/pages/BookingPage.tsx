@@ -14,11 +14,12 @@ import {
 } from "../lib/api";
 import { currencyName, roundTo } from "../lib/currency";
 import { useCurrency } from "../hooks/useCurrency";
+import { useLocalizedService } from "../hooks/useLocalizedService";
 import { usePaymentMethods } from "../lib/payment-config";
 import { formatRoute, hasPriceBreakdown } from "../lib/deal-utils";
 import { classifyService, dedupeByKey, packagePrice, usePackageOptions } from "../lib/packages";
 import type { PackageTier, ServiceKey } from "../lib/packages";
-import { RECOMMENDED_SERVICE_KEYS, serviceDisplayLabel } from "../lib/servicePackages";
+import { RECOMMENDED_SERVICE_KEYS } from "../lib/servicePackages";
 import { friendlyErrorMessage } from "../lib/errors";
 import { fetchZonesForDeal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
@@ -41,6 +42,7 @@ type Traveler = {
 
 export function BookingPage() {
   const { t, i18n } = useTranslation("booking");
+  const localizedService = useLocalizedService();
   const paymentMethods = usePaymentMethods();
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
@@ -460,7 +462,7 @@ export function BookingPage() {
                   className={`flex items-center justify-between rounded-lg border p-3 ${recommended ? "border-[#16A34A]/40 bg-[#F0FBF4]" : "border-slate-100"}`}
                 >
                   <span className="flex items-center gap-2">
-                    {serviceDisplayLabel(s)} — {fmt(s.price, s.currency ?? "USD")}
+                    {localizedService.name(s)} — {fmt(s.price, s.currency ?? "USD")}
                     {recommended ? <span className="text-xs font-semibold text-[#16A34A]">{t("selector.recommended")}</span> : null}
                   </span>
                   <input

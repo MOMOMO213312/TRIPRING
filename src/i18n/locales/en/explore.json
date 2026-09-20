@@ -1,0 +1,194 @@
+{
+  "title": "Complete your trip with TripRing add-on services or all-in-one packages",
+  "promo": {
+    "blueFriday": {
+      "title": "Blue Friday",
+      "subtitle": "Up to 33% off flights — every Friday"
+    },
+    "membership": {
+      "title": "TRIPRING Membership",
+      "subtitle": "Ongoing discounts + free services + priority alerts"
+    }
+  },
+  "tabs": {
+    "services": {
+      "title": "Services",
+      "subtitle": "Order any single service at its price"
+    },
+    "packages": {
+      "title": "Packages",
+      "subtitle": "All-in-one packages priced below ordering separately"
+    }
+  },
+  "services": {
+    "note": {
+      "label": "Single service:",
+      "text": "Order any service on its own at its price, without booking anything else — even if your ticket was booked somewhere else entirely."
+    },
+    "badge": "Single service",
+    "loading": "Loading services...",
+    "empty": "No services are available in this section right now",
+    "free": "Free",
+    "book": "Book now"
+  },
+  "categories": {
+    "transport": {
+      "title": "Transport",
+      "subtitle": "Airport Transfer · Private Car · Shuttle"
+    },
+    "airport": {
+      "title": "Airport",
+      "subtitle": "Lounge · Fast Track · Meet & Assist"
+    },
+    "destination": {
+      "title": "Destination services",
+      "subtitle": "Experiences and services tied to your destination"
+    },
+    "insurance": {
+      "title": "Travel insurance",
+      "subtitle": "Basic or comprehensive cover for your trip"
+    }
+  },
+  "packages": {
+    "note": {
+      "label": "Ready-made package:",
+      "text": "Bundles several services into one product at a lower total price than ordering each one separately."
+    },
+    "badge": "Package",
+    "save": "Save {{amount}}",
+    "customStart": "Based on your selection",
+    "explore": "Explore package",
+    "items": {
+      "vip": {
+        "title": "VIP Airport Package",
+        "subtitle": "All airport services in one comprehensive package",
+        "badge": "Most complete"
+      },
+      "arrival": {
+        "title": "Arrival Package",
+        "subtitle": "VIP welcome and a comfortable transfer from the airport"
+      },
+      "departure": {
+        "title": "Departure Package",
+        "subtitle": "Transfer to the airport with Fast Track when you fly"
+      },
+      "family": {
+        "title": "Family Package",
+        "subtitle": "Family-friendly transfer with baggage services"
+      },
+      "business": {
+        "title": "Business Traveler Package",
+        "subtitle": "VIP lounge, Fast Track and a private transfer",
+        "badge": "Most popular"
+      },
+      "custom": {
+        "title": "Custom Package",
+        "subtitle": "Pick the services that suit you and build your own package"
+      }
+    }
+  },
+  "serviceKey": {
+    "transfer": "Airport transfer",
+    "lounge": "Airport lounge",
+    "fast_track": "Fast Track",
+    "meet_assist": "Meet & Assist",
+    "baggage": "Baggage services",
+    "parking": "Airport parking",
+    "insurance": "Travel insurance"
+  },
+  "confirm": {
+    "title": "Your request has been sent",
+    "orderLabel": "Request number",
+    "orderRest": "— our team will contact you soon to confirm the details and payment.",
+    "total": "Total: {{amount}}",
+    "ok": "OK"
+  },
+  "form": {
+    "optional": "Optional",
+    "optionalNote": "Your ticket doesn't have to be booked with TripRing — you can enter your trip details from any source so we can link the request to it.",
+    "airline": "Airline",
+    "choose": "Choose (optional)",
+    "flightNumber": "Flight number",
+    "flightNumberPh": "e.g. MS 123",
+    "flightDate": "Flight date",
+    "arrivalTime": "Arrival time",
+    "airport": "Airport",
+    "destination": "Destination",
+    "destinationPh": "e.g. Jeddah",
+    "name": "Name",
+    "phone": "Phone number",
+    "email": "Email (optional)",
+    "notes": "Notes (optional)",
+    "err": {
+      "name": "Enter your name",
+      "phone": "Invalid phone number — enter it in international format, e.g. +20xxxxxxxxxx",
+      "email": "Invalid email address"
+    }
+  },
+  "request": {
+    "quantity": "Quantity",
+    "total": "Total",
+    "submitting": "Sending...",
+    "confirm": "Confirm request",
+    "failed": "Couldn't send your request. Please try again."
+  },
+  "packageModal": {
+    "pickToBuild": "Choose the services to include in your package:",
+    "included": "Services included in the package:",
+    "individualPrice": "Price of the services separately",
+    "total": "Package total",
+    "saved": "You save {{amount}} compared to ordering separately",
+    "confirm": "Confirm package booking",
+    "needOne": "Choose at least one service to build your package"
+  },
+  "destinations": {
+    "meta": {
+      "title": "Best travel destinations and flight prices — TripRing",
+      "description": "Explore the best travel destinations available now on TripRing, with the cheapest real flight prices for each one."
+    },
+    "title": "Travel destinations",
+    "subtitle": {
+      "count_one": "{{count}} destination available now at real prices from live TripRing deals",
+      "count_other": "{{count}} destinations available now at real prices from live TripRing deals",
+      "empty": "Browse all destinations currently available on TripRing at real, up-to-date prices"
+    },
+    "loadFailed": "Something went wrong while loading destinations. Please try again.",
+    "errorTitle": "Something went wrong",
+    "emptyTitle": "No destinations available right now",
+    "emptyHint": "Check back later — we're adding new deals all the time.",
+    "dealCount_one": "{{count}} deal available",
+    "dealCount_other": "{{count}} deals available"
+  },
+  "routes": {
+    "meta": {
+      "title": "Flight routes and prices — TripRing",
+      "description": "Browse all flight routes available on TripRing with the cheapest real price for each route."
+    },
+    "title": "Flight routes",
+    "subtitle": {
+      "count_one": "{{count}} route available, with real prices updated continuously",
+      "count_other": "{{count}} routes available, with real prices updated continuously",
+      "empty": "Browse all flight routes available on TripRing"
+    },
+    "loadFailed": "Something went wrong while loading routes. Please try again.",
+    "errorTitle": "Something went wrong",
+    "emptyTitle": "No routes available right now",
+    "emptyHint": "Check back later — we're adding new routes all the time.",
+    "startsFrom": "Starts from",
+    "noLiveDeal": "No live deal right now"
+  },
+  "budget": {
+    "title": "💵 Travel on your budget",
+    "subtitle": "Got $300? We'll show you where you can go",
+    "orLess": "or less"
+  },
+  "travelTo": {
+    "title": "✈️ Choose your destination",
+    "subtitle": "Pick a country, then a city, and we'll take you straight to the search",
+    "from": "From",
+    "fromCity": "From {{city}}"
+  },
+  "destinationCard": {
+    "priceLabel": "Round trips from"
+  }
+}

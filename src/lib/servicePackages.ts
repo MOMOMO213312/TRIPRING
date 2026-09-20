@@ -21,6 +21,10 @@ export type PackageServiceKey =
   | "parking"
   | "insurance";
 
+/**
+ * Arabic labels — kept for TEXT THAT IS STORED (service_requests.service_name / notes are read by the
+ * Arabic-speaking ops team). What the customer SEES is translated: use `t("explore:serviceKey.<key>")`.
+ */
 export const SERVICE_KEY_LABELS: Record<PackageServiceKey, string> = {
   transfer: "الانتقال من وإلى المطار",
   lounge: "صالة المطار (Lounge)",
@@ -74,10 +78,14 @@ const FALLBACK_PRICE: Record<PackageServiceKey, number> = {
 };
 
 /**
- * Arabic display label for a real catalog service. `additional_services.name`
+ * Arabic SOURCE label for a real catalog service. `additional_services.name`
  * already holds a proper Arabic label per row (e.g. "تأمين سفر شامل") — this
  * just falls back to the raw `type` slug for any older row where `name`
  * wasn't filled in, so nothing ever renders blank.
+ *
+ * It is the stable identity of the row (the post-booking screen de-duplicates against the names stored on
+ * a booking), so it deliberately does NOT change with the UI language. To DISPLAY a service to a customer
+ * use `useLocalizedService().name(service)` instead.
  */
 export function serviceDisplayLabel(service: AdditionalServiceRow): string {
   return service.name?.trim() || service.type;
@@ -112,6 +120,10 @@ export interface ServicePackageDef {
   isCustom?: boolean;
 }
 
+/**
+ * `title` / `subtitle` / `badge` below are the Arabic/staff-facing source (they are also what gets saved
+ * on a package request). The storefront renders `t("explore:packages.items.<id>.title|subtitle|badge")`.
+ */
 export const SERVICE_PACKAGES: ServicePackageDef[] = [
   {
     id: "vip",

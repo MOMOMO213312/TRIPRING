@@ -1,0 +1,191 @@
+{
+  "title": "TripRing ile seyahatinizi ek hizmetler veya kapsamlı paketlerle tamamlayın",
+  "promo": {
+    "blueFriday": {
+      "title": "Blue Friday",
+      "subtitle": "Uçuşlarda %33'e varan indirim — her Cuma"
+    },
+    "membership": {
+      "title": "TRIPRING Üyeliği",
+      "subtitle": "Sürekli indirimler + ücretsiz hizmetler + öncelikli bildirimler"
+    }
+  },
+  "tabs": {
+    "services": {
+      "title": "Hizmetler",
+      "subtitle": "Herhangi bir hizmeti tek başına, kendi fiyatıyla sipariş edin"
+    },
+    "packages": {
+      "title": "Paketler",
+      "subtitle": "Ayrı sipariş etmekten daha düşük fiyatlı kapsamlı paketler"
+    }
+  },
+  "services": {
+    "note": {
+      "label": "Tek hizmet:",
+      "text": "Herhangi bir hizmeti tek başına, kendi fiyatıyla sipariş edin; başka bir şey rezerve etmenize gerek yok — biletiniz başka bir yerden alınmış olsa bile."
+    },
+    "badge": "Tek hizmet",
+    "loading": "Hizmetler yükleniyor...",
+    "empty": "Bu bölümde şu anda mevcut hizmet yok",
+    "free": "Ücretsiz",
+    "book": "Hemen rezerve et"
+  },
+  "categories": {
+    "transport": {
+      "title": "Ulaşım",
+      "subtitle": "Havalimanı Transferi · Özel Araç · Servis"
+    },
+    "airport": {
+      "title": "Havalimanı",
+      "subtitle": "Lounge · Fast Track · Karşılama ve Yardım"
+    },
+    "destination": {
+      "title": "Destinasyon hizmetleri",
+      "subtitle": "Destinasyonunuza özel deneyimler ve hizmetler"
+    },
+    "insurance": {
+      "title": "Seyahat sigortası",
+      "subtitle": "Seyahatiniz için temel veya kapsamlı sigorta"
+    }
+  },
+  "packages": {
+    "note": {
+      "label": "Hazır paket:",
+      "text": "Birden fazla hizmeti tek üründe, her birini ayrı ayrı sipariş etmekten daha uygun toplam fiyatla sunar."
+    },
+    "badge": "Paket",
+    "save": "{{amount}} tasarruf edin",
+    "customStart": "Seçiminize göre",
+    "explore": "Paketi incele",
+    "items": {
+      "vip": {
+        "title": "VIP Havalimanı Paketi",
+        "subtitle": "Tüm havalimanı hizmetleri tek bir kapsamlı pakette",
+        "badge": "En kapsamlı"
+      },
+      "arrival": {
+        "title": "Varış Paketi",
+        "subtitle": "VIP karşılama ve havalimanından rahat transfer"
+      },
+      "departure": {
+        "title": "Kalkış Paketi",
+        "subtitle": "Uçuş günü havalimanına transfer ve Fast Track"
+      },
+      "family": {
+        "title": "Aile Paketi",
+        "subtitle": "Aileye uygun transfer ve bagaj hizmetleri"
+      },
+      "business": {
+        "title": "İş Seyahati Paketi",
+        "subtitle": "VIP salon, Fast Track ve özel transfer",
+        "badge": "En çok tercih edilen"
+      },
+      "custom": {
+        "title": "Özel Paket",
+        "subtitle": "Size uyan hizmetleri seçin ve kendi paketinizi oluşturun"
+      }
+    }
+  },
+  "serviceKey": {
+    "transfer": "Havalimanı transferi",
+    "lounge": "Havalimanı salonu (Lounge)",
+    "fast_track": "Fast Track",
+    "meet_assist": "Karşılama ve Yardım (Meet & Assist)",
+    "baggage": "Bagaj hizmetleri",
+    "parking": "Havalimanı otoparkı",
+    "insurance": "Seyahat sigortası"
+  },
+  "confirm": {
+    "title": "Talebiniz gönderildi",
+    "orderLabel": "Talep numarası",
+    "orderRest": "— ekibimiz ayrıntıları ve ödemeyi onaylamak için yakında sizinle iletişime geçecek.",
+    "total": "Toplam: {{amount}}",
+    "ok": "Tamam"
+  },
+  "form": {
+    "optional": "İsteğe bağlı",
+    "optionalNote": "Biletinizi TripRing'den almış olmanız gerekmez — talebi seyahatinize bağlayabilmemiz için yolculuk bilgilerinizi herhangi bir kaynaktan girebilirsiniz.",
+    "airline": "Havayolu",
+    "choose": "Seçin (isteğe bağlı)",
+    "flightNumber": "Uçuş numarası",
+    "flightNumberPh": "örn. MS 123",
+    "flightDate": "Uçuş tarihi",
+    "arrivalTime": "Varış saati",
+    "airport": "Havalimanı",
+    "destination": "Varış yeri",
+    "destinationPh": "örn. Cidde",
+    "name": "Ad soyad",
+    "phone": "Telefon numarası",
+    "email": "E-posta (isteğe bağlı)",
+    "notes": "Notlar (isteğe bağlı)",
+    "err": {
+      "name": "Adınızı girin",
+      "phone": "Geçersiz telefon numarası — uluslararası biçimde girin, örn. +20xxxxxxxxxx",
+      "email": "Geçersiz e-posta adresi"
+    }
+  },
+  "request": {
+    "quantity": "Adet",
+    "total": "Toplam",
+    "submitting": "Gönderiliyor...",
+    "confirm": "Talebi onayla",
+    "failed": "Talebiniz gönderilemedi. Lütfen tekrar deneyin."
+  },
+  "packageModal": {
+    "pickToBuild": "Paketinize dahil edilecek hizmetleri seçin:",
+    "included": "Pakete dahil hizmetler:",
+    "individualPrice": "Hizmetlerin ayrı ayrı fiyatı",
+    "total": "Paket toplamı",
+    "saved": "Ayrı sipariş etmeye kıyasla {{amount}} tasarruf ediyorsunuz",
+    "confirm": "Paket rezervasyonunu onayla",
+    "needOne": "Paketinizi oluşturmak için en az bir hizmet seçin"
+  },
+  "destinations": {
+    "meta": {
+      "title": "En iyi seyahat destinasyonları ve uçuş fiyatları — TripRing",
+      "description": "TripRing'de şu anda mevcut en iyi seyahat destinasyonlarını, her biri için gerçek en ucuz uçuş fiyatlarıyla keşfedin."
+    },
+    "title": "Seyahat destinasyonları",
+    "subtitle": {
+      "count": "{{count}} destinasyon, canlı TripRing fırsatlarından gerçek fiyatlarla şu anda mevcut",
+      "empty": "TripRing'de şu anda mevcut tüm destinasyonlara gerçek ve güncel fiyatlarla göz atın"
+    },
+    "loadFailed": "Destinasyonlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+    "errorTitle": "Bir hata oluştu",
+    "emptyTitle": "Şu anda mevcut destinasyon yok",
+    "emptyHint": "Daha sonra tekrar bakın — sürekli yeni fırsatlar ekliyoruz.",
+    "dealCount": "{{count}} fırsat mevcut"
+  },
+  "routes": {
+    "meta": {
+      "title": "Uçuş hatları ve fiyatları — TripRing",
+      "description": "TripRing'de mevcut tüm uçuş hatlarına, her hat için gerçek en ucuz fiyatla göz atın."
+    },
+    "title": "Uçuş hatları",
+    "subtitle": {
+      "count": "{{count}} hat mevcut, gerçek fiyatlar anlık güncelleniyor",
+      "empty": "TripRing'de mevcut tüm uçuş hatlarına göz atın"
+    },
+    "loadFailed": "Hatlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+    "errorTitle": "Bir hata oluştu",
+    "emptyTitle": "Şu anda mevcut hat yok",
+    "emptyHint": "Daha sonra tekrar bakın — sürekli yeni hatlar ekliyoruz.",
+    "startsFrom": "Başlangıç fiyatı",
+    "noLiveDeal": "Şu anda canlı fırsat yok"
+  },
+  "budget": {
+    "title": "💵 Bütçenize göre seyahat edin",
+    "subtitle": "300$'ınız mı var? Nereye gidebileceğinizi gösterelim",
+    "orLess": "veya daha az"
+  },
+  "travelTo": {
+    "title": "✈️ Destinasyonunuzu seçin",
+    "subtitle": "Önce ülkeyi, sonra şehri seçin; aramayı hemen sizin için tamamlayalım",
+    "from": "Nereden",
+    "fromCity": "{{city}} çıkışlı"
+  },
+  "destinationCard": {
+    "priceLabel": "Gidiş-dönüş, başlangıç fiyatı"
+  }
+}

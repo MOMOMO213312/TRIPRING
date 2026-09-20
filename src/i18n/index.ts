@@ -6,18 +6,21 @@ import arBooking from "./locales/ar/booking.json";
 import arCommon from "./locales/ar/common.json";
 import arDeals from "./locales/ar/deals.json";
 import arErrors from "./locales/ar/errors.json";
+import arExplore from "./locales/ar/explore.json";
 import arHome from "./locales/ar/home.json";
 import arSearch from "./locales/ar/search.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDeals from "./locales/en/deals.json";
 import enErrors from "./locales/en/errors.json";
+import enExplore from "./locales/en/explore.json";
 import enHome from "./locales/en/home.json";
 import enSearch from "./locales/en/search.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDeals from "./locales/tr/deals.json";
 import trErrors from "./locales/tr/errors.json";
+import trExplore from "./locales/tr/explore.json";
 import trHome from "./locales/tr/home.json";
 import trSearch from "./locales/tr/search.json";
 
@@ -53,11 +56,11 @@ void i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals, booking: arBooking, search: arSearch },
-      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals, booking: enBooking, search: enSearch },
-      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals, booking: trBooking, search: trSearch },
+      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals, booking: arBooking, search: arSearch, explore: arExplore },
+      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals, booking: enBooking, search: enSearch, explore: enExplore },
+      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals, booking: trBooking, search: trSearch, explore: trExplore },
     },
-    ns: ["common", "errors", "home", "deals", "booking", "search"],
+    ns: ["common", "errors", "home", "deals", "booking", "search", "explore"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],
