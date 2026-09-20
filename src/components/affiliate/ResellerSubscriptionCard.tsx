@@ -13,6 +13,7 @@ import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
+import { getLocale } from "../../i18n/format";
 
 /** Shows the affiliate's current net-price-program subscription status, or —
  *  when there's nothing usable (none yet / expired / rejected / cancelled) —
@@ -63,7 +64,7 @@ export function ResellerSubscriptionCard({
             <p className="mt-2 text-sm text-slate-600">طلبك بانتظار مراجعة الأدمن للتأكد من إثبات الدفع.</p>
           ) : isValidActive && sub.ends_at ? (
             <p className="mt-2 text-sm text-slate-600">
-              مفعّل حتى {new Date(sub.ends_at).toLocaleDateString("ar-EG")} — تقدر تشوف السعر الرسمي وتعمل طلبات بيع.
+              مفعّل حتى {new Date(sub.ends_at).toLocaleDateString(getLocale())} — تقدر تشوف السعر الرسمي وتعمل طلبات بيع.
             </p>
           ) : null}
         </Card>

@@ -9,6 +9,7 @@ import {
   type AirlinePerformanceReport,
 } from "../lib/airlinePortal";
 import "../styles/airline-portal.css";
+import { getLocale } from "../i18n/format";
 
 const MONTH_LABEL: Record<string, string> = {
   "01": "يناير", "02": "فبراير", "03": "مارس", "04": "أبريل", "05": "مايو", "06": "يونيو",
@@ -21,7 +22,7 @@ function formatMonth(m: string) {
 }
 
 function money(n: number, currency: string | null) {
-  return `${n.toLocaleString("ar-EG", { maximumFractionDigits: 0 })} ${currency ?? ""}`.trim();
+  return `${n.toLocaleString(getLocale(), { maximumFractionDigits: 0 })} ${currency ?? ""}`.trim();
 }
 
 /** "التقارير" tab — Reports section of the design doc. Aggregates the same

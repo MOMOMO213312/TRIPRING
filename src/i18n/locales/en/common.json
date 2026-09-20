@@ -1,0 +1,54 @@
+{
+  "brand": {
+    "tagline": "Travel Opportunity Marketplace"
+  },
+  "meta": {
+    "title": "TripRing — Travel Opportunity Marketplace",
+    "description": "TripRing — discover the best real flight ticket deals from verified agencies."
+  },
+  "nav": {
+    "home": "Home",
+    "deals": "Deals",
+    "explore": "Explore",
+    "tripgo": "TripGo",
+    "search": "Search",
+    "myTrips": "My Trips",
+    "menu": "Menu",
+    "main": "Main navigation"
+  },
+  "lang": {
+    "ar": "العربية",
+    "en": "English",
+    "tr": "Türkçe",
+    "label": "Language"
+  },
+  "footer": {
+    "tagline": "A travel opportunity discovery platform — we scout the deals and show you only what's worth it.",
+    "importantLinks": "Important links",
+    "faq": "FAQ",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy",
+    "platform": "Platform",
+    "blueFriday": "Blue Friday",
+    "agencyPortal": "Agency Dashboard",
+    "affiliatePortal": "Affiliate Dashboard",
+    "becomeSupplier": "Become a Supplier",
+    "copyright": "© {{year}} TripRing — Travel Opportunity Marketplace"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "viewAll": "View all",
+    "book": "Book"
+  }
+}

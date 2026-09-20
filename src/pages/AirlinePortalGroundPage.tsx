@@ -9,6 +9,7 @@ import {
   type GroundRequestExecutionStatus,
 } from "../lib/airlinePortal";
 import "../styles/airline-portal.css";
+import { getLocale } from "../i18n/format";
 
 const FILTERS: { value: GroundRequestExecutionStatus | null; label: string }[] = [
   { value: null, label: "الكل" },
@@ -22,7 +23,7 @@ const FILTERS: { value: GroundRequestExecutionStatus | null; label: string }[] =
 
 function formatDate(d: string | null) {
   if (!d) return "—";
-  return new Date(d).toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return new Date(d).toLocaleDateString(getLocale(), { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 /** "الخدمات الأرضية" tab — طلبات الخدمات الأرضية المرتبطة برحلات الشركة.

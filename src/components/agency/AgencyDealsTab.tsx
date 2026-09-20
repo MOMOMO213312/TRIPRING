@@ -16,6 +16,7 @@ import { Card } from "../ui/Card";
 import { AgencyBulkImportModal } from "./AgencyBulkImportModal";
 import { AgencyDealForm } from "./AgencyDealForm";
 import { AgencyQuickEntryPanel } from "./AgencyQuickEntryPanel";
+import { getLocale } from "../../i18n/format";
 
 function statusTone(status: DealRow["status"]): "default" | "flash" | "empty_seat" | "urgent" {
   if (status === "active") return "empty_seat";
@@ -174,7 +175,7 @@ export function AgencyDealsTab({ agencyId }: { agencyId: string }) {
                 <p className="text-sm text-slate-600">
                   {deal.departure_date} · {deal.price} {deal.currency} · {deal.available_seats} مقعد متاح
                 </p>
-                <p className="text-xs text-slate-400">ينتهي: {new Date(deal.expires_at).toLocaleString("ar-EG")}</p>
+                <p className="text-xs text-slate-400">ينتهي: {new Date(deal.expires_at).toLocaleString(getLocale())}</p>
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setEditingDeal(deal)}>

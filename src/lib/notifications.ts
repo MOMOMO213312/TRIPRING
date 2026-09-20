@@ -2,6 +2,7 @@ import { getCurrentUser } from "./auth";
 import { supabase } from "./supabase";
 import type { NotificationRow, NotificationStatus } from "../types/database";
 
+import { dbError } from "./errors";
 // ── Public / customer-facing ────────────────────────────────────────────
 /** Active public announcements (ticker/banner) — no auth required. */
 export async function fetchPublicAnnouncements(): Promise<NotificationRow[]> {
@@ -15,7 +16,7 @@ export async function fetchPublicAnnouncements(): Promise<NotificationRow[]> {
     .or(`ends_at.is.null,ends_at.gt.${nowIso}`)
     .order("created_at", { ascending: false })
     .limit(20);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as NotificationRow[];
 }
 
@@ -28,7 +29,7 @@ export async function fetchMyNotifications(): Promise<NotificationRow[]> {
     .eq("status", "sent")
     .order("created_at", { ascending: false })
     .limit(50);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as NotificationRow[];
 }
 
@@ -36,7 +37,7 @@ export async function fetchMyReadIds(): Promise<Set<string>> {
   const user = await getCurrentUser();
   if (!user) return new Set();
   const { data, error } = await supabase.from("notification_reads").select("notification_id").eq("customer_id", user.id);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return new Set((data ?? []).map((r) => (r as { notification_id: string }).notification_id));
 }
 
@@ -48,13 +49,13 @@ export async function markNotificationRead(notificationId: string): Promise<void
     .upsert([{ notification_id: notificationId, customer_id: user.id }] as never, {
       onConflict: "notification_id,customer_id",
     });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Admin authoring ──────────────────────────────────────────────────────
 export async function fetchAllNotificationsAdmin(): Promise<NotificationRow[]> {
   const { data, error } = await supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(200);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as NotificationRow[];
 }
 
@@ -101,7 +102,7 @@ export async function createNotification(input: CreateNotificationInput): Promis
     ] as never)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as NotificationRow;
 }
 
@@ -109,24 +110,24 @@ export async function setNotificationStatus(id: string, status: NotificationStat
   const patch: Record<string, unknown> = { status };
   if (status === "sent") patch.sent_at = new Date().toISOString();
   const { error } = await supabase.from("notifications").update(patch as never).eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function deleteNotification(id: string): Promise<void> {
   const { error } = await supabase.from("notifications").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Targeting lookups (for the admin "specific agency/affiliate" pickers) ─
 export async function fetchAgenciesForTargeting(): Promise<{ id: string; name: string }[]> {
   const { data, error } = await supabase.from("agencies").select("id,name").order("name");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as { id: string; name: string }[];
 }
 
 export async function fetchAffiliatesForTargeting(): Promise<{ id: string; referral_code: string }[]> {
   const { data, error } = await supabase.from("affiliates").select("id,referral_code").order("referral_code");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as { id: string; referral_code: string }[];
 }
 

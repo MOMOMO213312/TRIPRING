@@ -1,6 +1,7 @@
 import { getCurrentUser } from "./auth";
 import { supabase } from "./supabase";
 
+import { dbError } from "./errors";
 // ── Types ────────────────────────────────────────────────────────────────
 // These tables/views were added directly on the production DB across the
 // Phase 1-6 orchestration-architecture sessions and were never added to
@@ -206,7 +207,7 @@ export const SUPPLIER_STATUS_LABELS: Record<SupplierStatus, string> = {
 
 export async function fetchAllSuppliers(): Promise<SupplierRow[]> {
   const { data, error } = await supabase.from("suppliers").select("*").order("priority", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as SupplierRow[];
 }
 
@@ -238,7 +239,7 @@ export async function createSupplier(input: {
     } as never)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as SupplierRow;
 }
 
@@ -260,7 +261,7 @@ export async function updateSupplier(
   >,
 ): Promise<void> {
   const { error } = await supabase.from("suppliers").update(patch as never).eq("id", supplierId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Supplier contracts ──────────────────────────────────────────────────
@@ -271,7 +272,7 @@ export async function fetchSupplierContracts(supplierId: string): Promise<Suppli
     .select("*")
     .eq("supplier_id", supplierId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as SupplierContractRow[];
 }
 
@@ -309,13 +310,13 @@ export async function createSupplierContract(input: {
     } as never)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as SupplierContractRow;
 }
 
 export async function setSupplierContractStatus(contractId: string, status: SupplierContractStatus): Promise<void> {
   const { error } = await supabase.from("supplier_contracts").update({ status } as never).eq("id", contractId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Fulfillment Monitor (Phase 7.2) ─────────────────────────────────────
@@ -326,7 +327,7 @@ export async function fetchOrdersNeedingAttention(): Promise<OrderNeedingAttenti
   // querying the view directly (fixed 2026-09-17, same pattern as the
   // Ground Portal fix).
   const { data, error } = await supabase.rpc("get_admin_orders_needing_attention");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as OrderNeedingAttentionRow[];
 }
 
@@ -335,7 +336,7 @@ export async function fetchNegativeMarginItems(): Promise<NegativeMarginItemRow[
   // go through the admin-only RPC wrapper instead of querying the view
   // directly (fixed 2026-09-17, same pattern as the Ground Portal fix).
   const { data, error } = await supabase.rpc("get_admin_negative_margin_items");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as NegativeMarginItemRow[];
 }
 
@@ -345,7 +346,7 @@ export async function fetchOrderItems(orderId: string): Promise<OrderItemRow[]> 
     .select("*")
     .eq("order_id", orderId)
     .order("created_at", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as OrderItemRow[];
 }
 
@@ -355,7 +356,7 @@ export async function fetchOrderItemStatusLog(orderItemId: string): Promise<Orde
     .select("*")
     .eq("order_item_id", orderItemId)
     .order("changed_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as OrderItemStatusLogRow[];
 }
 
@@ -366,7 +367,7 @@ export async function assignOrderItem(orderItemId: string): Promise<string> {
     p_order_item_id: orderItemId,
     p_changed_by: user?.id ?? null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as string;
 }
 
@@ -378,7 +379,7 @@ export async function reassignOrderItem(orderItemId: string, reason: string): Pr
     p_reason: reason,
     p_changed_by: user?.id ?? null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as string;
 }
 
@@ -395,7 +396,7 @@ export async function markServiceItemFulfilled(orderItemId: string, reason?: str
     p_changed_by: user?.id ?? null,
     p_reason: reason ?? "service marked delivered by admin",
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 /**
@@ -435,7 +436,7 @@ export async function fetchSupplierBalances(): Promise<SupplierBalanceRow[]> {
   // financial data) -- go through the admin-only RPC wrapper instead of
   // querying the view directly (fixed 2026-09-17).
   const { data, error } = await supabase.rpc("get_admin_supplier_balances");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as SupplierBalanceRow[];
 }
 
@@ -446,7 +447,7 @@ export async function fetchUnsettledItemsForSupplier(supplierId: string): Promis
   const { data, error } = await supabase.rpc("get_admin_unsettled_supplier_items", {
     p_supplier_id: supplierId,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as UnsettledSupplierItemRow[];
 }
 
@@ -454,7 +455,7 @@ export async function fetchSettlements(supplierId?: string): Promise<SupplierSet
   let query = supabase.from("supplier_settlements").select("*").order("generated_at", { ascending: false });
   if (supplierId) query = query.eq("supplier_id", supplierId);
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as SupplierSettlementRow[];
 }
 
@@ -470,7 +471,7 @@ export async function generateSupplierSettlement(
     p_period_end: periodEnd,
     p_created_by: user?.id ?? null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as string;
 }
 
@@ -481,7 +482,7 @@ export async function markSettlementPaid(settlementId: string, paymentRef: strin
     p_payment_ref: paymentRef,
     p_created_by: user?.id ?? null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export const SETTLEMENT_STATUS_LABELS: Record<SettlementStatus, string> = {
@@ -499,6 +500,6 @@ export async function fetchSubscriptionRevenue(): Promise<SubscriptionRevenueRow
   // go through the admin-only RPC wrapper instead of querying the view
   // directly (fixed 2026-09-17).
   const { data, error } = await supabase.rpc("get_admin_subscription_revenue");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as SubscriptionRevenueRow[];
 }

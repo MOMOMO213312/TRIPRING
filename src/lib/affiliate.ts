@@ -10,6 +10,7 @@ import type {
   ResellerSubscriptionPlanRow,
 } from "../types/database";
 
+import { dbError } from "./errors";
 // ── Referral orchestration data (Phase 7.5) ─────────────────────────────────
 // financial_transactions is the live money ledger (Phase 6) — it isn't in the
 // generated types/database.ts, typed locally here rather than touching that
@@ -47,7 +48,7 @@ export async function fetchMyReferredBookings(affiliateId: string): Promise<Book
     .select("*")
     .eq("referred_by_affiliate_id", affiliateId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as BookingRow[];
 }
 
@@ -62,7 +63,7 @@ export async function fetchMyCommissionLedger(affiliateId: string): Promise<Affi
     .eq("affiliate_id", affiliateId)
     .in("txn_type", ["affiliate_commission", "affiliate_reversal"])
     .order("occurred_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AffiliateLedgerEntry[];
 }
 
@@ -74,7 +75,7 @@ export async function fetchMyAffiliateProfile(): Promise<AffiliateRow | null> {
   if (!user) return null;
 
   const { data, error } = await supabase.from("affiliates").select("*").eq("profile_id", user.id).maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data as AffiliateRow | null) ?? null;
 }
 
@@ -105,7 +106,7 @@ export async function fetchActiveResellerPlans(): Promise<ResellerSubscriptionPl
     .select("*")
     .eq("is_active", true)
     .order("price", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as ResellerSubscriptionPlanRow[];
 }
 
@@ -121,7 +122,7 @@ export async function fetchMyLatestResellerSubscription(
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data as AffiliateResellerSubscriptionRow | null) ?? null;
 }
 
@@ -183,13 +184,13 @@ export async function submitResellerSubscription(input: {
     ] as never)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as AffiliateResellerSubscriptionRow;
 }
 
 export async function fetchResellerNetPrice(dealId: string): Promise<number> {
   const { data, error } = await supabase.rpc("get_reseller_net_price", { p_deal_id: dealId } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as number;
 }
 
@@ -213,7 +214,7 @@ export async function createAffiliateResaleOrder(input: {
     p_children_count: input.childrenCount,
     p_infants_count: input.infantsCount,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as string;
 }
 
@@ -231,6 +232,6 @@ export async function fetchMyResaleOrders(affiliateId: string): Promise<Affiliat
     .select("*")
     .eq("affiliate_id", affiliateId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AffiliateResaleOrderRow[];
 }

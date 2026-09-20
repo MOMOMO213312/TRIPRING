@@ -25,6 +25,7 @@ import { PLATFORM_WHATSAPP } from "../lib/constants";
 import { friendlyErrorMessage } from "../lib/errors";
 import { whatsAppLink } from "../lib/utils";
 import type { AffiliateResellerSubscriptionRow, AffiliateRow, AirportRow, BookingRow } from "../types/database";
+import { getLocale } from "../i18n/format";
 
 type AffiliateTab = "referral" | "reseller";
 
@@ -268,7 +269,7 @@ function ReferralActivityPanel({ affiliateId }: { affiliateId: string }) {
                 <p className="font-semibold text-slate-900">
                   {entry.txn_type === "affiliate_reversal" ? "استرجاع عمولة" : "عمولة إحالة"}
                 </p>
-                <p className="text-xs text-slate-500">{new Date(entry.occurred_at).toLocaleDateString("ar-EG")}</p>
+                <p className="text-xs text-slate-500">{new Date(entry.occurred_at).toLocaleDateString(getLocale())}</p>
               </div>
               <span
                 className={`font-latin font-bold ${entry.amount < 0 ? "text-red-600" : "text-emerald-700"}`}

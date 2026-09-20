@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { Footer } from "./Footer";
 import { BottomNav } from "./BottomNav";
 import { AnnouncementTicker } from "./notifications/AnnouncementTicker";
 import { PublicNotificationBell } from "./notifications/PublicNotificationBell";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { captureAffiliateClickFromUrl } from "../lib/affiliateAttribution";
 
 const NAV_ITEMS = [
-  { to: "/", label: "الرئيسية", match: (p: string, h: string) => p === "/" && !h },
-  { to: "/deals", label: "العروض", match: (p: string) => p.startsWith("/deals") },
-  { to: "/explore", label: "اكتشف", match: (p: string) => p.startsWith("/explore") },
-  { to: "/tripgo", label: "tripgo", match: (p: string) => p.startsWith("/tripgo") },
+  { to: "/", labelKey: "nav.home", match: (p: string, h: string) => p === "/" && !h },
+  { to: "/deals", labelKey: "nav.deals", match: (p: string) => p.startsWith("/deals") },
+  { to: "/explore", labelKey: "nav.explore", match: (p: string) => p.startsWith("/explore") },
+  { to: "/tripgo", labelKey: "nav.tripgo", match: (p: string) => p.startsWith("/tripgo") },
 ];
 
 export function Layout() {
+  const { t } = useTranslation();
   const location = useLocation();
   const { pathname, hash } = location;
   const isHome = pathname === "/";
-  const [lang, setLang] = useState<"AR" | "EN">("AR");
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Long-session affiliate attribution: if this load carries ?ref=CODE, record
@@ -76,22 +78,16 @@ export function Layout() {
           <nav className="hidden flex-1 items-center justify-center gap-8 text-sm font-medium md:flex">
             {NAV_ITEMS.map((item) => (
               <Link key={item.to} to={item.to} className={navLinkClass(item.match(pathname, hash))}>
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </nav>
 
           {/* Utility controls */}
-          <div className="mr-auto flex items-center gap-2 md:mr-0">
+          <div className="ms-auto flex items-center gap-2 md:ms-0">
             <PublicNotificationBell />
             <div className="hidden items-center gap-2 text-xs md:flex">
-              <button
-                type="button"
-                onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-                className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600 transition hover:border-[#1E3A8A]/40 hover:text-[#1E3A8A]"
-              >
-                {lang === "AR" ? "العربية" : "English"}
-              </button>
+              <LanguageSwitcher />
               <button
                 type="button"
                 className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600 transition hover:border-[#1E3A8A]/40 hover:text-[#1E3A8A]"
@@ -101,8 +97,8 @@ export function Layout() {
             </div>
             <Link
               to="/my-trips"
-              title="رحلاتي"
-              aria-label="رحلاتي"
+              title={t("nav.myTrips")}
+              aria-label={t("nav.myTrips")}
               className={`flex size-8 items-center justify-center rounded-full border transition ${
                 pathname.startsWith("/my-trips")
                   ? "border-[#1E3A8A] text-[#1E3A8A]"
@@ -119,7 +115,7 @@ export function Layout() {
             <button
               type="button"
               onClick={() => setMenuOpen((o) => !o)}
-              aria-label="القائمة"
+              aria-label={t("nav.menu")}
               aria-expanded={menuOpen}
               className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-slate-700 md:hidden"
             >
@@ -142,19 +138,13 @@ export function Layout() {
             <nav className="flex flex-col gap-1">
               {NAV_ITEMS.map((item) => (
                 <Link key={item.to} to={item.to} className={mobileLinkClass(item.match(pathname, hash))}>
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               ))}
             </nav>
             <div className="my-3 border-t border-slate-100" />
             <div className="flex items-center gap-2 px-3 text-xs">
-              <button
-                type="button"
-                onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-                className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600"
-              >
-                {lang === "AR" ? "العربية" : "English"}
-              </button>
+              <LanguageSwitcher />
               <button type="button" className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600">
                 EGP
               </button>

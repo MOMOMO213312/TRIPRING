@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { GroundPortalShell } from "../components/groundPortal/GroundPortalShell";
 import { fetchGroundQueue, type GroundQueueRow } from "../lib/groundPortal";
 import "../styles/ground-portal.css";
+import { getLocale } from "../i18n/format";
 
 type AirlineBreakdown = {
   airlineCode: string;
@@ -55,7 +56,7 @@ function buildBreakdown(rows: GroundQueueRow[]): AirlineBreakdown[] {
 
 function formatTime(iso: string | null) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleString("ar-EG", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+  return new Date(iso).toLocaleString(getLocale(), { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
 }
 
 export function GroundPortalAirlinesPage() {

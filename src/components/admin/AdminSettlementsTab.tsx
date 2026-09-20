@@ -18,6 +18,7 @@ import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
 import { Modal } from "../ui/Modal";
+import { getLocale } from "../../i18n/format";
 
 type SubTab = "balances" | "settlements" | "subscriptions";
 
@@ -167,13 +168,13 @@ export function AdminSettlementsTab() {
         <div className="space-y-2">
           <Card className="bg-[#0C7BB3]/5">
             <p className="text-sm text-slate-500">إجمالي إيراد الاشتراكات المسجل</p>
-            <p className="text-2xl font-extrabold text-[#0C7BB3]">{subsTotal.toLocaleString("ar-EG")}</p>
+            <p className="text-2xl font-extrabold text-[#0C7BB3]">{subsTotal.toLocaleString(getLocale())}</p>
           </Card>
           {subs.length === 0 && !loading ? <p className="text-sm text-slate-400">لا يوجد قيود اشتراكات بعد.</p> : null}
           {subs.map((s) => (
             <Card key={s.id} className="flex flex-wrap items-center justify-between gap-2 text-xs">
               <span>
-                {s.tier_name} ({s.billing_period}) — {new Date(s.occurred_at).toLocaleDateString("ar-EG")}
+                {s.tier_name} ({s.billing_period}) — {new Date(s.occurred_at).toLocaleDateString(getLocale())}
               </span>
               <span className="font-bold text-[#0C7BB3]">
                 {s.amount} {s.currency}

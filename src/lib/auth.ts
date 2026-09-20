@@ -3,6 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "./supabase";
 
+import { dbError } from "./errors";
 export async function signUpWithEmail(
   email: string,
   password: string,
@@ -13,7 +14,7 @@ export async function signUpWithEmail(
     password,
     options: fullName ? { data: { full_name: fullName.trim() } } : undefined,
   });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data.user;
 }
 
@@ -22,13 +23,13 @@ export async function signInWithEmail(email: string, password: string): Promise<
     email: email.trim(),
     password,
   });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data.user;
 }
 
 export async function signOut(): Promise<void> {
   const { error } = await supabase.auth.signOut();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function getCurrentUser(): Promise<User | null> {

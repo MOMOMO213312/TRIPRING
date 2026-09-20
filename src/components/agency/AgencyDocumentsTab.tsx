@@ -5,6 +5,7 @@ import type { AgencyRow } from "../../types/database";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
+import { getLocale } from "../../i18n/format";
 
 const VERIFICATION_LABELS: Record<AgencyRow["verification_status"], string> = {
   pending: "⏳ بانتظار مراجعة الإدارة",
@@ -103,7 +104,7 @@ export function AgencyDocumentsTab({ agencyId }: { agencyId: string }) {
             {docs.map((d, i) => (
               <li key={i} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-sm">
                 <span className="text-slate-700">
-                  {d.label} <span className="text-xs text-slate-400">— {new Date(d.uploaded_at).toLocaleDateString("ar-EG")}</span>
+                  {d.label} <span className="text-xs text-slate-400">— {new Date(d.uploaded_at).toLocaleDateString(getLocale())}</span>
                 </span>
                 <button type="button" className="font-semibold text-[#0C7BB3] hover:underline" onClick={() => openDoc(d.url)}>
                   عرض الملف

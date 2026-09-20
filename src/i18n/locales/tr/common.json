@@ -1,0 +1,54 @@
+{
+  "brand": {
+    "tagline": "Seyahat Fırsatları Pazarı"
+  },
+  "meta": {
+    "title": "TripRing — Seyahat Fırsatları Pazarı",
+    "description": "TripRing — doğrulanmış acentelerden gerçek uçak bileti fırsatlarını keşfedin."
+  },
+  "nav": {
+    "home": "Ana Sayfa",
+    "deals": "Fırsatlar",
+    "explore": "Keşfet",
+    "tripgo": "TripGo",
+    "search": "Ara",
+    "myTrips": "Seyahatlerim",
+    "menu": "Menü",
+    "main": "Ana gezinme"
+  },
+  "lang": {
+    "ar": "العربية",
+    "en": "English",
+    "tr": "Türkçe",
+    "label": "Dil"
+  },
+  "footer": {
+    "tagline": "Seyahat fırsatlarını keşfetme platformu — fırsatları tarıyor, size yalnızca değer olanı sunuyoruz.",
+    "importantLinks": "Önemli bağlantılar",
+    "faq": "Sık Sorulan Sorular",
+    "terms": "Şartlar ve Koşullar",
+    "privacy": "Gizlilik Politikası",
+    "platform": "Platform",
+    "blueFriday": "Blue Friday",
+    "agencyPortal": "Acente Paneli",
+    "affiliatePortal": "Ortaklık Paneli",
+    "becomeSupplier": "Tedarikçi Ol",
+    "copyright": "© {{year}} TripRing — Seyahat Fırsatları Pazarı"
+  },
+  "actions": {
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "close": "Kapat",
+    "confirm": "Onayla",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Gönder",
+    "search": "Ara",
+    "retry": "Tekrar dene",
+    "loading": "Yükleniyor…",
+    "viewAll": "Tümünü gör",
+    "book": "Rezervasyon yap"
+  }
+}

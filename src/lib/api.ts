@@ -23,6 +23,7 @@ import type {
   Tables,
 } from "../types/database";
 
+import { dbError } from "./errors";
 export type AgencyReviewRow = Tables<"agency_reviews">;
 export type TicketResaleRow = Tables<"ticket_resales">;
 
@@ -123,7 +124,7 @@ export async function fetchAirports(): Promise<AirportRow[]> {
     .from("airports")
     .select("code,city,country,name,city_en")
     .order("city", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -132,7 +133,7 @@ export async function fetchAirlines(): Promise<AirlineRow[]> {
     .from("airlines")
     .select("code,name,logo_url")
     .order("name", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -148,7 +149,7 @@ export async function fetchRoutePriceReferences(): Promise<RoutePriceReferenceRo
   const { data, error } = await supabase
     .from("route_price_reference")
     .select("id,from_airport,to_airport,flight_type,min_price_usd,max_price_usd,notes,updated_at");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -156,7 +157,7 @@ export async function fetchImageCache(): Promise<ImageCacheRow[]> {
   const { data, error } = await supabase
     .from("image_cache")
     .select("id,keyword,image_url,source,fetched_at");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -211,7 +212,7 @@ function buildActiveDealsQuery(params: DealSearchParams, withCount: boolean, all
 export async function fetchActiveDeals(params: DealSearchParams = {}): Promise<OfferDealRow[]> {
   const allowedTiers = await fetchAllowedMembershipTiers();
   const { data, error } = await buildActiveDealsQuery(params, false, allowedTiers);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as OfferDealRow[];
 }
 
@@ -224,7 +225,7 @@ export async function fetchActiveDealsPage(
 ): Promise<DealSearchResult> {
   const allowedTiers = await fetchAllowedMembershipTiers();
   const { data, error, count } = await buildActiveDealsQuery(params, true, allowedTiers);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return { deals: (data ?? []) as OfferDealRow[], total: count ?? (data ?? []).length };
 }
 
@@ -267,7 +268,7 @@ export async function fetchDealById(id: string): Promise<DealRow | null> {
     .in("min_membership_tier", allowedTiers)
     .gt("expires_at", new Date().toISOString())
     .maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data;
 }
 
@@ -277,7 +278,7 @@ export async function fetchDealPriceHistory(dealId: string): Promise<DealPriceHi
     .select("id,deal_id,old_price,new_price,changed_at")
     .eq("deal_id", dealId)
     .order("changed_at", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -398,7 +399,7 @@ export async function createServiceRequest(
     }] as never)
     .select()
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as ServiceRequestRow;
 }
 
@@ -534,7 +535,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
     p_transport_zone_id: input.transportZoneId ?? null,
   };
   const { data, error } = await supabase.rpc("create_booking", args as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   const row = (Array.isArray(data) ? data[0] : data) as CreateBookingResult | undefined;
   if (!row?.booking_number) throw new Error("لم يتم إنشاء الحجز");
   void attributeBookingToStoredClick(row.booking_number); // fire-and-forget, never blocks the booking
@@ -551,7 +552,7 @@ export async function lookupBooking(
     p_booking_number: num,
     p_contact: contact.trim(),
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data as BookingLookupResult | null) ?? null;
 }
 
@@ -591,7 +592,7 @@ export async function addServicesToBooking(
     p_contact: contact.trim(),
     p_services: services,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as AddServicesResult;
 }
 
@@ -634,7 +635,7 @@ export async function uploadPaymentProof(
     p_contact: contact.trim(),
     p_proof_url: publicUrlData.publicUrl,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as { status: string };
 }
 
@@ -642,7 +643,7 @@ export async function lookupPriceAlerts(contact: string): Promise<Tables<"price_
   const { data, error } = await supabase.rpc("lookup_price_alerts", {
     p_contact: contact.trim(),
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as Tables<"price_alerts">[];
 }
 
@@ -664,7 +665,7 @@ export async function createPriceAlert(input: {
       deal_id: input.dealId ?? null,
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function fetchAgencyReviews(agencyId: string): Promise<AgencyReviewRow[]> {
@@ -673,7 +674,7 @@ export async function fetchAgencyReviews(agencyId: string): Promise<AgencyReview
     .select("id,agency_id,booking_id,customer_id,rating,comment,created_at")
     .eq("agency_id", agencyId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -701,7 +702,7 @@ export async function createAgencyReview(input: {
       comment: input.comment?.trim() || null,
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export type TicketResaleSearchParams = {
@@ -730,7 +731,7 @@ export async function fetchActiveTicketResales(
   if (params.to) query = query.eq("to_airport", params.to);
 
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -767,7 +768,7 @@ export async function createTicketResale(input: {
       status: "submitted" satisfies Database["public"]["Enums"]["resale_status"],
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 function seededPick<T>(items: T[], seed: string): T {

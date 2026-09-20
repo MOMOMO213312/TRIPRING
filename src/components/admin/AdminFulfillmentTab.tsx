@@ -19,6 +19,7 @@ import {
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Modal } from "../ui/Modal";
+import { getLocale } from "../../i18n/format";
 
 type SubTab = "orders" | "margins";
 
@@ -290,7 +291,7 @@ function ItemStatusLog({ orderItemId }: { orderItemId: string }) {
             {l.old_status ?? "—"} → <span className="font-semibold">{l.new_status}</span>
           </p>
           {l.reason ? <p className="text-slate-500">{l.reason}</p> : null}
-          <p className="text-slate-400">{new Date(l.changed_at).toLocaleString("ar-EG")}</p>
+          <p className="text-slate-400">{new Date(l.changed_at).toLocaleString(getLocale())}</p>
         </div>
       ))}
     </div>

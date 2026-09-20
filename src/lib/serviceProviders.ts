@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 import type { AdditionalServiceRow, ProviderType, ServiceCategory, ServiceProviderRow } from "../types/database";
 
+import { dbError } from "./errors";
 /** All categories an agency can be granted, in display order. */
 export const PROVIDER_TYPES: ProviderType[] = ["transport", "tourism", "insurance", "ground_handling", "airport"];
 
@@ -50,7 +51,7 @@ export const PROVIDER_TYPE_CATEGORY: Record<ProviderType, ServiceCategory> = {
 /** This agency's own service_providers rows (one per category it has been granted and has activated). */
 export async function fetchMyProviders(agencyId: string): Promise<ServiceProviderRow[]> {
   const { data, error } = await supabase.from("service_providers").select("*").eq("agency_id", agencyId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as ServiceProviderRow[];
 }
 
@@ -66,14 +67,14 @@ export async function activateMyProviderCategory(
     .insert([{ agency_id: agencyId, provider_type: providerType, name, is_active: true }] as never)
     .select()
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as ServiceProviderRow;
 }
 
 export async function fetchMyServices(providerIds: string[]): Promise<AdditionalServiceRow[]> {
   if (providerIds.length === 0) return [];
   const { data, error } = await supabase.from("additional_services").select("*").in("provider_id", providerIds);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AdditionalServiceRow[];
 }
 
@@ -97,7 +98,7 @@ export async function createMyService(input: {
       fulfillment_type: "in_house",
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function updateMyService(
@@ -110,10 +111,10 @@ export async function updateMyService(
   if (patch.price !== undefined) dbPatch.price = patch.price;
   if (patch.isActive !== undefined) dbPatch.is_active = patch.isActive;
   const { error } = await supabase.from("additional_services").update(dbPatch as never).eq("id", serviceId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function deleteMyService(serviceId: string): Promise<void> {
   const { error } = await supabase.from("additional_services").delete().eq("id", serviceId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }

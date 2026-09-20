@@ -11,6 +11,7 @@ import type {
   TripGoDealRow,
 } from "../types/database";
 
+import { dbError } from "./errors";
 /**
  * TripGo = Flight Ticket + Transport sold as one bundled product.
  *
@@ -46,7 +47,7 @@ export async function fetchActiveTripGoBundles(filters: TripGoSearchFilters = {}
   if (filters.date) query = query.eq("deal.departure_date", filters.date);
 
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as unknown as TripGoBundleJoined[];
 }
 
@@ -57,7 +58,7 @@ export async function fetchTripGoBundleById(bundleId: string): Promise<TripGoBun
     .select(BUNDLE_JOINED_COLUMNS)
     .eq("id", bundleId)
     .maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data as unknown as TripGoBundleJoined) ?? null;
 }
 
@@ -68,7 +69,7 @@ export async function fetchBundlesForDeal(dealId: string): Promise<TripGoBundleJ
     .select(BUNDLE_JOINED_COLUMNS)
     .eq("deal_id", dealId)
     .eq("tripgo_deal.status", "active");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as unknown as TripGoBundleJoined[];
 }
 
@@ -117,7 +118,7 @@ export async function bookTripGo(input: TripGoBookingInput): Promise<TripGoBooki
     p_payment_method: input.paymentMethod,
     p_travelers: input.travelers as never,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   const row = Array.isArray(data) ? data[0] : data;
   if (!row) throw new Error("تعذر إنشاء حجز TripGo");
   return row as TripGoBookingResult;
@@ -131,7 +132,7 @@ export async function fetchAgencyTripGoDeals(agencyId: string): Promise<TripGoDe
     .select("*")
     .eq("agency_id", agencyId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as TripGoDealRow[];
 }
 
@@ -172,12 +173,12 @@ export async function createTripGoDeal(agencyId: string, input: TripGoDealFormIn
       status: "active",
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function setTripGoDealStatus(tripgoDealId: string, status: TripGoDealRow["status"]): Promise<void> {
   const { error } = await supabase.from("tripgo_deals").update({ status } as never).eq("id", tripgoDealId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 /** Bundles created on top of the agency's own flight deals (deal-ownership is what RLS keys off, not tripgo_deal ownership). */
@@ -187,7 +188,7 @@ export async function fetchAgencyTripGoBundles(agencyId: string): Promise<TripGo
     .select(BUNDLE_JOINED_COLUMNS)
     .eq("deal.agency_id", agencyId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as unknown as TripGoBundleJoined[];
 }
 
@@ -213,12 +214,12 @@ export async function createTripGoBundle(
       transport_cost_price: (tripgoDeal as { price: number }).price,
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function deleteTripGoBundle(bundleId: string): Promise<void> {
   const { error } = await supabase.from("tripgo_bundles").delete().eq("id", bundleId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function fetchAgencyTripGoBookings(agencyId: string) {
@@ -227,7 +228,7 @@ export async function fetchAgencyTripGoBookings(agencyId: string) {
     .select("*, tripgo_deal:tripgo_deals(*)")
     .eq("agency_id", agencyId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data ?? [];
 }
 
@@ -236,7 +237,7 @@ export async function updateTripGoBookingStatus(
   status: BookingStatus,
 ): Promise<void> {
   const { error } = await supabase.from("tripgo_bookings").update({ status } as never).eq("id", tripgoBookingId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Instant TripGo (private-car, priced by pickup zone — Uber-style) ────
@@ -257,7 +258,7 @@ export async function fetchAgencyTransportZones(agencyId: string): Promise<Trans
     .select("*")
     .eq("agency_id", agencyId)
     .order("airport_code", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as TransportZoneRow[];
 }
 
@@ -270,7 +271,7 @@ export async function fetchZonesForDeal(agencyId: string, fromAirport: string): 
     .eq("airport_code", fromAirport)
     .eq("is_active", true)
     .order("price_addon", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as TransportZoneRow[];
 }
 
@@ -292,15 +293,15 @@ export async function createTransportZone(agencyId: string, input: TransportZone
       is_active: true,
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function setTransportZoneActive(zoneId: string, isActive: boolean): Promise<void> {
   const { error } = await supabase.from("transport_zones").update({ is_active: isActive } as never).eq("id", zoneId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function deleteTransportZone(zoneId: string): Promise<void> {
   const { error } = await supabase.from("transport_zones").delete().eq("id", zoneId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }

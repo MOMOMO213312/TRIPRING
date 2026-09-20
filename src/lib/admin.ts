@@ -23,6 +23,7 @@ import type {
   SupplierOrgType,
 } from "../types/database";
 
+import { dbError } from "./errors";
 const AGENCY_DOC_ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 const AGENCY_DOC_MAX_BYTES = 8 * 1024 * 1024; // 8MB
 
@@ -38,7 +39,7 @@ export async function fetchMyAdminProfile(): Promise<ProfileRow | null> {
     .select("id,role,full_name,phone,agency_id,agency_role,membership,created_at")
     .eq("id", user.id)
     .maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   if (!profile) return null;
 
   const row = profile as ProfileRow;
@@ -49,13 +50,13 @@ export async function fetchMyAdminProfile(): Promise<ProfileRow | null> {
 // ── Agencies ─────────────────────────────────────────────────────────────
 export async function fetchAllAgencies(): Promise<AgencyRow[]> {
   const { data, error } = await supabase.from("agencies").select("*").order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AgencyRow[];
 }
 
 export async function setAgencyActive(agencyId: string, isActive: boolean): Promise<void> {
   const { error } = await supabase.from("agencies").update({ is_active: isActive } as never).eq("id", agencyId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function updateAgencyCommission(agencyId: string, commissionRate: number): Promise<void> {
@@ -63,7 +64,7 @@ export async function updateAgencyCommission(agencyId: string, commissionRate: n
     .from("agencies")
     .update({ commission_rate: commissionRate } as never)
     .eq("id", agencyId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 /** Which service categories (provider_type) this agency is permitted to self-manage
@@ -73,7 +74,7 @@ export async function updateAgencyAllowedCategories(agencyId: string, categories
     .from("agencies")
     .update({ allowed_categories: categories } as never)
     .eq("id", agencyId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function createAgency(input: {
@@ -101,7 +102,7 @@ export async function createAgency(input: {
     ] as never)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as AgencyRow;
 }
 
@@ -137,7 +138,7 @@ export async function inviteAgencyUser(input: {
         // fall through to generic message below
       }
     }
-    throw new Error(error.message);
+    throw dbError(error);
   }
   return data as { userId: string; agencyId: string; email: string };
 }
@@ -185,14 +186,14 @@ export async function uploadAgencyDocument(agencyId: string, label: string, file
     .eq("id", agencyId)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as AgencyRow;
 }
 
 /** Signed URL (bucket is private) so admins can view/download an uploaded document. */
 export async function getAgencyDocumentUrl(path: string): Promise<string> {
   const { data, error } = await supabase.storage.from("agency-documents").createSignedUrl(path, 300);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data.signedUrl;
 }
 
@@ -209,7 +210,7 @@ export async function setAgencyVerificationStatus(
       verified_by: status === "verified" ? (user?.id ?? null) : null,
     } as never)
     .eq("id", agencyId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Bookings (platform-wide, not scoped to one agency) ─────────────────────
@@ -222,7 +223,7 @@ export async function fetchAllBookings(): Promise<BookingRow[]> {
     .select(BOOKING_FULL_COLUMNS)
     .order("created_at", { ascending: false })
     .limit(300);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as BookingRow[];
 }
 
@@ -230,7 +231,7 @@ export async function fetchAllBookings(): Promise<BookingRow[]> {
  *  the agency name and route without a heavier server-side join. */
 export async function fetchAgencyNameMap(): Promise<Record<string, string>> {
   const { data, error } = await supabase.from("agencies").select("id,name");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   const map: Record<string, string> = {};
   for (const a of (data ?? []) as { id: string; name: string }[]) map[a.id] = a.name;
   return map;
@@ -239,7 +240,7 @@ export async function fetchAgencyNameMap(): Promise<Record<string, string>> {
 export async function fetchDealRouteMap(dealIds: string[]): Promise<Record<string, Pick<DealRow, "from_airport" | "to_airport">>> {
   if (dealIds.length === 0) return {};
   const { data, error } = await supabase.from("deals").select("id,from_airport,to_airport").in("id", dealIds);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   const map: Record<string, Pick<DealRow, "from_airport" | "to_airport">> = {};
   for (const d of (data ?? []) as { id: string; from_airport: string; to_airport: string }[]) {
     map[d.id] = { from_airport: d.from_airport, to_airport: d.to_airport };
@@ -252,7 +253,7 @@ export async function fetchResaleQueue(statuses?: ResaleStatus[]): Promise<Ticke
   let query = supabase.from("ticket_resales").select("*").order("created_at", { ascending: false });
   if (statuses?.length) query = query.in("status", statuses);
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as TicketResaleRow[];
 }
 
@@ -269,7 +270,7 @@ export async function updateResaleReview(
       verified_by: user?.id ?? null,
     } as never)
     .eq("id", resaleId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Reseller subscription plans (net-price affiliate program) ──────────────
@@ -280,7 +281,7 @@ export async function fetchResellerPlans(): Promise<ResellerSubscriptionPlanRow[
     .from("reseller_subscription_plans")
     .select("*")
     .order("price", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as ResellerSubscriptionPlanRow[];
 }
 
@@ -303,7 +304,7 @@ export async function createResellerPlan(input: {
     ] as never)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as ResellerSubscriptionPlanRow;
 }
 
@@ -312,7 +313,7 @@ export async function updateResellerPlan(
   patch: Partial<Pick<ResellerSubscriptionPlanRow, "name" | "description" | "price" | "duration_days" | "is_active">>,
 ): Promise<void> {
   const { error } = await supabase.from("reseller_subscription_plans").update(patch as never).eq("id", planId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Affiliate reseller subscriptions review (net-price program) ────────────
@@ -325,7 +326,7 @@ export async function fetchResellerSubscriptionQueue(
     .order("created_at", { ascending: false });
   if (statuses?.length) query = query.in("status", statuses);
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AffiliateResellerSubscriptionRow[];
 }
 
@@ -334,7 +335,7 @@ export async function fetchResellerSubscriptionQueue(
 export async function fetchAffiliatesByIds(ids: string[]): Promise<AffiliateRow[]> {
   if (!ids.length) return [];
   const { data, error } = await supabase.from("affiliates").select("*").in("id", ids);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AffiliateRow[];
 }
 
@@ -343,7 +344,7 @@ export async function fetchProfileNamesByIds(
 ): Promise<Pick<ProfileRow, "id" | "full_name" | "phone">[]> {
   if (!ids.length) return [];
   const { data, error } = await supabase.from("profiles").select("id,full_name,phone").in("id", ids);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as Pick<ProfileRow, "id" | "full_name" | "phone">[];
 }
 
@@ -361,7 +362,7 @@ export async function activateResellerSubscription(subscriptionId: string, durat
       verified_at: new Date().toISOString(),
     } as never)
     .eq("id", subscriptionId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function rejectResellerSubscription(subscriptionId: string): Promise<void> {
@@ -374,7 +375,7 @@ export async function rejectResellerSubscription(subscriptionId: string): Promis
       verified_at: new Date().toISOString(),
     } as never)
     .eq("id", subscriptionId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Affiliate resale orders review (net-price program: sell → real booking) ─
@@ -387,7 +388,7 @@ export async function fetchResaleOrderQueue(
   let query = supabase.from("affiliate_resale_orders").select("*").order("created_at", { ascending: false });
   if (statuses?.length) query = query.in("status", statuses);
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AffiliateResaleOrderRow[];
 }
 
@@ -401,7 +402,7 @@ export async function adminConvertResaleOrderToBooking(
   const { data, error } = await supabase.rpc("admin_convert_resale_order_to_booking", {
     p_resale_order_id: resaleOrderId,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   const row = Array.isArray(data) ? data[0] : data;
   return row as { booking_number: number; total_price: number; currency: string; status: string };
 }
@@ -411,7 +412,7 @@ export async function adminRejectResaleOrder(resaleOrderId: string, reason?: str
     p_resale_order_id: resaleOrderId,
     p_reason: reason ?? null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export const RESALE_ORDER_STATUS_LABELS: Record<AffiliateResaleOrderRow["status"], string> = {
@@ -425,7 +426,7 @@ export const RESALE_ORDER_STATUS_LABELS: Record<AffiliateResaleOrderRow["status"
 // ── Customer membership tiers (Basic/Smart/Premium) ─────────────────────────
 export async function fetchMembershipTiers(): Promise<MembershipTierRow[]> {
   const { data, error } = await supabase.from("membership_tiers").select("*").order("price_monthly", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as MembershipTierRow[];
 }
 
@@ -439,7 +440,7 @@ export async function updateMembershipTier(
   >,
 ): Promise<void> {
   const { error } = await supabase.from("membership_tiers").update(patch as never).eq("id", tierId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 // ── Customer subscriptions review ───────────────────────────────────────────
@@ -449,7 +450,7 @@ export async function fetchCustomerSubscriptionQueue(
   let query = supabase.from("customer_subscriptions").select("*").order("created_at", { ascending: false });
   if (statuses?.length) query = query.in("status", statuses);
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as CustomerSubscriptionRow[];
 }
 
@@ -469,7 +470,7 @@ export async function activateCustomerSubscription(subscriptionId: string, billi
       verified_at: new Date().toISOString(),
     } as never)
     .eq("id", subscriptionId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function rejectCustomerSubscription(subscriptionId: string): Promise<void> {
@@ -482,7 +483,7 @@ export async function rejectCustomerSubscription(subscriptionId: string): Promis
       verified_at: new Date().toISOString(),
     } as never)
     .eq("id", subscriptionId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export const CUSTOMER_SUBSCRIPTION_STATUS_LABELS: Record<ResellerSubscriptionStatus, string> = {
@@ -505,7 +506,7 @@ export const MEMBERSHIP_TIER_LABELS: Record<PaidMembershipTier, string> = {
 // paid customer subscription. Same admin-manage pattern, own table.
 export async function fetchFarePackageTiersAdmin(): Promise<FarePackageTierRow[]> {
   const { data, error } = await supabase.from("fare_package_tiers").select("*").order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as FarePackageTierRow[];
 }
 
@@ -514,7 +515,7 @@ export async function updateFarePackageTier(
   patch: Partial<Pick<FarePackageTierRow, "label" | "markup_percent" | "is_active" | "sort_order">>,
 ): Promise<void> {
   const { error } = await supabase.from("fare_package_tiers").update(patch as never).eq("tier", tier);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export const FARE_PACKAGE_TIER_LABELS: Record<PaidMembershipTier, string> = {
@@ -542,7 +543,7 @@ export async function fetchSupplierApplications(
   let query = supabase.from("supplier_applications").select("*").order("created_at", { ascending: false });
   if (statuses?.length) query = query.in("status", statuses);
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as unknown as SupplierApplicationRow[];
 }
 
@@ -551,7 +552,7 @@ export async function adminApproveSupplierApplication(applicationId: string, rev
     p_application_id: applicationId,
     p_review_note: reviewNote ?? null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as string; // created supplier id
 }
 
@@ -560,7 +561,7 @@ export async function adminRejectSupplierApplication(applicationId: string, revi
     p_application_id: applicationId,
     p_review_note: reviewNote ?? null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export const SUPPLIER_APPLICATION_STATUS_LABELS: Record<SupplierApplicationStatus, string> = {

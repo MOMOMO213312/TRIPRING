@@ -5,6 +5,7 @@ import { friendlyErrorMessage } from "../../lib/errors";
 import { formatPrice } from "../../lib/utils";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
+import { getLocale } from "../../i18n/format";
 
 export function AgencyCustomersTab({ agencyId }: { agencyId: string }) {
   const [customers, setCustomers] = useState<AgencyCustomer[]>([]);
@@ -89,7 +90,7 @@ export function AgencyCustomersTab({ agencyId }: { agencyId: string }) {
                     {formatPrice(c.totalSpent, c.currency)}
                   </td>
                   <td className="px-4 py-3 text-slate-500">
-                    {new Date(c.lastBookingAt).toLocaleDateString("ar-EG")}
+                    {new Date(c.lastBookingAt).toLocaleDateString(getLocale())}
                   </td>
                 </tr>
               ))}

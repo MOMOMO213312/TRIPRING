@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { fetchPublicAnnouncements, NOTIFICATION_TYPE_LABELS } from "../../lib/notifications";
 import type { NotificationRow } from "../../types/database";
+import { getLocale } from "../../i18n/format";
 
 const READ_IDS_STORAGE_KEY = "tripring:public_notification_read_ids";
 
@@ -126,7 +127,7 @@ export function PublicNotificationBell() {
                     <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-400">
                       <span>{NOTIFICATION_TYPE_LABELS[n.type]}</span>
                       <span>·</span>
-                      <span>{new Date(n.created_at).toLocaleDateString("ar-EG")}</span>
+                      <span>{new Date(n.created_at).toLocaleDateString(getLocale())}</span>
                     </div>
                   </>
                 );

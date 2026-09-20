@@ -1,14 +1,15 @@
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 
 const ITEMS: {
   to: string;
-  label: string;
+  labelKey: string;
   match: (p: string, h: string) => boolean;
   icon: (active: boolean) => React.ReactNode;
 }[] = [
   {
     to: "/",
-    label: "الرئيسية",
+    labelKey: "nav.home",
     match: (p, h) => p === "/" && !h,
     icon: (active) => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} className="size-5">
@@ -19,7 +20,7 @@ const ITEMS: {
   },
   {
     to: "/deals",
-    label: "العروض",
+    labelKey: "nav.deals",
     match: (p) => p.startsWith("/deals"),
     icon: (active) => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} className="size-5">
@@ -34,7 +35,7 @@ const ITEMS: {
   },
   {
     to: "/search",
-    label: "بحث",
+    labelKey: "nav.search",
     match: (p) => p.startsWith("/search"),
     icon: (active) => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} className="size-5">
@@ -45,7 +46,7 @@ const ITEMS: {
   },
   {
     to: "/explore",
-    label: "اكتشف",
+    labelKey: "nav.explore",
     match: (p) => p.startsWith("/explore"),
     icon: (active) => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} className="size-5">
@@ -56,7 +57,7 @@ const ITEMS: {
   },
   {
     to: "/my-trips",
-    label: "رحلاتي",
+    labelKey: "nav.myTrips",
     match: (p) => p.startsWith("/my-trips"),
     icon: (active) => (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} className="size-5">
@@ -69,12 +70,13 @@ const ITEMS: {
 
 /** Fixed bottom tab bar, mobile only — desktop keeps the header's primary nav. */
 export function BottomNav() {
+  const { t } = useTranslation();
   const { pathname, hash } = useLocation();
 
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] md:hidden"
-      aria-label="التنقل الرئيسي"
+      aria-label={t("nav.main")}
     >
       <div className="grid grid-cols-5">
         {ITEMS.map((item) => {
@@ -88,7 +90,7 @@ export function BottomNav() {
               }`}
             >
               {item.icon(active)}
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}

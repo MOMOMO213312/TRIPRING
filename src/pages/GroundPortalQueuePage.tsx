@@ -8,6 +8,7 @@ import {
   type ExecutionStatus,
 } from "../lib/groundPortal";
 import "../styles/ground-portal.css";
+import { getLocale } from "../i18n/format";
 
 const STATUS_LABEL: Record<ExecutionStatus, string> = {
   not_started: "لم تبدأ",
@@ -21,7 +22,7 @@ const STATUS_LABEL: Record<ExecutionStatus, string> = {
 function formatTime(iso: string | null) {
   if (!iso) return "—";
   const d = new Date(iso);
-  return d.toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleTimeString(getLocale(), { hour: "2-digit", minute: "2-digit" });
 }
 
 export function GroundPortalQueuePage() {

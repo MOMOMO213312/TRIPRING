@@ -14,6 +14,7 @@ import type { CustomerSubscriptionRow, MembershipTierRow, ProfileRow } from "../
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
+import { getLocale } from "../../i18n/format";
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   bank_transfer: "تحويل بنكي",
@@ -134,7 +135,7 @@ export function AdminCustomerSubscriptionsTab() {
               )}
 
               {s.status === "active" && s.ends_at ? (
-                <p className="text-xs text-slate-500">سارٍ حتى {new Date(s.ends_at).toLocaleDateString("ar-EG")}</p>
+                <p className="text-xs text-slate-500">سارٍ حتى {new Date(s.ends_at).toLocaleDateString(getLocale())}</p>
               ) : null}
 
               {s.status === "pending_payment" ? (

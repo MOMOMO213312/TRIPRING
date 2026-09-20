@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { GroundPortalShell } from "../components/groundPortal/GroundPortalShell";
 import { fetchSettlements, fetchGroundQueue, type SettlementRow, type GroundQueueRow } from "../lib/groundPortal";
 import "../styles/ground-portal.css";
+import { getLocale } from "../i18n/format";
 
 const STATUS_LABEL: Record<string, string> = {
   draft: "مسودة",
@@ -12,7 +13,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 function money(n: number, currency: string) {
-  return `${n.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} ${currency}`;
+  return `${n.toLocaleString(getLocale(), { minimumFractionDigits: 2 })} ${currency}`;
 }
 
 export function GroundPortalSettlementsPage() {

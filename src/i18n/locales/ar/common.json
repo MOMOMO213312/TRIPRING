@@ -1,0 +1,54 @@
+{
+  "brand": {
+    "tagline": "سوق فرص السفر"
+  },
+  "meta": {
+    "title": "TripRing — سوق فرص السفر",
+    "description": "TripRing — سوق فرص السفر، اكتشف أرخص عروض تذاكر الطيران الحقيقية من وكالات موثقة."
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "deals": "العروض",
+    "explore": "اكتشف",
+    "tripgo": "tripgo",
+    "search": "بحث",
+    "myTrips": "رحلاتي",
+    "menu": "القائمة",
+    "main": "التنقل الرئيسي"
+  },
+  "lang": {
+    "ar": "العربية",
+    "en": "English",
+    "tr": "Türkçe",
+    "label": "اللغة"
+  },
+  "footer": {
+    "tagline": "منصة اكتشاف فرص السفر — نستكشف الفرص، ونقدّم لك ما يستحق فقط.",
+    "importantLinks": "روابط مهمة",
+    "faq": "الأسئلة الشائعة",
+    "terms": "الشروط والأحكام",
+    "privacy": "سياسة الخصوصية",
+    "platform": "المنصة",
+    "blueFriday": "Blue Friday",
+    "agencyPortal": "لوحة الوكالة",
+    "affiliatePortal": "لوحة الأفلييت",
+    "becomeSupplier": "انضم كمورد",
+    "copyright": "© {{year}} TripRing — سوق فرص السفر"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "search": "بحث",
+    "retry": "حاول تاني",
+    "loading": "جاري التحميل…",
+    "viewAll": "عرض الكل",
+    "book": "احجز"
+  }
+}

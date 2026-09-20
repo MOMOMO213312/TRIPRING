@@ -20,6 +20,7 @@ import {
 import { fetchAirports } from "../lib/api";
 import type { AirportRow } from "../types/database";
 import "../styles/ground-portal.css";
+import { getLocale } from "../i18n/format";
 
 const STATUS_LABEL: Record<AgreementStatus, string> = {
   draft: "مسودة",
@@ -43,7 +44,7 @@ const NEXT_STATUS: Record<AgreementStatus, AgreementStatus[]> = {
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return new Date(iso).toLocaleDateString(getLocale(), { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 interface NewAgreementForm {

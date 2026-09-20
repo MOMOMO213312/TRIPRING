@@ -1,6 +1,8 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 export function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="border-t border-slate-200 bg-white">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
@@ -12,42 +14,42 @@ export function Footer() {
             TripRing
           </p>
           <p className="mt-2 text-sm text-slate-500">
-            منصة اكتشاف فرص السفر — نستكشف الفرص، ونقدّم لك ما يستحق فقط.
+            {t("footer.tagline")}
           </p>
         </div>
 
         <div>
-          <p className="text-sm font-bold text-slate-900">روابط مهمة</p>
+          <p className="text-sm font-bold text-slate-900">{t("footer.importantLinks")}</p>
           <ul className="mt-3 space-y-2 text-sm text-slate-500">
             <li>
               <Link to="/faq" className="hover:text-[#0C7BB3]">
-                الأسئلة الشائعة
+                {t("footer.faq")}
               </Link>
             </li>
             <li>
               <Link to="/terms" className="hover:text-[#0C7BB3]">
-                الشروط والأحكام
+                {t("footer.terms")}
               </Link>
             </li>
             <li>
               <Link to="/privacy" className="hover:text-[#0C7BB3]">
-                سياسة الخصوصية
+                {t("footer.privacy")}
               </Link>
             </li>
           </ul>
         </div>
 
         <div>
-          <p className="text-sm font-bold text-slate-900">المنصة</p>
+          <p className="text-sm font-bold text-slate-900">{t("footer.platform")}</p>
           <ul className="mt-3 space-y-2 text-sm text-slate-500">
             <li>
               <Link to="/deals" className="hover:text-[#0C7BB3]">
-                العروض
+                {t("nav.deals")}
               </Link>
             </li>
             <li>
               <Link to="/my-trips" className="hover:text-[#0C7BB3]">
-                رحلاتي
+                {t("nav.myTrips")}
               </Link>
             </li>
             <li>
@@ -57,17 +59,17 @@ export function Footer() {
             </li>
             <li>
               <Link to="/agency" className="hover:text-[#0C7BB3]">
-                لوحة الوكالة
+                {t("footer.agencyPortal")}
               </Link>
             </li>
             <li>
               <Link to="/affiliate" className="hover:text-[#0C7BB3]">
-                لوحة الأفلييت
+                {t("footer.affiliatePortal")}
               </Link>
             </li>
             <li>
               <Link to="/become-a-supplier" className="hover:text-[#0C7BB3]">
-                انضم كمورد
+                {t("footer.becomeSupplier")}
               </Link>
             </li>
           </ul>
@@ -75,7 +77,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-slate-100 py-5 text-center text-sm text-slate-500">
-        © {new Date().getFullYear()} TripRing — سوق فرص السفر
+        {t("footer.copyright", { year: new Date().getFullYear() })}
       </div>
     </footer>
   );

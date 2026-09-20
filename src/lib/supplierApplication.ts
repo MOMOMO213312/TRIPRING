@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 import type { SupplierApplicationRow, SupplierOrgType } from "../types/database";
 
+import { dbError } from "./errors";
 /** Submits a self-signup application to become a TripRing supplier (any org type).
  *  Requires an authenticated user (RLS/RPC checks auth.uid()); the RPC itself rejects
  *  a second submission while a previous one from the same user is still pending. */
@@ -26,7 +27,7 @@ export async function submitSupplierApplication(input: {
     p_website: input.website || null,
     p_notes: input.notes || null,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as string;
 }
 
@@ -37,6 +38,6 @@ export async function fetchMySupplierApplications(): Promise<SupplierApplication
     .from("supplier_applications")
     .select("*")
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as unknown as SupplierApplicationRow[];
 }

@@ -1,3 +1,5 @@
+import { getLocale } from "../i18n/format";
+
 export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
@@ -32,7 +34,7 @@ export function formatLatinNumber(value: number): string {
 }
 
 export function formatDate(date: string): string {
-  return new Intl.DateTimeFormat("ar-EG", {
+  return new Intl.DateTimeFormat(getLocale(), {
     day: "numeric",
     month: "short",
     year: "numeric",

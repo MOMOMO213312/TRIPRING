@@ -13,6 +13,7 @@ import type {
   Tables,
 } from "../types/database";
 
+import { dbError } from "./errors";
 export type AgencyProfile = ProfileRow & { agency_name: string | null };
 
 /** Returns the signed-in user's profile joined with their agency name, or null if not agency staff. */
@@ -25,7 +26,7 @@ export async function fetchMyAgencyProfile(): Promise<AgencyProfile | null> {
     .select("id,role,full_name,phone,agency_id,agency_role,membership,created_at")
     .eq("id", user.id)
     .maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   if (!profile) return null;
 
   const row = profile as ProfileRow;
@@ -52,7 +53,7 @@ const AGENCY_DOC_MAX_BYTES = 8 * 1024 * 1024; // 8MB
 
 export async function fetchMyAgency(agencyId: string): Promise<AgencyRow | null> {
   const { data, error } = await supabase.from("agencies").select("*").eq("id", agencyId).maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as AgencyRow | null;
 }
 
@@ -69,7 +70,7 @@ export async function fetchMyAgencyTeam(agencyId: string): Promise<AgencyTeamMem
     .select("id,full_name,phone,agency_role,created_at")
     .eq("agency_id", agencyId)
     .order("created_at", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as AgencyTeamMember[];
 }
 
@@ -93,13 +94,13 @@ export async function uploadMyAgencyDocument(agencyId: string, label: string, fi
     p_label: label,
     p_path: path,
   } as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as AgencyRow;
 }
 
 export async function getMyAgencyDocumentUrl(path: string): Promise<string> {
   const { data, error } = await supabase.storage.from("agency-documents").createSignedUrl(path, 300);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data.signedUrl;
 }
 
@@ -114,7 +115,7 @@ export async function fetchAgencyDeals(agencyId: string): Promise<DealRow[]> {
     .select(DEAL_FULL_COLUMNS)
     .eq("agency_id", agencyId)
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as DealRow[];
 }
 
@@ -587,7 +588,7 @@ export async function bulkCreateDeals(agencyId: string, inputs: DealFormInput[])
       is_featured: input.isFeatured ?? false,
     })) as never,
   );
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function createDeal(agencyId: string, input: DealFormInput): Promise<void> {
@@ -619,7 +620,7 @@ export async function createDeal(agencyId: string, input: DealFormInput): Promis
       status: "active",
     },
   ] as never);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export async function updateDeal(dealId: string, patch: Partial<DealFormInput>): Promise<void> {
@@ -648,13 +649,13 @@ export async function updateDeal(dealId: string, patch: Partial<DealFormInput>):
   if (patch.currency !== undefined) dbPatch.currency = patch.currency;
 
   const { error } = await supabase.from("deals").update(dbPatch as never).eq("id", dealId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 /** Toggle a deal between active and cancelled ("pause"/"resume") without touching other fields. */
 export async function setDealStatus(dealId: string, status: DealRow["status"]): Promise<void> {
   const { error } = await supabase.from("deals").update({ status } as never).eq("id", dealId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export type BookingStatusGroup = "new" | "awaiting_payment" | "confirmed" | "cancelled" | "all";
@@ -715,7 +716,7 @@ export async function fetchAgencyBookings(
   }
 
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as BookingRow[];
 }
 
@@ -730,7 +731,7 @@ export async function updateBookingStatus(
   if (status === "paid") patch.payment_at = new Date().toISOString();
 
   const { error } = await supabase.from("bookings").update(patch as never).eq("id", bookingId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
@@ -783,7 +784,7 @@ export async function fetchAgencyBookingServices(
   if (status) query = query.eq("status", status);
 
   const { data, error } = await query;
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as unknown as BookingServiceQueueRow[];
 }
 
@@ -796,7 +797,7 @@ export async function updateBookingServiceStatus(
     .from("booking_services")
     .update({ status } as never)
     .eq("id", bookingServiceId);
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 export type AgencyReviewRowFull = Tables<"agency_reviews">;

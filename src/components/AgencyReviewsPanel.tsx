@@ -12,6 +12,7 @@ import { friendlyErrorMessage } from "../lib/errors";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import type { AgencyRow } from "../types/database";
+import { getLocale } from "../i18n/format";
 
 function StarRow({ value }: { value: number }) {
   return (
@@ -147,7 +148,7 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
               <div className="flex items-center gap-2">
                 <StarRow value={r.rating} />
                 <span className="text-xs text-slate-400">
-                  {new Date(r.created_at).toLocaleDateString("ar-EG")}
+                  {new Date(r.created_at).toLocaleDateString(getLocale())}
                 </span>
               </div>
               {r.comment ? <p className="mt-1 text-slate-700">{r.comment}</p> : null}

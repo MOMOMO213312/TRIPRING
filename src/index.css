@@ -38,6 +38,12 @@ html {
   font-family: var(--font-sans-ar);
 }
 
+/* English / Turkish use the Latin UI font (Inter covers Turkish ğ ş İ ı ö ü ç). */
+html[lang="en"],
+html[lang="tr"] {
+  font-family: var(--font-sans-latin);
+}
+
 body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }

@@ -18,6 +18,7 @@ import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Select } from "../ui/Select";
+import { getLocale } from "../../i18n/format";
 
 const GROUPS: { key: BookingStatusGroup; label: string }[] = [
   { key: "new", label: "جديدة" },
@@ -125,7 +126,7 @@ export function AgencyBookingsTab({
                   <Badge tone={statusTone(b.status)}>{BOOKING_STATUS_LABELS[b.status]}</Badge>
                 </div>
                 <span className="text-xs text-slate-400">
-                  {new Date(b.created_at).toLocaleString("ar-EG")}
+                  {new Date(b.created_at).toLocaleString(getLocale())}
                 </span>
               </div>
 

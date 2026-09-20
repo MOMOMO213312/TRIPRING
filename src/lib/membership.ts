@@ -2,6 +2,7 @@ import { getCurrentUser } from "./auth";
 import { supabase } from "./supabase";
 import type { BillingPeriod, CustomerSubscriptionRow, MembershipTier, MembershipTierRow, PaymentMethod } from "../types/database";
 
+import { dbError } from "./errors";
 // Tier order, lowest→highest (matches the DB enum's sort order) — used to
 // resolve "everything this customer's tier unlocks", not just an exact match.
 const MEMBERSHIP_TIER_ORDER: MembershipTier[] = ["free", "basic", "smart", "premium"];
@@ -41,7 +42,7 @@ export async function fetchActiveMembershipTiers(): Promise<MembershipTierRow[]>
     .select("*")
     .eq("is_active", true)
     .order("price_monthly", { ascending: true });
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data ?? []) as MembershipTierRow[];
 }
 
@@ -50,7 +51,7 @@ export async function fetchActiveMembershipTiers(): Promise<MembershipTierRow[]>
  *  back to 'free' via the DB trigger. Safe to call on every page load. */
 export async function expireDueSubscriptions(): Promise<void> {
   const { error } = await supabase.rpc("expire_due_customer_subscriptions");
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
 }
 
 /** Most recent subscription row for the signed-in customer (any status). */
@@ -65,7 +66,7 @@ export async function fetchMyLatestSubscription(): Promise<CustomerSubscriptionR
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return (data as CustomerSubscriptionRow | null) ?? null;
 }
 
@@ -131,6 +132,6 @@ export async function submitCustomerSubscription(input: {
     ] as never)
     .select("*")
     .single();
-  if (error) throw new Error(error.message);
+  if (error) throw dbError(error);
   return data as CustomerSubscriptionRow;
 }

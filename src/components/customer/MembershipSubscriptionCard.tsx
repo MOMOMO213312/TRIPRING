@@ -16,6 +16,7 @@ import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { Input } from "../ui/Input";
+import { getLocale } from "../../i18n/format";
 
 const TIER_LABELS: Record<string, string> = { basic: "Basic", smart: "Smart", premium: "Premium" };
 
@@ -72,7 +73,7 @@ export function MembershipSubscriptionCard() {
             <p className="mt-2 text-sm text-slate-600">طلبك بانتظار مراجعة الأدمن للتأكد من إثبات الدفع.</p>
           ) : isActive && sub.ends_at ? (
             <div className="mt-2 space-y-1 text-sm text-slate-600">
-              <p>مفعّل حتى {new Date(sub.ends_at).toLocaleDateString("ar-EG")}</p>
+              <p>مفعّل حتى {new Date(sub.ends_at).toLocaleDateString(getLocale())}</p>
               {tier ? (
                 <p>
                   خصم {tier.discount_percentage}% على الحجوزات

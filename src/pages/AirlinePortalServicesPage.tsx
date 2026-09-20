@@ -22,6 +22,7 @@ import {
   type AirlineServiceRuleAirportRole,
 } from "../lib/airlinePortal";
 import "../styles/airline-portal.css";
+import { getLocale } from "../i18n/format";
 
 const TRAVEL_CLASSES: { value: string; label: string }[] = [
   { value: "economy", label: "اقتصادية" },
@@ -38,7 +39,7 @@ const AIRPORT_ROLE_LABEL: Record<AirlineServiceRuleAirportRole, string> = {
 
 function formatDate(d: string | null) {
   if (!d) return "—";
-  return new Date(d).toLocaleDateString("ar-EG", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return new Date(d).toLocaleDateString(getLocale(), { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 interface ServiceDraft {

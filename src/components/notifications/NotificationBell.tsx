@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { fetchMyNotifications, fetchMyReadIds, markNotificationRead, NOTIFICATION_TYPE_LABELS } from "../../lib/notifications";
 import type { NotificationRow } from "../../types/database";
+import { getLocale } from "../../i18n/format";
 
 /** Bell + dropdown for signed-in users (agency staff, affiliates, admin).
  *  RLS scopes `fetchMyNotifications` to what this account is allowed to see —
@@ -99,7 +100,7 @@ export function NotificationBell() {
                     <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-400">
                       <span>{NOTIFICATION_TYPE_LABELS[n.type]}</span>
                       <span>·</span>
-                      <span>{new Date(n.created_at).toLocaleDateString("ar-EG")}</span>
+                      <span>{new Date(n.created_at).toLocaleDateString(getLocale())}</span>
                     </div>
                   </button>
                 );
