@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "home": "Home",
+    "deals": "Deals",
+    "explore": "Explore",
+    "tripgo": "TripGo",
+    "myTrips": "My Trips",
+    "menu": "Menu"
+  },
+  "language": {
+    "ar": "العربية",
+    "en": "English",
+    "tr": "Türkçe",
+    "switch": "Change language"
+  },
+  "errors": {
+    "CURRENCY_NOT_CHARGEABLE": "This currency isn't available for payment right now — choose another payment currency.",
+    "CURRENCY_NOT_AVAILABLE": "The selected currency isn't available right now — choose another one.",
+    "FX_QUOTE_INVALID": "That exchange-rate quote expired — press \"Confirm booking\" again and we'll re-quote it at the current rate.",
+    "FX_RATE_UNAVAILABLE": "We can't fetch the exchange rate right now — try paying in the deal's own currency, or try again shortly.",
+    "FX_RATE_STALE": "Exchange rates are updating right now — please try again in a few minutes.",
+    "PAYMENT_METHOD_NOT_AVAILABLE": "This payment method isn't available in the selected currency — choose another method.",
+    "DEAL_NOT_FOUND": "This deal no longer exists.",
+    "DEAL_EXPIRED": "This deal is no longer available.",
+    "NEED_ONE_ADULT": "A booking needs at least one adult passenger.",
+    "SEATS_UNAVAILABLE": "Not enough seats left for this request.",
+    "NEED_ONE_SERVICE": "Please select at least one service.",
+    "BOOKING_NOT_FOUND": "This booking no longer exists.",
+    "BOOKING_CANCELLED": "This booking is cancelled — services can't be added to it.",
+    "TRIP_DEPARTED": "This trip has already departed — services can't be added after travel.",
+    "INVALID_AIRPORT_LEG": "Invalid airport leg (arrival/departure).",
+    "SERVICE_UNAVAILABLE": "This add-on service is unavailable.",
+    "AIRPORT_LEG_REQUIRED": "Please choose an airport leg (arrival/departure) for ground-handling services.",
+    "SERVICE_NOT_ELIGIBLE": "This service isn't available for your trip right now.",
+    "SERVICE_ALREADY_ADDED": "This service is already on the booking.",
+    "SERVICE_DUPLICATED_IN_REQUEST": "This service was duplicated in the same request."
+  }
+}

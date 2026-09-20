@@ -1,0 +1,38 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "deals": "Fırsatlar",
+    "explore": "Keşfet",
+    "tripgo": "TripGo",
+    "myTrips": "Seyahatlerim",
+    "menu": "Menü"
+  },
+  "language": {
+    "ar": "العربية",
+    "en": "English",
+    "tr": "Türkçe",
+    "switch": "Dili değiştir"
+  },
+  "errors": {
+    "CURRENCY_NOT_CHARGEABLE": "Bu para birimiyle şu anda ödeme yapılamıyor — başka bir ödeme para birimi seçin.",
+    "CURRENCY_NOT_AVAILABLE": "Seçilen para birimi şu anda kullanılamıyor — başka birini seçin.",
+    "FX_QUOTE_INVALID": "Bu döviz kuru teklifinin süresi doldu — \"Rezervasyonu Onayla\"ya tekrar basın, güncel kurla yeniden hesaplayalım.",
+    "FX_RATE_UNAVAILABLE": "Döviz kurunu şu anda alamıyoruz — fırsatın kendi para biriminde ödemeyi deneyin veya kısa süre sonra tekrar deneyin.",
+    "FX_RATE_STALE": "Döviz kurları şu anda güncelleniyor — lütfen birkaç dakika sonra tekrar deneyin.",
+    "PAYMENT_METHOD_NOT_AVAILABLE": "Bu ödeme yöntemi seçilen para biriminde kullanılamıyor — başka bir yöntem seçin.",
+    "DEAL_NOT_FOUND": "Bu fırsat artık mevcut değil.",
+    "DEAL_EXPIRED": "Bu fırsatın süresi doldu.",
+    "NEED_ONE_ADULT": "Rezervasyonda en az bir yetişkin yolcu olmalı.",
+    "SEATS_UNAVAILABLE": "Bu talep için yeterli koltuk kalmadı.",
+    "NEED_ONE_SERVICE": "Lütfen en az bir hizmet seçin.",
+    "BOOKING_NOT_FOUND": "Bu rezervasyon artık mevcut değil.",
+    "BOOKING_CANCELLED": "Bu rezervasyon iptal edildi — hizmet eklenemez.",
+    "TRIP_DEPARTED": "Bu seyahat zaten gerçekleşti — seyahatten sonra hizmet eklenemez.",
+    "INVALID_AIRPORT_LEG": "Geçersiz havalimanı yönü (varış/kalkış).",
+    "SERVICE_UNAVAILABLE": "Bu ek hizmet şu anda kullanılamıyor.",
+    "AIRPORT_LEG_REQUIRED": "Yer hizmetleri için lütfen bir havalimanı yönü (varış/kalkış) seçin.",
+    "SERVICE_NOT_ELIGIBLE": "Bu hizmet şu anda seyahatiniz için uygun değil.",
+    "SERVICE_ALREADY_ADDED": "Bu hizmet zaten rezervasyona eklenmiş.",
+    "SERVICE_DUPLICATED_IN_REQUEST": "Bu hizmet aynı istekte tekrarlandı."
+  }
+}

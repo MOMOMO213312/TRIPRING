@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { CurrencySwitcher } from "./CurrencySwitcher";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Footer } from "./Footer";
 import { BottomNav } from "./BottomNav";
 import { AnnouncementTicker } from "./notifications/AnnouncementTicker";
 import { PublicNotificationBell } from "./notifications/PublicNotificationBell";
 import { captureAffiliateClickFromUrl } from "../lib/affiliateAttribution";
 
-const NAV_ITEMS = [
-  { to: "/", label: "الرئيسية", match: (p: string, h: string) => p === "/" && !h },
-  { to: "/deals", label: "العروض", match: (p: string) => p.startsWith("/deals") },
-  { to: "/explore", label: "اكتشف", match: (p: string) => p.startsWith("/explore") },
-  { to: "/tripgo", label: "tripgo", match: (p: string) => p.startsWith("/tripgo") },
-];
+function useNavItems() {
+  const { t } = useTranslation();
+  return [
+    { to: "/", label: t("nav.home"), match: (p: string, h: string) => p === "/" && !h },
+    { to: "/deals", label: t("nav.deals"), match: (p: string) => p.startsWith("/deals") },
+    { to: "/explore", label: t("nav.explore"), match: (p: string) => p.startsWith("/explore") },
+    { to: "/tripgo", label: t("nav.tripgo"), match: (p: string) => p.startsWith("/tripgo") },
+  ];
+}
 
 export function Layout() {
+  const { t } = useTranslation();
   const location = useLocation();
   const { pathname, hash } = location;
   const isHome = pathname === "/";
-  const [lang, setLang] = useState<"AR" | "EN">("AR");
+  const NAV_ITEMS = useNavItems();
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Long-session affiliate attribution: if this load carries ?ref=CODE, record
@@ -86,19 +92,13 @@ export function Layout() {
           <div className="mr-auto flex items-center gap-2 md:mr-0">
             <PublicNotificationBell />
             <div className="hidden items-center gap-2 text-xs md:flex">
-              <button
-                type="button"
-                onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-                className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600 transition hover:border-[#1E3A8A]/40 hover:text-[#1E3A8A]"
-              >
-                {lang === "AR" ? "العربية" : "English"}
-              </button>
+              <LanguageSwitcher />
               <CurrencySwitcher />
             </div>
             <Link
               to="/my-trips"
-              title="رحلاتي"
-              aria-label="رحلاتي"
+              title={t("nav.myTrips")}
+              aria-label={t("nav.myTrips")}
               className={`flex size-8 items-center justify-center rounded-full border transition ${
                 pathname.startsWith("/my-trips")
                   ? "border-[#1E3A8A] text-[#1E3A8A]"
@@ -115,7 +115,7 @@ export function Layout() {
             <button
               type="button"
               onClick={() => setMenuOpen((o) => !o)}
-              aria-label="القائمة"
+              aria-label={t("nav.menu")}
               aria-expanded={menuOpen}
               className="flex size-8 items-center justify-center rounded-full border border-slate-200 text-slate-700 md:hidden"
             >
@@ -144,13 +144,7 @@ export function Layout() {
             </nav>
             <div className="my-3 border-t border-slate-100" />
             <div className="flex items-center gap-2 px-3 text-xs">
-              <button
-                type="button"
-                onClick={() => setLang((l) => (l === "AR" ? "EN" : "AR"))}
-                className="font-latin rounded-full border border-slate-200 px-3 py-1.5 text-slate-600"
-              >
-                {lang === "AR" ? "العربية" : "English"}
-              </button>
+              <LanguageSwitcher align="start" />
               <CurrencySwitcher align="start" />
             </div>
           </div>
