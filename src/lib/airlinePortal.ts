@@ -7,6 +7,7 @@
 // Do not switch any of these to `.from(view)`.
 
 import { supabase } from "./supabase";
+import type { LocalizedTextMap } from "../types/database";
 
 export interface AirlineOverviewRow {
   airline_supplier_id: string;
@@ -527,6 +528,9 @@ export interface AirlineServiceRow {
   capacity_per_flight: number | null;
   attributes: Record<string, string> | null;
   active_rules_count: number;
+  name_i18n?: LocalizedTextMap | null;
+  description_i18n?: LocalizedTextMap | null;
+  terms_i18n?: LocalizedTextMap | null;
 }
 
 /** الخدمات الإضافية — the airline's own ancillary catalog. Read-scoped to
@@ -556,6 +560,9 @@ export async function upsertAirlineService(input: {
   maxQuantityPerPax?: number | null;
   capacityPerFlight?: number | null;
   attributes?: Record<string, string> | null;
+  nameI18n?: LocalizedTextMap | null;
+  descriptionI18n?: LocalizedTextMap | null;
+  termsI18n?: LocalizedTextMap | null;
 }): Promise<string> {
   const { data, error } = await supabase.rpc("airline_upsert_service" as never, {
     p_id: input.id ?? null,
@@ -571,6 +578,9 @@ export async function upsertAirlineService(input: {
     p_max_quantity_per_pax: input.maxQuantityPerPax ?? null,
     p_capacity_per_flight: input.capacityPerFlight ?? null,
     p_attributes: input.attributes ?? null,
+    p_name_i18n: input.nameI18n ?? null,
+    p_description_i18n: input.descriptionI18n ?? null,
+    p_terms_i18n: input.termsI18n ?? null,
   } as never);
   if (error) throw error;
   return data as string;

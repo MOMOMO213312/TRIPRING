@@ -234,6 +234,11 @@ function ServiceForm({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [nameEn, setNameEn] = useState("");
+  const [nameTr, setNameTr] = useState("");
+  const [descriptionEn, setDescriptionEn] = useState("");
+  const [descriptionTr, setDescriptionTr] = useState("");
+  const [showTranslations, setShowTranslations] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -246,6 +251,17 @@ function ServiceForm({
     setSaving(true);
     setError(null);
     try {
+      const nameI18n =
+        nameEn.trim() || nameTr.trim()
+          ? { ...(nameEn.trim() ? { en: nameEn.trim() } : {}), ...(nameTr.trim() ? { tr: nameTr.trim() } : {}) }
+          : null;
+      const descriptionI18n =
+        descriptionEn.trim() || descriptionTr.trim()
+          ? {
+              ...(descriptionEn.trim() ? { en: descriptionEn.trim() } : {}),
+              ...(descriptionTr.trim() ? { tr: descriptionTr.trim() } : {}),
+            }
+          : null;
       await createMyService({
         providerId,
         providerType: category,
@@ -253,6 +269,8 @@ function ServiceForm({
         name: name.trim(),
         description: description.trim() || null,
         price: priceNum,
+        nameI18n,
+        descriptionI18n,
       });
       onDone();
     } catch (e) {
@@ -273,6 +291,31 @@ function ServiceForm({
       <Input label="اسم الخدمة (يظهر للعميل)" value={name} onChange={(e) => setName(e.target.value)} />
       <Input label="الوصف (اختياري)" value={description} onChange={(e) => setDescription(e.target.value)} />
       <Input label="السعر (USD)" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
+
+      <button
+        type="button"
+        className="text-xs font-medium text-sky-700"
+        onClick={() => setShowTranslations((v) => !v)}
+      >
+        {showTranslations ? "إخفاء الترجمة" : "ترجمة (اختياري)"}
+      </button>
+      {showTranslations ? (
+        <div className="space-y-2 rounded-md border border-slate-200 bg-white p-2">
+          <Input label="الاسم بالإنجليزي" value={nameEn} onChange={(e) => setNameEn(e.target.value)} />
+          <Input label="الاسم بالتركي" value={nameTr} onChange={(e) => setNameTr(e.target.value)} />
+          <Input
+            label="الوصف بالإنجليزي"
+            value={descriptionEn}
+            onChange={(e) => setDescriptionEn(e.target.value)}
+          />
+          <Input
+            label="الوصف بالتركي"
+            value={descriptionTr}
+            onChange={(e) => setDescriptionTr(e.target.value)}
+          />
+        </div>
+      ) : null}
+
       {error ? <p className="text-xs text-red-600">{error}</p> : null}
       <div className="flex justify-end gap-2">
         <Button type="button" variant="outline" onClick={onCancel}>

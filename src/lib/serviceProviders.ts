@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import type { AdditionalServiceRow, ProviderType, ServiceCategory, ServiceProviderRow } from "../types/database";
+import type { AdditionalServiceRow, LocalizedTextMap, ProviderType, ServiceCategory, ServiceProviderRow } from "../types/database";
 
 import { dbError } from "./errors";
 /** All categories an agency can be granted, in display order. */
@@ -85,6 +85,8 @@ export async function createMyService(input: {
   name: string;
   description: string | null;
   price: number;
+  nameI18n?: LocalizedTextMap | null;
+  descriptionI18n?: LocalizedTextMap | null;
 }): Promise<void> {
   const { error } = await supabase.from("additional_services").insert([
     {
@@ -96,6 +98,8 @@ export async function createMyService(input: {
       category: PROVIDER_TYPE_CATEGORY[input.providerType],
       is_active: true,
       fulfillment_type: "in_house",
+      name_i18n: input.nameI18n ?? null,
+      description_i18n: input.descriptionI18n ?? null,
     },
   ] as never);
   if (error) throw dbError(error);
@@ -103,13 +107,22 @@ export async function createMyService(input: {
 
 export async function updateMyService(
   serviceId: string,
-  patch: Partial<{ name: string; description: string | null; price: number; isActive: boolean }>,
+  patch: Partial<{
+    name: string;
+    description: string | null;
+    price: number;
+    isActive: boolean;
+    nameI18n: LocalizedTextMap | null;
+    descriptionI18n: LocalizedTextMap | null;
+  }>,
 ): Promise<void> {
   const dbPatch: Record<string, unknown> = {};
   if (patch.name !== undefined) dbPatch.name = patch.name;
   if (patch.description !== undefined) dbPatch.description = patch.description;
   if (patch.price !== undefined) dbPatch.price = patch.price;
   if (patch.isActive !== undefined) dbPatch.is_active = patch.isActive;
+  if (patch.nameI18n !== undefined) dbPatch.name_i18n = patch.nameI18n;
+  if (patch.descriptionI18n !== undefined) dbPatch.description_i18n = patch.descriptionI18n;
   const { error } = await supabase.from("additional_services").update(dbPatch as never).eq("id", serviceId);
   if (error) throw dbError(error);
 }

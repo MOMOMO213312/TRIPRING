@@ -55,6 +55,12 @@ interface ServiceDraft {
   capacityPerFlight: string;
   attributes: Record<string, string>;
   isActive: boolean;
+  nameEn: string;
+  nameTr: string;
+  descriptionEn: string;
+  descriptionTr: string;
+  termsEn: string;
+  termsTr: string;
 }
 
 function emptyDraft(type: AirlineAncillaryType): ServiceDraft {
@@ -71,6 +77,12 @@ function emptyDraft(type: AirlineAncillaryType): ServiceDraft {
     capacityPerFlight: "",
     attributes: {},
     isActive: true,
+    nameEn: "",
+    nameTr: "",
+    descriptionEn: "",
+    descriptionTr: "",
+    termsEn: "",
+    termsTr: "",
   };
 }
 
@@ -88,7 +100,92 @@ function draftFromService(s: AirlineServiceRow): ServiceDraft {
     capacityPerFlight: s.capacity_per_flight != null ? String(s.capacity_per_flight) : "",
     attributes: { ...(s.attributes ?? {}) },
     isActive: s.is_active,
+    nameEn: s.name_i18n?.en ?? "",
+    nameTr: s.name_i18n?.tr ?? "",
+    descriptionEn: s.description_i18n?.en ?? "",
+    descriptionTr: s.description_i18n?.tr ?? "",
+    termsEn: s.terms_i18n?.en ?? "",
+    termsTr: s.terms_i18n?.tr ?? "",
   };
+}
+
+/** Builds a LocalizedTextMap from two free-text inputs, or null if both are
+ *  empty — mirrors the DB's own "empty object clears translation" contract
+ *  but at the field level (an empty EN with a filled TR still saves TR). */
+function localizedMapOrNull(en: string, tr: string): { en?: string; tr?: string } | null {
+  const out: { en?: string; tr?: string } = {};
+  if (en.trim()) out.en = en.trim();
+  if (tr.trim()) out.tr = tr.trim();
+  return Object.keys(out).length > 0 ? out : null;
+}
+
+/** Collapsible EN/TR name+description+terms section, reused by both the
+ *  "new service" and "edit service" forms. Purely additive — leaving every
+ *  field blank keeps the service Arabic-only (server clears with {} vs
+ *  leaves untouched on undefined, matched by localizedMapOrNull above). */
+function TranslationFields({
+  draft,
+  setDraft,
+}: {
+  draft: ServiceDraft;
+  setDraft: (updater: (d: ServiceDraft) => ServiceDraft) => void;
+}) {
+  const [open, setOpen] = useState(
+    () => !!(draft.nameEn || draft.nameTr || draft.descriptionEn || draft.descriptionTr || draft.termsEn || draft.termsTr),
+  );
+  return (
+    <div style={{ border: "1px solid var(--ap-border, #e2e8f0)", borderRadius: 8, padding: 8 }}>
+      <button type="button" className="ap-btn" onClick={() => setOpen((v) => !v)}>
+        {open ? "إخفاء الترجمة" : "ترجمة (اختياري)"}
+      </button>
+      {open && (
+        <div style={{ display: "grid", gap: 8, marginTop: 8 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+            <input
+              className="ap-input"
+              placeholder="الاسم بالإنجليزي"
+              value={draft.nameEn}
+              onChange={(e) => setDraft((d) => ({ ...d, nameEn: e.target.value }))}
+            />
+            <input
+              className="ap-input"
+              placeholder="الاسم بالتركي"
+              value={draft.nameTr}
+              onChange={(e) => setDraft((d) => ({ ...d, nameTr: e.target.value }))}
+            />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+            <input
+              className="ap-input"
+              placeholder="الوصف بالإنجليزي"
+              value={draft.descriptionEn}
+              onChange={(e) => setDraft((d) => ({ ...d, descriptionEn: e.target.value }))}
+            />
+            <input
+              className="ap-input"
+              placeholder="الوصف بالتركي"
+              value={draft.descriptionTr}
+              onChange={(e) => setDraft((d) => ({ ...d, descriptionTr: e.target.value }))}
+            />
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+            <input
+              className="ap-input"
+              placeholder="الشروط بالإنجليزي"
+              value={draft.termsEn}
+              onChange={(e) => setDraft((d) => ({ ...d, termsEn: e.target.value }))}
+            />
+            <input
+              className="ap-input"
+              placeholder="الشروط بالتركي"
+              value={draft.termsTr}
+              onChange={(e) => setDraft((d) => ({ ...d, termsTr: e.target.value }))}
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 type RuleScope = "all" | "flight" | "flight_number" | "route" | "airport";
@@ -239,6 +336,9 @@ export function AirlinePortalServicesPage() {
       maxQuantityPerPax: d.maxQuantityPerPax ? Number(d.maxQuantityPerPax) : null,
       capacityPerFlight: d.capacityPerFlight ? Number(d.capacityPerFlight) : null,
       attributes: Object.keys(cleanAttrs).length > 0 ? cleanAttrs : null,
+      nameI18n: localizedMapOrNull(d.nameEn, d.nameTr),
+      descriptionI18n: localizedMapOrNull(d.descriptionEn, d.descriptionTr),
+      termsI18n: localizedMapOrNull(d.termsEn, d.termsTr),
     };
   }
 
@@ -502,6 +602,7 @@ export function AirlinePortalServicesPage() {
             onChange={(e) => setDraft((d) => ({ ...d, capacityPerFlight: e.target.value }))}
           />
         </div>
+        <TranslationFields draft={draft} setDraft={setDraft} />
         {meta?.attributeFields && meta.attributeFields.length > 0 && (
           <div style={{ display: "grid", gridTemplateColumns: `repeat(${meta.attributeFields.length}, 1fr)`, gap: 8 }}>
             {meta.attributeFields.map((f) => (
