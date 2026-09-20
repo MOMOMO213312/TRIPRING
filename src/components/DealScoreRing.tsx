@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 /**
  * Circular Deal Score ring — reads the real `deals.deal_score` column
  * (0-100, set by agency/staff review), never a computed/guessed value.
@@ -7,6 +9,7 @@
  * previously unused).
  */
 export function DealScoreRing({ score, size = 52 }: { score: number; size?: number }) {
+  const { t } = useTranslation("search");
   const tier =
     score >= 85
       ? { ring: "#16a34a", bg: "#f0fdf4", text: "#16a34a" }
@@ -24,7 +27,7 @@ export function DealScoreRing({ score, size = 52 }: { score: number; size?: numb
       className="relative shrink-0"
       style={{ width: size, height: size }}
       role="img"
-      aria-label={`Deal Score ${score} من 100`}
+      aria-label={t("card.scoreLabel", { score })}
     >
       <svg width={size} height={size} className="-rotate-90">
         <circle cx={size / 2} cy={size / 2} r={radius} fill={tier.bg} stroke="#e2e8f0" strokeWidth={stroke} />

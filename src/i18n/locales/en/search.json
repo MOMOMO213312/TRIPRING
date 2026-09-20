@@ -1,0 +1,140 @@
+{
+  "loading": "Loading...",
+  "results": {
+    "scope": {
+      "domestic": "Domestic flights",
+      "international": "International flights",
+      "best": "Best deals"
+    },
+    "heading": "{{scope}} from {{airport}}",
+    "allDestinations": "All destinations",
+    "oneWay": "One way",
+    "returnOn": "Return {{date}}",
+    "count_one": "{{count}} deal",
+    "count_other": "{{count}} deals",
+    "filtersButton": "🔧 Filters",
+    "loadFailed": "Something went wrong while loading the results. Please try again.",
+    "empty": {
+      "title": "No deals match your current selections.",
+      "hint": "Try raising your budget, using flexible dates, or removing some filters.",
+      "reset": "Reset filters"
+    }
+  },
+  "sort": {
+    "label": "Sort by",
+    "bestMatch": "Best match (recommended)",
+    "priceAsc": "Price: low to high",
+    "priceDesc": "Price: high to low"
+  },
+  "chips": {
+    "cheapest": "Lowest price",
+    "direct": "Non-stop",
+    "allFilters": "+ All filters"
+  },
+  "center": {
+    "title": "TripRing Deals",
+    "subtitle": "Discover the best travel deals available right now",
+    "trust": "We keep comparing prices as they change, so the deals we show are real",
+    "tab": {
+      "all": "🗂️ All deals",
+      "cheapest": "💰 Cheapest",
+      "direct": "✈️ Direct"
+    },
+    "chosen": "You chose:",
+    "count_one": "{{count}} deal available",
+    "count_other": "{{count}} deals available",
+    "sort": {
+      "asc": "Sort: cheapest first",
+      "desc": "Sort: highest price first"
+    },
+    "loadFailed": "Something went wrong while loading the deals. Please try again.",
+    "empty": {
+      "title": "No matching deals.",
+      "hint": "Try widening the price range or removing some filters."
+    },
+    "loadMore": "Show more ({{n}} more deals)",
+    "compare": {
+      "selected": "{{n}} of {{max}} selected to compare",
+      "clear": "Clear",
+      "now": "Compare now"
+    }
+  },
+  "filter": {
+    "title": "🔧 Filters",
+    "advanced": "Advanced filters",
+    "reset": "Reset",
+    "clearAll": "Clear all",
+    "apply": "Apply filters",
+    "section": {
+      "destination": "Destination",
+      "price": "Price",
+      "stops": "Stops",
+      "airlines": "Airlines",
+      "duration": "Flight duration",
+      "baggage": "Baggage",
+      "ticketTerms": "Ticket terms",
+      "expires": "Deal expires",
+      "departureTimes": "Departure times",
+      "arrivalTimes": "Arrival times",
+      "dealType": "Deal type"
+    },
+    "dealTypeAll": "All",
+    "stops": {
+      "all": "All",
+      "direct": "Direct",
+      "nonstop": "Non-stop",
+      "one": "1 stop",
+      "multi": "2+ stops",
+      "multiple": "Multiple stops"
+    },
+    "duration": {
+      "short": "Under 5 hours",
+      "medium": "5 to 10 hours",
+      "long": "Over 10 hours"
+    },
+    "baggageKg": "{{kg}} kg+",
+    "expiry": "Within {{hours}} hours",
+    "term": {
+      "refundable": "Refundable only",
+      "changeable": "Changeable only",
+      "checkedBag": "Includes a checked bag",
+      "noChangeFee": "No change fee",
+      "noCancelFee": "No cancellation fee"
+    },
+    "slot": {
+      "6am_12pm": "6 AM – 12 PM",
+      "before_6am": "Before 6 AM",
+      "6pm_midnight": "6 PM – midnight",
+      "12pm_6pm": "12 PM – 6 PM"
+    },
+    "airlineSearch": "Search airlines",
+    "noResults": "No results"
+  },
+  "regions": {
+    "gulf": "Gulf",
+    "turkey": "Türkiye",
+    "europe": "Europe",
+    "asia": "Asia"
+  },
+  "compare": {
+    "title": "Compare deals",
+    "row": {
+      "price": "Price",
+      "airline": "Airline",
+      "stops": "Stops",
+      "duration": "Flight duration",
+      "baggage": "Baggage",
+      "refundable": "Refundable",
+      "seats": "Available seats"
+    },
+    "yes": "✓ Yes",
+    "no": "✕ No",
+    "remove": "Remove ✕",
+    "durationHM": "{{h}} h {{m}} m",
+    "durationH": "{{h}} h"
+  },
+  "card": {
+    "priceDrop": "Down {{percent}}% in the last 7 days",
+    "scoreLabel": "Deal Score {{score}} out of 100"
+  }
+}

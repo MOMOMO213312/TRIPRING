@@ -1,0 +1,138 @@
+{
+  "loading": "Yükleniyor...",
+  "results": {
+    "scope": {
+      "domestic": "İç hat uçuşları",
+      "international": "Uluslararası uçuşlar",
+      "best": "En iyi fırsatlar"
+    },
+    "heading": "{{airport}} çıkışlı {{scope}}",
+    "allDestinations": "Tüm varış noktaları",
+    "oneWay": "Tek yön",
+    "returnOn": "Dönüş {{date}}",
+    "count": "{{count}} fırsat",
+    "filtersButton": "🔧 Filtreler",
+    "loadFailed": "Sonuçlar yüklenirken bir hata oluştu, lütfen tekrar dene.",
+    "empty": {
+      "title": "Mevcut seçimlerinle eşleşen fırsat yok.",
+      "hint": "Bütçeni artırmayı, esnek tarihler kullanmayı veya bazı filtreleri kaldırmayı dene.",
+      "reset": "Filtreleri sıfırla"
+    }
+  },
+  "sort": {
+    "label": "Sırala",
+    "bestMatch": "En uygun (önerilen)",
+    "priceAsc": "Fiyat: düşükten yükseğe",
+    "priceDesc": "Fiyat: yüksekten düşüğe"
+  },
+  "chips": {
+    "cheapest": "En düşük fiyat",
+    "direct": "Aktarmasız",
+    "allFilters": "+ Tüm filtreler"
+  },
+  "center": {
+    "title": "TripRing Fırsatları",
+    "subtitle": "Şu anda mevcut en iyi seyahat fırsatlarını keşfet",
+    "trust": "Gerçek fırsatlar sunmak için fiyatları anbean karşılaştırıyoruz",
+    "tab": {
+      "all": "🗂️ Tüm fırsatlar",
+      "cheapest": "💰 En ucuz",
+      "direct": "✈️ Direkt"
+    },
+    "chosen": "Seçtiğin:",
+    "count": "{{count}} fırsat mevcut",
+    "sort": {
+      "asc": "Sırala: en ucuz önce",
+      "desc": "Sırala: en yüksek fiyat önce"
+    },
+    "loadFailed": "Fırsatlar yüklenirken bir hata oluştu, lütfen tekrar dene.",
+    "empty": {
+      "title": "Eşleşen fırsat yok.",
+      "hint": "Fiyat aralığını genişletmeyi veya bazı filtreleri kaldırmayı dene."
+    },
+    "loadMore": "Daha fazla göster ({{n}} fırsat daha)",
+    "compare": {
+      "selected": "Karşılaştırma için {{n}}/{{max}} seçildi",
+      "clear": "Temizle",
+      "now": "Şimdi karşılaştır"
+    }
+  },
+  "filter": {
+    "title": "🔧 Filtreler",
+    "advanced": "Gelişmiş filtreler",
+    "reset": "Sıfırla",
+    "clearAll": "Tümünü temizle",
+    "apply": "Filtreleri uygula",
+    "section": {
+      "destination": "Varış noktası",
+      "price": "Fiyat",
+      "stops": "Aktarmalar",
+      "airlines": "Havayolları",
+      "duration": "Uçuş süresi",
+      "baggage": "Bagaj",
+      "ticketTerms": "Bilet koşulları",
+      "expires": "Fırsat bitiyor",
+      "departureTimes": "Kalkış saatleri",
+      "arrivalTimes": "Varış saatleri",
+      "dealType": "Fırsat türü"
+    },
+    "dealTypeAll": "Tümü",
+    "stops": {
+      "all": "Tümü",
+      "direct": "Direkt",
+      "nonstop": "Aktarmasız",
+      "one": "1 aktarma",
+      "multi": "2+ aktarma",
+      "multiple": "Birden çok aktarma"
+    },
+    "duration": {
+      "short": "5 saatten az",
+      "medium": "5 ile 10 saat arası",
+      "long": "10 saatten fazla"
+    },
+    "baggageKg": "{{kg}} kg+",
+    "expiry": "{{hours}} saat içinde",
+    "term": {
+      "refundable": "Yalnızca iade edilebilir",
+      "changeable": "Yalnızca değiştirilebilir",
+      "checkedBag": "Kayıtlı bagaj dahil",
+      "noChangeFee": "Değişiklik ücreti yok",
+      "noCancelFee": "İptal ücreti yok"
+    },
+    "slot": {
+      "6am_12pm": "06:00 – 12:00",
+      "before_6am": "06:00 öncesi",
+      "6pm_midnight": "18:00 – gece yarısı",
+      "12pm_6pm": "12:00 – 18:00"
+    },
+    "airlineSearch": "Havayolu ara",
+    "noResults": "Sonuç yok"
+  },
+  "regions": {
+    "gulf": "Körfez",
+    "turkey": "Türkiye",
+    "europe": "Avrupa",
+    "asia": "Asya"
+  },
+  "compare": {
+    "title": "Fırsatları karşılaştır",
+    "row": {
+      "price": "Fiyat",
+      "airline": "Havayolu",
+      "stops": "Aktarma",
+      "duration": "Uçuş süresi",
+      "baggage": "Bagaj",
+      "refundable": "İade edilebilir",
+      "seats": "Müsait koltuk"
+    },
+    "yes": "✓ Evet",
+    "no": "✕ Hayır",
+    "remove": "Kaldır ✕",
+    "durationHM": "{{h}} sa {{m}} dk",
+    "durationH": "{{h}} sa"
+  },
+  "card": {
+    "priceDrop": "Son 7 günde %{{percent}} düştü",
+    "scoreLabel": "Fırsat Puanı {{score}} / 100"
+  }
+}

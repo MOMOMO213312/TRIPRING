@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import type { AirportRow } from "../types/database";
 
 /**
@@ -11,17 +12,21 @@ import type { AirportRow } from "../types/database";
  */
 export type Region = {
   key: string;
-  label: string;
   emoji: string;
+  /** Country names exactly as spelled in the `airports.country` column (DB data — never translated). */
   countries: string[];
 };
 
+/** Region display name in the current UI language (search:regions.<key>). */
+export function regionLabel(region: Region): string {
+  return i18n.t(`search:regions.${region.key}`);
+}
+
 export const REGIONS: Region[] = [
-  { key: "gulf", label: "الخليج", emoji: "🇸🇦", countries: ["السعودية", "الإمارات"] },
-  { key: "turkey", label: "تركيا", emoji: "🇹🇷", countries: ["تركيا"] },
+  { key: "gulf", emoji: "🇸🇦", countries: ["السعودية", "الإمارات"] },
+  { key: "turkey", emoji: "🇹🇷", countries: ["تركيا"] },
   {
     key: "europe",
-    label: "أوروبا",
     emoji: "🌍",
     countries: [
       "ألمانيا",
@@ -44,7 +49,6 @@ export const REGIONS: Region[] = [
   },
   {
     key: "asia",
-    label: "آسيا",
     emoji: "🌏",
     countries: [
       "الصين",

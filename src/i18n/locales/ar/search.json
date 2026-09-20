@@ -1,0 +1,138 @@
+{
+  "loading": "جاري التحميل...",
+  "results": {
+    "scope": {
+      "domestic": "رحلات داخلية",
+      "international": "رحلات دولية",
+      "best": "أفضل الفرص"
+    },
+    "heading": "{{scope}} من {{airport}}",
+    "allDestinations": "كل الوجهات",
+    "oneWay": "ذهاب فقط",
+    "returnOn": "عودة {{date}}",
+    "count": "{{count}} فرصة",
+    "filtersButton": "🔧 الفلاتر",
+    "loadFailed": "حصل خطأ في تحميل النتائج، جرّب تاني.",
+    "empty": {
+      "title": "لا توجد فرص مطابقة لاختياراتك الحالية.",
+      "hint": "جرّب زيادة الميزانية، تواريخ مرنة، أو إزالة بعض الفلاتر.",
+      "reset": "إعادة تعيين الفلاتر"
+    }
+  },
+  "sort": {
+    "label": "ترتيب حسب",
+    "bestMatch": "الأفضل (موصى به)",
+    "priceAsc": "السعر: الأقل أولاً",
+    "priceDesc": "السعر: الأعلى أولاً"
+  },
+  "chips": {
+    "cheapest": "أقل سعر",
+    "direct": "بدون توقف",
+    "allFilters": "+ كل الفلاتر"
+  },
+  "center": {
+    "title": "TripRing عروض",
+    "subtitle": "اكتشف أفضل فرص السفر المتاحة الآن",
+    "trust": "نقارن الأسعار أولاً بأول لنقدّم لك فرص حقيقية",
+    "tab": {
+      "all": "🗂️ كل العروض",
+      "cheapest": "💰 الأرخص",
+      "direct": "✈️ مباشر"
+    },
+    "chosen": "اخترت:",
+    "count": "{{count}} عرض متاح",
+    "sort": {
+      "asc": "ترتيب: الأوفر أولاً",
+      "desc": "ترتيب: الأعلى سعرًا أولاً"
+    },
+    "loadFailed": "حصل خطأ في تحميل العروض، جرّب تاني.",
+    "empty": {
+      "title": "لا توجد فرص مطابقة.",
+      "hint": "جرّب توسيع نطاق السعر أو إزالة بعض الفلاتر."
+    },
+    "loadMore": "عرض المزيد ({{n}} فرصة متبقية)",
+    "compare": {
+      "selected": "{{n}} من {{max}} محدّدة للمقارنة",
+      "clear": "مسح",
+      "now": "قارن الآن"
+    }
+  },
+  "filter": {
+    "title": "🔧 الفلاتر",
+    "advanced": "الفلاتر المتقدمة",
+    "reset": "إعادة تعيين",
+    "clearAll": "مسح الكل",
+    "apply": "تطبيق الفلاتر",
+    "section": {
+      "destination": "الوجهة",
+      "price": "السعر",
+      "stops": "التوقفات",
+      "airlines": "شركات الطيران",
+      "duration": "مدة الرحلة",
+      "baggage": "الأمتعة",
+      "ticketTerms": "شروط التذكرة",
+      "expires": "ينتهي العرض",
+      "departureTimes": "مواعيد رحلة المغادرة",
+      "arrivalTimes": "مواعيد رحلة الوصول",
+      "dealType": "نوع الفرصة"
+    },
+    "dealTypeAll": "الكل",
+    "stops": {
+      "all": "الكل",
+      "direct": "مباشر",
+      "nonstop": "بدون توقف",
+      "one": "توقف واحد",
+      "multi": "توقفين أو أكثر",
+      "multiple": "توقفات متعددة"
+    },
+    "duration": {
+      "short": "أقل من 5 ساعات",
+      "medium": "من 5 إلى 10 ساعات",
+      "long": "أكثر من 10 ساعات"
+    },
+    "baggageKg": "{{kg}} كجم+",
+    "expiry": "خلال {{hours}} ساعة",
+    "term": {
+      "refundable": "قابلة للاسترداد فقط",
+      "changeable": "يمكن تغييرها فقط",
+      "checkedBag": "تشمل حقيبة مسجلة",
+      "noChangeFee": "بدون رسوم تغيير",
+      "noCancelFee": "بدون رسوم إلغاء"
+    },
+    "slot": {
+      "6am_12pm": "6 ص - 12 م",
+      "before_6am": "قبل 6 ص",
+      "6pm_midnight": "6 م - منتصف الليل",
+      "12pm_6pm": "12 م - 6 م"
+    },
+    "airlineSearch": "بحث عن شركة طيران",
+    "noResults": "لا توجد نتائج"
+  },
+  "regions": {
+    "gulf": "الخليج",
+    "turkey": "تركيا",
+    "europe": "أوروبا",
+    "asia": "آسيا"
+  },
+  "compare": {
+    "title": "مقارنة العروض",
+    "row": {
+      "price": "السعر",
+      "airline": "شركة الطيران",
+      "stops": "التوقف",
+      "duration": "مدة الرحلة",
+      "baggage": "الأمتعة",
+      "refundable": "قابلة للاسترداد",
+      "seats": "المقاعد المتاحة"
+    },
+    "yes": "✓ نعم",
+    "no": "✕ لا",
+    "remove": "إزالة ✕",
+    "durationHM": "{{h}} س {{m}} د",
+    "durationH": "{{h}} ساعة"
+  },
+  "card": {
+    "priceDrop": "انخفض {{percent}}% خلال آخر 7 أيام",
+    "scoreLabel": "Deal Score {{score}} من 100"
+  }
+}

@@ -7,16 +7,19 @@ import arCommon from "./locales/ar/common.json";
 import arDeals from "./locales/ar/deals.json";
 import arErrors from "./locales/ar/errors.json";
 import arHome from "./locales/ar/home.json";
+import arSearch from "./locales/ar/search.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDeals from "./locales/en/deals.json";
 import enErrors from "./locales/en/errors.json";
 import enHome from "./locales/en/home.json";
+import enSearch from "./locales/en/search.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDeals from "./locales/tr/deals.json";
 import trErrors from "./locales/tr/errors.json";
 import trHome from "./locales/tr/home.json";
+import trSearch from "./locales/tr/search.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -50,11 +53,11 @@ void i18n
   .use(initReactI18next)
   .init({
     resources: {
-      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals, booking: arBooking },
-      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals, booking: enBooking },
-      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals, booking: trBooking },
+      ar: { common: arCommon, errors: arErrors, home: arHome, deals: arDeals, booking: arBooking, search: arSearch },
+      en: { common: enCommon, errors: enErrors, home: enHome, deals: enDeals, booking: enBooking, search: enSearch },
+      tr: { common: trCommon, errors: trErrors, home: trHome, deals: trDeals, booking: trBooking, search: trSearch },
     },
-    ns: ["common", "errors", "home", "deals", "booking"],
+    ns: ["common", "errors", "home", "deals", "booking", "search"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],

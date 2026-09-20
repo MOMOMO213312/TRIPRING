@@ -1,31 +1,29 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { AdvancedFilters, DurationBucket, TimeSlot } from "../lib/filters";
 import { EMPTY_FILTERS } from "../lib/filters";
 
-import { REGIONS } from "../lib/regions";
+import { REGIONS, regionLabel } from "../lib/regions";
 import type { AirlineRow, StopType } from "../types/database";
 import { Button } from "./ui/Button";
 import { useCurrency } from "../hooks/useCurrency";
 
-const STOP_OPTIONS: { value: StopType | ""; label: string }[] = [
-  { value: "", label: "الكل" },
-  { value: "direct", label: "مباشر" },
-  { value: "one_stop", label: "توقف واحد" },
-  { value: "multi_stop", label: "توقفين أو أكثر" },
+// Labels live in the `search` namespace (filter.stops.*, filter.duration.*, filter.slot.*).
+const STOP_OPTIONS: { value: StopType | ""; labelKey: string }[] = [
+  { value: "", labelKey: "filter.stops.all" },
+  { value: "direct", labelKey: "filter.stops.direct" },
+  { value: "one_stop", labelKey: "filter.stops.one" },
+  { value: "multi_stop", labelKey: "filter.stops.multi" },
 ];
 
-const DURATION_OPTIONS: { value: DurationBucket; label: string }[] = [
-  { value: "short", label: "أقل من 5 ساعات" },
-  { value: "medium", label: "من 5 إلى 10 ساعات" },
-  { value: "long", label: "أكثر من 10 ساعات" },
-];
+const DURATION_OPTIONS: DurationBucket[] = ["short", "medium", "long"];
 
-const TIME_SLOT_OPTIONS: { value: TimeSlot; label: string; icon: string }[] = [
-  { value: "6am_12pm", label: "6 ص - 12 م", icon: "☀️" },
-  { value: "before_6am", label: "قبل 6 ص", icon: "🌙" },
-  { value: "6pm_midnight", label: "6 م - منتصف الليل", icon: "🌙" },
-  { value: "12pm_6pm", label: "12 م - 6 م", icon: "🌤️" },
+const TIME_SLOT_OPTIONS: { value: TimeSlot; icon: string }[] = [
+  { value: "6am_12pm", icon: "☀️" },
+  { value: "before_6am", icon: "🌙" },
+  { value: "6pm_midnight", icon: "🌙" },
+  { value: "12pm_6pm", icon: "🌤️" },
 ];
 
 type Props = {
@@ -57,6 +55,7 @@ export function DealsSidebarFilters({
   isOpen,
   onClose,
 }: Props) {
+  const { t } = useTranslation("search");
   const { fmtIn } = useCurrency();
   const [airlineSearch, setAirlineSearch] = useState("");
 
@@ -87,14 +86,14 @@ export function DealsSidebarFilters({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="flex items-center gap-1.5 text-base font-bold text-slate-900">
-          <span aria-hidden>🔧</span> الفلاتر
+          {t("filter.title")}
         </h3>
         <button type="button" onClick={resetAll} className="text-xs font-semibold text-[#0C7BB3] hover:underline">
-          مسح الكل
+          {t("filter.clearAll")}
         </button>
       </div>
 
-      <FilterSection title="الوجهة">
+      <FilterSection title={t("filter.section.destination")}>
         <div className="space-y-2">
           {REGIONS.map((region) => (
             <label key={region.key} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
@@ -104,13 +103,13 @@ export function DealsSidebarFilters({
                 onChange={() => onSelectRegion(region.key)}
                 className="size-4 rounded accent-[#0C7BB3]"
               />
-              {region.emoji} {region.label}
+              {region.emoji} {regionLabel(region)}
             </label>
           ))}
         </div>
       </FilterSection>
 
-      <FilterSection title="السعر">
+      <FilterSection title={t("filter.section.price")}>
         <div className="px-1">
           <div className="relative h-1.5 w-full">
             <div className="absolute inset-0 rounded-full bg-slate-200" />
@@ -142,7 +141,7 @@ export function DealsSidebarFilters({
         </div>
       </FilterSection>
 
-      <FilterSection title="التوقفات">
+      <FilterSection title={t("filter.section.stops")}>
         <div className="space-y-2">
           {STOP_OPTIONS.map((opt) => (
             <label key={opt.value} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
@@ -153,19 +152,19 @@ export function DealsSidebarFilters({
                 onChange={() => setStop(opt.value)}
                 className="size-4 accent-[#0C7BB3]"
               />
-              {opt.label}
+              {t(opt.labelKey)}
             </label>
           ))}
         </div>
       </FilterSection>
 
       {availableAirlines.length > 0 ? (
-        <FilterSection title="شركات الطيران">
+        <FilterSection title={t("filter.section.airlines")}>
           <input
             type="text"
             value={airlineSearch}
             onChange={(e) => setAirlineSearch(e.target.value)}
-            placeholder="بحث عن شركة طيران"
+            placeholder={t("filter.airlineSearch")}
             className="mb-2.5 w-full rounded-lg border border-slate-200 bg-[#F8FAFC] px-2.5 py-1.5 text-xs outline-none focus:border-[#0C7BB3]"
           />
           <div className="max-h-40 space-y-2 overflow-y-auto">
@@ -180,28 +179,28 @@ export function DealsSidebarFilters({
                 {a.name}
               </label>
             ))}
-            {shownAirlines.length === 0 ? <p className="text-xs text-slate-400">لا توجد نتائج</p> : null}
+            {shownAirlines.length === 0 ? <p className="text-xs text-slate-400">{t("filter.noResults")}</p> : null}
           </div>
         </FilterSection>
       ) : null}
 
-      <FilterSection title="مدة الرحلة">
+      <FilterSection title={t("filter.section.duration")}>
         <div className="space-y-2">
-          {DURATION_OPTIONS.map((opt) => (
-            <label key={opt.value} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+          {DURATION_OPTIONS.map((bucket) => (
+            <label key={bucket} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
               <input
                 type="checkbox"
-                checked={filters.durationBucket === opt.value}
-                onChange={() => setDuration(opt.value)}
+                checked={filters.durationBucket === bucket}
+                onChange={() => setDuration(bucket)}
                 className="size-4 rounded accent-[#0C7BB3]"
               />
-              {opt.label}
+              {t(`filter.duration.${bucket}`)}
             </label>
           ))}
         </div>
       </FilterSection>
 
-      <FilterSection title="مواعيد رحلة المغادرة">
+      <FilterSection title={t("filter.section.departureTimes")}>
         <TimeSlotGrid
           selected={filters.departureSlot}
           onSelect={(slot) =>
@@ -210,14 +209,14 @@ export function DealsSidebarFilters({
         />
       </FilterSection>
 
-      <FilterSection title="مواعيد رحلة الوصول">
+      <FilterSection title={t("filter.section.arrivalTimes")}>
         <TimeSlotGrid
           selected={filters.arrivalSlot}
           onSelect={(slot) => onChange({ ...filters, arrivalSlot: filters.arrivalSlot === slot ? null : slot })}
         />
       </FilterSection>
 
-      <FilterSection title="شروط التذكرة">
+      <FilterSection title={t("filter.section.ticketTerms")}>
         <div className="space-y-2">
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -226,7 +225,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, refundableOnly: !filters.refundableOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            قابلة للاسترداد فقط
+            {t("filter.term.refundable")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -235,7 +234,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, changeableOnly: !filters.changeableOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            يمكن تغييرها فقط
+            {t("filter.term.changeable")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -244,7 +243,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, checkedBaggageOnly: !filters.checkedBaggageOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            تشمل حقيبة مسجلة
+            {t("filter.term.checkedBag")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -253,7 +252,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, noChangeFeeOnly: !filters.noChangeFeeOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            بدون رسوم تغيير
+            {t("filter.term.noChangeFee")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -262,7 +261,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, noCancellationFeeOnly: !filters.noCancellationFeeOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            بدون رسوم إلغاء
+            {t("filter.term.noCancelFee")}
           </label>
         </div>
       </FilterSection>
@@ -282,10 +281,10 @@ export function DealsSidebarFilters({
             {content}
             <div className="sticky bottom-0 mt-6 flex gap-3 border-t border-slate-100 bg-white pt-4">
               <Button variant="outline" fullWidth onClick={resetAll}>
-                مسح الكل
+                {t("filter.clearAll")}
               </Button>
               <Button fullWidth onClick={onClose}>
-                تطبيق الفلاتر
+                {t("filter.apply")}
               </Button>
             </div>
           </div>
@@ -311,6 +310,7 @@ function TimeSlotGrid({
   selected: TimeSlot | null;
   onSelect: (slot: TimeSlot) => void;
 }) {
+  const { t } = useTranslation("search");
   return (
     <div className="grid grid-cols-2 gap-2">
       {TIME_SLOT_OPTIONS.map((opt) => (
@@ -327,7 +327,7 @@ function TimeSlotGrid({
           <span aria-hidden className="text-base">
             {opt.icon}
           </span>
-          {opt.label}
+          {t(`filter.slot.${opt.value}`)}
         </button>
       ))}
     </div>
