@@ -78,5 +78,26 @@
     "refundable": "Refundable",
     "viewDetails": "View details",
     "soldOut": "Sold out"
+  },
+  "market": {
+    "title": "Market snapshot",
+    "activeDeals": "Active deals now",
+    "priceDrops": "Deals with a price drop",
+    "endingSoon": "Ending within 48 hours",
+    "mostViewedRoute": "Most viewed route",
+    "views": "{{count}} views"
+  },
+  "liveMap": {
+    "title": "Live deals map",
+    "legendMany": "Several active deals",
+    "legendOne": "One active deal",
+    "empty": "No active deals to show on the map",
+    "offersCount": "({{count}} deals)",
+    "footnote": "Approximate locations of destinations with currently active deals — a red dot means 3 or more active deals to the same destination."
+  },
+  "discovery": {
+    "title": "🌍 Most searched destinations from Cairo",
+    "subtitle": "Destinations based on the deals actually available right now",
+    "roundTripFrom": "Round trips from"
   }
 }

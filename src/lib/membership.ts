@@ -97,14 +97,14 @@ export async function submitCustomerSubscription(input: {
   proofFile: File;
 }): Promise<CustomerSubscriptionRow> {
   const user = await getCurrentUser();
-  if (!user) throw new Error("لازم تسجل الدخول الأول");
+  if (!user) throw new Error("LOGIN_REQUIRED");
 
   const { tierId, billingPeriod, paymentMethod, paymentRef, proofFile } = input;
   if (!SUB_PROOF_ALLOWED_TYPES.includes(proofFile.type)) {
-    throw new Error("الملف يجب أن يكون صورة (JPG/PNG/WebP) أو PDF");
+    throw new Error("FILE_TYPE_INVALID");
   }
   if (proofFile.size > SUB_PROOF_MAX_BYTES) {
-    throw new Error("حجم الملف أكبر من 5 ميجابايت");
+    throw new Error("FILE_TOO_LARGE");
   }
 
   const ext = proofFile.name.split(".").pop() ?? "bin";

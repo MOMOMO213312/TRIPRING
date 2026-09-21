@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -7,17 +8,22 @@ import { Select } from "../components/ui/Select";
 import { signInWithEmail, signUpWithEmail, useAuth } from "../lib/auth";
 import { friendlyErrorMessage } from "../lib/errors";
 import { fetchMySupplierApplications, submitSupplierApplication } from "../lib/supplierApplication";
-import {
-  SUPPLIER_APPLICATION_STATUS_LABELS,
-  SUPPLIER_ORG_TYPE_LABELS,
-} from "../lib/admin";
 import type { SupplierApplicationRow, SupplierOrgType } from "../types/database";
 
-const ORG_TYPE_OPTIONS: { value: SupplierOrgType; label: string }[] = (
-  Object.keys(SUPPLIER_ORG_TYPE_LABELS) as SupplierOrgType[]
-).map((v) => ({ value: v, label: SUPPLIER_ORG_TYPE_LABELS[v] }));
+// Order of the business-type dropdown. Labels come from the `supplier` namespace (the admin
+// dashboard keeps its own Arabic label maps in lib/admin.ts).
+const ORG_TYPES: SupplierOrgType[] = [
+  "agency",
+  "airline",
+  "ground_provider",
+  "transport_provider",
+  "rental_provider",
+  "hotel_provider",
+  "experience_provider",
+];
 
 export function BecomeSupplierPage() {
+  const { t } = useTranslation("supplier");
   const { user, loading: authLoading } = useAuth();
   const [myApps, setMyApps] = useState<SupplierApplicationRow[] | null>(null);
 
@@ -33,19 +39,18 @@ export function BecomeSupplierPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="text-3xl font-extrabold text-slate-900">انضم كمورد في TripRing</h1>
+      <h1 className="text-3xl font-extrabold text-slate-900">{t("title")}</h1>
       <p className="mt-3 text-slate-600">
-        شركة طيران، وكالة سياحية، مزود خدمات أرضية، نقل، تأجير، فنادق، أو تجارب — قدّم طلب الانضمام وهنراجعه
-        ونرجعلك بالرد.
+        {t("intro")}
       </p>
 
       <div className="mt-8">
         {authLoading ? (
-          <Card className="text-center text-sm text-slate-400">جاري التحميل...</Card>
+          <Card className="text-center text-sm text-slate-400">{t("loading")}</Card>
         ) : !user ? (
           <AuthGate />
         ) : myApps === null ? (
-          <Card className="text-center text-sm text-slate-400">جاري التحميل...</Card>
+          <Card className="text-center text-sm text-slate-400">{t("loading")}</Card>
         ) : myApps.some((a) => a.status === "pending") ? (
           <ExistingApplicationNotice app={myApps.find((a) => a.status === "pending")!} />
         ) : (
@@ -60,6 +65,7 @@ export function BecomeSupplierPage() {
 }
 
 function AuthGate() {
+  const { t } = useTranslation("supplier");
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,7 +84,7 @@ function AuthGate() {
         await signInWithEmail(email, password);
       }
     } catch (e) {
-      setError(friendlyErrorMessage(e, "تعذر تسجيل الدخول", "BecomeSupplierPage.auth"));
+      setError(friendlyErrorMessage(e, "supplier:auth.failed", "BecomeSupplierPage.auth"));
     } finally {
       setLoading(false);
     }
@@ -87,29 +93,29 @@ function AuthGate() {
   return (
     <Card className="space-y-4">
       <p className="text-sm text-slate-600">
-        محتاج تسجّل دخول أو تعمل حساب الأول عشان نقدر نربط طلب الانضمام بيك ونرد عليك.
+        {t("auth.intro")}
       </p>
       <div className="flex gap-2">
         <Button type="button" variant={mode === "signup" ? "primary" : "outline"} onClick={() => setMode("signup")}>
-          حساب جديد
+          {t("auth.signup")}
         </Button>
         <Button type="button" variant={mode === "signin" ? "primary" : "outline"} onClick={() => setMode("signin")}>
-          عندي حساب
+          {t("auth.signin")}
         </Button>
       </div>
       <form onSubmit={handleSubmit} className="space-y-3">
         {mode === "signup" ? (
-          <Input label="الاسم الكامل" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <Input label={t("auth.fullName")} value={fullName} onChange={(e) => setFullName(e.target.value)} />
         ) : null}
         <Input
-          label="البريد الإلكتروني"
+          label={t("auth.email")}
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          label="كلمة المرور"
+          label={t("auth.password")}
           type="password"
           required
           value={password}
@@ -117,7 +123,7 @@ function AuthGate() {
         />
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
         <Button type="submit" fullWidth disabled={loading}>
-          {loading ? "جاري..." : mode === "signup" ? "إنشاء حساب ومتابعة" : "دخول"}
+          {loading ? t("auth.working") : mode === "signup" ? t("auth.createAndContinue") : t("auth.login")}
         </Button>
       </form>
     </Card>
@@ -125,12 +131,13 @@ function AuthGate() {
 }
 
 function ExistingApplicationNotice({ app }: { app: SupplierApplicationRow }) {
+  const { t } = useTranslation("supplier");
   return (
     <Card className="space-y-2 text-center">
       <p className="font-semibold text-slate-900">
-        طلبك كـ{SUPPLIER_ORG_TYPE_LABELS[app.org_type]} ({app.company_name}) بانتظار المراجعة.
+        {t("existing.title", { type: t(`orgTypes.${app.org_type}`), company: app.company_name })}
       </p>
-      <p className="text-sm text-slate-500">{SUPPLIER_APPLICATION_STATUS_LABELS[app.status]} — هنتواصل معاك بعد المراجعة.</p>
+      <p className="text-sm text-slate-500">{t("existing.sub", { status: t(`status.${app.status}`) })}</p>
     </Card>
   );
 }
@@ -142,6 +149,8 @@ function ApplicationForm({
   previousApp?: SupplierApplicationRow;
   onSubmitted: () => void;
 }) {
+  const { t } = useTranslation("supplier");
+  const orgTypeOptions = ORG_TYPES.map((v) => ({ value: v, label: t(`orgTypes.${v}`) }));
   const [orgType, setOrgType] = useState<SupplierOrgType | "">("");
   const [companyName, setCompanyName] = useState("");
   const [contactName, setContactName] = useState("");
@@ -158,7 +167,7 @@ function ApplicationForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!orgType) {
-      setError("اختار نوع النشاط");
+      setError(t("form.orgTypeRequired"));
       return;
     }
     setError(null);
@@ -178,7 +187,7 @@ function ApplicationForm({
       setSuccess(true);
       onSubmitted();
     } catch (e) {
-      setError(friendlyErrorMessage(e, "تعذر إرسال الطلب", "BecomeSupplierPage.submit"));
+      setError(friendlyErrorMessage(e, "supplier:form.failed", "BecomeSupplierPage.submit"));
     } finally {
       setLoading(false);
     }
@@ -187,8 +196,8 @@ function ApplicationForm({
   if (success) {
     return (
       <Card className="space-y-2 text-center">
-        <p className="font-semibold text-slate-900">تم استلام طلبك ✅</p>
-        <p className="text-sm text-slate-500">هنراجعه ونرد عليك على البريد الإلكتروني اللي دخلته بيه.</p>
+        <p className="font-semibold text-slate-900">{t("form.successTitle")}</p>
+        <p className="text-sm text-slate-500">{t("form.successBody")}</p>
       </Card>
     );
   }
@@ -197,36 +206,38 @@ function ApplicationForm({
     <Card>
       {previousApp?.status === "rejected" ? (
         <p className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
-          طلبك السابق اتراجع{previousApp.review_note ? `: ${previousApp.review_note}` : "."} تقدر تقدّم طلب جديد.
+          {previousApp.review_note
+            ? t("form.previousRejectedNote", { note: previousApp.review_note })
+            : t("form.previousRejected")}
         </p>
       ) : null}
       <form onSubmit={handleSubmit} className="space-y-3">
         <Select
-          label="نوع النشاط"
-          placeholder="اختار نوع النشاط"
-          options={ORG_TYPE_OPTIONS}
+          label={t("form.orgType")}
+          placeholder={t("form.orgTypePlaceholder")}
+          options={orgTypeOptions}
           value={orgType}
           onChange={(e) => setOrgType(e.target.value as SupplierOrgType)}
         />
-        <Input label="اسم الشركة/الجهة" required value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
-        <Input label="اسم المسؤول" required value={contactName} onChange={(e) => setContactName(e.target.value)} />
+        <Input label={t("form.company")} required value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
+        <Input label={t("form.contactName")} required value={contactName} onChange={(e) => setContactName(e.target.value)} />
         <Input
-          label="البريد الإلكتروني للتواصل"
+          label={t("form.contactEmail")}
           type="email"
           required
           value={contactEmail}
           onChange={(e) => setContactEmail(e.target.value)}
         />
         <div className="grid grid-cols-2 gap-3">
-          <Input label="رقم الهاتف" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
-          <Input label="واتساب" value={contactWhatsapp} onChange={(e) => setContactWhatsapp(e.target.value)} />
+          <Input label={t("form.phone")} value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} />
+          <Input label={t("form.whatsapp")} value={contactWhatsapp} onChange={(e) => setContactWhatsapp(e.target.value)} />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <Input label="الدولة (كود، مثال EG)" value={countryCode} onChange={(e) => setCountryCode(e.target.value)} />
-          <Input label="الموقع الإلكتروني" value={website} onChange={(e) => setWebsite(e.target.value)} />
+          <Input label={t("form.country")} value={countryCode} onChange={(e) => setCountryCode(e.target.value)} />
+          <Input label={t("form.website")} value={website} onChange={(e) => setWebsite(e.target.value)} />
         </div>
         <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-slate-700">ملاحظات (اختياري)</span>
+          <span className="text-sm font-medium text-slate-700">{t("form.notes")}</span>
           <textarea
             className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-accent focus:ring-2 focus:ring-[#BFE3F6]"
             rows={3}
@@ -236,7 +247,7 @@ function ApplicationForm({
         </label>
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
         <Button type="submit" fullWidth disabled={loading}>
-          {loading ? "جاري الإرسال..." : "إرسال طلب الانضمام"}
+          {loading ? t("form.submitting") : t("form.submit")}
         </Button>
       </form>
     </Card>

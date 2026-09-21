@@ -76,5 +76,21 @@
     "privateWith": "🚗 عربية خاصة · {{vehicle}}",
     "shared": "🚐 نقل تشاركي",
     "sharedWith": "🚐 نقل تشاركي · {{vehicle}}"
+  },
+  "notifications": {
+    "bell": "الإشعارات",
+    "publicTitle": "العروض والأخبار والتحديثات",
+    "loading": "جاري التحميل...",
+    "empty": "لا يوجد إشعارات حاليًا",
+    "types": {
+      "flash_deal": "عرض فلاش",
+      "site_announcement": "إعلان",
+      "airport_info": "معلومة مطار",
+      "circular": "تعميم"
+    }
+  },
+  "airportAutocomplete": {
+    "placeholder": "المدينة أو المطار",
+    "anyDestination": "أي وجهة"
   }
 }

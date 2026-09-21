@@ -76,5 +76,21 @@
     "privateWith": "🚗 Private car · {{vehicle}}",
     "shared": "🚐 Shared transfer",
     "sharedWith": "🚐 Shared transfer · {{vehicle}}"
+  },
+  "notifications": {
+    "bell": "Notifications",
+    "publicTitle": "Deals, news & updates",
+    "loading": "Loading...",
+    "empty": "No notifications right now",
+    "types": {
+      "flash_deal": "Flash deal",
+      "site_announcement": "Announcement",
+      "airport_info": "Airport info",
+      "circular": "Notice"
+    }
+  },
+  "airportAutocomplete": {
+    "placeholder": "City or airport",
+    "anyDestination": "Anywhere"
   }
 }

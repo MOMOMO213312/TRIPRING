@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { OneWayFareBoard } from "./OneWayFareBoard";
 import { RoundTripFareBoard } from "./RoundTripFareBoard";
 import { getDestinationImage } from "../lib/api";
+import { airportCityName, countryName } from "../lib/geoNames";
 import type { TripType } from "../lib/api";
 import type { AirportRow, DealRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
 import heroSky from "../assets/hero-sky.jpg";
@@ -85,7 +86,7 @@ function topDestinationImage(
 }
 
 function airportLabel(a: AirportRow): string {
-  return `${a.city_en ?? a.city} (${a.code})`;
+  return `${airportCityName(a)} (${a.code})`;
 }
 
 /** Matches an airport against a free-text query across code, city (ar/en),
@@ -99,7 +100,8 @@ function matchesAirportQuery(a: AirportRow, query: string): boolean {
     a.city.toLowerCase().includes(q) ||
     (a.city_en ?? "").toLowerCase().includes(q) ||
     a.name.toLowerCase().includes(q) ||
-    a.country.toLowerCase().includes(q)
+    a.country.toLowerCase().includes(q) ||
+    countryName(a.country).toLowerCase().includes(q)
   );
 }
 
@@ -204,10 +206,10 @@ function AirportField({
               >
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-semibold text-slate-800">
-                    {a.city_en ?? a.city}
+                    {airportCityName(a)}
                     <span className="text-slate-400"> · {a.name}</span>
                   </span>
-                  <span className="block truncate text-xs text-slate-400">{a.country}</span>
+                  <span className="block truncate text-xs text-slate-400">{countryName(a.country)}</span>
                 </span>
                 <span className="font-latin shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500">
                   {a.code}

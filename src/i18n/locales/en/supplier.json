@@ -1,0 +1,55 @@
+{
+  "title": "Join TripRing as a supplier",
+  "intro": "Airline, travel agency, ground-services provider, transport, rentals, hotels or experiences — send us your application and we'll review it and get back to you.",
+  "loading": "Loading...",
+  "auth": {
+    "intro": "Please sign in or create an account first so we can link your application to you and reply.",
+    "signup": "New account",
+    "signin": "I have an account",
+    "fullName": "Full name",
+    "email": "Email address",
+    "password": "Password",
+    "working": "Please wait...",
+    "createAndContinue": "Create account & continue",
+    "login": "Sign in",
+    "failed": "Couldn't sign you in"
+  },
+  "existing": {
+    "title": "Your application as {{type}} ({{company}}) is awaiting review.",
+    "sub": "{{status}} — we'll be in touch after the review."
+  },
+  "form": {
+    "orgType": "Business type",
+    "orgTypePlaceholder": "Select your business type",
+    "orgTypeRequired": "Please select a business type",
+    "company": "Company / organisation name",
+    "contactName": "Contact person",
+    "contactEmail": "Contact email",
+    "phone": "Phone number",
+    "whatsapp": "WhatsApp",
+    "country": "Country (code, e.g. EG)",
+    "website": "Website",
+    "notes": "Notes (optional)",
+    "submit": "Submit application",
+    "submitting": "Submitting...",
+    "failed": "Couldn't submit your application",
+    "previousRejected": "Your previous application was reviewed and declined. You can submit a new one.",
+    "previousRejectedNote": "Your previous application was reviewed and declined: {{note}}. You can submit a new one.",
+    "successTitle": "Application received ✅",
+    "successBody": "We'll review it and reply to the email address you entered."
+  },
+  "orgTypes": {
+    "agency": "Travel agency",
+    "airline": "Airline",
+    "ground_provider": "Ground-services provider",
+    "transport_provider": "Transport provider",
+    "rental_provider": "Rental provider",
+    "hotel_provider": "Hotel provider",
+    "experience_provider": "Experiences / activities provider"
+  },
+  "status": {
+    "pending": "Pending review",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  }
+}
