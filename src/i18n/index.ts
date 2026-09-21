@@ -13,6 +13,7 @@ import arHome from "./locales/ar/home.json";
 import arPackages from "./locales/ar/packages.json";
 import arExplore from "./locales/ar/explore.json";
 import arSearch from "./locales/ar/search.json";
+import arTripgo from "./locales/ar/tripgo.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDealDetail from "./locales/en/dealDetail.json";
@@ -24,6 +25,7 @@ import enHome from "./locales/en/home.json";
 import enPackages from "./locales/en/packages.json";
 import enExplore from "./locales/en/explore.json";
 import enSearch from "./locales/en/search.json";
+import enTripgo from "./locales/en/tripgo.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDealDetail from "./locales/tr/dealDetail.json";
@@ -35,6 +37,7 @@ import trHome from "./locales/tr/home.json";
 import trPackages from "./locales/tr/packages.json";
 import trExplore from "./locales/tr/explore.json";
 import trSearch from "./locales/tr/search.json";
+import trTripgo from "./locales/tr/tripgo.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -80,6 +83,7 @@ void i18n
         dealsCenter: arDealsCenter,
         search: arSearch,
         explore: arExplore,
+        tripgo: arTripgo,
       },
       en: {
         common: enCommon,
@@ -93,6 +97,7 @@ void i18n
         dealsCenter: enDealsCenter,
         search: enSearch,
         explore: enExplore,
+        tripgo: enTripgo,
       },
       tr: {
         common: trCommon,
@@ -106,9 +111,10 @@ void i18n
         dealsCenter: trDealsCenter,
         search: trSearch,
         explore: trExplore,
+        tripgo: trTripgo,
       },
     },
-    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore"],
+    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore", "tripgo"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],
