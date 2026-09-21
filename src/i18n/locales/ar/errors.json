@@ -99,5 +99,9 @@
   "TRIPGO_TRANSPORT_UNAVAILABLE": "خدمة النقل في TripGo غير متاحة.",
   "UNSUPPORTED_SERVICE_TYPE": "نوع الخدمة غير مدعوم ({{detail}}).",
   "VERIFIER_REQUIRED": "لازم تحدد الجهة المسؤولة عن التحقق.",
-  "WEIGHT_MUST_BE_POSITIVE": "الوزن لازم يكون أكبر من صفر."
+  "WEIGHT_MUST_BE_POSITIVE": "الوزن لازم يكون أكبر من صفر.",
+  "FILE_TYPE_INVALID": "الملف يجب أن يكون صورة (JPG/PNG/WebP) أو PDF.",
+  "FILE_TOO_LARGE": "حجم الملف أكبر من 5 ميجابايت.",
+  "BOOKING_NOT_CREATED": "لم يتم إنشاء الحجز. حاول مرة أخرى.",
+  "BOOKING_NUMBER_INVALID": "رقم الحجز غير صالح."
 }

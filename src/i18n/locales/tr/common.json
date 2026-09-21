@@ -70,5 +70,17 @@
     "privateWith": "🚗 Özel araç · {{vehicle}}",
     "shared": "🚐 Paylaşımlı transfer",
     "sharedWith": "🚐 Paylaşımlı transfer · {{vehicle}}"
+  },
+  "notifications": {
+    "bell": "Bildirimler",
+    "publicTitle": "Fırsatlar, haberler ve güncellemeler",
+    "loading": "Yükleniyor...",
+    "empty": "Şu anda bildirim yok",
+    "types": {
+      "flash_deal": "Flaş fırsat",
+      "site_announcement": "Duyuru",
+      "airport_info": "Havalimanı bilgisi",
+      "circular": "Bildirim"
+    }
   }
 }

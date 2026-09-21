@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { fetchPublicAnnouncements, NOTIFICATION_TYPE_LABELS } from "../../lib/notifications";
+import { fetchPublicAnnouncements } from "../../lib/notifications";
 import type { NotificationRow } from "../../types/database";
 import { getLocale } from "../../i18n/format";
 
@@ -38,6 +39,7 @@ function saveReadIds(ids: Set<string>) {
  *  state has no signed-in account to attach to, so it's tracked in
  *  localStorage instead of the `notification_reads` table. */
 export function PublicNotificationBell() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<NotificationRow[]>([]);
   const [readIds, setReadIds] = useState<Set<string>>(() => loadReadIds());
   const [open, setOpen] = useState(false);
@@ -87,7 +89,7 @@ export function PublicNotificationBell() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        aria-label="الإشعارات"
+        aria-label={t("notifications.bell")}
         className="relative flex size-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-[#0C7BB3]/40 hover:text-[#0C7BB3]"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="size-4.5">
@@ -102,15 +104,15 @@ export function PublicNotificationBell() {
       </button>
 
       {open ? (
-        <div className="absolute left-0 z-50 mt-2 w-80 max-w-[90vw] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
+        <div className="absolute end-0 z-50 mt-2 w-80 max-w-[90vw] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl">
           <div className="border-b border-slate-100 px-4 py-3 text-sm font-bold text-slate-900">
-            العروض والأخبار والتحديثات
+            {t("notifications.publicTitle")}
           </div>
           <div className="max-h-96 overflow-y-auto">
             {loading ? (
-              <p className="px-4 py-6 text-center text-sm text-slate-400">جاري التحميل...</p>
+              <p className="px-4 py-6 text-center text-sm text-slate-400">{t("notifications.loading")}</p>
             ) : items.length === 0 ? (
-              <p className="px-4 py-6 text-center text-sm text-slate-400">لا يوجد إشعارات حاليًا</p>
+              <p className="px-4 py-6 text-center text-sm text-slate-400">{t("notifications.empty")}</p>
             ) : (
               items.map((n) => {
                 const unread = !readIds.has(n.id);
@@ -125,13 +127,13 @@ export function PublicNotificationBell() {
                     </div>
                     {n.body ? <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">{n.body}</p> : null}
                     <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-400">
-                      <span>{NOTIFICATION_TYPE_LABELS[n.type]}</span>
+                      <span>{t(`notifications.types.${n.type}`, { defaultValue: "" })}</span>
                       <span>·</span>
                       <span>{new Date(n.created_at).toLocaleDateString(getLocale())}</span>
                     </div>
                   </>
                 );
-                const rowClass = `block w-full border-b border-slate-50 px-4 py-3 text-right transition hover:bg-slate-50 ${
+                const rowClass = `block w-full border-b border-slate-50 px-4 py-3 text-start transition hover:bg-slate-50 ${
                   unread ? "bg-[#0C7BB3]/5" : ""
                 }`;
                 // Internal links use <Link> for client-side navigation; external

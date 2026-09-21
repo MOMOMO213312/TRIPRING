@@ -1,0 +1,55 @@
+{
+  "title": "TripRing'e tedarikçi olarak katılın",
+  "intro": "Havayolu, seyahat acentesi, yer hizmetleri sağlayıcısı, ulaşım, kiralama, otel ya da deneyim sağlayıcısı olun — başvurunuzu gönderin, inceleyip size dönelim.",
+  "loading": "Yükleniyor...",
+  "auth": {
+    "intro": "Başvurunuzu size bağlayıp yanıt verebilmemiz için önce giriş yapmanız veya hesap oluşturmanız gerekiyor.",
+    "signup": "Yeni hesap",
+    "signin": "Hesabım var",
+    "fullName": "Ad soyad",
+    "email": "E-posta adresi",
+    "password": "Şifre",
+    "working": "Lütfen bekleyin...",
+    "createAndContinue": "Hesap oluştur ve devam et",
+    "login": "Giriş yap",
+    "failed": "Giriş yapılamadı"
+  },
+  "existing": {
+    "title": "{{type}} olarak başvurunuz ({{company}}) inceleme bekliyor.",
+    "sub": "{{status}} — inceleme sonrasında sizinle iletişime geçeceğiz."
+  },
+  "form": {
+    "orgType": "Faaliyet türü",
+    "orgTypePlaceholder": "Faaliyet türünü seçin",
+    "orgTypeRequired": "Lütfen bir faaliyet türü seçin",
+    "company": "Şirket / kurum adı",
+    "contactName": "Yetkili kişi",
+    "contactEmail": "İletişim e-postası",
+    "phone": "Telefon numarası",
+    "whatsapp": "WhatsApp",
+    "country": "Ülke (kod, ör. EG)",
+    "website": "Web sitesi",
+    "notes": "Notlar (isteğe bağlı)",
+    "submit": "Başvuruyu gönder",
+    "submitting": "Gönderiliyor...",
+    "failed": "Başvuru gönderilemedi",
+    "previousRejected": "Önceki başvurunuz incelendi ve reddedildi. Yeni bir başvuru yapabilirsiniz.",
+    "previousRejectedNote": "Önceki başvurunuz incelendi ve reddedildi: {{note}}. Yeni bir başvuru yapabilirsiniz.",
+    "successTitle": "Başvurunuz alındı ✅",
+    "successBody": "İnceleyip girdiğiniz e-posta adresine yanıt vereceğiz."
+  },
+  "orgTypes": {
+    "agency": "Seyahat acentesi",
+    "airline": "Havayolu şirketi",
+    "ground_provider": "Yer hizmetleri sağlayıcısı",
+    "transport_provider": "Ulaşım sağlayıcısı",
+    "rental_provider": "Kiralama sağlayıcısı",
+    "hotel_provider": "Otel sağlayıcısı",
+    "experience_provider": "Deneyim / aktivite sağlayıcısı"
+  },
+  "status": {
+    "pending": "İnceleme bekliyor",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi"
+  }
+}

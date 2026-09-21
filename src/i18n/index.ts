@@ -20,6 +20,7 @@ import arMembership from "./locales/ar/membership.json";
 import arResale from "./locales/ar/resale.json";
 import arAlerts from "./locales/ar/alerts.json";
 import arBlueFriday from "./locales/ar/blueFriday.json";
+import arSupplier from "./locales/ar/supplier.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDealDetail from "./locales/en/dealDetail.json";
@@ -38,6 +39,7 @@ import enMembership from "./locales/en/membership.json";
 import enResale from "./locales/en/resale.json";
 import enAlerts from "./locales/en/alerts.json";
 import enBlueFriday from "./locales/en/blueFriday.json";
+import enSupplier from "./locales/en/supplier.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDealDetail from "./locales/tr/dealDetail.json";
@@ -56,6 +58,7 @@ import trMembership from "./locales/tr/membership.json";
 import trResale from "./locales/tr/resale.json";
 import trAlerts from "./locales/tr/alerts.json";
 import trBlueFriday from "./locales/tr/blueFriday.json";
+import trSupplier from "./locales/tr/supplier.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -108,6 +111,7 @@ void i18n
         resale: arResale,
         alerts: arAlerts,
         blueFriday: arBlueFriday,
+        supplier: arSupplier,
       },
       en: {
         common: enCommon,
@@ -128,6 +132,7 @@ void i18n
         resale: enResale,
         alerts: enAlerts,
         blueFriday: enBlueFriday,
+        supplier: enSupplier,
       },
       tr: {
         common: trCommon,
@@ -148,9 +153,10 @@ void i18n
         resale: trResale,
         alerts: trAlerts,
         blueFriday: trBlueFriday,
+        supplier: trSupplier,
       },
     },
-    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore", "tripgo", "faq", "legal", "blueFriday", "alerts", "resale", "membership"],
+    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore", "tripgo", "faq", "legal", "blueFriday", "alerts", "resale", "membership", "supplier"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],

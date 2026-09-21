@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { airportLabel } from "../lib/deal-utils";
 import { formatLatinNumber } from "../lib/utils";
 import type { AirportRow } from "../types/database";
@@ -10,35 +12,36 @@ type Props = {
 };
 
 export function MarketOverview({ stats, airports }: Props) {
+  const { t } = useTranslation("home");
   const routeLabel = stats.mostViewedRoute
     ? `${airportLabel(stats.mostViewedRoute.from, airports).split(" (")[0]} → ${airportLabel(stats.mostViewedRoute.to, airports).split(" (")[0]}`
     : "—";
 
   const metrics = [
     {
-      label: "عروض نشطة الآن",
+      label: t("market.activeDeals"),
       value: formatLatinNumber(stats.activeDealsCount),
     },
     {
-      label: "عروض بانخفاض سعر",
+      label: t("market.priceDrops"),
       value: formatLatinNumber(stats.priceDropCount),
     },
     {
-      label: "تنتهي خلال 48 ساعة",
+      label: t("market.endingSoon"),
       value: formatLatinNumber(stats.endingSoonCount),
     },
     {
-      label: "أكثر مسار مشاهدة",
+      label: t("market.mostViewedRoute"),
       value: stats.mostViewedRoute ? routeLabel : "—",
       sub: stats.mostViewedRoute
-        ? `${formatLatinNumber(stats.mostViewedRoute.views)} مشاهدة`
+        ? t("market.views", { count: formatLatinNumber(stats.mostViewedRoute.views) })
         : undefined,
     },
   ];
 
   return (
     <section>
-      <h2 className="mb-4 text-xl font-bold text-slate-900">نظرة على السوق</h2>
+      <h2 className="mb-4 text-xl font-bold text-slate-900">{t("market.title")}</h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((m) => (
           <Card key={m.label} className="py-4">

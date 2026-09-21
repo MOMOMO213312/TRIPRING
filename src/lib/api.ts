@@ -537,7 +537,7 @@ export async function createBooking(input: CreateBookingInput): Promise<CreateBo
   const { data, error } = await supabase.rpc("create_booking", args as never);
   if (error) throw dbError(error);
   const row = (Array.isArray(data) ? data[0] : data) as CreateBookingResult | undefined;
-  if (!row?.booking_number) throw new Error("لم يتم إنشاء الحجز");
+  if (!row?.booking_number) throw new Error("BOOKING_NOT_CREATED");
   void attributeBookingToStoredClick(row.booking_number); // fire-and-forget, never blocks the booking
   return { ...row, booking_number: String(row.booking_number) };
 }
@@ -547,7 +547,7 @@ export async function lookupBooking(
   contact: string,
 ): Promise<BookingLookupResult | null> {
   const num = parseInt(bookingNumber.replace(/\D/g, ""), 10);
-  if (Number.isNaN(num)) throw new Error("رقم الحجز غير صالح");
+  if (Number.isNaN(num)) throw new Error("BOOKING_NUMBER_INVALID");
   const { data, error } = await supabase.rpc("lookup_booking", {
     p_booking_number: num,
     p_contact: contact.trim(),
@@ -586,7 +586,7 @@ export async function addServicesToBooking(
   services: { service_id: string; quantity?: number; airport_leg?: "departure" | "arrival" | null }[],
 ): Promise<AddServicesResult> {
   const num = parseInt(bookingNumber.replace(/\D/g, ""), 10);
-  if (Number.isNaN(num)) throw new Error("رقم الحجز غير صالح");
+  if (Number.isNaN(num)) throw new Error("BOOKING_NUMBER_INVALID");
   const { data, error } = await supabase.rpc("add_services_to_booking_by_contact", {
     p_booking_number: num,
     p_contact: contact.trim(),
@@ -612,12 +612,12 @@ export async function uploadPaymentProof(
   file: File,
 ): Promise<{ status: string }> {
   const num = parseInt(bookingNumber.replace(/\D/g, ""), 10);
-  if (Number.isNaN(num)) throw new Error("رقم الحجز غير صالح");
+  if (Number.isNaN(num)) throw new Error("BOOKING_NUMBER_INVALID");
   if (!PAYMENT_PROOF_ALLOWED_TYPES.includes(file.type)) {
-    throw new Error("الملف يجب أن يكون صورة (JPG/PNG/WebP) أو PDF");
+    throw new Error("FILE_TYPE_INVALID");
   }
   if (file.size > PAYMENT_PROOF_MAX_BYTES) {
-    throw new Error("حجم الملف أكبر من 5 ميجابايت");
+    throw new Error("FILE_TOO_LARGE");
   }
 
   const ext = file.name.split(".").pop() ?? "bin";
@@ -693,7 +693,7 @@ export async function createAgencyReview(input: {
   comment?: string;
 }): Promise<void> {
   const user = await getCurrentUser();
-  if (!user) throw new Error("سجّل الدخول أولاً لإرسال تقييم");
+  if (!user) throw new Error("LOGIN_REQUIRED");
   const { error } = await supabase.from("agency_reviews").insert([
     {
       agency_id: input.agencyId,
@@ -750,7 +750,7 @@ export async function createTicketResale(input: {
   currency?: string;
 }): Promise<void> {
   const user = await getCurrentUser();
-  if (!user) throw new Error("سجّل الدخول أولاً لعرض تذكرتك");
+  if (!user) throw new Error("LOGIN_REQUIRED");
   const { error } = await supabase.from("ticket_resales").insert([
     {
       seller_customer_id: user.id,

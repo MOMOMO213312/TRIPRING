@@ -99,5 +99,9 @@
   "TRIPGO_TRANSPORT_UNAVAILABLE": "TripGo transport is unavailable.",
   "UNSUPPORTED_SERVICE_TYPE": "Unsupported service type ({{detail}}).",
   "VERIFIER_REQUIRED": "A verifier must be specified.",
-  "WEIGHT_MUST_BE_POSITIVE": "Weight must be greater than zero."
+  "WEIGHT_MUST_BE_POSITIVE": "Weight must be greater than zero.",
+  "FILE_TYPE_INVALID": "The file must be an image (JPG/PNG/WebP) or a PDF.",
+  "FILE_TOO_LARGE": "The file is larger than 5 MB.",
+  "BOOKING_NOT_CREATED": "The booking couldn't be created. Please try again.",
+  "BOOKING_NUMBER_INVALID": "That booking number isn't valid."
 }

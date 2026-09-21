@@ -99,5 +99,9 @@
   "TRIPGO_TRANSPORT_UNAVAILABLE": "TripGo transfer hizmeti kullanılamıyor.",
   "UNSUPPORTED_SERVICE_TYPE": "Desteklenmeyen hizmet türü ({{detail}}).",
   "VERIFIER_REQUIRED": "Bir doğrulayıcı belirtilmelidir.",
-  "WEIGHT_MUST_BE_POSITIVE": "Ağırlık sıfırdan büyük olmalıdır."
+  "WEIGHT_MUST_BE_POSITIVE": "Ağırlık sıfırdan büyük olmalıdır.",
+  "FILE_TYPE_INVALID": "Dosya bir görsel (JPG/PNG/WebP) veya PDF olmalıdır.",
+  "FILE_TOO_LARGE": "Dosya 5 MB'tan büyük.",
+  "BOOKING_NOT_CREATED": "Rezervasyon oluşturulamadı. Lütfen tekrar deneyin.",
+  "BOOKING_NUMBER_INVALID": "Rezervasyon numarası geçerli değil."
 }
