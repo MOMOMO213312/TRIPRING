@@ -123,7 +123,7 @@ export async function bookTripGo(input: TripGoBookingInput): Promise<TripGoBooki
   } as never);
   if (error) throw dbError(error);
   const row = Array.isArray(data) ? data[0] : data;
-  if (!row) throw new Error("تعذر إنشاء حجز TripGo");
+  if (!row) throw new Error(i18n.t("tripgo:details.createBookingFailed"));
   return row as TripGoBookingResult;
 }
 
