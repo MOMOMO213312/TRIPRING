@@ -1,0 +1,61 @@
+{
+  "title": "Filtreler",
+  "titleAdvanced": "Gelişmiş filtreler",
+  "toggleFilters": "🔧 Filtreler",
+  "toggleFiltersCount": "🔧 Filtreler ({{count}})",
+  "clearAll": "Tümünü temizle",
+  "clear": "Temizle",
+  "reset": "Sıfırla",
+  "applyFilters": "Filtreleri uygula",
+  "destination": "Varış noktası",
+  "price": "Fiyat",
+  "stops": {
+    "label": "Aktarmalar",
+    "all": "Tümü",
+    "direct": "Aktarmasız",
+    "oneStop": "1 aktarma",
+    "twoPlus": "2 veya daha fazla aktarma",
+    "multiple": "Birden fazla aktarma"
+  },
+  "airlines": {
+    "label": "Havayolları",
+    "searchPlaceholder": "Havayolu ara",
+    "noResults": "Sonuç yok"
+  },
+  "baggage": {
+    "label": "Bagaj",
+    "kgPlus": "{{kg}} kg+"
+  },
+  "duration": {
+    "label": "Uçuş süresi",
+    "short": "5 saatten az",
+    "medium": "5-10 saat",
+    "long": "10 saatten fazla"
+  },
+  "departureTimes": "Kalkış saatleri",
+  "arrivalTimes": "Varış saatleri",
+  "timeSlot": {
+    "6am_12pm": "06:00 - 12:00",
+    "before_6am": "06:00'dan önce",
+    "6pm_midnight": "18:00 - gece yarısı",
+    "12pm_6pm": "12:00 - 18:00"
+  },
+  "ticketConditions": {
+    "label": "Bilet koşulları",
+    "refundableOnly": "Sadece iade edilebilir",
+    "changeableOnly": "Sadece değiştirilebilir",
+    "checkedBaggageOnly": "Bagaj dahil",
+    "noChangeFeeOnly": "Değişiklik ücreti yok",
+    "noCancellationFeeOnly": "İptal ücreti yok"
+  },
+  "expiresWithin": {
+    "label": "Fırsat bitiş süresi",
+    "12h": "12 saat içinde",
+    "24h": "24 saat içinde",
+    "48h": "48 saat içinde"
+  },
+  "dealType": {
+    "label": "Fırsat türü",
+    "any": "Tümü"
+  }
+}

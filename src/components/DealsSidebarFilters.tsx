@@ -1,31 +1,19 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import type { AdvancedFilters, DurationBucket, TimeSlot } from "../lib/filters";
 import { EMPTY_FILTERS } from "../lib/filters";
 import { formatPrice } from "../lib/utils";
-import { REGIONS } from "../lib/regions";
+import { REGIONS, regionLabel } from "../lib/regions";
 import type { AirlineRow, StopType } from "../types/database";
 import { Button } from "./ui/Button";
 
-const STOP_OPTIONS: { value: StopType | ""; label: string }[] = [
-  { value: "", label: "الكل" },
-  { value: "direct", label: "مباشر" },
-  { value: "one_stop", label: "توقف واحد" },
-  { value: "multi_stop", label: "توقفين أو أكثر" },
-];
-
-const DURATION_OPTIONS: { value: DurationBucket; label: string }[] = [
-  { value: "short", label: "أقل من 5 ساعات" },
-  { value: "medium", label: "من 5 إلى 10 ساعات" },
-  { value: "long", label: "أكثر من 10 ساعات" },
-];
-
-const TIME_SLOT_OPTIONS: { value: TimeSlot; label: string; icon: string }[] = [
-  { value: "6am_12pm", label: "6 ص - 12 م", icon: "☀️" },
-  { value: "before_6am", label: "قبل 6 ص", icon: "🌙" },
-  { value: "6pm_midnight", label: "6 م - منتصف الليل", icon: "🌙" },
-  { value: "12pm_6pm", label: "12 م - 6 م", icon: "🌤️" },
-];
+const TIME_SLOT_ICONS: Record<TimeSlot, string> = {
+  "6am_12pm": "☀️",
+  before_6am: "🌙",
+  "6pm_midnight": "🌙",
+  "12pm_6pm": "🌤️",
+};
 
 type Props = {
   filters: AdvancedFilters;
@@ -56,7 +44,21 @@ export function DealsSidebarFilters({
   isOpen,
   onClose,
 }: Props) {
+  const { t } = useTranslation("filters");
   const [airlineSearch, setAirlineSearch] = useState("");
+
+  const STOP_OPTIONS: { value: StopType | ""; label: string }[] = [
+    { value: "", label: t("stops.all") },
+    { value: "direct", label: t("stops.direct") },
+    { value: "one_stop", label: t("stops.oneStop") },
+    { value: "multi_stop", label: t("stops.twoPlus") },
+  ];
+
+  const DURATION_OPTIONS: { value: DurationBucket; label: string }[] = [
+    { value: "short", label: t("duration.short") },
+    { value: "medium", label: t("duration.medium") },
+    { value: "long", label: t("duration.long") },
+  ];
 
   function toggleAirline(code: string) {
     const has = filters.airlines.includes(code);
@@ -85,14 +87,14 @@ export function DealsSidebarFilters({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="flex items-center gap-1.5 text-base font-bold text-slate-900">
-          <span aria-hidden>🔧</span> الفلاتر
+          <span aria-hidden>🔧</span> {t("title")}
         </h3>
         <button type="button" onClick={resetAll} className="text-xs font-semibold text-[#0C7BB3] hover:underline">
-          مسح الكل
+          {t("clearAll")}
         </button>
       </div>
 
-      <FilterSection title="الوجهة">
+      <FilterSection title={t("destination")}>
         <div className="space-y-2">
           {REGIONS.map((region) => (
             <label key={region.key} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
@@ -102,13 +104,13 @@ export function DealsSidebarFilters({
                 onChange={() => onSelectRegion(region.key)}
                 className="size-4 rounded accent-[#0C7BB3]"
               />
-              {region.emoji} {region.label}
+              {region.emoji} {regionLabel(region)}
             </label>
           ))}
         </div>
       </FilterSection>
 
-      <FilterSection title="السعر">
+      <FilterSection title={t("price")}>
         <div className="px-1">
           <div className="relative h-1.5 w-full">
             <div className="absolute inset-0 rounded-full bg-slate-200" />
@@ -140,7 +142,7 @@ export function DealsSidebarFilters({
         </div>
       </FilterSection>
 
-      <FilterSection title="التوقفات">
+      <FilterSection title={t("stops.label")}>
         <div className="space-y-2">
           {STOP_OPTIONS.map((opt) => (
             <label key={opt.value} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
@@ -158,12 +160,12 @@ export function DealsSidebarFilters({
       </FilterSection>
 
       {availableAirlines.length > 0 ? (
-        <FilterSection title="شركات الطيران">
+        <FilterSection title={t("airlines.label")}>
           <input
             type="text"
             value={airlineSearch}
             onChange={(e) => setAirlineSearch(e.target.value)}
-            placeholder="بحث عن شركة طيران"
+            placeholder={t("airlines.searchPlaceholder")}
             className="mb-2.5 w-full rounded-lg border border-slate-200 bg-[#F8FAFC] px-2.5 py-1.5 text-xs outline-none focus:border-[#0C7BB3]"
           />
           <div className="max-h-40 space-y-2 overflow-y-auto">
@@ -178,12 +180,12 @@ export function DealsSidebarFilters({
                 {a.name}
               </label>
             ))}
-            {shownAirlines.length === 0 ? <p className="text-xs text-slate-400">لا توجد نتائج</p> : null}
+            {shownAirlines.length === 0 ? <p className="text-xs text-slate-400">{t("airlines.noResults")}</p> : null}
           </div>
         </FilterSection>
       ) : null}
 
-      <FilterSection title="مدة الرحلة">
+      <FilterSection title={t("duration.label")}>
         <div className="space-y-2">
           {DURATION_OPTIONS.map((opt) => (
             <label key={opt.value} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
@@ -199,7 +201,7 @@ export function DealsSidebarFilters({
         </div>
       </FilterSection>
 
-      <FilterSection title="مواعيد رحلة المغادرة">
+      <FilterSection title={t("departureTimes")}>
         <TimeSlotGrid
           selected={filters.departureSlot}
           onSelect={(slot) =>
@@ -208,14 +210,14 @@ export function DealsSidebarFilters({
         />
       </FilterSection>
 
-      <FilterSection title="مواعيد رحلة الوصول">
+      <FilterSection title={t("arrivalTimes")}>
         <TimeSlotGrid
           selected={filters.arrivalSlot}
           onSelect={(slot) => onChange({ ...filters, arrivalSlot: filters.arrivalSlot === slot ? null : slot })}
         />
       </FilterSection>
 
-      <FilterSection title="شروط التذكرة">
+      <FilterSection title={t("ticketConditions.label")}>
         <div className="space-y-2">
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -224,7 +226,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, refundableOnly: !filters.refundableOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            قابلة للاسترداد فقط
+            {t("ticketConditions.refundableOnly")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -233,7 +235,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, changeableOnly: !filters.changeableOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            يمكن تغييرها فقط
+            {t("ticketConditions.changeableOnly")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -242,7 +244,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, checkedBaggageOnly: !filters.checkedBaggageOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            تشمل حقيبة مسجلة
+            {t("ticketConditions.checkedBaggageOnly")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -251,7 +253,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, noChangeFeeOnly: !filters.noChangeFeeOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            بدون رسوم تغيير
+            {t("ticketConditions.noChangeFeeOnly")}
           </label>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
             <input
@@ -260,7 +262,7 @@ export function DealsSidebarFilters({
               onChange={() => onChange({ ...filters, noCancellationFeeOnly: !filters.noCancellationFeeOnly })}
               className="size-4 rounded accent-[#0C7BB3]"
             />
-            بدون رسوم إلغاء
+            {t("ticketConditions.noCancellationFeeOnly")}
           </label>
         </div>
       </FilterSection>
@@ -280,10 +282,10 @@ export function DealsSidebarFilters({
             {content}
             <div className="sticky bottom-0 mt-6 flex gap-3 border-t border-slate-100 bg-white pt-4">
               <Button variant="outline" fullWidth onClick={resetAll}>
-                مسح الكل
+                {t("clearAll")}
               </Button>
               <Button fullWidth onClick={onClose}>
-                تطبيق الفلاتر
+                {t("applyFilters")}
               </Button>
             </div>
           </div>
@@ -309,6 +311,13 @@ function TimeSlotGrid({
   selected: TimeSlot | null;
   onSelect: (slot: TimeSlot) => void;
 }) {
+  const { t } = useTranslation("filters");
+  const TIME_SLOT_OPTIONS: { value: TimeSlot; label: string; icon: string }[] = [
+    { value: "6am_12pm", label: t("timeSlot.6am_12pm"), icon: TIME_SLOT_ICONS["6am_12pm"] },
+    { value: "before_6am", label: t("timeSlot.before_6am"), icon: TIME_SLOT_ICONS.before_6am },
+    { value: "6pm_midnight", label: t("timeSlot.6pm_midnight"), icon: TIME_SLOT_ICONS["6pm_midnight"] },
+    { value: "12pm_6pm", label: t("timeSlot.12pm_6pm"), icon: TIME_SLOT_ICONS["12pm_6pm"] },
+  ];
   return (
     <div className="grid grid-cols-2 gap-2">
       {TIME_SLOT_OPTIONS.map((opt) => (

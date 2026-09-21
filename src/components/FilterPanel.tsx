@@ -1,38 +1,43 @@
+import { useTranslation } from "react-i18next";
+
 import { EMPTY_FILTERS } from "../lib/filters";
 import type { AdvancedFilters, TimeSlot } from "../lib/filters";
 import { dealTypeLabel } from "../lib/deal-utils";
 import type { AirlineRow, DealType, StopType } from "../types/database";
 import { Button } from "./ui/Button";
 
-const STOP_OPTIONS: { value: StopType; label: string }[] = [
-  { value: "direct", label: "بدون توقف" },
-  { value: "one_stop", label: "توقف واحد" },
-  { value: "multi_stop", label: "توقفات متعددة" },
-];
 const BAGGAGE_OPTIONS = [23, 32];
-const EXPIRY_OPTIONS = [
-  { value: 12, label: "خلال 12 ساعة" },
-  { value: 24, label: "خلال 24 ساعة" },
-  { value: 48, label: "خلال 48 ساعة" },
-];
 const DEAL_TYPES: (DealType | "any")[] = ["any", "flash", "last_minute", "empty_seat", "special_fare"];
-const TIME_SLOT_OPTIONS: { value: TimeSlot; label: string; icon: string }[] = [
-  { value: "6am_12pm", label: "6 ص - 12 م", icon: "☀️" },
-  { value: "before_6am", label: "قبل 6 ص", icon: "🌙" },
-  { value: "6pm_midnight", label: "6 م - منتصف الليل", icon: "🌙" },
-  { value: "12pm_6pm", label: "12 م - 6 م", icon: "🌤️" },
-];
+const TIME_SLOT_ICONS: Record<TimeSlot, string> = {
+  "6am_12pm": "☀️",
+  before_6am: "🌙",
+  "6pm_midnight": "🌙",
+  "12pm_6pm": "🌤️",
+};
 
 type Props = {
   filters: AdvancedFilters;
   onChange: (next: AdvancedFilters) => void;
   availableAirlines: AirlineRow[];
-  /** Bottom-sheet on mobile, centered modal on larger screens — opened on demand from a "الفلاتر" button. */
+  /** Bottom-sheet on mobile, centered modal on larger screens — opened on demand from a filters button. */
   isOpen?: boolean;
   onClose?: () => void;
 };
 
 export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onClose }: Props) {
+  const { t } = useTranslation("filters");
+
+  const STOP_OPTIONS: { value: StopType; label: string }[] = [
+    { value: "direct", label: t("stops.direct") },
+    { value: "one_stop", label: t("stops.oneStop") },
+    { value: "multi_stop", label: t("stops.multiple") },
+  ];
+  const EXPIRY_OPTIONS = [
+    { value: 12, label: t("expiresWithin.12h") },
+    { value: 24, label: t("expiresWithin.24h") },
+    { value: 48, label: t("expiresWithin.48h") },
+  ];
+
   function toggleStop(stop: StopType) {
     const has = filters.stops.includes(stop);
     onChange({ ...filters, stops: has ? filters.stops.filter((s) => s !== stop) : [...filters.stops, stop] });
@@ -49,17 +54,17 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
   const content = (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold text-slate-900">الفلاتر المتقدمة</h3>
+        <h3 className="text-base font-bold text-slate-900">{t("titleAdvanced")}</h3>
         <button
           type="button"
           onClick={() => onChange(EMPTY_FILTERS)}
           className="text-xs font-semibold text-[#0C7BB3] hover:underline"
         >
-          إعادة تعيين
+          {t("reset")}
         </button>
       </div>
 
-      <FilterGroup title="التوقفات">
+      <FilterGroup title={t("stops.label")}>
         <div className="space-y-2">
           {STOP_OPTIONS.map((opt) => (
             <Checkbox key={opt.value} checked={filters.stops.includes(opt.value)} onChange={() => toggleStop(opt.value)}>
@@ -70,7 +75,7 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
       </FilterGroup>
 
       {availableAirlines.length > 0 ? (
-        <FilterGroup title="شركات الطيران">
+        <FilterGroup title={t("airlines.label")}>
           <div className="max-h-40 space-y-2 overflow-y-auto">
             {availableAirlines.map((a) => (
               <Checkbox key={a.code} checked={filters.airlines.includes(a.code)} onChange={() => toggleAirline(a.code)}>
@@ -81,7 +86,7 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
         </FilterGroup>
       ) : null}
 
-      <FilterGroup title="الأمتعة">
+      <FilterGroup title={t("baggage.label")}>
         <div className="flex flex-wrap gap-2">
           {BAGGAGE_OPTIONS.map((kg) => (
             <ChipToggle
@@ -89,48 +94,48 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
               active={filters.minBaggage === kg}
               onClick={() => onChange({ ...filters, minBaggage: filters.minBaggage === kg ? null : kg })}
             >
-              {kg} كجم+
+              {t("baggage.kgPlus", { kg })}
             </ChipToggle>
           ))}
         </div>
       </FilterGroup>
 
-      <FilterGroup title="شروط التذكرة">
+      <FilterGroup title={t("ticketConditions.label")}>
         <div className="space-y-2">
           <Checkbox
             checked={filters.refundableOnly}
             onChange={() => onChange({ ...filters, refundableOnly: !filters.refundableOnly })}
           >
-            قابلة للاسترداد فقط
+            {t("ticketConditions.refundableOnly")}
           </Checkbox>
           <Checkbox
             checked={filters.changeableOnly}
             onChange={() => onChange({ ...filters, changeableOnly: !filters.changeableOnly })}
           >
-            يمكن تغييرها فقط
+            {t("ticketConditions.changeableOnly")}
           </Checkbox>
           <Checkbox
             checked={filters.checkedBaggageOnly}
             onChange={() => onChange({ ...filters, checkedBaggageOnly: !filters.checkedBaggageOnly })}
           >
-            تشمل حقيبة مسجلة
+            {t("ticketConditions.checkedBaggageOnly")}
           </Checkbox>
           <Checkbox
             checked={filters.noChangeFeeOnly}
             onChange={() => onChange({ ...filters, noChangeFeeOnly: !filters.noChangeFeeOnly })}
           >
-            بدون رسوم تغيير
+            {t("ticketConditions.noChangeFeeOnly")}
           </Checkbox>
           <Checkbox
             checked={filters.noCancellationFeeOnly}
             onChange={() => onChange({ ...filters, noCancellationFeeOnly: !filters.noCancellationFeeOnly })}
           >
-            بدون رسوم إلغاء
+            {t("ticketConditions.noCancellationFeeOnly")}
           </Checkbox>
         </div>
       </FilterGroup>
 
-      <FilterGroup title="ينتهي العرض">
+      <FilterGroup title={t("expiresWithin.label")}>
         <div className="flex flex-wrap gap-2">
           {EXPIRY_OPTIONS.map((opt) => (
             <ChipToggle
@@ -149,7 +154,7 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
         </div>
       </FilterGroup>
 
-      <FilterGroup title="مواعيد رحلة المغادرة">
+      <FilterGroup title={t("departureTimes")}>
         <TimeSlotGrid
           selected={filters.departureSlot}
           onSelect={(slot) =>
@@ -158,22 +163,22 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
         />
       </FilterGroup>
 
-      <FilterGroup title="مواعيد رحلة الوصول">
+      <FilterGroup title={t("arrivalTimes")}>
         <TimeSlotGrid
           selected={filters.arrivalSlot}
           onSelect={(slot) => onChange({ ...filters, arrivalSlot: filters.arrivalSlot === slot ? null : slot })}
         />
       </FilterGroup>
 
-      <FilterGroup title="نوع الفرصة">
+      <FilterGroup title={t("dealType.label")}>
         <div className="flex flex-wrap gap-2">
-          {DEAL_TYPES.map((t) => (
+          {DEAL_TYPES.map((dt) => (
             <ChipToggle
-              key={t}
-              active={filters.dealType === t}
-              onClick={() => onChange({ ...filters, dealType: t })}
+              key={dt}
+              active={filters.dealType === dt}
+              onClick={() => onChange({ ...filters, dealType: dt })}
             >
-              {t === "any" ? "الكل" : dealTypeLabel(t)}
+              {dt === "any" ? t("dealType.any") : dealTypeLabel(dt)}
             </ChipToggle>
           ))}
         </div>
@@ -198,10 +203,10 @@ export function FilterPanel({ filters, onChange, availableAirlines, isOpen, onCl
             {content}
             <div className="sticky bottom-0 mt-6 flex gap-3 border-t border-slate-100 bg-white pt-4">
               <Button variant="outline" fullWidth onClick={() => onChange(EMPTY_FILTERS)}>
-                إعادة تعيين
+                {t("reset")}
               </Button>
               <Button fullWidth onClick={onClose}>
-                تطبيق الفلاتر
+                {t("applyFilters")}
               </Button>
             </div>
           </div>
@@ -227,6 +232,13 @@ function TimeSlotGrid({
   selected: TimeSlot | null;
   onSelect: (slot: TimeSlot) => void;
 }) {
+  const { t } = useTranslation("filters");
+  const TIME_SLOT_OPTIONS: { value: TimeSlot; label: string; icon: string }[] = [
+    { value: "6am_12pm", label: t("timeSlot.6am_12pm"), icon: TIME_SLOT_ICONS["6am_12pm"] },
+    { value: "before_6am", label: t("timeSlot.before_6am"), icon: TIME_SLOT_ICONS.before_6am },
+    { value: "6pm_midnight", label: t("timeSlot.6pm_midnight"), icon: TIME_SLOT_ICONS["6pm_midnight"] },
+    { value: "12pm_6pm", label: t("timeSlot.12pm_6pm"), icon: TIME_SLOT_ICONS["12pm_6pm"] },
+  ];
   return (
     <div className="grid grid-cols-2 gap-2">
       {TIME_SLOT_OPTIONS.map((opt) => (

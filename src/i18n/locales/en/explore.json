@@ -1,0 +1,83 @@
+{
+  "heading": "Complete your trip with TripRing add-on services or all-in-one packages",
+  "blueFriday": {
+    "title": "Blue Friday",
+    "subtitle": "Up to 33% off flights — every Friday"
+  },
+  "membership": {
+    "title": "TRIPRING Membership",
+    "subtitle": "Ongoing discounts + free services + priority alerts"
+  },
+  "tabs": {
+    "services": { "title": "Services", "subtitle": "Order any single service at its price" },
+    "packages": { "title": "Packages", "subtitle": "All-in-one bundles cheaper than ordering separately" }
+  },
+  "servicesBanner": {
+    "bold": "Single service:",
+    "rest": "Order any service on its own at its price, without booking anything else — even if your ticket was booked somewhere else entirely."
+  },
+  "packagesBanner": {
+    "bold": "Ready-made package:",
+    "rest": "Bundles more than one service into a single product at a total price cheaper than ordering each service separately."
+  },
+  "category": {
+    "transport": "Transport",
+    "airport": "Airport",
+    "destination": { "title": "Destination services", "subtitle": "Experiences and services tied to your destination" },
+    "insurance": { "title": "Travel insurance", "subtitle": "Basic or comprehensive cover for your trip" }
+  },
+  "loadingServices": "Loading services...",
+  "noServicesInCategory": "No services currently available in this category",
+  "singleServiceBadge": "Single service",
+  "free": "Free",
+  "bookNow": "Book now",
+  "packageBadge": "Package",
+  "savedBadge": "Save {{amount}}",
+  "startsFromYourChoice": "Starts based on your choices",
+  "explorePackage": "Explore package",
+  "packages": {
+    "vip": { "subtitle": "All airport services in one comprehensive package", "badge": "Most complete" },
+    "arrival": { "subtitle": "VIP meet & assist and a comfortable transfer from the airport" },
+    "departure": { "subtitle": "Airport transfer with Fast Track when you travel" },
+    "family": { "subtitle": "Family-friendly transfer with baggage services" },
+    "business": { "subtitle": "VIP lounge, Fast Track, and a private transfer", "badge": "Most popular" },
+    "custom": { "subtitle": "Pick the services that suit you and build your own package" }
+  },
+  "modal": {
+    "quantity": "Quantity",
+    "total": "Total",
+    "sending": "Sending...",
+    "confirmRequest": "Confirm request",
+    "confirmPackage": "Confirm package booking",
+    "optionalBadge": "Optional",
+    "optionalNote": "You don't need to have booked your ticket through TripRing — you can enter your trip details from any source so we can link the request to it.",
+    "airline": "Airline",
+    "flightNumber": "Flight number",
+    "flightNumberPlaceholder": "e.g. MS 123",
+    "flightDate": "Flight date",
+    "arrivalTime": "Arrival time",
+    "airport": "Airport",
+    "chooseOptional": "Choose (optional)",
+    "destination": "Destination",
+    "destinationPlaceholder": "e.g. Jeddah",
+    "name": "Name",
+    "phone": "Phone number",
+    "email": "Email (optional)",
+    "notes": "Notes (optional)",
+    "errorEnterName": "Enter your name",
+    "errorInvalidPhone": "Invalid phone number — use international format like +20xxxxxxxxxx",
+    "errorInvalidEmail": "Invalid email address",
+    "errorSubmitFailed": "Failed to send the request, please try again.",
+    "errorSelectOneService": "Select at least one service to build your package",
+    "chooseYourServices": "Choose the services to include in your package:",
+    "includedServices": "Services included in the package:",
+    "includesLabel": "Package includes: {{labels}}",
+    "servicesAlonePrice": "Price of services separately",
+    "packageTotal": "Package total",
+    "savedComparedToAlone": "You saved {{amount}} compared to ordering separately",
+    "confirmationTitle": "Your request has been sent",
+    "confirmationBody": "Request number #{{number}} — our team will contact you soon to confirm the details and payment.",
+    "confirmationTotal": "Total: {{amount}}",
+    "ok": "OK"
+  }
+}

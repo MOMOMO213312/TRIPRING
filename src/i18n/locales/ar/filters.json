@@ -1,0 +1,61 @@
+{
+  "title": "الفلاتر",
+  "titleAdvanced": "الفلاتر المتقدمة",
+  "toggleFilters": "🔧 الفلاتر",
+  "toggleFiltersCount": "🔧 الفلاتر ({{count}})",
+  "clearAll": "مسح الكل",
+  "clear": "مسح",
+  "reset": "إعادة تعيين",
+  "applyFilters": "تطبيق الفلاتر",
+  "destination": "الوجهة",
+  "price": "السعر",
+  "stops": {
+    "label": "التوقفات",
+    "all": "الكل",
+    "direct": "مباشر",
+    "oneStop": "توقف واحد",
+    "twoPlus": "توقفين أو أكثر",
+    "multiple": "توقفات متعددة"
+  },
+  "airlines": {
+    "label": "شركات الطيران",
+    "searchPlaceholder": "بحث عن شركة طيران",
+    "noResults": "لا توجد نتائج"
+  },
+  "baggage": {
+    "label": "الأمتعة",
+    "kgPlus": "{{kg}} كجم+"
+  },
+  "duration": {
+    "label": "مدة الرحلة",
+    "short": "أقل من 5 ساعات",
+    "medium": "من 5 إلى 10 ساعات",
+    "long": "أكثر من 10 ساعات"
+  },
+  "departureTimes": "مواعيد رحلة المغادرة",
+  "arrivalTimes": "مواعيد رحلة الوصول",
+  "timeSlot": {
+    "6am_12pm": "6 ص - 12 م",
+    "before_6am": "قبل 6 ص",
+    "6pm_midnight": "6 م - منتصف الليل",
+    "12pm_6pm": "12 م - 6 م"
+  },
+  "ticketConditions": {
+    "label": "شروط التذكرة",
+    "refundableOnly": "قابلة للاسترداد فقط",
+    "changeableOnly": "يمكن تغييرها فقط",
+    "checkedBaggageOnly": "تشمل حقيبة مسجلة",
+    "noChangeFeeOnly": "بدون رسوم تغيير",
+    "noCancellationFeeOnly": "بدون رسوم إلغاء"
+  },
+  "expiresWithin": {
+    "label": "ينتهي العرض",
+    "12h": "خلال 12 ساعة",
+    "24h": "خلال 24 ساعة",
+    "48h": "خلال 48 ساعة"
+  },
+  "dealType": {
+    "label": "نوع الفرصة",
+    "any": "الكل"
+  }
+}

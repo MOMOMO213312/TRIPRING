@@ -6,23 +6,35 @@ import arBooking from "./locales/ar/booking.json";
 import arCommon from "./locales/ar/common.json";
 import arDealDetail from "./locales/ar/dealDetail.json";
 import arDeals from "./locales/ar/deals.json";
+import arDealsCenter from "./locales/ar/dealsCenter.json";
 import arErrors from "./locales/ar/errors.json";
+import arFilters from "./locales/ar/filters.json";
 import arHome from "./locales/ar/home.json";
 import arPackages from "./locales/ar/packages.json";
+import arExplore from "./locales/ar/explore.json";
+import arSearch from "./locales/ar/search.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDealDetail from "./locales/en/dealDetail.json";
 import enDeals from "./locales/en/deals.json";
+import enDealsCenter from "./locales/en/dealsCenter.json";
 import enErrors from "./locales/en/errors.json";
+import enFilters from "./locales/en/filters.json";
 import enHome from "./locales/en/home.json";
 import enPackages from "./locales/en/packages.json";
+import enExplore from "./locales/en/explore.json";
+import enSearch from "./locales/en/search.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDealDetail from "./locales/tr/dealDetail.json";
 import trDeals from "./locales/tr/deals.json";
+import trDealsCenter from "./locales/tr/dealsCenter.json";
 import trErrors from "./locales/tr/errors.json";
+import trFilters from "./locales/tr/filters.json";
 import trHome from "./locales/tr/home.json";
 import trPackages from "./locales/tr/packages.json";
+import trExplore from "./locales/tr/explore.json";
+import trSearch from "./locales/tr/search.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -64,6 +76,10 @@ void i18n
         booking: arBooking,
         packages: arPackages,
         dealDetail: arDealDetail,
+        filters: arFilters,
+        dealsCenter: arDealsCenter,
+        search: arSearch,
+        explore: arExplore,
       },
       en: {
         common: enCommon,
@@ -73,6 +89,10 @@ void i18n
         booking: enBooking,
         packages: enPackages,
         dealDetail: enDealDetail,
+        filters: enFilters,
+        dealsCenter: enDealsCenter,
+        search: enSearch,
+        explore: enExplore,
       },
       tr: {
         common: trCommon,
@@ -82,9 +102,13 @@ void i18n
         booking: trBooking,
         packages: trPackages,
         dealDetail: trDealDetail,
+        filters: trFilters,
+        dealsCenter: trDealsCenter,
+        search: trSearch,
+        explore: trExplore,
       },
     },
-    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail"],
+    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],

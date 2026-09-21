@@ -1,0 +1,83 @@
+{
+  "heading": "استكمل رحلتك عبر TripRing بخدمات إضافية أو باقات متكاملة",
+  "blueFriday": {
+    "title": "الجمعة السماوي",
+    "subtitle": "خصومات لحد 33% على الطيران — كل جمعة"
+  },
+  "membership": {
+    "title": "عضوية TRIPRING",
+    "subtitle": "خصومات دائمة + خدمات مجانية + أولوية إشعارات"
+  },
+  "tabs": {
+    "services": { "title": "الخدمات", "subtitle": "اطلب أي خدمة منفردة بسعرها" },
+    "packages": { "title": "الباقات", "subtitle": "باقات متكاملة بسعر أقل من الطلب المنفرد" }
+  },
+  "servicesBanner": {
+    "bold": "خدمة منفردة:",
+    "rest": "اطلب أي خدمة لوحدها بسعرها، من غير ما تحجز باقي، وحتى لو تذكرتك محجوزة من مكان تاني خالص."
+  },
+  "packagesBanner": {
+    "bold": "باقة جاهزة:",
+    "rest": "بتجمع أكتر من خدمة في منتج واحد بسعر إجمالي أوفر من طلب كل خدمة لوحدها."
+  },
+  "category": {
+    "transport": "النقل",
+    "airport": "المطار",
+    "destination": { "title": "خدمات الوجهة", "subtitle": "تجارب وخدمات مرتبطة بوجهتك" },
+    "insurance": { "title": "تأمين السفر", "subtitle": "تأمين أساسي أو شامل لرحلتك" }
+  },
+  "loadingServices": "جاري تحميل الخدمات...",
+  "noServicesInCategory": "لا توجد خدمات متاحة في هذا القسم حالياً",
+  "singleServiceBadge": "خدمة منفردة",
+  "free": "مجاناً",
+  "bookNow": "احجز الآن",
+  "packageBadge": "باقة",
+  "savedBadge": "وفّر {{amount}}",
+  "startsFromYourChoice": "يبدأ حسب اختيارك",
+  "explorePackage": "استكشف الباقة",
+  "packages": {
+    "vip": { "subtitle": "كل خدمات المطار في باقة واحدة شاملة", "badge": "الأشمل" },
+    "arrival": { "subtitle": "استقبال VIP وانتقال مريح من المطار" },
+    "departure": { "subtitle": "انتقال للمطار مع Fast Track عند السفر" },
+    "family": { "subtitle": "انتقال يناسب العائلة مع خدمات الأمتعة" },
+    "business": { "subtitle": "صالة VIP وFast Track وانتقال خاص", "badge": "الأكثر طلباً" },
+    "custom": { "subtitle": "اختر الخدمات اللي تناسبك وكوّن باقتك بنفسك" }
+  },
+  "modal": {
+    "quantity": "الكمية",
+    "total": "الإجمالي",
+    "sending": "جاري الإرسال...",
+    "confirmRequest": "تأكيد الطلب",
+    "confirmPackage": "تأكيد حجز الباقة",
+    "optionalBadge": "اختياري",
+    "optionalNote": "مش لازم تكون حاجز تذكرتك من TripRing — تقدر تدخل تفاصيل رحلتك من أي مصدر عشان نربط الطلب بيها.",
+    "airline": "شركة الطيران",
+    "flightNumber": "رقم الرحلة",
+    "flightNumberPlaceholder": "مثال: MS 123",
+    "flightDate": "تاريخ الرحلة",
+    "arrivalTime": "وقت الوصول",
+    "airport": "المطار",
+    "chooseOptional": "اختر (اختياري)",
+    "destination": "الوجهة",
+    "destinationPlaceholder": "مثال: جدة",
+    "name": "الاسم",
+    "phone": "رقم الهاتف",
+    "email": "البريد الإلكتروني (اختياري)",
+    "notes": "ملاحظات (اختياري)",
+    "errorEnterName": "أدخل اسمك",
+    "errorInvalidPhone": "رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx",
+    "errorInvalidEmail": "البريد الإلكتروني غير صالح",
+    "errorSubmitFailed": "فشل إرسال الطلب، جرّب تاني.",
+    "errorSelectOneService": "اختار خدمة واحدة على الأقل عشان تكوّن باقتك",
+    "chooseYourServices": "اختار الخدمات اللي تدخل في باقتك:",
+    "includedServices": "الخدمات المشمولة في الباقة:",
+    "includesLabel": "باقة تشمل: {{labels}}",
+    "servicesAlonePrice": "سعر الخدمات منفردة",
+    "packageTotal": "إجمالي الباقة",
+    "savedComparedToAlone": "وفّرت {{amount}} مقارنة بالطلب منفرد",
+    "confirmationTitle": "تم إرسال طلبك",
+    "confirmationBody": "رقم الطلب #{{number}} — هيتواصل معاك فريقنا قريباً لتأكيد التفاصيل والدفع.",
+    "confirmationTotal": "الإجمالي: {{amount}}",
+    "ok": "تمام"
+  }
+}

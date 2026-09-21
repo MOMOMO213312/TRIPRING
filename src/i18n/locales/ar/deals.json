@@ -5,6 +5,12 @@
     "empty_seat": "مقعد فارغ",
     "special_fare": "سعر خاص"
   },
+  "region": {
+    "gulf": "الخليج",
+    "turkey": "تركيا",
+    "europe": "أوروبا",
+    "asia": "آسيا"
+  },
   "stops": {
     "direct": "بدون توقف",
     "oneStop": "توقف واحد",

@@ -5,6 +5,12 @@
     "empty_seat": "Empty seat",
     "special_fare": "Special fare"
   },
+  "region": {
+    "gulf": "Gulf",
+    "turkey": "Turkey",
+    "europe": "Europe",
+    "asia": "Asia"
+  },
   "stops": {
     "direct": "Non-stop",
     "oneStop": "1 stop",

@@ -328,7 +328,7 @@ export async function fetchDealPriceDrops(
 export async function fetchAdditionalServices(): Promise<AdditionalServiceRow[]> {
   const { data, error } = await supabase
     .from("additional_services")
-    .select("id,type,name,description,price,category,is_active")
+    .select("id,type,name,description,price,category,is_active,name_i18n")
     .eq("is_active", true)
     .order("price", { ascending: true });
   if (error) return [];
@@ -560,7 +560,7 @@ export async function lookupBooking(
 export async function fetchBookableAddOns(): Promise<AdditionalServiceRow[]> {
   const { data, error } = await supabase
     .from("additional_services")
-    .select("id,type,name,description,price,category,is_active,fulfillment_type")
+    .select("id,type,name,description,price,category,is_active,fulfillment_type,name_i18n")
     .eq("is_active", true)
     .order("price", { ascending: true });
   if (error) return [];

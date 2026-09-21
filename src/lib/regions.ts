@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import type { AirportRow } from "../types/database";
 
 /**
@@ -76,4 +77,10 @@ export function regionAirportCodes(region: Region, airports: AirportRow[]): stri
 
 export function findRegion(key: string | null): Region | undefined {
   return REGIONS.find((r) => r.key === key);
+}
+
+/** Display label for a region in the active UI language (`deals:region.*`) — falls back to the Arabic default. */
+export function regionLabel(region: Region): string {
+  const key = `deals:region.${region.key}`;
+  return i18n.exists(key) ? i18n.t(key) : region.label;
 }

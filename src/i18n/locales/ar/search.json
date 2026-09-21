@@ -1,0 +1,25 @@
+{
+  "title": {
+    "domestic": "رحلات داخلية من {{airport}}",
+    "international": "رحلات دولية من {{airport}}",
+    "best": "أفضل الفرص من {{airport}}"
+  },
+  "to": "→ {{destination}}",
+  "allDestinations": "كل الوجهات",
+  "oneWay": "ذهاب فقط",
+  "returnOn": "عودة {{date}}",
+  "sort": {
+    "label": "ترتيب حسب",
+    "bestMatch": "الأفضل (موصى به)",
+    "priceAsc": "السعر: الأقل أولاً",
+    "priceDesc": "السعر: الأعلى أولاً"
+  },
+  "resultsCount": "{{count}} فرصة",
+  "empty": {
+    "title": "لا توجد فرص مطابقة لاختياراتك الحالية.",
+    "subtitle": "جرّب زيادة الميزانية، تواريخ مرنة، أو إزالة بعض الفلاتر.",
+    "resetButton": "إعادة تعيين الفلاتر"
+  },
+  "loading": "جاري التحميل...",
+  "loadError": "حصل خطأ في تحميل النتائج، جرّب تاني."
+}

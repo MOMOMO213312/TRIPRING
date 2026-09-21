@@ -1,0 +1,61 @@
+{
+  "title": "Filters",
+  "titleAdvanced": "Advanced filters",
+  "toggleFilters": "🔧 Filters",
+  "toggleFiltersCount": "🔧 Filters ({{count}})",
+  "clearAll": "Clear all",
+  "clear": "Clear",
+  "reset": "Reset",
+  "applyFilters": "Apply filters",
+  "destination": "Destination",
+  "price": "Price",
+  "stops": {
+    "label": "Stops",
+    "all": "Any",
+    "direct": "Non-stop",
+    "oneStop": "1 stop",
+    "twoPlus": "2+ stops",
+    "multiple": "Multiple stops"
+  },
+  "airlines": {
+    "label": "Airlines",
+    "searchPlaceholder": "Search for an airline",
+    "noResults": "No results"
+  },
+  "baggage": {
+    "label": "Baggage",
+    "kgPlus": "{{kg}} kg+"
+  },
+  "duration": {
+    "label": "Flight duration",
+    "short": "Under 5 hours",
+    "medium": "5 to 10 hours",
+    "long": "Over 10 hours"
+  },
+  "departureTimes": "Departure times",
+  "arrivalTimes": "Arrival times",
+  "timeSlot": {
+    "6am_12pm": "6 AM - 12 PM",
+    "before_6am": "Before 6 AM",
+    "6pm_midnight": "6 PM - midnight",
+    "12pm_6pm": "12 PM - 6 PM"
+  },
+  "ticketConditions": {
+    "label": "Ticket conditions",
+    "refundableOnly": "Refundable only",
+    "changeableOnly": "Changeable only",
+    "checkedBaggageOnly": "Includes checked baggage",
+    "noChangeFeeOnly": "No change fee",
+    "noCancellationFeeOnly": "No cancellation fee"
+  },
+  "expiresWithin": {
+    "label": "Deal expires",
+    "12h": "Within 12 hours",
+    "24h": "Within 24 hours",
+    "48h": "Within 48 hours"
+  },
+  "dealType": {
+    "label": "Deal type",
+    "any": "Any"
+  }
+}

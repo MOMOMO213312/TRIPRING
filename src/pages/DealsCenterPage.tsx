@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import { DealComparisonModal } from "../components/DealComparisonModal";
@@ -12,7 +13,7 @@ import type { AdvancedFilters } from "../lib/filters";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
-import { findRegion, regionAirportCodes, REGIONS } from "../lib/regions";
+import { findRegion, regionAirportCodes, regionLabel, REGIONS } from "../lib/regions";
 import { formatPrice } from "../lib/utils";
 import type { DealRow, DealType } from "../types/database";
 
@@ -21,6 +22,7 @@ const PAGE_SIZE = 30;
 type SortKey = "price_asc" | "price_desc";
 
 export function DealsCenterPage() {
+  const { t } = useTranslation(["dealsCenter", "filters"]);
   const catalog = useCatalog();
   const [searchParams] = useSearchParams();
   const [deals, setDeals] = useState<DealRow[]>([]);
@@ -96,7 +98,7 @@ export function DealsCenterPage() {
         setTotal(count);
         setPriceDrops(await fetchDealPriceDrops(rows.map((d) => d.id)));
       })
-      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل العروض، جرّب تاني.", "DealsCenterPage.load")))
+      .catch((e) => setError(friendlyErrorMessage(e, t("dealsCenter:loadError"), "DealsCenterPage.load")))
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort, minPrice, maxPrice, regionKey, toAirportCodes, priceBounds.min, priceBounds.max]);
@@ -120,7 +122,7 @@ export function DealsCenterPage() {
         const moreDrops = await fetchDealPriceDrops(rows.map((d) => d.id));
         setPriceDrops((prev) => new Map([...prev, ...moreDrops]));
       })
-      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل العروض، جرّب تاني.", "DealsCenterPage.load")))
+      .catch((e) => setError(friendlyErrorMessage(e, t("dealsCenter:loadError"), "DealsCenterPage.load")))
       .finally(() => setLoadingMore(false));
   }
 
@@ -129,7 +131,7 @@ export function DealsCenterPage() {
   const activeFilterCount = countActiveFilters(filters) + (isPriceNarrowed ? 1 : 0);
   const currency = deals[0]?.currency ?? "EGP";
 
-  if (catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
+  if (catalog.loading) return <p className="text-slate-500">{t("dealsCenter:loading")}</p>;
 
   return (
     <div className="space-y-6">
@@ -140,13 +142,13 @@ export function DealsCenterPage() {
             🌍
           </span>
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900">TripRing عروض</h1>
-            <p className="text-slate-500">اكتشف أفضل فرص السفر المتاحة الآن</p>
+            <h1 className="text-2xl font-extrabold text-slate-900">{t("dealsCenter:header.title")}</h1>
+            <p className="text-slate-500">{t("dealsCenter:header.subtitle")}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3.5 py-2.5 text-xs text-slate-500">
           <span aria-hidden>📈</span>
-          نقارن الأسعار أولاً بأول لنقدّم لك فرص حقيقية
+          {t("dealsCenter:header.badge")}
         </div>
       </div>
 
@@ -160,21 +162,21 @@ export function DealsCenterPage() {
           }}
           className={`smart-chip ${!regionKey && !isDirectOnly ? "smart-chip-active" : ""}`}
         >
-          🗂️ كل العروض
+          {t("dealsCenter:tabs.all")}
         </button>
         <button
           type="button"
           onClick={() => setSort("price_asc")}
           className={`smart-chip ${sort === "price_asc" ? "smart-chip-active" : ""}`}
         >
-          💰 الأرخص
+          {t("dealsCenter:tabs.cheapest")}
         </button>
         <button
           type="button"
           onClick={() => setFilters((f) => ({ ...f, stops: isDirectOnly ? [] : ["direct"] }))}
           className={`smart-chip ${isDirectOnly ? "smart-chip-active" : ""}`}
         >
-          ✈️ مباشر
+          {t("dealsCenter:tabs.direct")}
         </button>
         {REGIONS.map((region) => (
           <button
@@ -183,7 +185,7 @@ export function DealsCenterPage() {
             onClick={() => selectRegion(region.key)}
             className={`smart-chip ${regionKey === region.key ? "smart-chip-active" : ""}`}
           >
-            {region.emoji} {region.label}
+            {region.emoji} {regionLabel(region)}
           </button>
         ))}
       </div>
@@ -191,10 +193,10 @@ export function DealsCenterPage() {
       {/* Active filters */}
       {selectedRegion || isPriceNarrowed || isDirectOnly ? (
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span className="text-slate-500">اخترت:</span>
+          <span className="text-slate-500">{t("dealsCenter:selectedLabel")}</span>
           {selectedRegion ? (
             <button type="button" onClick={() => selectRegion(selectedRegion.key)} className="smart-chip smart-chip-active">
-              {selectedRegion.emoji} {selectedRegion.label} ✕
+              {selectedRegion.emoji} {regionLabel(selectedRegion)} ✕
             </button>
           ) : null}
           {isPriceNarrowed ? (
@@ -215,7 +217,7 @@ export function DealsCenterPage() {
               onClick={() => setFilters((f) => ({ ...f, stops: [] }))}
               className="smart-chip smart-chip-active"
             >
-              ✈️ مباشر ✕
+              {t("dealsCenter:tabs.direct")} ✕
             </button>
           ) : null}
         </div>
@@ -223,19 +225,19 @@ export function DealsCenterPage() {
 
       {/* Results count + sort */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-slate-700">{total} عرض متاح</p>
+        <p className="text-sm font-semibold text-slate-700">{t("dealsCenter:resultsCount", { count: total })}</p>
         <div className="flex items-center gap-2">
           <Select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
             options={[
-              { value: "price_asc", label: "ترتيب: الأوفر أولاً" },
-              { value: "price_desc", label: "ترتيب: الأعلى سعرًا أولاً" },
+              { value: "price_asc", label: t("dealsCenter:sort.cheapestFirst") },
+              { value: "price_desc", label: t("dealsCenter:sort.highestFirst") },
             ]}
             className="!py-2 text-sm"
           />
           <button type="button" onClick={() => setMobileFiltersOpen(true)} className="smart-chip lg:hidden">
-            🔧 الفلاتر {activeFilterCount ? `(${activeFilterCount})` : ""}
+            {activeFilterCount ? t("filters:toggleFiltersCount", { count: activeFilterCount }) : t("filters:toggleFilters")}
           </button>
         </div>
       </div>
@@ -270,8 +272,8 @@ export function DealsCenterPage() {
             <div className="rounded-2xl border border-slate-200 bg-white p-5 text-red-600">{error}</div>
           ) : filtered.length === 0 ? (
             <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-8 text-center">
-              <p className="text-slate-700">لا توجد فرص مطابقة.</p>
-              <p className="text-sm text-slate-500">جرّب توسيع نطاق السعر أو إزالة بعض الفلاتر.</p>
+              <p className="text-slate-700">{t("dealsCenter:empty.title")}</p>
+              <p className="text-sm text-slate-500">{t("dealsCenter:empty.subtitle")}</p>
               <button
                 type="button"
                 onClick={() => {
@@ -281,7 +283,7 @@ export function DealsCenterPage() {
                 }}
                 className="cta-primary mx-auto px-5 py-2 text-sm"
               >
-                إعادة تعيين الفلاتر
+                {t("dealsCenter:empty.resetButton")}
               </button>
             </div>
           ) : (
@@ -307,7 +309,9 @@ export function DealsCenterPage() {
               {deals.length < total ? (
                 <div className="mt-6 flex justify-center">
                   <Button variant="outline" onClick={loadMore} disabled={loadingMore}>
-                    {loadingMore ? "جاري التحميل..." : `عرض المزيد (${total - deals.length} فرصة متبقية)`}
+                    {loadingMore
+                      ? t("dealsCenter:loadMore.loading")
+                      : t("dealsCenter:loadMore.button", { count: total - deals.length })}
                   </Button>
                 </div>
               ) : null}
@@ -319,14 +323,14 @@ export function DealsCenterPage() {
       {compareIds.length > 0 ? (
         <div className="fixed inset-x-4 bottom-4 z-40 mx-auto flex max-w-md items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl">
           <p className="text-sm font-semibold text-slate-700">
-            {compareIds.length} من {MAX_COMPARE} محدّدة للمقارنة
+            {t("dealsCenter:compare.selectedCount", { count: compareIds.length, max: MAX_COMPARE })}
           </p>
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => setCompareIds([])} className="text-xs text-slate-500 hover:text-red-500">
-              مسح
+              {t("dealsCenter:compare.clear")}
             </button>
             <Button disabled={compareIds.length < 2} onClick={() => setCompareOpen(true)} className="text-sm">
-              قارن الآن
+              {t("dealsCenter:compare.compareNow")}
             </Button>
           </div>
         </div>

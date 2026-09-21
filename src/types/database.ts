@@ -379,6 +379,8 @@ export interface Database {
           is_active: boolean;
           provider_id: string | null;
           fulfillment_type: ServiceFulfillmentType;
+          /** Per-language display name — {"en": "...", "tr": "..."}. Arabic stays in `name`. */
+          name_i18n: Record<string, string> | null;
         };
         Insert: Omit<Database["public"]["Tables"]["additional_services"]["Row"], "id"> & {
           id?: string;

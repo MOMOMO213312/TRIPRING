@@ -102,13 +102,19 @@ const TRANSLATABLE_SERVICE_TYPES = new Set([
 ]);
 
 /**
- * Display label for a real catalogue service in the active language. Arabic shows the
- * DB name as-is; English/Turkish use the translation for well-known `type` slugs and
- * fall back to the DB name for rows that can't be mapped one-to-one (e.g. several
- * `extra_baggage` variants) until the catalogue gets per-language names.
+ * Display label for a real catalogue service in the active language. Arabic always
+ * shows the DB `name` as-is. For English/Turkish, this now prefers the row's own
+ * `name_i18n->>lang` (per-row translations, including for `extra_baggage`/
+ * `destination_experience` rows that share a `type` but need distinct names), falls
+ * back to the static `packages:serviceType.*` map for older/unmigrated rows, and
+ * finally falls back to the raw DB name.
  */
 export function serviceDisplayLabel(service: AdditionalServiceRow): string {
-  if (!i18n.language.startsWith("ar") && TRANSLATABLE_SERVICE_TYPES.has(service.type)) {
+  if (i18n.language.startsWith("ar")) return serviceRawName(service);
+  const lang = i18n.language.startsWith("tr") ? "tr" : "en";
+  const perRow = service.name_i18n?.[lang];
+  if (perRow) return perRow;
+  if (TRANSLATABLE_SERVICE_TYPES.has(service.type)) {
     return i18n.t(`packages:serviceType.${service.type}`);
   }
   return serviceRawName(service);
@@ -196,6 +202,19 @@ export const SERVICE_PACKAGES: ServicePackageDef[] = [
     isCustom: true,
   },
 ];
+
+/** Translated subtitle for a service package (`explore:packages.<id>.subtitle`) — falls back to the Arabic default. */
+export function packageSubtitleLabel(pkg: ServicePackageDef): string {
+  const key = `explore:packages.${pkg.id}.subtitle`;
+  return i18n.exists(key) ? i18n.t(key) : pkg.subtitle;
+}
+
+/** Translated badge for a service package (`explore:packages.<id>.badge`), if it has one. */
+export function packageBadgeLabel(pkg: ServicePackageDef): string | undefined {
+  if (!pkg.badge) return undefined;
+  const key = `explore:packages.${pkg.id}.badge`;
+  return i18n.exists(key) ? i18n.t(key) : pkg.badge;
+}
 
 export interface ResolvedPackageItem {
   key: PackageServiceKey;
