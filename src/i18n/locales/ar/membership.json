@@ -1,0 +1,44 @@
+{
+  "page": {
+    "title": "عضوية TRIPRING",
+    "subtitle": "خصومات على الحجوزات، خدمات مجانية، وأولوية في إشعارات الفرص."
+  },
+  "card": {
+    "loadFailed": "تعذر تحميل حالة الاشتراك",
+    "yourSubscription": "اشتراكك",
+    "pendingPayment": "طلبك بانتظار مراجعة الأدمن للتأكد من إثبات الدفع.",
+    "activeUntil": "مفعّل حتى {{date}}",
+    "discountLine": "خصم {{percent}}% على الحجوزات",
+    "priorityLine": " · أولوية إشعارات {{minutes}} دقيقة قبل الجميع"
+  },
+  "form": {
+    "loadTiersFailed": "تعذر تحميل الباقات المتاحة",
+    "loadingTiers": "جاري تحميل الباقات...",
+    "noTiers": "لا توجد باقات متاحة حاليًا.",
+    "pickTierFirst": "اختار باقة الأول",
+    "uploadProofFirst": "ارفع إثبات الدفع",
+    "submitFailed": "تعذر إرسال طلب الاشتراك",
+    "title": "اشترك في عضوية TRIPRING",
+    "subtitle": "خصومات على الحجوزات + خدمات مجانية + أولوية في إشعارات الفرص.",
+    "monthly": "شهري",
+    "yearly": "سنوي (وفّر شهرين)",
+    "priceMonth": "شهر",
+    "priceYear": "سنة",
+    "priceLine": "{{price}} جنيه / {{period}} · خصم {{percent}}%",
+    "choosePaymentMethod": "اختار طريقة الدفع وحوّل قيمة الباقة",
+    "paymentRefLabel": "مرجع الدفع (رقم العملية) — اختياري",
+    "uploadProof": "📎 رفع إثبات الدفع (صورة أو PDF)",
+    "uploadedFile": "✓ {{filename}}",
+    "authGateTitle": "سجّل الدخول عشان تكمل الاشتراك",
+    "authGateDescription": "اختيارك للباقة وبيانات الدفع محفوظة، سجّل دخولك أو اعمل حساب عشان نبعت الطلب.",
+    "submitting": "جاري الإرسال...",
+    "submit": "إرسال طلب الاشتراك"
+  },
+  "status": {
+    "pending_payment": "بانتظار المراجعة",
+    "active": "نشط",
+    "expired": "منتهي",
+    "rejected": "مرفوض",
+    "cancelled": "ملغي"
+  }
+}

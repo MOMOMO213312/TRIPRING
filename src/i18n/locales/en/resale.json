@@ -1,0 +1,50 @@
+{
+  "reason": {
+    "non_refundable": "Non-refundable",
+    "trip_cancelled": "Trip cancelled",
+    "date_change": "Date change",
+    "duplicate_booking": "Duplicate booking",
+    "other": "Other"
+  },
+  "card": {
+    "verified": "Verified ticket",
+    "interested": "I'm interested — contact us",
+    "waMessage": "Hello, I'm interested in the resale ticket: {{from}} → {{to}} on {{date}} ({{price}})"
+  },
+  "form": {
+    "title": "Ticket details",
+    "from": "From",
+    "to": "To",
+    "fromPlaceholder": "Choose departure airport",
+    "toPlaceholder": "Choose arrival airport",
+    "departureDate": "Departure date",
+    "returnDate": "Return date (optional)",
+    "airline": "Airline",
+    "reason": "Reason for selling",
+    "passengerName": "Passenger name on the ticket",
+    "pnr": "Booking reference (PNR)",
+    "originalPrice": "Original price (USD)",
+    "askingPrice": "Asking price (USD)",
+    "choose": "Choose",
+    "unspecified": "Not specified",
+    "reviewNote": "Your ticket will be reviewed and verified before it becomes visible to other travellers",
+    "submit": "List ticket",
+    "submitting": "Publishing...",
+    "required": "Please complete the required fields",
+    "submitFailed": "Couldn't list the ticket, please try again."
+  },
+  "page": {
+    "title": "Ticket resale marketplace",
+    "subtitle": "Confirmed tickets listed by other travellers — contact us to enquire",
+    "listCta": "List your ticket",
+    "authTitle": "Sign in to list your ticket",
+    "authDescription": "We need you to sign in so we can contact you about your ticket and follow up on its status",
+    "received": "Your ticket has been received and will be reviewed shortly",
+    "filterFrom": "From",
+    "filterTo": "To",
+    "all": "All",
+    "loadFailed": "Something went wrong while loading, please try again.",
+    "emptyTitle": "No tickets listed right now",
+    "emptySubtitle": "Try a different destination or route, or check back later"
+  }
+}

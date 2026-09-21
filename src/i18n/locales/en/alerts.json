@@ -1,0 +1,42 @@
+{
+  "title": "Price alerts",
+  "subtitle": "Get notified when the price drops on a specific route",
+  "create": {
+    "title": "Create a new alert",
+    "from": "From",
+    "to": "To",
+    "toPlaceholder": "Choose destination",
+    "maxBudget": "Maximum price (USD)",
+    "phone": "Phone number",
+    "email": "Email",
+    "hint": "Enter a phone number or an email at least to continue",
+    "submit": "Create alert",
+    "submitting": "Saving..."
+  },
+  "lookup": {
+    "title": "My alerts",
+    "contact": "Phone number or email",
+    "submit": "View alerts",
+    "maxLine": "Max: {{price}}"
+  },
+  "errors": {
+    "pickDestination": "Choose a destination",
+    "contactRequired": "Enter a phone number or an email at least so we can notify you",
+    "phoneInvalid": "Invalid phone number — enter it in international format like +20xxxxxxxxxx",
+    "emailInvalid": "Invalid email address",
+    "createFailed": "Couldn't create the alert, please try again.",
+    "searchFailed": "Something went wrong with the search, please try again."
+  },
+  "messages": {
+    "created": "Alert created successfully",
+    "noActive": "No active alerts"
+  },
+  "panel": {
+    "loading": "Loading alerts...",
+    "emptyTitle": "Price alerts",
+    "emptyText": "Create an alert and we'll notify you when the price drops on your route",
+    "createCta": "Create a price alert",
+    "activeTitle": "Your active alerts",
+    "createNew": "Create a new price alert"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "ticker": [
+    "EVERY FRIDAY",
+    "UP TO 33% OFF FLIGHTS",
+    "CODE: {{code}}",
+    "MYSTERY FARES INSIDE",
+    "FLASH DROPS EVERY HOUR"
+  ],
+  "hero": {
+    "badge": "✨ Blue Friday deals — every Friday",
+    "title1": "Every Friday, from dawn to midnight.",
+    "title2": "Up to 33% off flights.",
+    "live": "The deepest discounts of the week are live right now and disappear at midnight. Use code <promo>{{code}}</promo> for an extra discount.",
+    "notLive": "Blue Friday runs on Fridays only — below is the countdown to next Friday's start.",
+    "endsNote": "The sale ends at midnight — don't wait.",
+    "startsNote": "Hang tight — the sale opens automatically at 12 AM.",
+    "shopDeals": "Shop the deals",
+    "tryMystery": "Try Mystery Fare"
+  },
+  "time": {
+    "day": "Days",
+    "hour": "Hours",
+    "minute": "Min",
+    "second": "Sec"
+  },
+  "code": {
+    "label": "Extra discount code",
+    "copied": "✓ Copied",
+    "tapToCopy": "Tap to copy"
+  },
+  "trust": [
+    "Best price",
+    "Secure booking",
+    "24/7 support",
+    "Flexible payment"
+  ],
+  "deals": {
+    "titleLive": "Today's best deals",
+    "titlePreview": "Preview of next Friday's deals",
+    "badge": "Up to 33% off",
+    "empty": "No deals with a big enough discount right now — check back next Friday.",
+    "tagHot": "Hot deal"
+  },
+  "mystery": {
+    "badge": "🎁 Mystery Fare",
+    "title": "Tell us your budget, and we'll reveal a surprise destination.",
+    "text": "Enter what you can spend and we'll match you with up to 3 surprise trips within your budget — and discover where Blue Friday takes you.",
+    "placeholder": "Your budget (USD)",
+    "reveal": "Reveal deals",
+    "empty": "No deals within this budget right now — try a higher number.",
+    "tag": "Surprise",
+    "destination": "Surprise destination",
+    "unknown": "???"
+  },
+  "flash": {
+    "title": "Flash hours",
+    "badge": "Ending soon",
+    "tag": "Last chance"
+  },
+  "destinations": {
+    "title": "Blue Friday destinations from Cairo",
+    "from": "from {{price}}"
+  },
+  "footer": {
+    "text": "TripRing Blue Friday · 24-hour flight deals ·",
+    "backHome": "Back to home"
+  }
+}

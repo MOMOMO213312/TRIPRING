@@ -1,0 +1,42 @@
+{
+  "title": "Fiyat alarmları",
+  "subtitle": "Belirli bir rotada fiyat düştüğünde bildirim alın",
+  "create": {
+    "title": "Yeni alarm oluştur",
+    "from": "Nereden",
+    "to": "Nereye",
+    "toPlaceholder": "Varış noktasını seçin",
+    "maxBudget": "Maksimum fiyat (USD)",
+    "phone": "Telefon numarası",
+    "email": "E-posta",
+    "hint": "Devam etmek için en az bir telefon numarası veya e-posta girin",
+    "submit": "Alarm oluştur",
+    "submitting": "Kaydediliyor..."
+  },
+  "lookup": {
+    "title": "Alarmlarım",
+    "contact": "Telefon numarası veya e-posta",
+    "submit": "Alarmları göster",
+    "maxLine": "Maks.: {{price}}"
+  },
+  "errors": {
+    "pickDestination": "Bir varış noktası seçin",
+    "contactRequired": "Sizi bilgilendirebilmemiz için en az bir telefon numarası veya e-posta girin",
+    "phoneInvalid": "Telefon numarası geçersiz — uluslararası biçimde girin, örneğin +20xxxxxxxxxx",
+    "emailInvalid": "E-posta adresi geçersiz",
+    "createFailed": "Alarm oluşturulamadı, lütfen tekrar deneyin.",
+    "searchFailed": "Arama sırasında bir hata oluştu, lütfen tekrar deneyin."
+  },
+  "messages": {
+    "created": "Alarm başarıyla oluşturuldu",
+    "noActive": "Aktif alarm yok"
+  },
+  "panel": {
+    "loading": "Alarmlar yükleniyor...",
+    "emptyTitle": "Fiyat alarmları",
+    "emptyText": "Bir alarm oluşturun, rotanızda fiyat düştüğünde sizi bilgilendirelim",
+    "createCta": "Fiyat alarmı oluştur",
+    "activeTitle": "Aktif alarmlarınız",
+    "createNew": "Yeni fiyat alarmı oluştur"
+  }
+}

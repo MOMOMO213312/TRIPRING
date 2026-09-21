@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
@@ -13,6 +14,7 @@ import { useCatalog } from "../hooks/useCatalog";
 import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
 
 export function AlertsPage() {
+  const { t } = useTranslation("alerts");
   const catalog = useCatalog();
   const [from, setFrom] = useState("CAI");
   const [to, setTo] = useState("");
@@ -27,27 +29,27 @@ export function AlertsPage() {
 
   const airportOptions = catalog.airports.map((a) => ({
     value: a.code,
-    label: `${a.city} (${a.code})`,
+    label: airportLabel(a.code, catalog.airports),
   }));
 
   async function handleCreate(e: FormEvent) {
     e.preventDefault();
     if (!to) {
-      setError("اختر وجهة");
+      setError(t("errors.pickDestination"));
       return;
     }
     const trimmedPhone = phone.trim();
     const trimmedEmail = email.trim();
     if (!trimmedPhone && !trimmedEmail) {
-      setError("أدخل رقم هاتف أو بريد إلكتروني على الأقل عشان نقدر نبلّغك");
+      setError(t("errors.contactRequired"));
       return;
     }
     if (trimmedPhone && !isValidPhone(trimmedPhone)) {
-      setError("رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx");
+      setError(t("errors.phoneInvalid"));
       return;
     }
     if (trimmedEmail && !isValidEmail(trimmedEmail)) {
-      setError("البريد الإلكتروني غير صالح");
+      setError(t("errors.emailInvalid"));
       return;
     }
     setLoading(true);
@@ -63,9 +65,9 @@ export function AlertsPage() {
       });
       const contact = trimmedPhone || trimmedEmail;
       if (contact) setSessionContact(contact);
-      setMessage("تم إنشاء التنبيه بنجاح");
+      setMessage(t("messages.created"));
     } catch (err) {
-      setError(friendlyErrorMessage(err, "فشل إنشاء التنبيه، جرّب تاني.", "AlertsPage.createAlert"));
+      setError(friendlyErrorMessage(err, "alerts:errors.createFailed", "AlertsPage.createAlert"));
     } finally {
       setLoading(false);
     }
@@ -79,62 +81,62 @@ export function AlertsPage() {
       const data = await lookupPriceAlerts(lookupContact);
       setAlerts(data);
       setSessionContact(lookupContact);
-      if (!data.length) setMessage("لا توجد تنبيهات نشطة");
+      if (!data.length) setMessage(t("messages.noActive"));
     } catch (err) {
-      setError(friendlyErrorMessage(err, "حصل خطأ في البحث، جرّب تاني.", "AlertsPage.search"));
+      setError(friendlyErrorMessage(err, "alerts:errors.searchFailed", "AlertsPage.search"));
     } finally {
       setLoading(false);
     }
   }
 
-  if (catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
+  if (catalog.loading) return <p className="text-slate-500">{t("common:actions.loading")}</p>;
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">تنبيهات الأسعار</h1>
-        <p className="text-slate-600">احصل على إشعار عندما ينخفض السعر لمسار معيّن</p>
+        <h1 className="text-2xl font-bold">{t("title")}</h1>
+        <p className="text-slate-600">{t("subtitle")}</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <h2 className="mb-4 font-bold">إنشاء تنبيه جديد</h2>
+          <h2 className="mb-4 font-bold">{t("create.title")}</h2>
           <form onSubmit={handleCreate} className="space-y-4">
-            <Select label="من" value={from} onChange={(e) => setFrom(e.target.value)} options={airportOptions} />
+            <Select label={t("create.from")} value={from} onChange={(e) => setFrom(e.target.value)} options={airportOptions} />
             <Select
-              label="إلى"
+              label={t("create.to")}
               value={to}
               onChange={(e) => setTo(e.target.value)}
               options={airportOptions}
-              placeholder="اختر الوجهة"
+              placeholder={t("create.toPlaceholder")}
             />
             <Input
-              label="الحد الأقصى للسعر (USD)"
+              label={t("create.maxBudget")}
               type="number"
               min={50}
               value={maxBudget}
               onChange={(e) => setMaxBudget(Number(e.target.value))}
             />
-            <Input label="رقم الهاتف" type="tel" placeholder="+20xxxxxxxxxx" value={phone} onChange={(e) => setPhone(e.target.value)} />
-            <Input label="البريد الإلكتروني" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <p className="text-xs text-slate-500">أدخل هاتفاً أو بريداً على الأقل للمتابعة</p>
+            <Input label={t("create.phone")} type="tel" placeholder="+20xxxxxxxxxx" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Input label={t("create.email")} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <p className="text-xs text-slate-500">{t("create.hint")}</p>
             <Button type="submit" fullWidth disabled={loading}>
-              {loading ? "جاري الحفظ..." : "إنشاء التنبيه"}
+              {loading ? t("create.submitting") : t("create.submit")}
             </Button>
           </form>
         </Card>
 
         <Card>
-          <h2 className="mb-4 font-bold">تنبيهاتي</h2>
+          <h2 className="mb-4 font-bold">{t("lookup.title")}</h2>
           <form onSubmit={handleLookup} className="space-y-4">
             <Input
-              label="رقم الهاتف أو البريد"
+              label={t("lookup.contact")}
               required
               value={lookupContact}
               onChange={(e) => setLookupContact(e.target.value)}
             />
             <Button type="submit" variant="secondary" fullWidth disabled={loading}>
-              عرض التنبيهات
+              {t("lookup.submit")}
             </Button>
           </form>
           {alerts.length > 0 ? (
@@ -145,7 +147,7 @@ export function AlertsPage() {
                     {airportLabel(a.from_airport ?? "", catalog.airports)} →{" "}
                     {airportLabel(a.to_airport ?? "", catalog.airports)}
                   </p>
-                  <p className="text-slate-600">حد أقصى: {formatPrice(a.max_budget ?? 0)}</p>
+                  <p className="text-slate-600">{t("lookup.maxLine", { price: formatPrice(a.max_budget ?? 0) })}</p>
                 </li>
               ))}
             </ul>

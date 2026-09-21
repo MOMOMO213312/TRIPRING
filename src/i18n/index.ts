@@ -16,6 +16,10 @@ import arSearch from "./locales/ar/search.json";
 import arTripgo from "./locales/ar/tripgo.json";
 import arLegal from "./locales/ar/legal.json";
 import arFaq from "./locales/ar/faq.json";
+import arMembership from "./locales/ar/membership.json";
+import arResale from "./locales/ar/resale.json";
+import arAlerts from "./locales/ar/alerts.json";
+import arBlueFriday from "./locales/ar/blueFriday.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDealDetail from "./locales/en/dealDetail.json";
@@ -30,6 +34,10 @@ import enSearch from "./locales/en/search.json";
 import enTripgo from "./locales/en/tripgo.json";
 import enLegal from "./locales/en/legal.json";
 import enFaq from "./locales/en/faq.json";
+import enMembership from "./locales/en/membership.json";
+import enResale from "./locales/en/resale.json";
+import enAlerts from "./locales/en/alerts.json";
+import enBlueFriday from "./locales/en/blueFriday.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDealDetail from "./locales/tr/dealDetail.json";
@@ -44,6 +52,10 @@ import trSearch from "./locales/tr/search.json";
 import trTripgo from "./locales/tr/tripgo.json";
 import trLegal from "./locales/tr/legal.json";
 import trFaq from "./locales/tr/faq.json";
+import trMembership from "./locales/tr/membership.json";
+import trResale from "./locales/tr/resale.json";
+import trAlerts from "./locales/tr/alerts.json";
+import trBlueFriday from "./locales/tr/blueFriday.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -92,6 +104,10 @@ void i18n
         tripgo: arTripgo,
         legal: arLegal,
         faq: arFaq,
+        membership: arMembership,
+        resale: arResale,
+        alerts: arAlerts,
+        blueFriday: arBlueFriday,
       },
       en: {
         common: enCommon,
@@ -108,6 +124,10 @@ void i18n
         tripgo: enTripgo,
         legal: enLegal,
         faq: enFaq,
+        membership: enMembership,
+        resale: enResale,
+        alerts: enAlerts,
+        blueFriday: enBlueFriday,
       },
       tr: {
         common: trCommon,
@@ -124,9 +144,13 @@ void i18n
         tripgo: trTripgo,
         legal: trLegal,
         faq: trFaq,
+        membership: trMembership,
+        resale: trResale,
+        alerts: trAlerts,
+        blueFriday: trBlueFriday,
       },
     },
-    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore", "tripgo", "faq", "legal"],
+    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore", "tripgo", "faq", "legal", "blueFriday", "alerts", "resale", "membership"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { airportLabel } from "../lib/deal-utils";
@@ -14,10 +15,11 @@ type Props = {
 };
 
 export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
+  const { t } = useTranslation("alerts");
   if (loading) {
     return (
       <Card>
-        <p className="text-sm text-slate-500">جاري تحميل التنبيهات...</p>
+        <p className="text-sm text-slate-500">{t("panel.loading")}</p>
       </Card>
     );
   }
@@ -26,13 +28,11 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
     return (
       <Card className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="font-bold text-slate-900">تنبيهات الأسعار</h3>
-          <p className="mt-1 text-sm text-slate-600">
-            أنشئ تنبيهاً ونبلّغك عندما ينخفض السعر لمسارك
-          </p>
+          <h3 className="font-bold text-slate-900">{t("panel.emptyTitle")}</h3>
+          <p className="mt-1 text-sm text-slate-600">{t("panel.emptyText")}</p>
         </div>
         <Link to="/alerts">
-          <Button variant="outline">إنشاء تنبيه سعر</Button>
+          <Button variant="outline">{t("panel.createCta")}</Button>
         </Link>
       </Card>
     );
@@ -41,9 +41,9 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h3 className="font-bold text-slate-900">تنبيهاتك النشطة</h3>
+        <h3 className="font-bold text-slate-900">{t("panel.activeTitle")}</h3>
         <Link to="/alerts" className="text-sm font-semibold text-[#0C7BB3] hover:underline">
-          عرض الكل
+          {t("common:actions.viewAll")}
         </Link>
       </div>
       <ul className="space-y-3">
@@ -64,7 +64,7 @@ export function PriceAlertsPanel({ alerts, airports, loading }: Props) {
       </ul>
       <Link to="/alerts">
         <Button fullWidth variant="outline" className="mt-4">
-          إنشاء تنبيه سعر جديد
+          {t("panel.createNew")}
         </Button>
       </Link>
     </Card>
