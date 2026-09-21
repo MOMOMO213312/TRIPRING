@@ -43,7 +43,7 @@ export function AlertsPage() {
       return;
     }
     if (!maxBudget || maxBudget <= 0) {
-      setError("أدخل الحد الأقصى للسعر");
+      setError(t("errors.maxBudgetRequired"));
       return;
     }
     const trimmedPhone = phone.trim();

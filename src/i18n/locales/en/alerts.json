@@ -25,7 +25,8 @@
     "phoneInvalid": "Invalid phone number — enter it in international format like +20xxxxxxxxxx",
     "emailInvalid": "Invalid email address",
     "createFailed": "Couldn't create the alert, please try again.",
-    "searchFailed": "Something went wrong with the search, please try again."
+    "searchFailed": "Something went wrong with the search, please try again.",
+    "maxBudgetRequired": "Enter the maximum price"
   },
   "messages": {
     "created": "Alert created successfully",

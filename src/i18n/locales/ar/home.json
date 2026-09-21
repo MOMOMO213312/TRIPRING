@@ -103,5 +103,23 @@
     "title": "🌍 أكثر الوجهات بحثًا من القاهرة",
     "subtitle": "وجهات مبنية على الفرص المتاحة فعليًا دلوقتي",
     "roundTripFrom": "رحلات ذهاب وعودة ابتداءً من"
+  },
+  "flash": {
+    "badge": "عرض سريع",
+    "startsFrom": "يبدأ من",
+    "bookNow": "احجز الآن"
+  },
+  "trustedAirlines": {
+    "title": "شركاؤنا الموثوقون",
+    "activeDeals_zero": "لا عروض نشطة",
+    "activeDeals_one": "عرض نشط واحد",
+    "activeDeals_two": "عرضان نشطان",
+    "activeDeals_few": "{{num}} عروض نشطة",
+    "activeDeals_many": "{{num}} عرضًا نشطًا",
+    "activeDeals_other": "{{num}} عرض نشط"
+  },
+  "fareBoard": {
+    "roundTrip": "ذهاب وعودة · ROUND-TRIP",
+    "oneWay": "ذهاب فقط · ONE-WAY"
   }
 }

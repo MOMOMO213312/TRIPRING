@@ -25,7 +25,8 @@
     "phoneInvalid": "Telefon numarası geçersiz — uluslararası biçimde girin, örneğin +20xxxxxxxxxx",
     "emailInvalid": "E-posta adresi geçersiz",
     "createFailed": "Alarm oluşturulamadı, lütfen tekrar deneyin.",
-    "searchFailed": "Arama sırasında bir hata oluştu, lütfen tekrar deneyin."
+    "searchFailed": "Arama sırasında bir hata oluştu, lütfen tekrar deneyin.",
+    "maxBudgetRequired": "Maksimum fiyatı girin"
   },
   "messages": {
     "created": "Alarm başarıyla oluşturuldu",

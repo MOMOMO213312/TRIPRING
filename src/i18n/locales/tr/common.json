@@ -92,5 +92,17 @@
   "airportAutocomplete": {
     "placeholder": "Şehir veya havalimanı",
     "anyDestination": "Herhangi bir yer"
+  },
+  "errorBoundary": {
+    "title": "Beklenmedik bir hata oluştu",
+    "body": "Bu sayfa görüntülenirken geçici bir sorun var. Ana sayfaya dönmeyi deneyin; sorun devam ederse bizimle iletişime geçin.",
+    "home": "Ana sayfaya dön"
+  },
+  "betaNotice": "Site hâlâ test aşamasında — gösterilen bazı uçuşlar yeni veri kaynaklarının denemesinin parçası olduğundan her ayrıntı henüz kesin olmayabilir.",
+  "ticker": {
+    "dismiss": "Gizle"
+  },
+  "errors": {
+    "catalogLoadFailed": "Site verileri yüklenemedi, lütfen tekrar deneyin."
   }
 }

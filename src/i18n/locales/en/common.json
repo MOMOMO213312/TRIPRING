@@ -92,5 +92,17 @@
   "airportAutocomplete": {
     "placeholder": "City or airport",
     "anyDestination": "Anywhere"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "There's a temporary problem displaying this page. Try going back to the home page, and contact us if it keeps happening.",
+    "home": "Back to the home page"
+  },
+  "betaNotice": "The site is still in testing — some of the flights shown are part of a trial of new data sources, so not every detail may be final yet.",
+  "ticker": {
+    "dismiss": "Dismiss"
+  },
+  "errors": {
+    "catalogLoadFailed": "Couldn't load the site data, please try again."
   }
 }

@@ -54,7 +54,7 @@ export function useCatalog(): Catalog {
         setState((s) => ({
           ...s,
           loading: false,
-          error: friendlyErrorMessage(e, "حصل خطأ في تحميل بيانات الموقع، جرّب تاني.", "useCatalog"),
+          error: friendlyErrorMessage(e, "common:errors.catalogLoadFailed", "useCatalog"),
         }));
       }
     })();

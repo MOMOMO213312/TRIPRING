@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { useDealImage } from "../hooks/useCatalog";
@@ -38,6 +39,7 @@ function homeBadgeClass(type: DealType): string {
  * date · stops → airline → price row (price, seats-left) at the bottom.
  */
 export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Catalog }) {
+  const { t } = useTranslation("home");
   const { fmt } = useCurrency();
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
   const lowSeats = isLowSeats(deal.available_seats);
@@ -99,7 +101,7 @@ export function FlightDealCard({ deal, catalog }: { deal: DealRow; catalog: Cata
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             {deal.refundable ? (
               <span className="rounded-full bg-[#F0FDF4] px-1.5 py-0.5 text-[10px] font-semibold text-[#16A34A]">
-                قابلة للاسترداد
+                {t("dealCard.refundable")}
               </span>
             ) : null}
             {baggageBadgeLabel(deal) ? (

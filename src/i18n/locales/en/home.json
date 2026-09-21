@@ -99,5 +99,19 @@
     "title": "🌍 Most searched destinations from Cairo",
     "subtitle": "Destinations based on the deals actually available right now",
     "roundTripFrom": "Round trips from"
+  },
+  "flash": {
+    "badge": "Flash deal",
+    "startsFrom": "From",
+    "bookNow": "Book now"
+  },
+  "trustedAirlines": {
+    "title": "Our trusted partners",
+    "activeDeals_one": "{{num}} active deal",
+    "activeDeals_other": "{{num}} active deals"
+  },
+  "fareBoard": {
+    "roundTrip": "ROUND-TRIP",
+    "oneWay": "ONE-WAY"
   }
 }

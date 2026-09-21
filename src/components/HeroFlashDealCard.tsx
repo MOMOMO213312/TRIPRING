@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { hoursUntil } from "../lib/filters";
@@ -18,6 +19,7 @@ function pickFlashDeal(deals: DealRow[]): DealRow | null {
 }
 
 export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airports: AirportRow[] }) {
+  const { t } = useTranslation("home");
   const { fmt } = useCurrency();
   const deal = useMemo(() => pickFlashDeal(deals), [deals]);
   const [hoursLeft, setHoursLeft] = useState<number | null>(() => (deal ? hoursUntil(deal.expires_at) : null));
@@ -43,7 +45,7 @@ export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airpo
     <div className="w-[240px] rounded-2xl bg-[#0F172A]/95 p-4 text-white shadow-2xl backdrop-blur-sm sm:w-[260px]">
       <div className="flex items-center justify-between">
         <span className="flex items-center gap-1 text-xs font-bold text-[#FF7A45]">
-          <span aria-hidden>🔥</span> عرض سريع
+          <span aria-hidden>🔥</span> {t("flash.badge")}
         </span>
         {totalSeconds > 0 ? (
           <div dir="ltr" className="font-latin flex items-center gap-0.5 text-[11px] font-bold text-white/90">
@@ -65,7 +67,7 @@ export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airpo
       </p>
 
       <div className="mt-3 border-t border-white/10 pt-3">
-        <p className="text-[10px] text-white/50">يبدأ من</p>
+        <p className="text-[10px] text-white/50">{t("flash.startsFrom")}</p>
         <p className="font-latin text-xl font-extrabold text-white">{fmt(deal.price, deal.currency ?? "USD")}</p>
       </div>
 
@@ -73,7 +75,7 @@ export function HeroFlashDealCard({ deals, airports }: { deals: DealRow[]; airpo
         to={`/deals/${deal.id}`}
         className="mt-3 block w-full rounded-xl bg-[#FF7A45] py-2.5 text-center text-sm font-bold text-white transition hover:bg-[#F0642F]"
       >
-        احجز الآن
+        {t("flash.bookNow")}
       </Link>
     </div>
   );

@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 
+import i18n from "../i18n";
 import { Sentry } from "../lib/sentry";
 
 /**
@@ -37,12 +38,12 @@ export class ErrorBoundary extends Component<Props, State> {
           <span className="text-4xl" aria-hidden>
             😕
           </span>
-          <h1 className="text-xl font-bold text-slate-900">حصل خطأ غير متوقع</h1>
+          <h1 className="text-xl font-bold text-slate-900">{i18n.t("common:errorBoundary.title")}</h1>
           <p className="max-w-sm text-sm text-slate-600">
-            في مشكلة مؤقتة في عرض هذه الصفحة. جرّب العودة للصفحة الرئيسية، ولو المشكلة استمرت تواصل معنا.
+            {i18n.t("common:errorBoundary.body")}
           </p>
           <button type="button" onClick={this.reset} className="cta-primary px-5 py-2.5 text-sm">
-            العودة للصفحة الرئيسية
+            {i18n.t("common:errorBoundary.home")}
           </button>
         </div>
       );

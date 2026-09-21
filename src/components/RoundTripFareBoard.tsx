@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { buildRouteQuotesByTripType } from "../lib/routeQuotes";
@@ -19,6 +20,7 @@ type Props = {
  *  boards, so a customer going CAI→RUH one-way finds it in the one-way board
  *  and a customer going CAI→RUH round-trip finds it in this one. */
 export function RoundTripFareBoard({ deals, references, airports }: Props) {
+  const { t } = useTranslation("home");
   const { fmt } = useCurrency();
   const quotes = useMemo(
     () => buildRouteQuotesByTripType(references, deals, airports).filter((q) => q.roundTripDeal),
@@ -55,7 +57,7 @@ export function RoundTripFareBoard({ deals, references, airports }: Props) {
         <span aria-hidden className="text-base">
           ↔️
         </span>
-        ذهاب وعودة · ROUND-TRIP
+        {t("fareBoard.roundTrip")}
       </div>
       <div className="ticker-track relative z-0 flex min-w-0 flex-1 items-center overflow-hidden py-2 leading-none">
         {row("a")}
