@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
@@ -14,6 +15,7 @@ import type { TripGoBundleJoined } from "../types/database";
  * (`agency_selling_price`), not a raw cost figure.
  */
 export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; catalog: Catalog }) {
+  const { t } = useTranslation("tripgo");
   const { deal, tripgo_deal: transport } = bundle;
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
   const currency = deal.currency ?? "USD";
@@ -39,7 +41,7 @@ export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; ca
           </div>
         )}
         <span className="absolute start-3 top-3 flex items-center gap-1 rounded-full bg-gradient-to-r from-[#0C7BB3] to-[#1E3A8A] px-2.5 py-1 text-[11px] font-bold text-white shadow">
-          🚐 TripGo
+          {t("card.badge")}
         </span>
       </div>
 
@@ -70,7 +72,8 @@ export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; ca
           {deal.duration_hours ? (
             <>
               <span className="mx-1.5 text-slate-300">·</span>
-              {deal.duration_hours}س
+              {deal.duration_hours}
+              {t("card.hoursSuffix")}
             </>
           ) : null}
           {baggageBadgeLabel(deal) ? (
@@ -85,7 +88,7 @@ export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; ca
         <div className="mt-4 rounded-2xl border border-[#16A34A]/25 bg-[#F0FDF4] p-3">
           <div className="flex flex-wrap items-center justify-between gap-1.5">
             <p className="flex items-center gap-1.5 text-sm font-extrabold text-[#16A34A]">
-              <span aria-hidden>✓</span> النقل من وإلى المطار متضمّن
+              <span aria-hidden>✓</span> {t("card.transferIncluded")}
             </p>
             <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-[#16A34A] shadow-sm">
               {transferKindLabel(transport.transport_type, transport.vehicle_type)}
@@ -93,10 +96,10 @@ export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; ca
           </div>
           <div className="mt-1.5 space-y-1 text-xs text-slate-700">
             <p className="flex items-center gap-1.5">
-              <span aria-hidden>🚐</span> الاستلام → المطار
+              <span aria-hidden>🚐</span> {t("card.pickupToAirport")}
             </p>
             <p className="flex items-center gap-1.5">
-              <span aria-hidden>🚐</span> المطار → الوجهة
+              <span aria-hidden>🚐</span> {t("card.airportToDestination")}
             </p>
           </div>
         </div>
@@ -105,10 +108,10 @@ export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; ca
         <div className="mt-4 flex items-end justify-between border-t border-slate-100 pt-4">
           <div>
             <p className="font-latin text-2xl font-extrabold text-[#0C7BB3]">{formatPrice(total, currency)}</p>
-            <p className="text-[11px] font-semibold text-slate-500">تذكرة + نقل / للمسافر</p>
+            <p className="text-[11px] font-semibold text-slate-500">{t("card.priceNote")}</p>
           </div>
           <span className="rounded-xl bg-[#0F172A] px-4 py-2.5 text-sm font-bold text-white transition group-hover:bg-[#1E3A8A]">
-            احجز TripGo
+            {t("card.book")}
           </span>
         </div>
       </div>
