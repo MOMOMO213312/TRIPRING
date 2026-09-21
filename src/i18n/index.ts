@@ -14,6 +14,8 @@ import arPackages from "./locales/ar/packages.json";
 import arExplore from "./locales/ar/explore.json";
 import arSearch from "./locales/ar/search.json";
 import arTripgo from "./locales/ar/tripgo.json";
+import arLegal from "./locales/ar/legal.json";
+import arFaq from "./locales/ar/faq.json";
 import enBooking from "./locales/en/booking.json";
 import enCommon from "./locales/en/common.json";
 import enDealDetail from "./locales/en/dealDetail.json";
@@ -26,6 +28,8 @@ import enPackages from "./locales/en/packages.json";
 import enExplore from "./locales/en/explore.json";
 import enSearch from "./locales/en/search.json";
 import enTripgo from "./locales/en/tripgo.json";
+import enLegal from "./locales/en/legal.json";
+import enFaq from "./locales/en/faq.json";
 import trBooking from "./locales/tr/booking.json";
 import trCommon from "./locales/tr/common.json";
 import trDealDetail from "./locales/tr/dealDetail.json";
@@ -38,6 +42,8 @@ import trPackages from "./locales/tr/packages.json";
 import trExplore from "./locales/tr/explore.json";
 import trSearch from "./locales/tr/search.json";
 import trTripgo from "./locales/tr/tripgo.json";
+import trLegal from "./locales/tr/legal.json";
+import trFaq from "./locales/tr/faq.json";
 
 export const SUPPORTED_LANGS = ["ar", "en", "tr"] as const;
 export type Lang = (typeof SUPPORTED_LANGS)[number];
@@ -84,6 +90,8 @@ void i18n
         search: arSearch,
         explore: arExplore,
         tripgo: arTripgo,
+        legal: arLegal,
+        faq: arFaq,
       },
       en: {
         common: enCommon,
@@ -98,6 +106,8 @@ void i18n
         search: enSearch,
         explore: enExplore,
         tripgo: enTripgo,
+        legal: enLegal,
+        faq: enFaq,
       },
       tr: {
         common: trCommon,
@@ -112,9 +122,11 @@ void i18n
         search: trSearch,
         explore: trExplore,
         tripgo: trTripgo,
+        legal: trLegal,
+        faq: trFaq,
       },
     },
-    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore", "tripgo"],
+    ns: ["common", "errors", "home", "deals", "booking", "packages", "dealDetail", "filters", "dealsCenter", "search", "explore", "tripgo", "faq", "legal"],
     defaultNS: "common",
     fallbackLng: DEFAULT_LANG,
     supportedLngs: [...SUPPORTED_LANGS],

@@ -1,0 +1,92 @@
+{
+  "terms": {
+    "title": "Terms & Conditions",
+    "intro": "By using the TripRing platform, you agree to these terms. Please read them carefully before completing any booking.",
+    "sections": [
+      {
+        "heading": "Nature of the service",
+        "body": "TripRing is a travel opportunity discovery platform that displays flight deals from verified partner travel agencies. We are not an airline or a direct ticket issuer — our role is to discover opportunities for you and make booking easier, while the actual ticket is issued by the agency responsible for each deal."
+      },
+      {
+        "heading": "Accuracy of prices and availability",
+        "body": "Prices and the number of seats shown are continuously updated from partner agencies' sources, but like any time-limited opportunity marketplace, the price or seat shown may change or sell out between the moment you browse and the moment the booking is confirmed. The final price is confirmed when the agency confirms the booking."
+      },
+      {
+        "heading": "Booking and payment",
+        "body": "You are responsible for the accuracy of the data you enter when booking (traveller details, passport, contact details). Payment is made through the payment methods available on the platform (bank transfer, InstaPay, Vodafone Cash). A booking is officially confirmed after the responsible agency verifies the payment."
+      },
+      {
+        "heading": "Cancellation and refunds",
+        "body": "Cancellation, refund and change policies are subject to the terms of the airline and the agency that issued the ticket, and may differ from one deal to another. Review the deal details before booking. TripRing helps with communication with the agency but is not the party responsible for the refund policy itself."
+      },
+      {
+        "heading": "Ticket resale marketplace",
+        "body": "Use of the resale marketplace is at the risk of the seller and the buyer. The seller is responsible for the accuracy of the listed ticket's details, and the buyer is responsible for verifying before purchase. TripRing provides the platform for listing and communication only."
+      },
+      {
+        "heading": "Acceptable use",
+        "body": "It is prohibited to use the platform for any unlawful purpose, to attempt to manipulate the displayed prices, to impersonate another traveller's details, or to use it in any way that harms other users or partner agencies."
+      },
+      {
+        "heading": "Intellectual property",
+        "body": "All content on TripRing (the design, the logo, the Deal Score calculation mechanism) belongs to the platform and may not be copied or used commercially without written permission."
+      },
+      {
+        "heading": "Limitation of liability",
+        "body": "TripRing is not responsible for any delay, cancellation or change on the part of the airline or the agency, nor for any indirect damages resulting from use of the platform, to the extent permitted by law."
+      },
+      {
+        "heading": "Changes to the terms",
+        "body": "We may amend these terms from time to time, and we will indicate the date of the last update at the top of the page."
+      },
+      {
+        "heading": "Governing law",
+        "body": "These terms are governed by the laws of the Arab Republic of Egypt."
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "intro": "Your privacy matters to us. This page explains what data we collect and how we use it.",
+    "sections": [
+      {
+        "heading": "Data we collect",
+        "items": [
+          "Contact data: name, phone number, email address.",
+          "Travel data: traveller and passport details needed to issue the ticket at the time of booking.",
+          "Payment data: the payment method you chose (we do not store any full bank card details on our servers).",
+          "Usage data: search preferences and the price alerts you create."
+        ]
+      },
+      {
+        "heading": "How we use your data",
+        "items": [
+          "Processing and confirming your bookings.",
+          "Sending the price alerts you requested.",
+          "Contacting you about your booking status or technical support.",
+          "Improving the accuracy of the Deal Score and the deals shown to you."
+        ]
+      },
+      {
+        "heading": "Sharing data",
+        "body": "We share only the necessary traveller data with the agency responsible for your trip so that it can issue the ticket. We do not sell or rent your data to any third party for marketing purposes."
+      },
+      {
+        "heading": "Data protection",
+        "body": "Your data is stored in a secured database with specific access permissions (Row-Level Security), meaning each user can see only their own data."
+      },
+      {
+        "heading": "Data retention",
+        "body": "We keep your booking data for as long as needed for legal and accounting purposes, after which it is deleted or anonymised."
+      },
+      {
+        "heading": "User rights",
+        "body": "You can request a review, correction or deletion of your data, or unsubscribe from price alerts at any time, by contacting the support team."
+      },
+      {
+        "heading": "Contact about privacy",
+        "body": "For any enquiry about your data, contact us through the support page inside the platform."
+      }
+    ]
+  }
+}
