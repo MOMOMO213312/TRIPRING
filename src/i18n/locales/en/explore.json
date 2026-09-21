@@ -9,8 +9,14 @@
     "subtitle": "Ongoing discounts + free services + priority alerts"
   },
   "tabs": {
-    "services": { "title": "Services", "subtitle": "Order any single service at its price" },
-    "packages": { "title": "Packages", "subtitle": "All-in-one bundles cheaper than ordering separately" }
+    "services": {
+      "title": "Services",
+      "subtitle": "Order any single service at its price"
+    },
+    "packages": {
+      "title": "Packages",
+      "subtitle": "All-in-one bundles cheaper than ordering separately"
+    }
   },
   "servicesBanner": {
     "bold": "Single service:",
@@ -23,8 +29,14 @@
   "category": {
     "transport": "Transport",
     "airport": "Airport",
-    "destination": { "title": "Destination services", "subtitle": "Experiences and services tied to your destination" },
-    "insurance": { "title": "Travel insurance", "subtitle": "Basic or comprehensive cover for your trip" }
+    "destination": {
+      "title": "Destination services",
+      "subtitle": "Experiences and services tied to your destination"
+    },
+    "insurance": {
+      "title": "Travel insurance",
+      "subtitle": "Basic or comprehensive cover for your trip"
+    }
   },
   "loadingServices": "Loading services...",
   "noServicesInCategory": "No services currently available in this category",
@@ -36,12 +48,26 @@
   "startsFromYourChoice": "Starts based on your choices",
   "explorePackage": "Explore package",
   "packages": {
-    "vip": { "subtitle": "All airport services in one comprehensive package", "badge": "Most complete" },
-    "arrival": { "subtitle": "VIP meet & assist and a comfortable transfer from the airport" },
-    "departure": { "subtitle": "Airport transfer with Fast Track when you travel" },
-    "family": { "subtitle": "Family-friendly transfer with baggage services" },
-    "business": { "subtitle": "VIP lounge, Fast Track, and a private transfer", "badge": "Most popular" },
-    "custom": { "subtitle": "Pick the services that suit you and build your own package" }
+    "vip": {
+      "subtitle": "All airport services in one comprehensive package",
+      "badge": "Most complete"
+    },
+    "arrival": {
+      "subtitle": "VIP meet & assist and a comfortable transfer from the airport"
+    },
+    "departure": {
+      "subtitle": "Airport transfer with Fast Track when you travel"
+    },
+    "family": {
+      "subtitle": "Family-friendly transfer with baggage services"
+    },
+    "business": {
+      "subtitle": "VIP lounge, Fast Track, and a private transfer",
+      "badge": "Most popular"
+    },
+    "custom": {
+      "subtitle": "Pick the services that suit you and build your own package"
+    }
   },
   "modal": {
     "quantity": "Quantity",
@@ -79,5 +105,53 @@
     "confirmationBody": "Request number #{{number}} — our team will contact you soon to confirm the details and payment.",
     "confirmationTotal": "Total: {{amount}}",
     "ok": "OK"
+  },
+  "budget": {
+    "orLess": "or less",
+    "subtitle": "Got $300? We'll show you where you can go",
+    "title": "💵 Travel on your budget"
+  },
+  "destinationCard": {
+    "priceLabel": "Round trips from"
+  },
+  "destinations": {
+    "dealCount_one": "{{count}} deal available",
+    "dealCount_other": "{{count}} deals available",
+    "emptyHint": "Check back later — we're adding new deals all the time.",
+    "emptyTitle": "No destinations available right now",
+    "errorTitle": "Something went wrong",
+    "meta": {
+      "description": "Explore the best travel destinations available now on TripRing, with the cheapest real flight prices for each one.",
+      "title": "Best travel destinations and flight prices — TripRing"
+    },
+    "subtitle": {
+      "count_one": "{{count}} destination available now at real prices from live TripRing deals",
+      "count_other": "{{count}} destinations available now at real prices from live TripRing deals",
+      "empty": "Browse all destinations currently available on TripRing at real, up-to-date prices"
+    },
+    "title": "Travel destinations"
+  },
+  "routes": {
+    "emptyHint": "Check back later — we're adding new routes all the time.",
+    "emptyTitle": "No routes available right now",
+    "errorTitle": "Something went wrong",
+    "meta": {
+      "description": "Browse all flight routes available on TripRing with the cheapest real price for each route.",
+      "title": "Flight routes and prices — TripRing"
+    },
+    "noLiveDeal": "No live deal right now",
+    "startsFrom": "Starts from",
+    "subtitle": {
+      "count_one": "{{count}} route available, with real prices updated continuously",
+      "count_other": "{{count}} routes available, with real prices updated continuously",
+      "empty": "Browse all flight routes available on TripRing"
+    },
+    "title": "Flight routes"
+  },
+  "travelTo": {
+    "from": "From",
+    "fromCity": "From {{city}}",
+    "subtitle": "Pick a country, then a city, and we'll take you straight to the search",
+    "title": "✈️ Choose your destination"
   }
 }

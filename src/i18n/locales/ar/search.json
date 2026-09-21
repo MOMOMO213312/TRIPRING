@@ -21,5 +21,31 @@
     "resetButton": "إعادة تعيين الفلاتر"
   },
   "loading": "جاري التحميل...",
-  "loadError": "حصل خطأ في تحميل النتائج، جرّب تاني."
+  "loadError": "حصل خطأ في تحميل النتائج، جرّب تاني.",
+  "card": {
+    "priceDrop": "انخفض {{percent}}% خلال آخر 7 أيام",
+    "scoreLabel": "Deal Score {{score}} من 100"
+  },
+  "chips": {
+    "cheapest": "أقل سعر",
+    "direct": "بدون توقف",
+    "allFilters": "+ كل الفلاتر"
+  },
+  "compare": {
+    "durationH": "{{h}} ساعة",
+    "durationHM": "{{h}} س {{m}} د",
+    "no": "✕ لا",
+    "remove": "إزالة ✕",
+    "row": {
+      "price": "السعر",
+      "airline": "شركة الطيران",
+      "stops": "التوقف",
+      "duration": "مدة الرحلة",
+      "baggage": "الأمتعة",
+      "refundable": "قابلة للاسترداد",
+      "seats": "المقاعد المتاحة"
+    },
+    "title": "مقارنة العروض",
+    "yes": "✓ نعم"
+  }
 }

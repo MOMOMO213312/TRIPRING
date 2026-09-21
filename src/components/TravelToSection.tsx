@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { getDestinationImage } from "../lib/api";
 import type { AirportRow, ImageCacheRow, RoutePriceReferenceRow } from "../types/database";
@@ -23,6 +24,7 @@ type RouteDestination = {
  *  never assumed. A destination only shows up here if TripRing actually has a
  *  priced route for it from the selected origin. */
 export function TravelToSection({ airports, imageCache, references, fromAirport }: Props) {
+  const { t } = useTranslation("explore");
   const airportByCode = useMemo(() => new Map(airports.map((a) => [a.code, a])), [airports]);
 
   // Real origins = airports that actually appear as `from_airport` in at
@@ -102,12 +104,12 @@ export function TravelToSection({ airports, imageCache, references, fromAirport 
     <section>
       <div className="mb-5 flex flex-wrap items-end justify-between gap-3 px-4 sm:px-0">
         <div>
-          <h2 className="font-display text-2xl text-slate-900">✈️ اختر وجهتك</h2>
-          <p className="text-sm text-slate-600">اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول</p>
+          <h2 className="font-display text-2xl text-slate-900">{t("travelTo.title")}</h2>
+          <p className="text-sm text-slate-600">{t("travelTo.subtitle")}</p>
         </div>
         {fromOptions.length > 1 ? (
           <label className="flex items-center gap-2 text-sm">
-            <span className="text-slate-500">من</span>
+            <span className="text-slate-500">{t("travelTo.from")}</span>
             <select
               value={effectiveFrom}
               onChange={(e) => setSelectedFrom(e.target.value)}
@@ -156,7 +158,7 @@ export function TravelToSection({ airports, imageCache, references, fromAirport 
                   to={`/search?from=${effectiveFrom}&to=${airport.code}`}
                   image={image}
                   title={airport.city}
-                  subtitle={`من ${fromCity}`}
+                  subtitle={t("travelTo.fromCity", { city: fromCity })}
                   price={minPrice}
                 />
               );
