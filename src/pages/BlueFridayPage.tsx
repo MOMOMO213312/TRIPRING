@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { DestinationCard } from "../components/DestinationCard";
@@ -6,7 +7,7 @@ import { Button } from "../components/ui/Button";
 import { fetchActiveDeals } from "../lib/api";
 import { airportLabel, formatRouteCities } from "../lib/deal-utils";
 import { hoursUntil } from "../lib/filters";
-
+import { airportCityName, countryName } from "../lib/geoNames";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
 import type { DealRow } from "../types/database";
@@ -59,6 +60,7 @@ function getBlueFridayWindow(now: number) {
 
 export function BlueFridayPage() {
   const { fmt } = useCurrency();
+  const { t } = useTranslation("blueFriday");
   const catalog = useCatalog();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -78,6 +80,7 @@ export function BlueFridayPage() {
     return () => clearInterval(id);
   }, []);
 
+  const tickerItems = (t("ticker", { returnObjects: true }) as string[]).map((s) => s.replace("{{code}}", PROMO_CODE));
   const { isLive, endsAt } = getBlueFridayWindow(now);
   const remainingMs = Math.max(0, endsAt - now);
   const timeParts = {
@@ -146,15 +149,9 @@ export function BlueFridayPage() {
         <div className="ticker-track flex">
           {["a", "b"].map((suffix) => (
             <div key={suffix} className="flex shrink-0 items-center gap-8 px-4">
-              {[
-                "EVERY FRIDAY",
-                "UP TO 33% OFF FLIGHTS",
-                `CODE: ${PROMO_CODE}`,
-                "MYSTERY FARES INSIDE",
-                "FLASH DROPS EVERY HOUR",
-              ].map((t) => (
-                <span key={t} className="font-latin whitespace-nowrap">
-                  {t}
+              {tickerItems.map((item) => (
+                <span key={item} className="font-latin whitespace-nowrap">
+                  {item}
                 </span>
               ))}
             </div>
@@ -165,40 +162,42 @@ export function BlueFridayPage() {
       {/* Hero */}
       <div className="mx-auto max-w-4xl px-4 pt-14 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
-          ✨ عروض الجمعة السماوي — كل جمعة
+          {t("hero.badge")}
         </span>
         <h1 className="mt-5 text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl md:text-5xl">
-          كل جمعة، من الفجر لنص الليل.
+          {t("hero.title1")}
           <br />
-          <span className="text-blue-600">خصومات لحد 33% على الطيران.</span>
+          <span className="text-blue-600">{t("hero.title2")}</span>
         </h1>
         <p className="mx-auto mt-4 max-w-lg text-slate-600">
           {isLive ? (
-            <>
-              أعمق خصومات الأسبوع شغالة دلوقتي وبتختفي في نص الليل. استخدم كود{" "}
-              <span className="font-latin font-bold text-blue-600">{PROMO_CODE}</span> لخصم إضافي.
-            </>
+            <Trans
+              i18nKey="hero.live"
+              ns="blueFriday"
+              values={{ code: PROMO_CODE }}
+              components={{ promo: <span className="font-latin font-bold text-blue-600" /> }}
+            />
           ) : (
-            "الجمعة السماوي شغالة كل يوم جمعة بس — تحت تلاقي العداد لبداية الجمعة الجاية."
+            t("hero.notLive")
           )}
         </p>
 
         <div className="mt-8 flex justify-center gap-3">
-          {remainingMs >= 86400000 ? <TimeBox value={String(Math.floor(remainingMs / 86400000))} label="يوم" /> : null}
-          <TimeBox value={remainingMs >= 86400000 ? String(Math.floor((remainingMs % 86400000) / 3600000)).padStart(2, "0") : timeParts.h} label="ساعة" />
-          <TimeBox value={timeParts.m} label="دقيقة" />
-          <TimeBox value={timeParts.s} label="ثانية" />
+          {remainingMs >= 86400000 ? <TimeBox value={String(Math.floor(remainingMs / 86400000))} label={t("time.day")} /> : null}
+          <TimeBox value={remainingMs >= 86400000 ? String(Math.floor((remainingMs % 86400000) / 3600000)).padStart(2, "0") : timeParts.h} label={t("time.hour")} />
+          <TimeBox value={timeParts.m} label={t("time.minute")} />
+          <TimeBox value={timeParts.s} label={t("time.second")} />
         </div>
         <p className="mt-2 text-sm text-slate-500">
-          {isLive ? "العرض بينتهي في نص الليل — متستناش." : "استنى — العرض بيفتح تلقائي الساعة 12 بالليل."}
+          {isLive ? t("hero.endsNote") : t("hero.startsNote")}
         </p>
 
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <a href="#deals">
-            <Button className="bg-blue-600 hover:bg-blue-700">تسوّق العروض</Button>
+            <Button className="bg-blue-600 hover:bg-blue-700">{t("hero.shopDeals")}</Button>
           </a>
           <a href="#mystery">
-            <Button variant="outline">جرّب Mystery Fare</Button>
+            <Button variant="outline">{t("hero.tryMystery")}</Button>
           </a>
         </div>
       </div>
@@ -214,13 +213,13 @@ export function BlueFridayPage() {
             🏷️
           </span>
           <span>
-            <span className="block text-xs font-semibold text-blue-600">كود خصم إضافي</span>
+            <span className="block text-xs font-semibold text-blue-600">{t("code.label")}</span>
             <span className="font-latin block text-lg font-extrabold text-slate-900">{PROMO_CODE}</span>
-            <span className="block text-xs text-slate-400">{copied ? "✓ اتنسخ" : "دوس عشان تنسخ"}</span>
+            <span className="block text-xs text-slate-400">{copied ? t("code.copied") : t("code.tapToCopy")}</span>
           </span>
         </button>
         <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-4">
-          {["أفضل سعر", "حجز آمن", "دعم 24/7", "دفع مرن"].map((label) => (
+          {(t("trust", { returnObjects: true }) as string[]).map((label) => (
             <div key={label} className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white p-3 text-center text-xs font-semibold text-slate-700">
               {label}
             </div>
@@ -232,17 +231,17 @@ export function BlueFridayPage() {
       <section id="deals" className="mx-auto mt-14 max-w-6xl px-4">
         <div className="mb-5 flex items-center gap-2">
           <span aria-hidden>⚡</span>
-          <h2 className="text-2xl font-bold text-slate-900">{isLive ? "أفضل عروض النهاردة" : "معاينة عروض الجمعة الجاية"}</h2>
-          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">لحد 33% خصم</span>
+          <h2 className="text-2xl font-bold text-slate-900">{isLive ? t("deals.titleLive") : t("deals.titlePreview")}</h2>
+          <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">{t("deals.badge")}</span>
         </div>
         {loading ? (
-          <p className="text-slate-500">جاري التحميل...</p>
+          <p className="text-slate-500">{t("common:actions.loading")}</p>
         ) : bestFlightDeals.length === 0 ? (
-          <p className="text-slate-500">مفيش عروض بخصم كافي دلوقتي — تابعنا يوم الجمعة الجاية.</p>
+          <p className="text-slate-500">{t("deals.empty")}</p>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {bestFlightDeals.map((deal) => (
-              <BlueFridayDealCard key={deal.id} deal={deal} catalog={catalog} tag="عرض ساخن" />
+              <BlueFridayDealCard key={deal.id} deal={deal} catalog={catalog} tag={t("deals.tagHot")} />
             ))}
           </div>
         )}
@@ -252,11 +251,11 @@ export function BlueFridayPage() {
       <section id="mystery" className="mx-auto mt-14 max-w-6xl px-4">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
-            🎁 Mystery Fare
+            {t("mystery.badge")}
           </span>
-          <h2 className="mt-4 text-2xl font-bold text-slate-900">قوللنا ميزانيتك، وهنكشفلك وجهة مفاجئة.</h2>
+          <h2 className="mt-4 text-2xl font-bold text-slate-900">{t("mystery.title")}</h2>
           <p className="mt-2 max-w-lg text-sm text-slate-600">
-            اكتب اللي تقدر تصرفه، وهنطابقلك لحد 3 رحلات مفاجئة جوه ميزانيتك — واكتشف فين الجمعة السماوي هتاخدك.
+            {t("mystery.text")}
           </p>
           <form onSubmit={revealMysteryFares} className="mt-5 flex flex-wrap gap-3">
             <div className="flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5">
@@ -266,12 +265,12 @@ export function BlueFridayPage() {
                 min={1}
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
-                placeholder="ميزانيتك (دولار)"
+                placeholder={t("mystery.placeholder")}
                 className="w-32 outline-none"
               />
             </div>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-              اكشف العروض
+              {t("mystery.reveal")}
             </Button>
           </form>
 
@@ -279,11 +278,11 @@ export function BlueFridayPage() {
             mysteryDeals.length > 0 ? (
               <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {mysteryDeals.map((deal) => (
-                  <BlueFridayDealCard key={deal.id} deal={deal} catalog={catalog} tag="مفاجأة" blurred />
+                  <BlueFridayDealCard key={deal.id} deal={deal} catalog={catalog} tag={t("mystery.tag")} blurred />
                 ))}
               </div>
             ) : (
-              <p className="mt-5 text-sm text-slate-500">مفيش عروض جوه الميزانية دي دلوقتي — جرب رقم أكبر.</p>
+              <p className="mt-5 text-sm text-slate-500">{t("mystery.empty")}</p>
             )
           ) : null}
         </div>
@@ -294,12 +293,12 @@ export function BlueFridayPage() {
         <section className="mx-auto mt-14 max-w-6xl px-4">
           <div className="mb-5 flex items-center gap-2">
             <span aria-hidden>⏰</span>
-            <h2 className="text-2xl font-bold text-slate-900">ساعات الفلاش</h2>
-            <span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600">قربت تخلص</span>
+            <h2 className="text-2xl font-bold text-slate-900">{t("flash.title")}</h2>
+            <span className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600">{t("flash.badge")}</span>
           </div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {flashHourDeals.map((deal) => (
-              <BlueFridayDealCard key={deal.id} deal={deal} catalog={catalog} tag="آخر فرصة" />
+              <BlueFridayDealCard key={deal.id} deal={deal} catalog={catalog} tag={t("flash.tag")} />
             ))}
           </div>
         </section>
@@ -310,7 +309,7 @@ export function BlueFridayPage() {
         <section className="mx-auto mt-14 max-w-6xl px-4">
           <div className="mb-5 flex items-center gap-2">
             <span aria-hidden>🛫</span>
-            <h2 className="text-2xl font-bold text-slate-900">وجهات الجمعة السماوي من القاهرة</h2>
+            <h2 className="text-2xl font-bold text-slate-900">{t("destinations.title")}</h2>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {destinations.map(({ airport, minPrice, currency }) => (
@@ -319,9 +318,9 @@ export function BlueFridayPage() {
                 to={`/search?from=CAI&to=${airport.code}`}
                 className="rounded-xl border border-slate-200 bg-white p-4 text-center transition hover:border-blue-400 hover:shadow-md"
               >
-                <p className="font-bold text-slate-900">{airport.city}</p>
-                <p className="text-xs text-slate-400">{airport.country}</p>
-                <p className="font-latin mt-2 text-sm font-bold text-blue-600">من {fmt(minPrice, currency)}</p>
+                <p className="font-bold text-slate-900">{airportCityName(airport)}</p>
+                <p className="text-xs text-slate-400">{countryName(airport.country)}</p>
+                <p className="font-latin mt-2 text-sm font-bold text-blue-600">{t("destinations.from", { price: fmt(minPrice, currency) })}</p>
               </Link>
             ))}
           </div>
@@ -329,9 +328,9 @@ export function BlueFridayPage() {
       ) : null}
 
       <p className="mt-10 text-center text-xs text-slate-400">
-        TripRing الجمعة السماوي · عروض طيران 24 ساعة ·{" "}
+        {t("footer.text")}{" "}
         <Link to="/" className="text-blue-600 hover:underline">
-          الرجوع للرئيسية
+          {t("footer.backHome")}
         </Link>
       </p>
     </div>
@@ -361,6 +360,8 @@ function BlueFridayDealCard({
   blurred?: boolean;
 }) {
   const { fmt } = useCurrency();
+  const { t, i18n } = useTranslation("blueFriday");
+  const arrow = i18n.dir() === "rtl" ? "←" : "→";
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
   const hoursLeft = hoursUntil(deal.expires_at);
 
@@ -387,9 +388,9 @@ function BlueFridayDealCard({
         ) : null}
       </div>
       <div className="p-3">
-        <p className="text-xs text-slate-500">{blurred ? "وجهة مفاجئة" : formatRouteCities(deal, catalog.airports)}</p>
+        <p className="text-xs text-slate-500">{blurred ? t("mystery.destination") : formatRouteCities(deal, catalog.airports)}</p>
         <p className="mt-0.5 text-[11px] text-slate-400">
-          {airportLabel(deal.from_airport, catalog.airports)} ← {blurred ? "؟؟؟" : airportLabel(deal.to_airport, catalog.airports)}
+          {airportLabel(deal.from_airport, catalog.airports)} {arrow} {blurred ? t("mystery.unknown") : airportLabel(deal.to_airport, catalog.airports)}
         </p>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="font-latin text-lg font-extrabold text-[#0C7BB3]">

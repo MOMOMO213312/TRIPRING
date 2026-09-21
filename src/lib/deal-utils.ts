@@ -1,4 +1,5 @@
 import i18n from "../i18n";
+import { airportCityName } from "./geoNames";
 import type { DealType, StopType } from "../types/database";
 import type { AirlineRow, AirportRow, DealRow, RoutePriceReferenceRow } from "../types/database";
 
@@ -33,7 +34,7 @@ export function formatRouteCities(deal: DealRow, airports: AirportRow[]): string
 
 export function airportLabel(code: string, airports: AirportRow[]): string {
   const ap = airports.find((a) => a.code === code);
-  return ap ? `${ap.city} (${code})` : code;
+  return ap ? `${airportCityName(ap)} (${code})` : code;
 }
 
 export type TripScope = "domestic" | "international";

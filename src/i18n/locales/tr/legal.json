@@ -1,0 +1,92 @@
+{
+  "terms": {
+    "title": "Şartlar ve Koşullar",
+    "intro": "TripRing platformunu kullanarak bu şartları kabul etmiş olursunuz. Lütfen herhangi bir rezervasyonu tamamlamadan önce dikkatlice okuyun.",
+    "sections": [
+      {
+        "heading": "Hizmetin niteliği",
+        "body": "TripRing, doğrulanmış iş ortağı seyahat acentelerinin uçuş fırsatlarını gösteren bir seyahat fırsatı keşif platformudur. Biz bir havayolu ya da doğrudan bilet düzenleyici değiliz — rolümüz sizin için fırsatları keşfetmek ve rezervasyon sürecini kolaylaştırmaktır; gerçek bilet, her fırsattan sorumlu acente tarafından düzenlenir."
+      },
+      {
+        "heading": "Fiyat ve müsaitlik doğruluğu",
+        "body": "Gösterilen fiyatlar ve koltuk sayısı iş ortağı acentelerin kaynaklarından sürekli güncellenir; ancak süre sınırlı her fırsat pazarında olduğu gibi, gösterilen fiyat veya koltuk, siz göz attığınız an ile rezervasyonun onaylandığı an arasında değişebilir veya tükenebilir. Nihai fiyat, acente rezervasyonu onayladığı anda kesinleşir."
+      },
+      {
+        "heading": "Rezervasyon ve ödeme",
+        "body": "Rezervasyon sırasında girdiğiniz verilerin (yolcu bilgileri, pasaport, iletişim bilgileri) doğruluğundan siz sorumlusunuz. Ödeme, platformda sunulan ödeme yöntemleriyle (banka havalesi, InstaPay, Vodafone Cash) yapılır. Rezervasyon, sorumlu acentenin ödemeyi doğrulamasından sonra resmen onaylanır."
+      },
+      {
+        "heading": "İptal ve iade",
+        "body": "İptal, iade ve değişiklik politikaları, bileti düzenleyen havayolunun ve acentenin şartlarına tabidir ve fırsattan fırsata farklılık gösterebilir. Rezervasyondan önce fırsat ayrıntılarını inceleyin. TripRing, acenteyle iletişimde yardımcı olur ancak iade politikasının kendisinden sorumlu taraf değildir."
+      },
+      {
+        "heading": "Bilet yeniden satış pazarı",
+        "body": "Yeniden satış pazarının kullanımı satıcının ve alıcının sorumluluğundadır. Listelenen biletin bilgilerinin doğruluğundan satıcı, satın almadan önce doğrulama yapmaktan ise alıcı sorumludur. TripRing yalnızca listeleme ve iletişim için platformu sağlar."
+      },
+      {
+        "heading": "Kabul edilebilir kullanım",
+        "body": "Platformu yasa dışı herhangi bir amaçla kullanmak, gösterilen fiyatları manipüle etmeye çalışmak, başka bir yolcunun bilgilerini taklit etmek veya diğer kullanıcılara ya da iş ortağı acentelere zarar veren herhangi bir şekilde kullanmak yasaktır."
+      },
+      {
+        "heading": "Fikri mülkiyet",
+        "body": "TripRing üzerindeki tüm içerik (tasarım, logo, Deal Score hesaplama mekanizması) platforma aittir ve yazılı izin olmadan kopyalanamaz veya ticari amaçla kullanılamaz."
+      },
+      {
+        "heading": "Sorumluluğun sınırı",
+        "body": "TripRing; havayolu veya acente tarafından yapılan herhangi bir gecikme, iptal veya değişiklikten, ayrıca platformun kullanımından doğan dolaylı zararlardan, yasaların izin verdiği ölçüde sorumlu değildir."
+      },
+      {
+        "heading": "Şartlarda değişiklik",
+        "body": "Bu şartları zaman zaman değiştirebiliriz; son güncelleme tarihini sayfanın üst kısmında belirteceğiz."
+      },
+      {
+        "heading": "Uygulanacak hukuk",
+        "body": "Bu şartlar Mısır Arap Cumhuriyeti kanunlarına tabidir."
+      }
+    ]
+  },
+  "privacy": {
+    "title": "Gizlilik Politikası",
+    "intro": "Gizliliğiniz bizim için önemlidir. Bu sayfa hangi verileri topladığımızı ve bunları nasıl kullandığımızı açıklar.",
+    "sections": [
+      {
+        "heading": "Topladığımız veriler",
+        "items": [
+          "İletişim verileri: ad, telefon numarası, e-posta adresi.",
+          "Seyahat verileri: rezervasyon sırasında bileti düzenlemek için gereken yolcu ve pasaport bilgileri.",
+          "Ödeme verileri: seçtiğiniz ödeme yöntemi (sunucularımızda hiçbir tam banka kartı bilgisi saklamıyoruz).",
+          "Kullanım verileri: arama tercihleri ve oluşturduğunuz fiyat alarmları."
+        ]
+      },
+      {
+        "heading": "Verilerinizi nasıl kullanıyoruz",
+        "items": [
+          "Rezervasyonlarınızı işleme almak ve onaylamak.",
+          "Talep ettiğiniz fiyat alarmlarını göndermek.",
+          "Rezervasyon durumu veya teknik destek konusunda sizinle iletişime geçmek.",
+          "Deal Score'un ve size gösterilen fırsatların doğruluğunu artırmak."
+        ]
+      },
+      {
+        "heading": "Veri paylaşımı",
+        "body": "Bileti düzenleyebilmesi için yalnızca gerekli yolcu verilerini seyahatinizden sorumlu acenteyle paylaşırız. Verilerinizi pazarlama amacıyla hiçbir üçüncü tarafa satmıyor veya kiralamıyoruz."
+      },
+      {
+        "heading": "Verilerin korunması",
+        "body": "Verileriniz, belirli erişim yetkileriyle (Row-Level Security) güvence altına alınmış bir veritabanında saklanır; yani her kullanıcı yalnızca kendi verilerini görebilir."
+      },
+      {
+        "heading": "Verilerin saklanması",
+        "body": "Rezervasyon verilerinizi yasal ve muhasebe amaçları için gereken süre boyunca saklarız; ardından silinir veya anonim hale getirilir."
+      },
+      {
+        "heading": "Kullanıcı hakları",
+        "body": "Destek ekibiyle iletişime geçerek verilerinizin gözden geçirilmesini, düzeltilmesini veya silinmesini talep edebilir ya da fiyat alarmları aboneliğinizi istediğiniz zaman iptal edebilirsiniz."
+      },
+      {
+        "heading": "Gizlilik konusunda iletişim",
+        "body": "Verilerinizle ilgili her türlü soru için platform içindeki destek sayfası üzerinden bize ulaşın."
+      }
+    ]
+  }
+}

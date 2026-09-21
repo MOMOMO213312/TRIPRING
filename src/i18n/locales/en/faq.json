@@ -1,0 +1,209 @@
+{
+  "title": "Frequently asked questions",
+  "intro": "Everything you need to know about using TripRing, booking, and payment.",
+  "sections": [
+    {
+      "title": "About TripRing",
+      "items": [
+        {
+          "q": "What exactly is TripRing? How is it different from traditional flight booking sites?",
+          "a": "TripRing isn't an ordinary flight search engine — we're a travel opportunity discovery platform. Instead of showing you every available flight, we analyse prices against their usual level on the same route and show you only the opportunities that are genuinely worth it, with a clear Deal Score that explains why each one is a good deal."
+        },
+        {
+          "q": "Does it cost anything to use TripRing?",
+          "a": "No. Browsing deals, searching and comparing prices is completely free. The price you see on each deal is the final price required to book — TripRing doesn't add any hidden service fees."
+        },
+        {
+          "q": "What is the Deal Score and how is it calculated?",
+          "a": "It's a score out of 100 for each opportunity, based on the price compared with its usual price on the same route, the percentage saved, and seat availability. The higher the number, the stronger the deal."
+        },
+        {
+          "q": "Does TripRing sell me the ticket?",
+          "a": "No. TripRing is a marketplace that connects you with partner travel agencies — every deal you see is published by a specific agency, which is responsible for confirming the price and seat and issuing the actual ticket. TripRing provides the platform and the follow-up, but the final commercial dealing is between you and the agency."
+        },
+        {
+          "q": "What's the difference between regular deals and Blue Friday?",
+          "a": "Blue Friday is a recurring sale season where we gather the strongest deals and discounts in one place for a limited time. The booking and payment logic is exactly the same, but the prices and offers are more concentrated and more carefully selected."
+        }
+      ]
+    },
+    {
+      "title": "Searching and choosing a deal",
+      "items": [
+        {
+          "q": "Is the displayed price final and fixed?",
+          "a": "The price is shown as of the moment you browse the deal, but like any limited travel opportunity, it may change or the seat may sell out before you complete the booking — especially on deals with a countdown timer or a limited number of seats. We show you the remaining seats and time on each deal, and we re-check the price and availability at the moment you submit your booking request."
+        },
+        {
+          "q": "What's the difference between the three packages (Basic / Smart / Premium) on the deal page?",
+          "a": "They're different levels of flexibility and services on top of the same flight ticket — they vary by deal in things like the ability to make changes, baggage, and priority. Choose the package that suits how you travel before you continue booking; the price updates automatically based on your choice."
+        },
+        {
+          "q": "Can I add extra services to my ticket?",
+          "a": "Yes. On each deal's page you can add optional services (such as extra baggage or other services available on the same deal) before you continue booking, and their price is added to the total automatically."
+        },
+        {
+          "q": "What are 'flexible dates' on the deal page?",
+          "a": "We show you prices for the same route on dates close to your trip (a day or two apart) when the price difference is worth changing your date for."
+        },
+        {
+          "q": "How do I know if there's a stopover, and see its details?",
+          "a": "The deal details page shows you the number of stops, the length of each stop, and the airline responsible for each leg of the journey if they differ."
+        }
+      ]
+    },
+    {
+      "title": "Booking",
+      "items": [
+        {
+          "q": "When I press 'Confirm booking', is it an actual booking or just a request?",
+          "a": "Pressing 'Confirm booking' sends a booking request to the agency responsible for the deal — not an immediately confirmed ticket. The agency contacts you to confirm the final price and seat availability, then continues with the payment and ticket issuing steps. Every deal you see makes it clear that this is a booking request before you confirm."
+        },
+        {
+          "q": "Why do I have to enter my passport details when booking?",
+          "a": "Traveller details (name as on the passport, date of birth, passport number) are required to issue the actual ticket from the airline, and they're shared only with the agency responsible for your trip."
+        },
+        {
+          "q": "How is the price for children and infants calculated?",
+          "a": "Each age group (adult, child, infant) has a different price shown on the same deal — the total on the booking page updates automatically based on the number of each group you enter."
+        },
+        {
+          "q": "I made a mistake in a traveller's details after sending the booking request. What should I do?",
+          "a": "Contact the agency responsible for your booking immediately (the agency's WhatsApp number is on the booking confirmation page and in 'My Trips') before they issue the ticket, so they can correct the details."
+        }
+      ]
+    },
+    {
+      "title": "Payment",
+      "items": [
+        {
+          "q": "How do I pay?",
+          "a": "We currently support bank transfer, InstaPay and Vodafone Cash. You choose the payment method when completing your booking and you'll find the payment details (account/wallet number) in the same step."
+        },
+        {
+          "q": "Do I pay before or after the agency confirms the booking?",
+          "a": "Don't send any transfer until the agency confirms the final price and that the seat is actually available. After confirmation, complete the transfer with the payment method you chose."
+        },
+        {
+          "q": "What do I do after I transfer the money?",
+          "a": "Upload a photo of the transfer receipt directly from the booking confirmation page (or the 'My Trips' page), or send it to the agency on WhatsApp. The agency reviews the proof and confirms it has received the payment."
+        },
+        {
+          "q": "Why is payment manual, with no online card payment?",
+          "a": "The current method supports the special and negotiated deals that agencies offer, which need human confirmation of the price and seat before payment. We're working on expanding payment methods in the future."
+        },
+        {
+          "q": "What happens if I transfer the money and then the deal is cancelled or the price changes?",
+          "a": "If the agency finds the seat isn't available or the price has changed, it should tell you before you pay in the first place — but if a dispute arises after the transfer, contact the agency directly to resolve it, since it's the party responsible for fulfilling the booking."
+        }
+      ]
+    },
+    {
+      "title": "After booking and tracking its status",
+      "items": [
+        {
+          "q": "How do I track my booking status?",
+          "a": "From the 'My Trips' page — enter your booking number along with the phone number or email you entered when booking, and you'll see the current status and the full details."
+        },
+        {
+          "q": "What exactly are the booking stages?",
+          "a": "A booking goes through these stages: New (awaiting contact) ← Contacted ← Awaiting payment ← Payment proof received ← Payment confirmed ← Ticket issued. You can see your booking at any stage from 'My Trips'."
+        },
+        {
+          "q": "How do I get my ticket?",
+          "a": "After the agency confirms the payment and issues the ticket, you'll find a ticket download link on the 'My Trips' page next to your booking."
+        },
+        {
+          "q": "How long does it take for a booking to be confirmed?",
+          "a": "It varies with how quickly the agency responsible for the deal responds. If you feel there's a delay, you can contact the agency directly on WhatsApp from the same booking page."
+        },
+        {
+          "q": "I forgot my booking number. What should I do?",
+          "a": "If you booked from the same device and browser, the booking confirmation page remembers your last booking and shows you its number. Otherwise, look through the WhatsApp messages or emails you received when you booked."
+        }
+      ]
+    },
+    {
+      "title": "Cancellation, refunds and changes",
+      "items": [
+        {
+          "q": "Can I cancel or exchange my ticket after booking?",
+          "a": "The cancellation and refund policy varies according to the terms of the airline and the agency responsible for each deal, and it's written on the deal details page (whether it's refundable/changeable, and the fee for each case if any). Review it before booking, and contact the agency directly for any change after booking."
+        },
+        {
+          "q": "Are there fees for changes or cancellation?",
+          "a": "If a deal carries change or cancellation fees, they are clearly shown on the deal details page before you book."
+        }
+      ]
+    },
+    {
+      "title": "Agencies and trust",
+      "items": [
+        {
+          "q": "Are the agencies that appear on the platform trustworthy?",
+          "a": "We only show deals from partner travel agencies, and we try to make each agency's verification status clear as far as possible. Always review the deal details and the agency's reviews before you complete payment."
+        },
+        {
+          "q": "Can I see reviews from previous customers of the agency?",
+          "a": "Yes. At the bottom of each deal's details page you'll find real reviews from customers who have dealt with the same agency before."
+        },
+        {
+          "q": "I have a problem with an agency. Who do I contact?",
+          "a": "Contact the agency responsible for your booking directly on WhatsApp first (the link is on the deal page and the booking confirmation page), because it's the party responsible for fulfilling the booking and the ticket."
+        }
+      ]
+    },
+    {
+      "title": "TripGo (ticket + transport)",
+      "items": [
+        {
+          "q": "What exactly is TripGo?",
+          "a": "A product that combines the flight ticket + transport to and from the airport in a single booking at a single price, without you having to arrange the transport yourself after booking."
+        },
+        {
+          "q": "How is the transport in TripGo determined?",
+          "a": "Every TripGo deal comes pre-linked to a specific mode of transport (private car or shared transport) from the same agency, and you'll see its type and price clearly before you book."
+        },
+        {
+          "q": "Can I change the pickup location after booking?",
+          "a": "Contact the agency responsible for your trip as soon as possible before the travel date to change the pickup location or time."
+        }
+      ]
+    },
+    {
+      "title": "Price alerts and resale",
+      "items": [
+        {
+          "q": "How do Price Alerts work?",
+          "a": "You set the route and the budget you're waiting for from the page of any deal on the same route, and the system watches for new prices that drop below that budget. We're still developing the automatic delivery method for this feature, so for now it's best to check 'My Trips' or the route you're interested in regularly until we fully enable instant notifications."
+        },
+        {
+          "q": "What is the ticket resale marketplace?",
+          "a": "If you have a confirmed ticket and can't travel, you can list it for resale through TripRing, and other travellers can buy it. Verifying the ticket's validity and transferring the booking is the responsibility of both parties, and TripRing only provides the platform."
+        }
+      ]
+    },
+    {
+      "title": "Account and privacy",
+      "items": [
+        {
+          "q": "Do I need an account to book?",
+          "a": "No, you don't need to sign in to book — you enter your details directly when booking, and you track its status afterwards using the booking number with your phone or email from the 'My Trips' page."
+        },
+        {
+          "q": "Are my data and passport details safe?",
+          "a": "We only collect the data needed to complete the booking, and we share it only with the agency responsible for your trip so it can issue the ticket. For full details see the Privacy Policy."
+        }
+      ]
+    },
+    {
+      "title": "For agencies",
+      "items": [
+        {
+          "q": "I'm a travel agency and want to list my trips on TripRing. What should I do?",
+          "a": "Agencies currently join through direct coordination with the TripRing team before the account is activated. Contact the team responsible for the platform to start the onboarding process."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "reason": {
+    "non_refundable": "İade edilemez",
+    "trip_cancelled": "Seyahat iptal edildi",
+    "date_change": "Tarih değişikliği",
+    "duplicate_booking": "Mükerrer rezervasyon",
+    "other": "Diğer"
+  },
+  "card": {
+    "verified": "Doğrulanmış bilet",
+    "interested": "İlgileniyorum — bize ulaşın",
+    "waMessage": "Merhaba, yeniden satış biletiyle ilgileniyorum: {{from}} → {{to}}, {{date}} ({{price}})"
+  },
+  "form": {
+    "title": "Bilet bilgileri",
+    "from": "Nereden",
+    "to": "Nereye",
+    "fromPlaceholder": "Kalkış havalimanını seçin",
+    "toPlaceholder": "Varış havalimanını seçin",
+    "departureDate": "Gidiş tarihi",
+    "returnDate": "Dönüş tarihi (isteğe bağlı)",
+    "airline": "Havayolu",
+    "reason": "Satış nedeni",
+    "passengerName": "Biletteki yolcu adı",
+    "pnr": "Rezervasyon referans numarası (PNR)",
+    "originalPrice": "Orijinal fiyat (USD)",
+    "askingPrice": "İstenen fiyat (USD)",
+    "choose": "Seçin",
+    "unspecified": "Belirtilmedi",
+    "reviewNote": "Biletiniz, diğer yolculara gösterilmeden önce incelenecek ve doğrulanacaktır",
+    "submit": "Bileti yayınla",
+    "submitting": "Yayınlanıyor...",
+    "required": "Lütfen zorunlu alanları doldurun",
+    "submitFailed": "Bilet yayınlanamadı, lütfen tekrar deneyin."
+  },
+  "page": {
+    "title": "Bilet yeniden satış pazarı",
+    "subtitle": "Diğer yolcular tarafından listelenen onaylı biletler — bilgi almak için bize ulaşın",
+    "listCta": "Biletinizi listeleyin",
+    "authTitle": "Biletinizi listelemek için giriş yapın",
+    "authDescription": "Biletinizle ilgili sizinle iletişime geçebilmemiz ve durumunu takip edebilmemiz için giriş yapmanız gerekiyor",
+    "received": "Biletiniz alındı ve kısa süre içinde incelenecek",
+    "filterFrom": "Nereden",
+    "filterTo": "Nereye",
+    "all": "Tümü",
+    "loadFailed": "Yüklenirken bir hata oluştu, lütfen tekrar deneyin.",
+    "emptyTitle": "Şu anda listelenen bilet yok",
+    "emptySubtitle": "Farklı bir varış noktası veya rota deneyin ya da daha sonra tekrar bakın"
+  }
+}
