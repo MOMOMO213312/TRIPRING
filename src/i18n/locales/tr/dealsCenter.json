@@ -1,0 +1,34 @@
+{
+  "header": {
+    "title": "TripRing Fırsatları",
+    "subtitle": "Şu anda mevcut en iyi seyahat fırsatlarını keşfedin",
+    "badge": "Size gerçek fırsatlar sunmak için fiyatları anlık karşılaştırıyoruz"
+  },
+  "tabs": {
+    "all": "🗂️ Tüm fırsatlar",
+    "cheapest": "💰 En ucuz",
+    "direct": "✈️ Direkt"
+  },
+  "selectedLabel": "Seçtikleriniz:",
+  "resultsCount": "{{count}} fırsat mevcut",
+  "sort": {
+    "cheapestFirst": "Sırala: Önce en ucuz",
+    "highestFirst": "Sırala: Önce en pahalı"
+  },
+  "empty": {
+    "title": "Eşleşen fırsat bulunamadı.",
+    "subtitle": "Fiyat aralığını genişletmeyi veya bazı filtreleri kaldırmayı deneyin.",
+    "resetButton": "Filtreleri sıfırla"
+  },
+  "loadMore": {
+    "loading": "Yükleniyor...",
+    "button": "Daha fazla göster ({{count}} fırsat kaldı)"
+  },
+  "compare": {
+    "selectedCount": "Karşılaştırma için {{count}}/{{max}} seçildi",
+    "clear": "Temizle",
+    "compareNow": "Şimdi karşılaştır"
+  },
+  "loading": "Yükleniyor...",
+  "loadError": "Fırsatlar yüklenirken bir hata oluştu, lütfen tekrar deneyin."
+}

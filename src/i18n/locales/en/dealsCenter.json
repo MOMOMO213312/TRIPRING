@@ -1,0 +1,34 @@
+{
+  "header": {
+    "title": "TripRing Deals",
+    "subtitle": "Discover the best travel opportunities available now",
+    "badge": "We compare prices in real time to bring you genuine deals"
+  },
+  "tabs": {
+    "all": "🗂️ All deals",
+    "cheapest": "💰 Cheapest",
+    "direct": "✈️ Direct"
+  },
+  "selectedLabel": "You've selected:",
+  "resultsCount": "{{count}} deal(s) available",
+  "sort": {
+    "cheapestFirst": "Sort: Cheapest first",
+    "highestFirst": "Sort: Highest price first"
+  },
+  "empty": {
+    "title": "No matching deals.",
+    "subtitle": "Try widening the price range or removing some filters.",
+    "resetButton": "Reset filters"
+  },
+  "loadMore": {
+    "loading": "Loading...",
+    "button": "Show more ({{count}} deal(s) remaining)"
+  },
+  "compare": {
+    "selectedCount": "{{count}} of {{max}} selected for comparison",
+    "clear": "Clear",
+    "compareNow": "Compare now"
+  },
+  "loading": "Loading...",
+  "loadError": "There was an error loading the deals, please try again."
+}

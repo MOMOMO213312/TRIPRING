@@ -91,7 +91,7 @@ export function MembershipSubscriptionCard() {
 }
 
 function SubscribeForm({ onDone }: { onDone: () => void }) {
-  const paymentMethods = usePaymentMethods();
+  const PAYMENT_METHODS = usePaymentMethods();
   const [tiers, setTiers] = useState<MembershipTierRow[]>([]);
   const [selectedTierId, setSelectedTierId] = useState<string | null>(null);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
@@ -196,7 +196,7 @@ function SubscribeForm({ onDone }: { onDone: () => void }) {
 
       <div className="space-y-2 border-t border-slate-100 pt-3">
         <p className="text-sm text-slate-600">اختار طريقة الدفع وحوّل قيمة الباقة</p>
-        {paymentMethods.map((pm) => (
+        {PAYMENT_METHODS.map((pm) => (
           <label
             key={pm.value}
             className={`block cursor-pointer rounded-xl border p-3 ${

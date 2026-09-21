@@ -12,7 +12,7 @@ import {
   fetchDealById,
   fetchPaymentMethods,
 } from "../lib/api";
-import { currencyName, roundTo } from "../lib/currency";
+import { roundTo } from "../lib/currency";
 import { useCurrency } from "../hooks/useCurrency";
 import { usePaymentMethods } from "../lib/payment-config";
 import { formatRoute, hasPriceBreakdown } from "../lib/deal-utils";
@@ -22,7 +22,6 @@ import { RECOMMENDED_SERVICE_KEYS, serviceDisplayLabel } from "../lib/servicePac
 import { friendlyErrorMessage } from "../lib/errors";
 import { fetchZonesForDeal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
-import { formatTravelerSummary } from "../lib/travelerSummary";
 import { isValidEmail, isValidPhone } from "../lib/utils";
 import type { AdditionalServiceRow, DealRow, PaymentMethod, TransportZoneRow } from "../types/database";
 
@@ -40,7 +39,7 @@ type Traveler = {
 };
 
 export function BookingPage() {
-  const { t, i18n } = useTranslation("booking");
+  const { t } = useTranslation("booking");
   const paymentMethods = usePaymentMethods();
   const { dealId } = useParams<{ dealId: string }>();
   const navigate = useNavigate();
@@ -121,7 +120,7 @@ export function BookingPage() {
         setDeal(d);
         setServices(s);
         if (!d) {
-          setError(t("page.dealUnavailable"));
+          setError(t("booking.error.dealUnavailable"));
           return;
         }
         // Instant TripGo (private-car pickup priced by zone) — only offered
@@ -158,7 +157,7 @@ export function BookingPage() {
       })
       .catch((e) => {
         console.error("[BookingPage] failed to load deal:", e);
-        setError(t("page.loadFailed"));
+        setError(t("booking.error.loadFailed"));
       })
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -197,12 +196,12 @@ export function BookingPage() {
   }, [adults, children, infants]);
 
   function validate(): string | null {
-    if (!customerName.trim()) return t("page.validation.name");
-    if (!customerPhone.trim()) return t("page.validation.phone");
-    if (!isValidPhone(customerPhone)) return t("page.validation.phoneInvalid");
-    if (customerEmail.trim() && !isValidEmail(customerEmail)) return t("page.validation.emailInvalid");
-    const emptyTraveler = travelers.findIndex((t) => !t.full_name.trim());
-    if (emptyTraveler !== -1) return t("page.validation.traveler", { n: emptyTraveler + 1 });
+    if (!customerName.trim()) return t("booking.validation.name");
+    if (!customerPhone.trim()) return t("booking.validation.phone");
+    if (!isValidPhone(customerPhone)) return t("booking.validation.phoneInvalid");
+    if (customerEmail.trim() && !isValidEmail(customerEmail)) return t("booking.validation.emailInvalid");
+    const emptyTraveler = travelers.findIndex((trv) => !trv.full_name.trim());
+    if (emptyTraveler !== -1) return t("booking.validation.travelerName", { n: emptyTraveler + 1 });
     return null;
   }
 
@@ -269,7 +268,7 @@ export function BookingPage() {
     try {
       const fresh = await fetchDealById(dealId);
       if (!fresh) {
-        setError(t("page.changes.gone"));
+        setError(t("booking.error.dealGone"));
         setSubmitting(false);
         return;
       }
@@ -277,8 +276,8 @@ export function BookingPage() {
       if (fresh.available_seats < seatsNeeded) {
         setError(
           fresh.available_seats <= 0
-            ? t("page.changes.seatsGone")
-            : t("page.changes.seatsFewer", { available: fresh.available_seats, needed: seatsNeeded }),
+            ? t("booking.error.soldOutNow")
+            : t("booking.error.seatsFewer", { available: fresh.available_seats, needed: seatsNeeded }),
         );
         setDeal(fresh);
         setSubmitting(false);
@@ -291,7 +290,7 @@ export function BookingPage() {
       if (priceChanged) {
         setDeal(fresh);
         setError(
-          t("page.changes.priceChanged", {
+          t("booking.error.priceChanged", {
             oldPrice: fmt(deal.price, dealCur),
             newPrice: fmt(fresh.price, fresh.currency ?? "USD"),
           }),
@@ -357,22 +356,22 @@ export function BookingPage() {
         },
       });
     } catch (err) {
-      setError(friendlyErrorMessage(err, "booking:page.createFailed", "BookingPage.createBooking"));
+      setError(friendlyErrorMessage(err, "booking:booking.error.createFailed", "BookingPage.createBooking"));
     } finally {
       setSubmitting(false);
     }
   }
 
-  if (loading) return <p className="text-slate-500">{t("f.loading")}</p>;
+  if (loading) return <p className="text-slate-500">{t("booking.loading")}</p>;
   if (!deal) {
     return (
-      <Card className="text-center text-red-600">{error ?? t("page.dealNotFound")}</Card>
+      <Card className="text-center text-red-600">{error ?? t("booking.error.notFound")}</Card>
     );
   }
   if (deal.available_seats <= 0) {
     return (
       <Card className="text-center text-slate-700">
-        {t("page.soldOut")}
+        {t("booking.soldOut")}
       </Card>
     );
   }
@@ -380,7 +379,7 @@ export function BookingPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">{t("page.title")}</h1>
+        <h1 className="text-2xl font-bold">{t("booking.title")}</h1>
         <p className="text-slate-600">{formatRoute(deal)} · {fmt(deal.price, dealCur)}</p>
       </div>
 
@@ -390,32 +389,32 @@ export function BookingPage() {
          of being hidden behind "next" clicks. */}
       <form onSubmit={handleSubmit} className="space-y-5">
         <Card className="space-y-4">
-          <h2 className="font-bold">{t("page.section.contact")}</h2>
-          <Input label={t("f.fullName")} required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+          <h2 className="font-bold">{t("booking.contact.heading")}</h2>
+          <Input label={t("booking.contact.fullName")} required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
           <Input
-            label={t("f.phone")}
+            label={t("booking.contact.phone")}
             required
             type="tel"
-            placeholder={t("f.phonePlaceholder")}
+            placeholder="+20xxxxxxxxxx"
             value={customerPhone}
             onChange={(e) => setCustomerPhone(e.target.value)}
           />
-          <Input label={t("f.email")} type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
+          <Input label={t("booking.contact.email")} type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
           <div className="grid grid-cols-3 gap-3">
-            <Input label={t("f.adults")} type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
-            <Input label={t("f.children")} type="number" min={0} value={children} onChange={(e) => setChildren(Number(e.target.value))} />
-            <Input label={t("f.infants")} type="number" min={0} value={infants} onChange={(e) => setInfants(Number(e.target.value))} />
+            <Input label={t("booking.contact.adults")} type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
+            <Input label={t("booking.contact.children")} type="number" min={0} value={children} onChange={(e) => setChildren(Number(e.target.value))} />
+            <Input label={t("booking.contact.infants")} type="number" min={0} value={infants} onChange={(e) => setInfants(Number(e.target.value))} />
           </div>
           <div className="space-y-3 border-t border-slate-100 pt-4">
-            {travelers.map((tr, i) => (
+            {travelers.map((trv, i) => (
               <div key={i} className="space-y-3 rounded-lg border border-slate-100 p-3">
                 <p className="text-sm font-medium text-slate-600">
-                  {t("traveler.heading", { n: i + 1, type: t(`traveler.${tr.traveler_type}`) })}
+                  {t("booking.traveler.title", { n: i + 1, type: t(`booking.traveler.type.${trv.traveler_type}`) })}
                 </p>
                 <Input
-                  label={t("f.passportName")}
+                  label={t("booking.traveler.name")}
                   required
-                  value={tr.full_name}
+                  value={trv.full_name}
                   onChange={(e) => {
                     const next = [...travelers];
                     next[i] = { ...next[i], full_name: e.target.value };
@@ -424,9 +423,9 @@ export function BookingPage() {
                 />
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Input
-                    label={t("f.dob")}
+                    label={t("booking.traveler.dob")}
                     type="date"
-                    value={tr.date_of_birth}
+                    value={trv.date_of_birth}
                     onChange={(e) => {
                       const next = [...travelers];
                       next[i] = { ...next[i], date_of_birth: e.target.value };
@@ -434,8 +433,8 @@ export function BookingPage() {
                     }}
                   />
                   <Input
-                    label={t("f.passportNumber")}
-                    value={tr.passport_number}
+                    label={t("booking.traveler.passport")}
+                    value={trv.passport_number}
                     onChange={(e) => {
                       const next = [...travelers];
                       next[i] = { ...next[i], passport_number: e.target.value };
@@ -450,7 +449,7 @@ export function BookingPage() {
 
         {services.length > 0 ? (
           <Card className="space-y-3">
-            <h2 className="font-bold">{t("page.section.services")}</h2>
+            <h2 className="font-bold">{t("booking.services.heading")}</h2>
             {dedupeByKey(services).map((s) => {
               const key = classifyService(s) as ServiceKey | null;
               const recommended = !!key && (RECOMMENDED_SERVICE_KEYS as string[]).includes(key);
@@ -461,7 +460,7 @@ export function BookingPage() {
                 >
                   <span className="flex items-center gap-2">
                     {serviceDisplayLabel(s)} — {fmt(s.price, s.currency ?? "USD")}
-                    {recommended ? <span className="text-xs font-semibold text-[#16A34A]">{t("selector.recommended")}</span> : null}
+                    {recommended ? <span className="text-xs font-semibold text-[#16A34A]">{t("booking.services.recommended")}</span> : null}
                   </span>
                   <input
                     type="number"
@@ -481,8 +480,8 @@ export function BookingPage() {
 
         {transportZones.length > 0 ? (
           <Card className="space-y-3">
-            <h2 className="font-bold">{t("page.tripgo.title")}</h2>
-            <p className="text-sm text-slate-600">{t("page.tripgo.desc")}</p>
+            <h2 className="font-bold">{t("booking.tripgo.heading")}</h2>
+            <p className="text-sm text-slate-600">{t("booking.tripgo.hint")}</p>
             <div className="space-y-2">
               <label
                 className={`block cursor-pointer rounded-xl border p-3 ${
@@ -496,7 +495,7 @@ export function BookingPage() {
                   onChange={() => setSelectedZoneId("")}
                   className="me-2"
                 />
-                <span className="font-semibold">{t("page.tripgo.none")}</span>
+                <span className="font-semibold">{t("booking.tripgo.none")}</span>
               </label>
               {transportZones.map((z) => (
                 <label
@@ -521,27 +520,27 @@ export function BookingPage() {
         ) : null}
 
         <Card className="space-y-4">
-          <h2 className="font-bold">{t("page.section.summary")}</h2>
+          <h2 className="font-bold">{t("booking.summary.heading")}</h2>
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-            <Trans t={t} i18nKey="page.summary.estimateWarning" components={{ strong: <strong /> }} />
+            <Trans i18nKey="booking.summary.warning" ns="booking" components={{ b: <strong /> }} />
           </div>
           <dl className="space-y-2 text-sm">
-            <div className="flex justify-between"><dt className="text-slate-500">{t("f.route")}</dt><dd>{formatRoute(deal)}</dd></div>
+            <div className="flex justify-between"><dt className="text-slate-500">{t("booking.summary.route")}</dt><dd>{formatRoute(deal)}</dd></div>
             {hasPriceBreakdown(deal) ? (
               <>
                 <div className="flex justify-between text-xs text-slate-500">
-                  <dt>{t("f.baseFare")}</dt>
+                  <dt>{t("booking.summary.baseFare")}</dt>
                   <dd className="font-latin">{fmt(deal.base_fare!, dealCur)}</dd>
                 </div>
                 <div className="flex justify-between text-xs text-slate-500">
-                  <dt>{t("f.taxes")}</dt>
+                  <dt>{t("booking.summary.taxes")}</dt>
                   <dd className="font-latin">{fmt(deal.taxes_fees!, dealCur)}</dd>
                 </div>
               </>
             ) : null}
             {selectedPackage ? (
               <div className="flex justify-between">
-                <dt className="text-slate-500">{t("page.summary.package")}</dt>
+                <dt className="text-slate-500">{t("booking.summary.package")}</dt>
                 <dd className="font-semibold">
                   {packageOptions.find((p) => p.id === selectedPackage)?.label}
                   {" · "}
@@ -551,14 +550,14 @@ export function BookingPage() {
             ) : null}
             {selectedZoneId ? (
               <div className="flex justify-between">
-                <dt className="text-slate-500">{t("page.summary.tripgoTransport")}</dt>
+                <dt className="text-slate-500">{t("booking.summary.transfer")}</dt>
                 <dd className="font-semibold">
                   {transportZones.find((z) => z.id === selectedZoneId)?.zone_name} ·{" "}
                   {fmt(zonePrice(), dealCur)}
                 </dd>
               </div>
             ) : null}
-            <div className="flex justify-between"><dt className="text-slate-500">{t("f.travelers")}</dt><dd>{formatTravelerSummary(adults, children, infants)}</dd></div>
+            <div className="flex justify-between"><dt className="text-slate-500">{t("booking.summary.travelers")}</dt><dd>{t("booking.summary.travelersValue", { adults, children, infants })}</dd></div>
             <div className="flex justify-between border-t border-slate-100 pt-2 font-bold">
               <dt>{t("page.summary.estimatedTotalBeforeDiscount")}</dt>
               <dd className="font-latin">{fmt(estimatedTotal(), dealCur)}</dd>
@@ -579,7 +578,7 @@ export function BookingPage() {
                         : "border-slate-200 text-slate-600 hover:border-slate-300"
                     }`}
                   >
-                    {currencyName(c, i18n.language)} <span className="font-latin text-xs">({c.code})</span>
+                    {c.name_ar} <span className="font-latin text-xs">({c.code})</span>
                   </button>
                 ))}
               </div>
@@ -601,7 +600,7 @@ export function BookingPage() {
             </div>
           ) : null}
           <div className="space-y-2 border-t border-slate-100 pt-4">
-            <p className="text-sm text-slate-600">{t("page.summary.manualPayment")}</p>
+            <p className="text-sm text-slate-600">{t("booking.payment.note")}</p>
             {availableMethods.map((pm) => (
               <label
                 key={pm.value}
@@ -624,7 +623,7 @@ export function BookingPage() {
           </div>
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
           <Button type="submit" fullWidth disabled={submitting}>
-            {submitting ? t("page.submit.checking") : t("page.submit.confirm")}
+            {submitting ? t("booking.submitting") : t("booking.submit")}
           </Button>
         </Card>
       </form>

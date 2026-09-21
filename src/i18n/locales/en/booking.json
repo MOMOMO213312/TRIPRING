@@ -1,4 +1,221 @@
 {
+  "booking": {
+    "title": "Complete your booking",
+    "loading": "Loading…",
+    "error": {
+      "dealUnavailable": "This deal is not available",
+      "loadFailed": "Something went wrong while loading the deal. Please try again.",
+      "notFound": "Deal not found",
+      "dealGone": "Sorry, this deal is no longer available.",
+      "soldOutNow": "Sorry, the seats on this deal have just sold out.",
+      "seatsFewer": "Only {{available}} seat(s) are available now, fewer than the number of travelers ({{needed}}).",
+      "priceChanged": "Heads up: this deal's price changed since you opened the page (was {{oldPrice}}, now {{newPrice}}). Review the new total below and press “Confirm booking” again to continue.",
+      "createFailed": "We couldn't create the booking. Please try again or contact us."
+    },
+    "validation": {
+      "name": "Please enter your full name",
+      "phone": "Please enter your phone number",
+      "phoneInvalid": "Invalid phone number — use international format, e.g. +20xxxxxxxxxx",
+      "emailInvalid": "Invalid email address",
+      "travelerName": "Please enter traveler {{n}}'s name as it appears on the passport"
+    },
+    "soldOut": "Sorry, the seats on this deal are sold out. Try searching for another deal.",
+    "contact": {
+      "heading": "Contact and traveler details",
+      "fullName": "Full name",
+      "phone": "Phone number",
+      "email": "Email (optional)",
+      "adults": "Adults",
+      "children": "Children",
+      "infants": "Infants"
+    },
+    "traveler": {
+      "title": "Traveler {{n}} ({{type}})",
+      "type": {
+        "adult": "adult",
+        "child": "child",
+        "infant": "infant"
+      },
+      "name": "Name as on passport",
+      "dob": "Date of birth",
+      "passport": "Passport number"
+    },
+    "services": {
+      "heading": "Extra services (optional)",
+      "recommended": "Recommended"
+    },
+    "tripgo": {
+      "heading": "🚗 Instant TripGo — a private car picks you up from your door (optional)",
+      "hint": "Pick your area and the car price is added automatically on top of the ticket price.",
+      "none": "No transfer — I'll arrange my own transport"
+    },
+    "summary": {
+      "heading": "Summary and payment method",
+      "warning": "⚠️ The price is an estimate and not final. Pressing “Confirm booking” sends a <b>booking request</b> to the agency, not a confirmed ticket — they will contact you to confirm the price and seat before any actual payment.",
+      "route": "Route",
+      "baseFare": "Base fare",
+      "taxes": "Taxes & fees",
+      "package": "Package",
+      "transfer": "TripGo (transfer)",
+      "travelers": "Travelers",
+      "travelersValue": "{{adults}} adult(s) · {{children}} child(ren) · {{infants}} infant(s)",
+      "total": "Estimated total"
+    },
+    "payment": {
+      "note": "Payment is manual — complete the transfer, then send the receipt via WhatsApp after the agency confirms"
+    },
+    "submit": "Confirm booking",
+    "submitting": "Checking your booking…"
+  },
+  "confirmation": {
+    "noData": "There is no booking data on this page (possibly because the page was refreshed).",
+    "lastBooking": "Your last booking:",
+    "viewMyBooking": "View my booking in My Trips",
+    "title": "Booking created successfully",
+    "tripgoBadge": "🚐 TripGo trip — Flight + Transfer",
+    "bookingNumber": "Booking number",
+    "route": "Route",
+    "amount": "Amount",
+    "paymentMethod": "Payment method",
+    "statusLabel": "Status",
+    "status": {
+      "new": "New — awaiting contact",
+      "contacted": "We've contacted you",
+      "awaiting_payment": "Awaiting payment",
+      "payment_uploaded": "Payment proof received",
+      "paid": "Payment confirmed",
+      "ticket_issued": "Ticket issued",
+      "cancelled": "Cancelled",
+      "label": "Status"
+    },
+    "transfer": {
+      "heading": "Airport transfer details",
+      "pickupLocation": "Pickup location",
+      "area": "Area",
+      "flightNumber": "Flight number",
+      "transport": "Transport type"
+    },
+    "requestNotice": "⚠️ This is a <b>booking request</b>, not a confirmed ticket yet. The agency team will contact you to confirm the price and seat availability. Do not send the bank transfer until the agency confirms the final price.",
+    "afterConfirm": "After the agency confirms, complete the transfer using your chosen payment method, then send the receipt via WhatsApp or upload it here directly.",
+    "sendWhatsApp": "Send via WhatsApp",
+    "viewInMyTrips": "View in My Trips",
+    "saveNote": "Save your booking number {{number}} and phone number {{phone}} to look it up later",
+    "wa": {
+      "greeting": "Hello, I sent a transfer for booking no. {{number}}",
+      "name": "Name: {{name}}",
+      "route": "Route: {{route}}",
+      "travelers": "Travelers: {{summary}}",
+      "pickup": "Pickup location: {{location}}",
+      "transport": "Transport type: {{transport}}",
+      "amount": "Amount: {{amount}}",
+      "adults": "{{count}} adult(s)",
+      "children": "{{count}} child(ren)",
+      "infants": "{{count}} infant(s)"
+    },
+    "viewMine": "View my booking in My Trips",
+    "amountDue": "Amount to transfer",
+    "fxNote": "Booking price {{price}} — converted to {{currency}} at the exchange rate locked when you booked{{rate}}.",
+    "transferDetails": "Airport transfer details",
+    "area": "Area",
+    "sendWhatsapp": "Send via WhatsApp",
+    "viewInTrips": "View in My Trips"
+  },
+  "myTrips": {
+    "title": "My Trips",
+    "subtitle": "Look up your booking with the booking number and your phone or email — no sign-in needed",
+    "bookingNumber": "Booking number",
+    "bookingNumberPlaceholder": "e.g. 1001",
+    "contact": "Phone number or email",
+    "search": "Search",
+    "searching": "Searching…",
+    "notFound": "No booking found with these details",
+    "searchFailed": "Something went wrong with the search. Please try again.",
+    "details": "Booking details",
+    "status": "Status",
+    "trip": "Trip",
+    "travelDate": "Travel date",
+    "airline": "Airline",
+    "amount": "Amount",
+    "paymentMethod": "Payment method",
+    "travelers": "Travelers",
+    "extraServices": "Requested extra services",
+    "extraServicesNote": "These are services you requested — actual activation depends on confirmation from the airline/provider and isn't automatic.",
+    "viewTicket": "🎫 View / download ticket",
+    "emptyTitle": "No results",
+    "emptySubtitle": "Check the booking number and contact details and try again",
+    "bookingStatus": {
+      "new": "New",
+      "contacted": "Contacted",
+      "awaiting_payment": "Awaiting payment",
+      "payment_uploaded": "Payment proof uploaded",
+      "paid": "Paid",
+      "ticket_issued": "Ticket issued",
+      "cancelled": "Cancelled"
+    },
+    "serviceStatus": {
+      "pending_confirmation": "Awaiting confirmation",
+      "confirmed_with_supplier": "Confirmed with supplier",
+      "failed": "Could not be fulfilled",
+      "refunded": "Refunded"
+    }
+  },
+  "journey": {
+    "title": "Your journey",
+    "itemStatus": {
+      "pending_assignment": "Being arranged",
+      "assigned": "Being confirmed",
+      "confirmed": "Confirmed",
+      "fulfilled": "Confirmed ✓",
+      "failed": "We're re-arranging it for you",
+      "reassigning": "We're re-arranging it for you",
+      "cancelled": "Cancelled"
+    },
+    "summary": {
+      "pending_assignment": "We're arranging your journey",
+      "partially_assigned": "We're arranging your journey",
+      "fully_assigned": "We're confirming every part of your journey",
+      "partially_fulfilled": "Part of your journey is confirmed",
+      "fully_fulfilled": "Your journey is fully confirmed ✓",
+      "needs_attention": "Our team is reviewing an item in your journey",
+      "cancelled": "Cancelled"
+    },
+    "supplierPending": "Assigning a provider…",
+    "footnote": "Each item in your journey is confirmed on its own. If something goes wrong with one item, we automatically look for an alternative without cancelling the rest of your trip.",
+    "pendingSupplier": "Assigning a provider",
+    "footer": "Each item in your journey is confirmed on its own. If one item runs into a problem, we automatically look for an alternative without cancelling the rest of your trip.",
+    "item": {
+      "pending_assignment": "Being arranged",
+      "assigned": "Confirming",
+      "confirmed": "Confirmed",
+      "fulfilled": "Confirmed ✓",
+      "failed": "We're re-arranging it for you",
+      "reassigning": "We're re-arranging it for you",
+      "cancelled": "Cancelled"
+    }
+  },
+  "proof": {
+    "failed": "Couldn't upload the file. Please try again.",
+    "done": "✓ Payment proof uploaded successfully",
+    "uploading": "Uploading…",
+    "upload": "📎 Upload payment proof (image or PDF)"
+  },
+  "addServices": {
+    "failed": "Couldn't add the services. Please try again.",
+    "added": "✓ Services added ({{amount}})",
+    "addedPaidSuffix": " — we'll contact you to collect the price difference",
+    "open": "➕ Add services to your trip",
+    "heading": "Add services to your trip",
+    "close": "Close",
+    "loading": "Loading…",
+    "none": "No extra services are available right now.",
+    "chooseAirport": "Choose airport…",
+    "departureAirport": "Departure airport",
+    "arrivalAirport": "Arrival airport",
+    "paidNote": "This booking is already paid — the price difference will be collected by contacting you.",
+    "confirm": "Confirm addition ({{amount}})",
+    "chooseService": "Choose a service",
+    "adding": "Adding…"
+  },
   "f": {
     "route": "Route",
     "date": "Date",
@@ -76,29 +293,6 @@
     "addServices": "Add your services",
     "included": "Included ✓",
     "recommended": "Recommended"
-  },
-  "journey": {
-    "title": "Your journey",
-    "pendingSupplier": "Assigning a provider",
-    "footer": "Each item in your journey is confirmed on its own. If one item runs into a problem, we automatically look for an alternative without cancelling the rest of your trip.",
-    "item": {
-      "pending_assignment": "Being arranged",
-      "assigned": "Confirming",
-      "confirmed": "Confirmed",
-      "fulfilled": "Confirmed ✓",
-      "failed": "We're re-arranging it for you",
-      "reassigning": "We're re-arranging it for you",
-      "cancelled": "Cancelled"
-    },
-    "summary": {
-      "pending_assignment": "Arranging your journey",
-      "partially_assigned": "Arranging your journey",
-      "fully_assigned": "Confirming every item in your journey",
-      "partially_fulfilled": "Part of your journey is confirmed",
-      "fully_fulfilled": "Your journey is fully confirmed ✓",
-      "needs_attention": "Our team is reviewing an item in your journey",
-      "cancelled": "Cancelled"
-    }
   },
   "upload": {
     "cta": "📎 Upload payment proof (image or PDF)",
@@ -195,35 +389,6 @@
       "checking": "Checking your booking...",
       "confirm": "Confirm booking"
     }
-  },
-  "confirmation": {
-    "noData": "There's no booking data on this page (probably because the page was refreshed).",
-    "lastBooking": "Your latest booking:",
-    "viewMine": "View my booking in My Trips",
-    "title": "Booking created successfully",
-    "tripgoBadge": "🚐 TripGo trip — Flight + Transfer",
-    "bookingNumber": "Booking number",
-    "amount": "Amount",
-    "amountDue": "Amount to transfer",
-    "fxNote": "Booking price {{price}} — converted to {{currency}} at the exchange rate locked when you booked{{rate}}.",
-    "paymentMethod": "Payment method",
-    "status": {
-      "label": "Status",
-      "new": "New — awaiting contact",
-      "contacted": "We've contacted you",
-      "awaiting_payment": "Awaiting payment",
-      "payment_uploaded": "Payment proof received",
-      "paid": "Payment confirmed",
-      "ticket_issued": "Ticket issued",
-      "cancelled": "Cancelled"
-    },
-    "transferDetails": "Airport transfer details",
-    "area": "Area",
-    "requestNotice": "⚠️ This is a <strong>booking request</strong>, not a confirmed ticket yet. The agency team will contact you to confirm the price and seat availability. Don't send the bank transfer until the agency confirms the final price.",
-    "afterConfirm": "After the agency confirms, complete the transfer using your chosen payment method, then send the transfer receipt via WhatsApp or upload it here directly.",
-    "sendWhatsapp": "Send via WhatsApp",
-    "viewInTrips": "View in My Trips",
-    "saveNote": "Save your booking number {{number}} and your phone number {{phone}} to look it up later"
   },
   "whatsapp": {
     "paid": "Hello, I sent a transfer for booking number {{number}}",

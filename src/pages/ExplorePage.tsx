@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { Badge } from "../components/ui/Badge";
@@ -13,9 +14,12 @@ import { createServiceRequest, fetchAdditionalServices } from "../lib/api";
 import {
   packageFinalPrice,
   packageSubtotal,
+  packageBadgeLabel,
+  packageSubtitleLabel,
   resolvePackageItems,
   SERVICE_KEY_ICONS,
-  SERVICE_KEY_LABELS,
+  SERVICE_KEYS,
+  serviceKeyLabel,
   SERVICE_PACKAGES,
   type PackageServiceKey,
   type ResolvedPackageItem,
@@ -33,37 +37,6 @@ type CategoryDef = {
   icon: string;
   image: string;
 };
-
-const CATEGORIES: CategoryDef[] = [
-  {
-    id: "transport",
-    title: "النقل",
-    subtitle: "Airport Transfer · Private Car · Shuttle",
-    icon: "🚐",
-    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80&auto=format&fit=crop",
-  },
-  {
-    id: "airport",
-    title: "المطار",
-    subtitle: "Lounge · Fast Track · Meet & Assist",
-    icon: "🛄",
-    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80&auto=format&fit=crop",
-  },
-  {
-    id: "destination",
-    title: "خدمات الوجهة",
-    subtitle: "تجارب وخدمات مرتبطة بوجهتك",
-    icon: "🗺️",
-    image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80&auto=format&fit=crop",
-  },
-  {
-    id: "insurance",
-    title: "تأمين السفر",
-    subtitle: "تأمين أساسي أو شامل لرحلتك",
-    icon: "🛡️",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80&auto=format&fit=crop",
-  },
-];
 
 /** Per-service photo overrides for the "transport" category — keyed by additional_services.type,
  *  so each transport service card shows a distinct photo instead of repeating the category image. */
@@ -112,6 +85,7 @@ function CoverImage({ src, alt, icon, className }: { src: string; alt: string; i
 type ExploreTab = "services" | "packages";
 
 export function ExplorePage() {
+  const { t } = useTranslation("explore");
   const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [tab, setTab] = useState<ExploreTab>("services");
@@ -121,6 +95,37 @@ export function ExplorePage() {
   const [selectedService, setSelectedService] = useState<AdditionalServiceRow | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<ServicePackageDef | null>(null);
   const [confirmedRequest, setConfirmedRequest] = useState<{ number: number; total: number } | null>(null);
+
+  const CATEGORIES: CategoryDef[] = [
+    {
+      id: "transport",
+      title: t("category.transport"),
+      subtitle: "Airport Transfer · Private Car · Shuttle",
+      icon: "🚐",
+      image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80&auto=format&fit=crop",
+    },
+    {
+      id: "airport",
+      title: t("category.airport"),
+      subtitle: "Lounge · Fast Track · Meet & Assist",
+      icon: "🛄",
+      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80&auto=format&fit=crop",
+    },
+    {
+      id: "destination",
+      title: t("category.destination.title"),
+      subtitle: t("category.destination.subtitle"),
+      icon: "🗺️",
+      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80&auto=format&fit=crop",
+    },
+    {
+      id: "insurance",
+      title: t("category.insurance.title"),
+      subtitle: t("category.insurance.subtitle"),
+      icon: "🛡️",
+      image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80&auto=format&fit=crop",
+    },
+  ];
 
   useEffect(() => {
     let cancelled = false;
@@ -153,7 +158,7 @@ export function ExplorePage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">استكمل رحلتك عبر TripRing بخدمات إضافية أو باقات متكاملة</h1>
+        <h1 className="text-2xl font-bold text-slate-900">{t("heading")}</h1>
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -165,8 +170,8 @@ export function ExplorePage() {
             🔵
           </span>
           <span>
-            <span className="block font-bold text-slate-900">الجمعة السماوي</span>
-            <span className="block text-xs text-slate-500">خصومات لحد 33% على الطيران — كل جمعة</span>
+            <span className="block font-bold text-slate-900">{t("blueFriday.title")}</span>
+            <span className="block text-xs text-slate-500">{t("blueFriday.subtitle")}</span>
           </span>
         </Link>
         <Link
@@ -177,8 +182,8 @@ export function ExplorePage() {
             👑
           </span>
           <span>
-            <span className="block font-bold text-slate-900">عضوية TRIPRING</span>
-            <span className="block text-xs text-slate-500">خصومات دائمة + خدمات مجانية + أولوية إشعارات</span>
+            <span className="block font-bold text-slate-900">{t("membership.title")}</span>
+            <span className="block text-xs text-slate-500">{t("membership.subtitle")}</span>
           </span>
         </Link>
       </div>
@@ -204,8 +209,8 @@ export function ExplorePage() {
             🔹
           </span>
           <span>
-            <span className="block font-bold text-slate-900">الخدمات</span>
-            <span className="block text-xs text-slate-500">اطلب أي خدمة منفردة بسعرها</span>
+            <span className="block font-bold text-slate-900">{t("tabs.services.title")}</span>
+            <span className="block text-xs text-slate-500">{t("tabs.services.subtitle")}</span>
           </span>
         </button>
         <button
@@ -227,8 +232,8 @@ export function ExplorePage() {
             📦
           </span>
           <span>
-            <span className="block font-bold text-slate-900">الباقات</span>
-            <span className="block text-xs text-slate-500">باقات متكاملة بسعر أقل من الطلب المنفرد</span>
+            <span className="block font-bold text-slate-900">{t("tabs.packages.title")}</span>
+            <span className="block text-xs text-slate-500">{t("tabs.packages.subtitle")}</span>
           </span>
         </button>
       </div>
@@ -238,8 +243,7 @@ export function ExplorePage() {
           <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
             <span className="text-lg">🔹</span>
             <p className="text-sm text-slate-600">
-              <span className="font-bold text-slate-900">خدمة منفردة:</span> اطلب أي خدمة لوحدها بسعرها،
-              من غير ما تحجز باقي، وحتى لو تذكرتك محجوزة من مكان تاني خالص.
+              <span className="font-bold text-slate-900">{t("servicesBanner.bold")}</span> {t("servicesBanner.rest")}
             </p>
           </div>
 
@@ -266,9 +270,9 @@ export function ExplorePage() {
           </div>
 
           {loading ? (
-            <p className="text-slate-500">جاري تحميل الخدمات...</p>
+            <p className="text-slate-500">{t("loadingServices")}</p>
           ) : grouped[activeCategory].length === 0 ? (
-            <Card className="text-center text-slate-500">لا توجد خدمات متاحة في هذا القسم حالياً</Card>
+            <Card className="text-center text-slate-500">{t("noServicesInCategory")}</Card>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {grouped[activeCategory].map((service) => {
@@ -282,7 +286,7 @@ export function ExplorePage() {
                     <div className="flex flex-1 flex-col justify-between gap-4 p-4">
                       <div>
                         <div className="mb-1 flex items-center gap-1.5">
-                          <Badge className="!bg-slate-100 !text-slate-600">خدمة منفردة</Badge>
+                          <Badge className="!bg-slate-100 !text-slate-600">{t("singleServiceBadge")}</Badge>
                         </div>
                         <h3 className="font-bold text-slate-900">{service.name}</h3>
                         {service.description ? (
@@ -291,9 +295,9 @@ export function ExplorePage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-lg font-extrabold text-[#0C7BB3]">
-                          {service.price > 0 ? fmt(service.price) : "مجاناً"}
+                          {service.price > 0 ? fmt(service.price) : t("free")}
                         </span>
-                        <Button onClick={() => setSelectedService(service)}>احجز الآن</Button>
+                        <Button onClick={() => setSelectedService(service)}>{t("bookNow")}</Button>
                       </div>
                     </div>
                   </Card>
@@ -307,8 +311,7 @@ export function ExplorePage() {
           <div className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
             <span className="text-lg">🔸</span>
             <p className="text-sm text-slate-600">
-              <span className="font-bold text-slate-900">باقة جاهزة:</span> بتجمع أكتر من خدمة في منتج
-              واحد بسعر إجمالي أوفر من طلب كل خدمة لوحدها.
+              <span className="font-bold text-slate-900">{t("packagesBanner.bold")}</span> {t("packagesBanner.rest")}
             </p>
           </div>
 
@@ -318,28 +321,29 @@ export function ExplorePage() {
               const subtotal = packageSubtotal(items);
               const finalPrice = packageFinalPrice(items, pkg.discountPercent);
               const savings = Math.max(0, Math.round((subtotal - finalPrice) * 100) / 100);
+              const badge = packageBadgeLabel(pkg);
 
               return (
                 <Card key={pkg.id} className="flex flex-col overflow-hidden !p-0">
                   <div className="relative h-36 w-full overflow-hidden">
                     <CoverImage src={PACKAGE_IMAGES[pkg.id]} alt={pkg.title} icon={pkg.icon} />
-                    {pkg.badge ? (
+                    {badge ? (
                       <span className="absolute right-3 top-3 rounded-full bg-[#0C7BB3] px-2.5 py-1 text-[11px] font-bold text-white shadow">
-                        {pkg.badge}
+                        {badge}
                       </span>
                     ) : null}
                   </div>
                   <div className="flex flex-1 flex-col justify-between gap-4 p-4">
                     <div>
                       <div className="mb-1 flex items-center gap-1.5">
-                        <Badge tone="special_fare">باقة</Badge>
-                        {savings > 0 ? <Badge tone="savings">وفّر {fmt(savings)}</Badge> : null}
+                        <Badge tone="special_fare">{t("packageBadge")}</Badge>
+                        {savings > 0 ? <Badge tone="savings">{t("savedBadge", { amount: fmt(savings) })}</Badge> : null}
                       </div>
                       <h3 className="flex items-center gap-1.5 font-bold text-slate-900">
                         <span>{pkg.icon}</span>
                         {pkg.title}
                       </h3>
-                      <p className="mt-1 text-sm text-slate-600">{pkg.subtitle}</p>
+                      <p className="mt-1 text-sm text-slate-600">{packageSubtitleLabel(pkg)}</p>
                       {!pkg.isCustom ? (
                         <ul className="mt-3 space-y-1">
                           {items.map((item) => (
@@ -353,11 +357,11 @@ export function ExplorePage() {
                     </div>
                     <div className="flex items-center justify-between">
                       {pkg.isCustom ? (
-                        <span className="text-sm font-semibold text-slate-500">يبدأ حسب اختيارك</span>
+                        <span className="text-sm font-semibold text-slate-500">{t("startsFromYourChoice")}</span>
                       ) : (
                         <span className="text-lg font-extrabold text-[#0C7BB3]">{fmt(finalPrice)}</span>
                       )}
-                      <Button onClick={() => setSelectedPackage(pkg)}>استكشف الباقة</Button>
+                      <Button onClick={() => setSelectedPackage(pkg)}>{t("explorePackage")}</Button>
                     </div>
                   </div>
                 </Card>
@@ -395,15 +399,16 @@ export function ExplorePage() {
       ) : null}
 
       {confirmedRequest ? (
-        <Modal open onClose={() => setConfirmedRequest(null)} title="تم إرسال طلبك">
+        <Modal open onClose={() => setConfirmedRequest(null)} title={t("modal.confirmationTitle")}>
           <div className="space-y-3 text-sm">
             <p className="text-slate-700">
-              رقم الطلب <span className="font-mono font-bold">#{confirmedRequest.number}</span> — هيتواصل معاك
-              فريقنا قريباً لتأكيد التفاصيل والدفع.
+              {t("modal.confirmationBody", { number: confirmedRequest.number })}
             </p>
-            <p className="font-semibold text-slate-900">الإجمالي: {fmt(confirmedRequest.total)}</p>
+            <p className="font-semibold text-slate-900">
+              {t("modal.confirmationTotal", { amount: fmt(confirmedRequest.total) })}
+            </p>
             <Button fullWidth onClick={() => setConfirmedRequest(null)}>
-              تمام
+              {t("modal.ok")}
             </Button>
           </div>
         </Modal>
@@ -460,53 +465,53 @@ function TripContactFields({
   notes: string;
   setNotes: (v: string) => void;
 }) {
+  const { t } = useTranslation("explore");
   return (
     <>
       <div className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500">
-        <Badge>اختياري</Badge> مش لازم تكون حاجز تذكرتك من TripRing — تقدر تدخل تفاصيل رحلتك من أي مصدر عشان
-        نربط الطلب بيها.
+        <Badge>{t("modal.optionalBadge")}</Badge> {t("modal.optionalNote")}
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <Select
-          label="شركة الطيران"
+          label={t("modal.airline")}
           value={airline}
           onChange={(e) => setAirline(e.target.value)}
           options={airlines}
-          placeholder="اختر (اختياري)"
+          placeholder={t("modal.chooseOptional")}
         />
         <Input
-          label="رقم الرحلة"
-          placeholder="مثال: MS 123"
+          label={t("modal.flightNumber")}
+          placeholder={t("modal.flightNumberPlaceholder")}
           value={flightNumber}
           onChange={(e) => setFlightNumber(e.target.value)}
         />
-        <Input label="تاريخ الرحلة" type="date" value={flightDate} onChange={(e) => setFlightDate(e.target.value)} />
+        <Input label={t("modal.flightDate")} type="date" value={flightDate} onChange={(e) => setFlightDate(e.target.value)} />
         <Input
-          label="وقت الوصول"
+          label={t("modal.arrivalTime")}
           type="time"
           value={arrivalTime}
           onChange={(e) => setArrivalTime(e.target.value)}
         />
         <Select
-          label="المطار"
+          label={t("modal.airport")}
           value={airport}
           onChange={(e) => setAirport(e.target.value)}
           options={airports}
-          placeholder="اختر (اختياري)"
+          placeholder={t("modal.chooseOptional")}
         />
         <Input
-          label="الوجهة"
-          placeholder="مثال: جدة"
+          label={t("modal.destination")}
+          placeholder={t("modal.destinationPlaceholder")}
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
         />
       </div>
 
       <div className="space-y-3 border-t border-slate-100 pt-4">
-        <Input label="الاسم" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
+        <Input label={t("modal.name")} required value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
         <Input
-          label="رقم الهاتف"
+          label={t("modal.phone")}
           type="tel"
           required
           placeholder="+20xxxxxxxxxx"
@@ -514,18 +519,19 @@ function TripContactFields({
           onChange={(e) => setCustomerPhone(e.target.value)}
         />
         <Input
-          label="البريد الإلكتروني (اختياري)"
+          label={t("modal.email")}
           type="email"
           value={customerEmail}
           onChange={(e) => setCustomerEmail(e.target.value)}
         />
-        <Input label="ملاحظات (اختياري)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+        <Input label={t("modal.notes")} value={notes} onChange={(e) => setNotes(e.target.value)} />
       </div>
     </>
   );
 }
 
 function useTripContactFieldsState() {
+  const { t } = useTranslation("explore");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -542,15 +548,15 @@ function useTripContactFieldsState() {
   function validate(): boolean {
     setError(null);
     if (!customerName.trim()) {
-      setError("أدخل اسمك");
+      setError(t("modal.errorEnterName"));
       return false;
     }
     if (!isValidPhone(customerPhone)) {
-      setError("رقم الهاتف غير صالح — أدخله بالصيغة الدولية مثل +20xxxxxxxxxx");
+      setError(t("modal.errorInvalidPhone"));
       return false;
     }
     if (customerEmail.trim() && !isValidEmail(customerEmail)) {
-      setError("البريد الإلكتروني غير صالح");
+      setError(t("modal.errorInvalidEmail"));
       return false;
     }
     return true;
@@ -586,6 +592,7 @@ function ServiceRequestModal({
   onClose: () => void;
   onSuccess: (requestNumber: number, total: number) => void;
 }) {
+  const { t } = useTranslation("explore");
   const { fmt } = useCurrency();
   const [quantity, setQuantity] = useState(1);
   const f = useTripContactFieldsState();
@@ -616,7 +623,7 @@ function ServiceRequestModal({
       });
       onSuccess(row.request_number, row.total_price);
     } catch (err) {
-      f.setError(friendlyErrorMessage(err, "فشل إرسال الطلب، جرّب تاني.", "ExplorePage.submitRequest"));
+      f.setError(friendlyErrorMessage(err, t("modal.errorSubmitFailed"), "ExplorePage.submitRequest"));
     } finally {
       f.setSubmitting(false);
     }
@@ -628,7 +635,7 @@ function ServiceRequestModal({
         {service.description ? <p className="text-sm text-slate-600">{service.description}</p> : null}
 
         <Input
-          label="الكمية"
+          label={t("modal.quantity")}
           type="number"
           min={1}
           value={quantity}
@@ -638,14 +645,14 @@ function ServiceRequestModal({
         <TripContactFields airports={airports} airlines={airlines} {...f} />
 
         <div className="flex items-center justify-between rounded-xl bg-[#0C7BB3]/5 px-4 py-3">
-          <span className="text-sm font-medium text-slate-700">الإجمالي</span>
+          <span className="text-sm font-medium text-slate-700">{t("modal.total")}</span>
           <span className="text-lg font-extrabold text-[#0C7BB3]">{fmt(total)}</span>
         </div>
 
         {f.error ? <p className="text-sm text-red-600">{f.error}</p> : null}
 
         <Button type="submit" fullWidth disabled={f.submitting}>
-          {f.submitting ? "جاري الإرسال..." : "تأكيد الطلب"}
+          {f.submitting ? t("modal.sending") : t("modal.confirmRequest")}
         </Button>
       </form>
     </Modal>
@@ -667,8 +674,9 @@ function PackageRequestModal({
   onClose: () => void;
   onSuccess: (requestNumber: number, total: number) => void;
 }) {
+  const { t } = useTranslation("explore");
   const { fmt } = useCurrency();
-  const allKeys = Object.keys(SERVICE_KEY_LABELS) as PackageServiceKey[];
+  const allKeys = SERVICE_KEYS;
   const [customKeys, setCustomKeys] = useState<Set<PackageServiceKey>>(
     () => new Set(pkg.isCustom ? [] : pkg.includedKeys),
   );
@@ -692,7 +700,7 @@ function PackageRequestModal({
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (items.length === 0) {
-      f.setError("اختار خدمة واحدة على الأقل عشان تكوّن باقتك");
+      f.setError(t("modal.errorSelectOneService"));
       return;
     }
     if (!f.validate()) return;
@@ -714,11 +722,11 @@ function PackageRequestModal({
         arrivalTime: f.arrivalTime || null,
         airport: f.airport || null,
         destination: f.destination.trim() || null,
-        notes: [f.notes.trim(), `باقة تشمل: ${includedLabels}`].filter(Boolean).join(" — "),
+        notes: [f.notes.trim(), t("modal.includesLabel", { labels: includedLabels })].filter(Boolean).join(" — "),
       });
       onSuccess(row.request_number, row.total_price);
     } catch (err) {
-      f.setError(friendlyErrorMessage(err, "فشل إرسال الطلب، جرّب تاني.", "ExplorePage.submitRequest"));
+      f.setError(friendlyErrorMessage(err, t("modal.errorSubmitFailed"), "ExplorePage.submitRequest"));
     } finally {
       f.setSubmitting(false);
     }
@@ -727,11 +735,11 @@ function PackageRequestModal({
   return (
     <Modal open onClose={onClose} title={`${pkg.icon} ${pkg.title}`}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <p className="text-sm text-slate-600">{pkg.subtitle}</p>
+        <p className="text-sm text-slate-600">{packageSubtitleLabel(pkg)}</p>
 
         <div className="rounded-xl border border-[#0C7BB3]/20 bg-[#0C7BB3]/5 p-3">
           <p className="mb-2 text-xs font-bold text-slate-700">
-            {pkg.isCustom ? "اختار الخدمات اللي تدخل في باقتك:" : "الخدمات المشمولة في الباقة:"}
+            {pkg.isCustom ? t("modal.chooseYourServices") : t("modal.includedServices")}
           </p>
           <div className="space-y-1.5">
             {(pkg.isCustom ? allKeys : pkg.includedKeys).map((key) => {
@@ -750,7 +758,7 @@ function PackageRequestModal({
                       <span className="text-[#16A34A]">✓</span>
                     )}
                     <span>{SERVICE_KEY_ICONS[key]}</span>
-                    {SERVICE_KEY_LABELS[key]}
+                    {serviceKeyLabel(key)}
                   </span>
                   {item ? <span className="text-xs text-slate-500">{fmt(item.price)}</span> : null}
                 </label>
@@ -764,23 +772,25 @@ function PackageRequestModal({
         <div className="space-y-1 rounded-xl bg-[#0C7BB3]/5 px-4 py-3">
           {savings > 0 ? (
             <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>سعر الخدمات منفردة</span>
+              <span>{t("modal.servicesAlonePrice")}</span>
               <span className="line-through">{fmt(subtotal)}</span>
             </div>
           ) : null}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-700">إجمالي الباقة</span>
+            <span className="text-sm font-medium text-slate-700">{t("modal.packageTotal")}</span>
             <span className="text-lg font-extrabold text-[#0C7BB3]">{fmt(total)}</span>
           </div>
           {savings > 0 ? (
-            <p className="text-xs font-semibold text-[#16A34A]">وفّرت {fmt(savings)} مقارنة بالطلب منفرد</p>
+            <p className="text-xs font-semibold text-[#16A34A]">
+              {t("modal.savedComparedToAlone", { amount: fmt(savings) })}
+            </p>
           ) : null}
         </div>
 
         {f.error ? <p className="text-sm text-red-600">{f.error}</p> : null}
 
         <Button type="submit" fullWidth disabled={f.submitting}>
-          {f.submitting ? "جاري الإرسال..." : "تأكيد حجز الباقة"}
+          {f.submitting ? t("modal.sending") : t("modal.confirmPackage")}
         </Button>
       </form>
     </Modal>

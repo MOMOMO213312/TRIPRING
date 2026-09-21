@@ -1,0 +1,146 @@
+{
+  "hero": {
+    "badge": "⚡ TripRing's advanced product",
+    "subtitle": "Your ticket + your airport transfer in one booking — no more looking for a taxi once you land.",
+    "description": "One final price covering the flight and the transfer. Pick a private car or a shared transfer at booking time, and we'll be there to greet you."
+  },
+  "search": {
+    "oneWayBadge": "🎫 One-way trip",
+    "from": "From",
+    "to": "To",
+    "toPlaceholder": "Anywhere",
+    "swap": "Swap origin and destination",
+    "date": "Date",
+    "passengers": "Travelers",
+    "submit": "🔍 Search TripGo",
+    "errors": {
+      "from": "Choose a departure airport from the list",
+      "to": "Choose a destination from the list, or leave it blank for any destination"
+    }
+  },
+  "valueProps": {
+    "ticket": { "title": "Flight ticket", "desc": "The best prices from trusted airlines and agencies" },
+    "transfer": {
+      "title": "Airport transfer",
+      "desc": "Included with every trip — pick a private car or a shared transfer, not an optional add-on you have to arrange yourself"
+    },
+    "experience": { "title": "One seamless trip", "desc": "From your door to the airport, and from the airport to your destination" }
+  },
+  "results": {
+    "loadFailed": "There was an error loading the results, please try again.",
+    "loading": "Loading...",
+    "title": "🚐 TripGo results",
+    "allDestinations": "All destinations",
+    "oneWay": "One way",
+    "transferIncluded": "Every trip includes the airport transfer",
+    "empty": "No TripGo trips match your search right now.",
+    "tryAgain": "Try a different search"
+  },
+  "card": {
+    "badge": "🚐 TripGo",
+    "hoursSuffix": "h",
+    "transferIncluded": "Airport transfer included",
+    "pickupToAirport": "Pickup → Airport",
+    "airportToDestination": "Airport → Destination",
+    "priceNote": "Ticket + transfer / per traveler",
+    "book": "Book TripGo"
+  },
+  "steps": {
+    "flight": "Flight",
+    "pickup": "Pickup location",
+    "transfer": "Transfer details",
+    "passengers": "Travelers",
+    "review": "Review trip",
+    "payment": "Payment"
+  },
+  "details": {
+    "loading": "Loading...",
+    "unavailable": "This TripGo trip is not available",
+    "loadFailed": "There was an error loading the trip, please try again.",
+    "notFound": "TripGo trip not found",
+    "backToTripGo": "Back to TripGo",
+    "soldOut": "Sorry, this trip or its transfer service is no longer available.",
+    "badge": "🚐 TripGo",
+    "ticketPlusTransfer": "Ticket + transfer",
+    "stepCounter": "{{n}}. {{title}}",
+    "flight": {
+      "date": "Date",
+      "airline": "Airline",
+      "stops": "Stops",
+      "duration": "Duration",
+      "durationValue": "{{hours}} hour(s)",
+      "baggage": "Baggage",
+      "transferIncluded": "✓ Airport transfer included"
+    },
+    "pickup": {
+      "prompt": "Where should we pick you up to take you to the airport?",
+      "location": "Pickup address (home / hotel)",
+      "locationPlaceholder": "e.g. Apartment 12, Nile Tower, Mohandessin",
+      "area": "Area / neighborhood (optional)",
+      "areaPlaceholder": "e.g. Mohandessin, Giza",
+      "error": "Enter the pickup address (home / hotel)"
+    },
+    "transfer": {
+      "prompt": "Transfer coordination details — so the driver is waiting for you at the right spot.",
+      "flightNumber": "Flight number (optional)",
+      "flightNumberPlaceholder": "e.g. MS 123",
+      "yourAddress": "your address",
+      "pickupToAirport": "{{location}} → Airport",
+      "airportToDestination": "Airport → {{destination}}",
+      "method": "Transfer type: {{kind}}",
+      "pickupTime": " · Approximate pickup time: {{time}}"
+    },
+    "passengers": {
+      "fullName": "Full name",
+      "phone": "Phone number",
+      "email": "Email (optional)",
+      "adults": "Adults",
+      "children": "Children",
+      "infants": "Infants",
+      "availableSeats": "Seats currently available on this transfer: {{count}}",
+      "travelerTitle": "Traveler {{n}} ({{type}})",
+      "type": { "adult": "adult", "child": "child", "infant": "infant" },
+      "travelerName": "Name as on passport",
+      "dob": "Date of birth",
+      "passport": "Passport number",
+      "errors": {
+        "name": "Enter your full name",
+        "phone": "Invalid phone number — use international format, e.g. +20xxxxxxxxxx",
+        "email": "Invalid email address",
+        "travelerName": "Enter traveler {{n}}'s name as it appears on the passport",
+        "noCarAvailable": "No car is currently available for this time",
+        "seatsFewer": "Available seats ({{available}}) are fewer than the number of travelers ({{needed}})"
+      }
+    },
+    "review": {
+      "heading": "Review your TripGo trip",
+      "route": "Route",
+      "date": "Date",
+      "travelers": "Travelers",
+      "travelersValue": "{{adults}} adult(s) · {{children}} child(ren) · {{infants}} infant(s)",
+      "pickupLocation": "Pickup location",
+      "noValue": "—",
+      "transportMethod": "Transfer type",
+      "transportMethodValue": "{{kind}} — {{price}}",
+      "flightFare": "Flight fare",
+      "transfer": "Airport transfer",
+      "total": "TripGo trip total",
+      "warning": "⚠️ The price is an estimate and not final — pressing \"Confirm TripGo booking\" sends a booking request to the agency, and they'll contact you to confirm the price, seat, and pickup details before any actual payment."
+    },
+    "payment": {
+      "note": "Payment is manual — complete the transfer, then send the receipt via WhatsApp after the agency confirms.",
+      "total": "TripGo trip total"
+    },
+    "bundleGone": "Sorry, this TripGo trip is no longer available.",
+    "createFailed": "We couldn't create the booking. Please try again or contact us.",
+    "createBookingFailed": "Could not create the TripGo booking",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Confirm TripGo booking",
+    "submitting": "Confirming your TripGo trip...",
+    "whatsapp": {
+      "link": "Need to confirm the pickup details on WhatsApp? Contact us",
+      "message": "Hi, I'd like to confirm my TripGo trip: {{route}} — pickup from {{pickup}} — transfer type: {{transport}}"
+    }
+  }
+}

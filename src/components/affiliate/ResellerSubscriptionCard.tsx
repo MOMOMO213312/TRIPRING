@@ -76,7 +76,7 @@ export function ResellerSubscriptionCard({
 }
 
 function SubscribeForm({ affiliateId, onDone }: { affiliateId: string; onDone: () => void }) {
-  const paymentMethods = usePaymentMethods();
+  const PAYMENT_METHODS = usePaymentMethods();
   const [plans, setPlans] = useState<ResellerSubscriptionPlanRow[]>([]);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
@@ -162,7 +162,7 @@ function SubscribeForm({ affiliateId, onDone }: { affiliateId: string; onDone: (
 
       <div className="space-y-2 border-t border-slate-100 pt-3">
         <p className="text-sm text-slate-600">اختار طريقة الدفع وحوّل قيمة الباقة</p>
-        {paymentMethods.map((pm) => (
+        {PAYMENT_METHODS.map((pm) => (
           <label
             key={pm.value}
             className={`block cursor-pointer rounded-xl border p-3 ${

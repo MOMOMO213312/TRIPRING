@@ -35,14 +35,14 @@ export function PaymentProofUpload({
       setDone(true);
       onUploaded?.(result.status);
     } catch (err) {
-      setError(friendlyErrorMessage(err, "booking:upload.failed", "PaymentProofUpload.upload"));
+      setError(friendlyErrorMessage(err, "booking:proof.failed", "PaymentProofUpload.upload"));
     } finally {
       setUploading(false);
     }
   }
 
   if (done) {
-    return <p className="text-sm font-semibold text-green-700">{t("upload.success")}</p>;
+    return <p className="text-sm font-semibold text-green-700">{t("proof.done")}</p>;
   }
 
   return (
@@ -64,7 +64,7 @@ export function PaymentProofUpload({
         disabled={uploading || !bookingNumber || !contact}
         onClick={() => inputRef.current?.click()}
       >
-        {uploading ? t("upload.uploading") : t("upload.cta")}
+        {uploading ? t("proof.uploading") : t("proof.upload")}
       </Button>
       {error ? <p className="text-xs text-red-600">{error}</p> : null}
     </div>

@@ -1,0 +1,25 @@
+{
+  "title": {
+    "domestic": "{{airport}} kalkışlı iç hat uçuşları",
+    "international": "{{airport}} kalkışlı dış hat uçuşları",
+    "best": "{{airport}} kalkışlı en iyi fırsatlar"
+  },
+  "to": "→ {{destination}}",
+  "allDestinations": "Tüm varış noktaları",
+  "oneWay": "Tek yön",
+  "returnOn": "Dönüş {{date}}",
+  "sort": {
+    "label": "Sıralama",
+    "bestMatch": "En iyi eşleşme (önerilen)",
+    "priceAsc": "Fiyat: önce en düşük",
+    "priceDesc": "Fiyat: önce en yüksek"
+  },
+  "resultsCount": "{{count}} fırsat",
+  "empty": {
+    "title": "Seçimlerinize uygun fırsat bulunamadı.",
+    "subtitle": "Bütçenizi artırmayı, esnek tarihleri veya bazı filtreleri kaldırmayı deneyin.",
+    "resetButton": "Filtreleri sıfırla"
+  },
+  "loading": "Yükleniyor...",
+  "loadError": "Sonuçlar yüklenirken bir hata oluştu, lütfen tekrar deneyin."
+}

@@ -1,0 +1,69 @@
+{
+  "loading": "Yükleniyor…",
+  "error": {
+    "unavailable": "Bu teklif mevcut değil veya süresi doldu",
+    "loadFailed": "Teklif yüklenirken bir hata oluştu. Lütfen tekrar deneyin veya ana sayfaya dönün.",
+    "notFound": "Teklif bulunamadı"
+  },
+  "backHome": "Ana sayfaya dön",
+  "rail": {
+    "baseFare": "Temel ücret",
+    "taxes": "Vergi ve harçlar",
+    "continue": "Devam",
+    "soldOut": "Koltuklar tükendi",
+    "copied": "Kopyalandı ✓",
+    "share": "🔗 Paylaş",
+    "priceAlert": "🔔 Fiyat alarmı"
+  },
+  "hero": {
+    "kicker": "TripRing fırsatı"
+  },
+  "seatsLeft": "{{count}} koltuk kaldı",
+  "info": {
+    "departure": "Kalkış",
+    "return": "Dönüş",
+    "availableSeats": "Müsait koltuk",
+    "class": "Sınıf",
+    "flightNumber": "Uçuş numarası",
+    "aircraft": "Uçak tipi",
+    "operatingCarrier": "İşleten havayolu",
+    "arrivalDate": "Varış tarihi",
+    "layover": "Aktarma süresi",
+    "baggage": "Bagaj",
+    "baggageKg": "{{kg}} kg",
+    "cabinBag": "Kabin çantası",
+    "checkedBags": "Kayıtlı bavul sayısı",
+    "extraBagPrice": "Ek bavul ücreti"
+  },
+  "fare": {
+    "refundable": "İade edilebilir",
+    "nonRefundable": "İade edilemez",
+    "changeable": "Değiştirilebilir",
+    "nonChangeable": "Değiştirilemez",
+    "changeFee": "Değişiklik ücreti: {{amount}}",
+    "cancellationFee": "İptal ücreti: {{amount}}"
+  },
+  "flexible": {
+    "title": "Esnek tarihler",
+    "subtitle": "Yolculuğunuza yakın tarihlerde aynı güzergâhın fiyatları",
+    "save": "💡 {{date}} tarihinde uçarsanız {{amount}} tasarruf edin",
+    "yourTrip": "Yolculuğunuz"
+  },
+  "reasons": {
+    "title": "Bu neden iyi bir fırsat?"
+  },
+  "priceHistory": "{{route}} fiyat geçmişi",
+  "notes": "Notlar",
+  "alert": {
+    "title": "Fiyat alarmı oluştur",
+    "needContact": "Bir telefon numarası veya e-posta girin",
+    "failed": "Bir hata oluştu, lütfen tekrar deneyin",
+    "done": "Tamam! {{route}} fiyatı {{budget}} {{currency}} altına düştüğünde sizi bilgilendireceğiz",
+    "intro": "{{route}} fiyatı bu bütçenin altına düştüğünde sizi bilgilendireceğiz.",
+    "contactLabel": "Telefon numarası veya e-posta",
+    "contactPlaceholder": "+201000000000 veya you@email.com",
+    "budgetLabel": "Maksimum bütçe (USD)",
+    "create": "Alarm oluştur",
+    "creating": "Oluşturuluyor…"
+  }
+}

@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 import { supabase } from "./supabase";
 import type {
   BookingChannel,
@@ -11,7 +12,6 @@ import type {
   TripGoDealRow,
 } from "../types/database";
 
-import i18n from "../i18n";
 import { dbError } from "./errors";
 /**
  * TripGo = Flight Ticket + Transport sold as one bundled product.
@@ -84,17 +84,11 @@ export function tripGoTotal(flightPrice: number, transferPrice: number): number 
   return Math.round((flightPrice + transferPrice) * 100) / 100;
 }
 
-/**
- * Display label for a transfer (private car / shared transport). Rendered in the current UI
- * language unless `lng` is given — used for text that is sent to the agency (WhatsApp), which
- * must not depend on the customer's browsing language.
- */
 export function transferKindLabel(transportType: TransportType, vehicleType?: string | null, lng?: string): string {
   const base = transportType === "private" ? "private" : "shared";
-  const opts = { lng, vehicle: vehicleType ?? "" };
   return vehicleType
-    ? i18n.t(`booking:transfer.${base}Vehicle`, opts)
-    : i18n.t(`booking:transfer.${base}`, { lng });
+    ? i18n.t(`common:transfer.${base}With`, { vehicle: vehicleType, lng })
+    : i18n.t(`common:transfer.${base}`, { lng });
 }
 
 // ── Booking (customer-facing) ───────────────────────────────────────────
@@ -129,7 +123,7 @@ export async function bookTripGo(input: TripGoBookingInput): Promise<TripGoBooki
   } as never);
   if (error) throw dbError(error);
   const row = Array.isArray(data) ? data[0] : data;
-  if (!row) throw new Error("create_tripgo_booking returned no row");
+  if (!row) throw new Error(i18n.t("tripgo:details.createBookingFailed"));
   return row as TripGoBookingResult;
 }
 

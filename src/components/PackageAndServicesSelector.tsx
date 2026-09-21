@@ -43,7 +43,7 @@ export function PackageAndServicesSelector({
   checkedServiceIds,
   onToggleService,
 }: Props) {
-  const { t } = useTranslation("booking");
+  const { t } = useTranslation("packages");
   const { fmt } = useCurrency();
   const packageOptions = usePackageOptions();
   const activePkg = packageOptions.find((p) => p.id === selectedPackage) ?? packageOptions[0];
@@ -151,7 +151,7 @@ export function PackageAndServicesSelector({
       ) : null}
 
       <div className="flex items-center justify-between border-t border-slate-100 pt-4">
-        <span className="font-bold text-slate-900">{t("f.total")}</span>
+        <span className="font-bold text-slate-900">{t("selector.total")}</span>
         <span className="font-latin text-2xl font-extrabold text-[#0C7BB3]">{fmt(total, currency)}</span>
       </div>
     </div>

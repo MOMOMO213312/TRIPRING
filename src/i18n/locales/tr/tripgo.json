@@ -1,0 +1,146 @@
+{
+  "hero": {
+    "badge": "⚡ TripRing'in gelişmiş ürünü",
+    "subtitle": "Biletiniz + havalimanı transferiniz tek rezervasyonda — indikten sonra taksi aramanıza gerek yok.",
+    "description": "Uçuşu ve transferi kapsayan tek bir kesin fiyat. Rezervasyon sırasında özel araç veya paylaşımlı transfer seçin, sizi karşılamaya hazır olacağız."
+  },
+  "search": {
+    "oneWayBadge": "🎫 Tek yön seyahat",
+    "from": "Nereden",
+    "to": "Nereye",
+    "toPlaceholder": "Herhangi bir yer",
+    "swap": "Kalkış ve varışı değiştir",
+    "date": "Tarih",
+    "passengers": "Yolcular",
+    "submit": "🔍 TripGo ara",
+    "errors": {
+      "from": "Listeden bir kalkış havalimanı seçin",
+      "to": "Listeden bir varış noktası seçin veya herhangi bir varış için boş bırakın"
+    }
+  },
+  "valueProps": {
+    "ticket": { "title": "Uçak bileti", "desc": "Güvenilir havayolları ve acentelerden en iyi fiyatlar" },
+    "transfer": {
+      "title": "Havalimanı transferi",
+      "desc": "Her seyahatte dahildir — özel araç veya paylaşımlı transfer seçin, kendiniz ayarlamanız gereken isteğe bağlı bir hizmet değil"
+    },
+    "experience": { "title": "Tek kesintisiz seyahat", "desc": "Kapınızdan havalimanına, havalimanından varış noktanıza" }
+  },
+  "results": {
+    "loadFailed": "Sonuçlar yüklenirken bir hata oluştu, lütfen tekrar deneyin.",
+    "loading": "Yükleniyor...",
+    "title": "🚐 TripGo sonuçları",
+    "allDestinations": "Tüm varış noktaları",
+    "oneWay": "Tek yön",
+    "transferIncluded": "Her seyahatte havalimanı transferi dahildir",
+    "empty": "Aramanıza uygun TripGo seyahati şu anda bulunmuyor.",
+    "tryAgain": "Farklı bir arama deneyin"
+  },
+  "card": {
+    "badge": "🚐 TripGo",
+    "hoursSuffix": "sa",
+    "transferIncluded": "Havalimanı transferi dahil",
+    "pickupToAirport": "Alış → Havalimanı",
+    "airportToDestination": "Havalimanı → Varış noktası",
+    "priceNote": "Bilet + transfer / yolcu başına",
+    "book": "TripGo rezervasyonu yap"
+  },
+  "steps": {
+    "flight": "Uçuş",
+    "pickup": "Alış yeri",
+    "transfer": "Transfer detayları",
+    "passengers": "Yolcular",
+    "review": "Seyahati gözden geçir",
+    "payment": "Ödeme"
+  },
+  "details": {
+    "loading": "Yükleniyor...",
+    "unavailable": "Bu TripGo seyahati mevcut değil",
+    "loadFailed": "Seyahat yüklenirken bir hata oluştu, lütfen tekrar deneyin.",
+    "notFound": "TripGo seyahati bulunamadı",
+    "backToTripGo": "TripGo'ya dön",
+    "soldOut": "Üzgünüz, bu seyahat veya transfer hizmeti artık mevcut değil.",
+    "badge": "🚐 TripGo",
+    "ticketPlusTransfer": "Bilet + transfer",
+    "stepCounter": "{{n}}. {{title}}",
+    "flight": {
+      "date": "Tarih",
+      "airline": "Havayolu",
+      "stops": "Aktarmalar",
+      "duration": "Süre",
+      "durationValue": "{{hours}} saat",
+      "baggage": "Bagaj",
+      "transferIncluded": "✓ Havalimanı transferi dahil"
+    },
+    "pickup": {
+      "prompt": "Sizi havalimanına götürmek için nereden almalıyız?",
+      "location": "Alış adresi (ev / otel)",
+      "locationPlaceholder": "örn. Daire 12, Nil Kulesi, Mohandessin",
+      "area": "Bölge / mahalle (isteğe bağlı)",
+      "areaPlaceholder": "örn. Mohandessin, Giza",
+      "error": "Alış adresini girin (ev / otel)"
+    },
+    "transfer": {
+      "prompt": "Transfer koordinasyon detayları — sürücünün sizi doğru yerde beklemesi için.",
+      "flightNumber": "Uçuş numarası (isteğe bağlı)",
+      "flightNumberPlaceholder": "örn. MS 123",
+      "yourAddress": "adresiniz",
+      "pickupToAirport": "{{location}} → Havalimanı",
+      "airportToDestination": "Havalimanı → {{destination}}",
+      "method": "Transfer türü: {{kind}}",
+      "pickupTime": " · Tahmini alış saati: {{time}}"
+    },
+    "passengers": {
+      "fullName": "Ad soyad",
+      "phone": "Telefon numarası",
+      "email": "E-posta (isteğe bağlı)",
+      "adults": "Yetişkin",
+      "children": "Çocuk",
+      "infants": "Bebek",
+      "availableSeats": "Bu transferde şu anda müsait koltuk sayısı: {{count}}",
+      "travelerTitle": "Yolcu {{n}} ({{type}})",
+      "type": { "adult": "yetişkin", "child": "çocuk", "infant": "bebek" },
+      "travelerName": "Pasaporttaki ad",
+      "dob": "Doğum tarihi",
+      "passport": "Pasaport numarası",
+      "errors": {
+        "name": "Ad soyadınızı girin",
+        "phone": "Geçersiz telefon numarası — uluslararası biçimde girin, örn. +20xxxxxxxxxx",
+        "email": "Geçersiz e-posta adresi",
+        "travelerName": "{{n}}. yolcunun adını pasaporttaki gibi girin",
+        "noCarAvailable": "Bu saat için şu anda müsait araç yok",
+        "seatsFewer": "Müsait koltuk sayısı ({{available}}), yolcu sayısından ({{needed}}) az"
+      }
+    },
+    "review": {
+      "heading": "TripGo seyahatinizi gözden geçirin",
+      "route": "Güzergâh",
+      "date": "Tarih",
+      "travelers": "Yolcular",
+      "travelersValue": "{{adults}} yetişkin · {{children}} çocuk · {{infants}} bebek",
+      "pickupLocation": "Alış yeri",
+      "noValue": "—",
+      "transportMethod": "Transfer türü",
+      "transportMethodValue": "{{kind}} — {{price}}",
+      "flightFare": "Uçak bileti",
+      "transfer": "Havalimanı transferi",
+      "total": "TripGo seyahat toplamı",
+      "warning": "⚠️ Fiyat tahminidir ve kesin değildir — \"TripGo rezervasyonunu onayla\"ya basmak acenteye bir rezervasyon talebi gönderir; gerçek ödemeden önce fiyatı, koltuğu ve alış detaylarını onaylamak için sizinle iletişime geçecekler."
+    },
+    "payment": {
+      "note": "Ödeme manueldir — havaleyi tamamlayın, ardından acente onayından sonra dekontu WhatsApp ile gönderin.",
+      "total": "TripGo seyahat toplamı"
+    },
+    "bundleGone": "Üzgünüz, bu TripGo seyahati artık mevcut değil.",
+    "createFailed": "Rezervasyon oluşturulamadı. Lütfen tekrar deneyin veya bizimle iletişime geçin.",
+    "createBookingFailed": "TripGo rezervasyonu oluşturulamadı",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "TripGo rezervasyonunu onayla",
+    "submitting": "TripGo seyahatiniz onaylanıyor...",
+    "whatsapp": {
+      "link": "Alış detaylarını WhatsApp'ta onaylamanız mı gerekiyor? Bize ulaşın",
+      "message": "Merhaba, TripGo seyahatimi onaylamak istiyorum: {{route}} — alış yeri {{pickup}} — transfer türü: {{transport}}"
+    }
+  }
+}

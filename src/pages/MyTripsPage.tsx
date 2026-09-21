@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
 import { Badge } from "../components/ui/Badge";
@@ -11,12 +12,13 @@ import { JourneyPanel } from "../components/JourneyPanel";
 import { AddServicesToTrip } from "../components/AddServicesToTrip";
 import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { lookupBooking } from "../lib/api";
+import { paymentMethodLabel } from "../lib/payment-config";
 import { setSessionContact } from "../lib/session";
 import { formatDate } from "../lib/utils";
 import { airlineName, airportLabel } from "../lib/deal-utils";
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
-import { BOOKING_SERVICE_STATUS_LABELS, type BookingLookupResult, type BookingServiceStatus } from "../types/database";
+import type { BookingLookupResult, BookingServiceStatus } from "../types/database";
 import { useCurrency } from "../hooks/useCurrency";
 
 function serviceStatusTone(status: BookingServiceStatus): "default" | "flash" | "empty_seat" | "urgent" {
@@ -28,17 +30,8 @@ function serviceStatusTone(status: BookingServiceStatus): "default" | "flash" | 
 
 type PrefillState = { bookingNumber?: string; contact?: string; autoSearch?: boolean };
 
-const STATUS_LABEL: Record<string, string> = {
-  new: "جديد",
-  contacted: "تم التواصل",
-  awaiting_payment: "بانتظار الدفع",
-  payment_uploaded: "تم رفع إثبات الدفع",
-  paid: "تم الدفع",
-  ticket_issued: "تم إصدار التذكرة",
-  cancelled: "ملغي",
-};
-
 export function MyTripsPage() {
+  const { t } = useTranslation("booking");
   const { fmt } = useCurrency();
   const catalog = useCatalog();
   const location = useLocation();
@@ -58,9 +51,9 @@ export function MyTripsPage() {
       const result = await lookupBooking(num, contactValue);
       setBooking(result);
       if (result) setSessionContact(contactValue);
-      if (!result) setError("لم يتم العثور على حجز بهذه البيانات");
+      if (!result) setError(t("myTrips.notFound"));
     } catch (err) {
-      setError(friendlyErrorMessage(err, "حصل خطأ في البحث، جرّب تاني.", "MyTripsPage.search"));
+      setError(friendlyErrorMessage(err, "booking:myTrips.searchFailed", "MyTripsPage.search"));
       setBooking(null);
     } finally {
       setLoading(false);
@@ -84,27 +77,27 @@ export function MyTripsPage() {
   return (
     <div className="mx-auto max-w-lg space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">رحلاتي</h1>
-        <p className="text-slate-600">ابحث برقم الحجز ورقم الهاتف أو البريد الإلكتروني — بدون تسجيل دخول</p>
+        <h1 className="text-2xl font-bold">{t("myTrips.title")}</h1>
+        <p className="text-slate-600">{t("myTrips.subtitle")}</p>
       </div>
 
       <Card>
         <form onSubmit={handleSearch} className="space-y-4">
           <Input
-            label="رقم الحجز"
+            label={t("myTrips.bookingNumber")}
             required
             value={bookingNumber}
             onChange={(e) => setBookingNumber(e.target.value)}
-            placeholder="مثال: 1001"
+            placeholder={t("myTrips.bookingNumberPlaceholder")}
           />
           <Input
-            label="رقم الهاتف أو البريد الإلكتروني"
+            label={t("myTrips.contact")}
             required
             value={contact}
             onChange={(e) => setContact(e.target.value)}
           />
           <Button type="submit" fullWidth disabled={loading}>
-            {loading ? "جاري البحث..." : "بحث"}
+            {loading ? t("myTrips.searching") : t("myTrips.search")}
           </Button>
         </form>
       </Card>
@@ -113,19 +106,19 @@ export function MyTripsPage() {
 
       {booking ? (
         <Card>
-          <h2 className="mb-4 font-bold">تفاصيل الحجز</h2>
+          <h2 className="mb-4 font-bold">{t("myTrips.details")}</h2>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <dt className="text-slate-500">رقم الحجز</dt>
+              <dt className="text-slate-500">{t("myTrips.bookingNumber")}</dt>
               <dd className="font-bold">{booking.booking_number}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-slate-500">الحالة</dt>
-              <dd>{STATUS_LABEL[booking.status] ?? booking.status}</dd>
+              <dt className="text-slate-500">{t("myTrips.status")}</dt>
+              <dd>{t(`myTrips.bookingStatus.${booking.status}`, { defaultValue: booking.status })}</dd>
             </div>
             {booking.deal ? (
               <div className="flex justify-between">
-                <dt className="text-slate-500">الرحلة</dt>
+                <dt className="text-slate-500">{t("myTrips.trip")}</dt>
                 <dd>
                   {!catalog.loading
                     ? `${airportLabel(booking.deal.from_airport, catalog.airports)} → ${airportLabel(booking.deal.to_airport, catalog.airports)}`
@@ -135,35 +128,35 @@ export function MyTripsPage() {
             ) : null}
             {booking.deal ? (
               <div className="flex justify-between">
-                <dt className="text-slate-500">تاريخ السفر</dt>
+                <dt className="text-slate-500">{t("myTrips.travelDate")}</dt>
                 <dd>{formatDate(booking.deal.departure_date)}</dd>
               </div>
             ) : null}
             {booking.deal?.airline_code ? (
               <div className="flex justify-between">
-                <dt className="text-slate-500">شركة الطيران</dt>
+                <dt className="text-slate-500">{t("myTrips.airline")}</dt>
                 <dd>{!catalog.loading ? airlineName(booking.deal.airline_code, catalog.airlines) : booking.deal.airline_code}</dd>
               </div>
             ) : null}
             {booking.total_price ? (
               <div className="flex justify-between">
-                <dt className="text-slate-500">المبلغ</dt>
+                <dt className="text-slate-500">{t("myTrips.amount")}</dt>
                 <dd>{fmt(booking.total_price, booking.currency)}</dd>
               </div>
             ) : null}
             {booking.payment_method ? (
               <div className="flex justify-between">
-                <dt className="text-slate-500">طريقة الدفع</dt>
-                <dd>{booking.payment_method}</dd>
+                <dt className="text-slate-500">{t("myTrips.paymentMethod")}</dt>
+                <dd>{paymentMethodLabel(booking.payment_method)}</dd>
               </div>
             ) : null}
           </dl>
           {booking.travelers.length > 0 ? (
             <div className="mt-4 border-t border-slate-100 pt-4">
-              <p className="mb-2 text-sm font-medium text-slate-700">المسافرون</p>
+              <p className="mb-2 text-sm font-medium text-slate-700">{t("myTrips.travelers")}</p>
               <ul className="space-y-1 text-sm text-slate-600">
-                {booking.travelers.map((t, i) => (
-                  <li key={i}>{t.full_name}</li>
+                {booking.travelers.map((trv, i) => (
+                  <li key={i}>{trv.full_name}</li>
                 ))}
               </ul>
             </div>
@@ -174,9 +167,9 @@ export function MyTripsPage() {
               orchestration layer does not yet model. */}
           {booking.services.length > 0 ? (
             <div className="mt-4 border-t border-slate-100 pt-4">
-              <p className="mb-2 text-sm font-medium text-slate-700">خدمات إضافية مطلوبة</p>
+              <p className="mb-2 text-sm font-medium text-slate-700">{t("myTrips.extraServices")}</p>
               <p className="mb-2 text-xs text-slate-400">
-                هذه خدمات طلبتها — تفعيلها الفعلي مرتبط بتأكيد شركة الطيران/الجهة المزوّدة، مش مضمونة تلقائيًا.
+                {t("myTrips.extraServicesNote")}
               </p>
               <ul className="space-y-2 text-sm text-slate-600">
                 {booking.services.map((s, i) => (
@@ -184,7 +177,7 @@ export function MyTripsPage() {
                     <span>{s.name} × {s.quantity}</span>
                     <div className="flex items-center gap-2">
                       <span>{fmt(s.unit_price * s.quantity, booking.currency)}</span>
-                      <Badge tone={serviceStatusTone(s.status)}>{BOOKING_SERVICE_STATUS_LABELS[s.status]}</Badge>
+                      <Badge tone={serviceStatusTone(s.status)}>{t(`myTrips.serviceStatus.${s.status}`, { defaultValue: s.status })}</Badge>
                     </div>
                   </li>
                 ))}
@@ -210,7 +203,7 @@ export function MyTripsPage() {
                 rel="noreferrer"
                 className="block rounded-lg bg-[#0C7BB3] py-2.5 text-center text-sm font-semibold text-white"
               >
-                🎫 عرض/تحميل التذكرة
+                {t("myTrips.viewTicket")}
               </a>
             </div>
           ) : null}
@@ -225,7 +218,7 @@ export function MyTripsPage() {
           ) : null}
         </Card>
       ) : searched && !error && !loading ? (
-        <EmptyState icon="🎫" title="لا توجد نتائج" subtitle="تأكد من رقم الحجز وبيانات التواصل وحاول مرة أخرى" />
+        <EmptyState icon="🎫" title={t("myTrips.emptyTitle")} subtitle={t("myTrips.emptySubtitle")} />
       ) : null}
     </div>
   );

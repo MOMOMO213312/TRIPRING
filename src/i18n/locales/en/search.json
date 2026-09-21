@@ -1,0 +1,25 @@
+{
+  "title": {
+    "domestic": "Domestic flights from {{airport}}",
+    "international": "International flights from {{airport}}",
+    "best": "Best deals from {{airport}}"
+  },
+  "to": "→ {{destination}}",
+  "allDestinations": "All destinations",
+  "oneWay": "One way",
+  "returnOn": "Return {{date}}",
+  "sort": {
+    "label": "Sort by",
+    "bestMatch": "Best match (recommended)",
+    "priceAsc": "Price: lowest first",
+    "priceDesc": "Price: highest first"
+  },
+  "resultsCount": "{{count}} deal(s)",
+  "empty": {
+    "title": "No deals match your current selections.",
+    "subtitle": "Try increasing your budget, flexible dates, or removing some filters.",
+    "resetButton": "Reset filters"
+  },
+  "loading": "Loading...",
+  "loadError": "There was an error loading the results, please try again."
+}

@@ -8,12 +8,9 @@ import { JourneyPanel } from "../components/JourneyPanel";
 import { PaymentProofUpload } from "../components/PaymentProofUpload";
 import { useCatalog } from "../hooks/useCatalog";
 import { getAgencyWhatsApp, lookupBooking } from "../lib/api";
-import { AGENCY_MESSAGE_LANG } from "../lib/constants";
-import { paymentMethodLabel } from "../lib/payment-config";
-import i18n from "../i18n";
 import { formatRoute } from "../lib/deal-utils";
+import { paymentMethodLabel } from "../lib/payment-config";
 import { getLastBooking } from "../lib/session";
-import { formatTravelerSummary } from "../lib/travelerSummary";
 import { whatsAppLink } from "../lib/utils";
 import { transferKindLabel } from "../lib/tripgo";
 import type { CreateBookingResult } from "../lib/api";
@@ -63,7 +60,7 @@ export function ConfirmationPage() {
           state={lastBooking ? { bookingNumber: lastBooking.bookingNumber, contact: lastBooking.contact, autoSearch: true } : undefined}
           className="mt-4 inline-block"
         >
-          <Button>{t("confirmation.viewMine")}</Button>
+          <Button>{t("confirmation.viewMyBooking")}</Button>
         </Link>
       </Card>
     );
@@ -124,25 +121,29 @@ function ConfirmationBody({
       });
   }, [booking.booking_number, customerPhone, customerEmail]);
 
-  // This message is sent TO the agency, so it is written in AGENCY_MESSAGE_LANG rather than in
-  // the customer's browsing language.
-  const tAgency = i18n.getFixedT(AGENCY_MESSAGE_LANG, "booking");
-  const travelerSummary = formatTravelerSummary(adults, children, infants, {
-    lng: AGENCY_MESSAGE_LANG,
-    omitZero: true,
-  });
+  // The WhatsApp message is read by the agency team (Arabic-speaking), so it is always
+  // composed in Arabic regardless of the customer's UI language.
+  const ar = { lng: "ar" };
+  const travelerSummary = [
+    t("confirmation.wa.adults", { ...ar, count: adults }),
+    children ? t("confirmation.wa.children", { ...ar, count: children }) : null,
+    infants ? t("confirmation.wa.infants", { ...ar, count: infants }) : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   const waMessage = [
-    tAgency("whatsapp.paid", { number: booking.booking_number }),
-    tAgency("whatsapp.name", { name: customerName }),
-    tAgency("whatsapp.route", { route: formatRoute(deal) }),
-    tAgency("whatsapp.travelers", { value: travelerSummary }),
-    tripGo ? tAgency("whatsapp.pickup", { value: tripGo.pickupLocation }) : null,
+    t("confirmation.wa.greeting", { ...ar, number: booking.booking_number }),
+    t("confirmation.wa.name", { ...ar, name: customerName }),
+    t("confirmation.wa.route", { ...ar, route: formatRoute(deal) }),
+    t("confirmation.wa.travelers", { ...ar, summary: travelerSummary }),
+    tripGo ? t("confirmation.wa.pickup", { ...ar, location: tripGo.pickupLocation }) : null,
     tripGo?.transport
-      ? tAgency("whatsapp.transport", {
-          value: transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type, AGENCY_MESSAGE_LANG),
+      ? t("confirmation.wa.transport", {
+          ...ar,
+          transport: transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type, "ar"),
         })
       : null,
-    tAgency("whatsapp.amount", { value: fmtIn(payableAmount, payableCurrency, true) }),
+    t("confirmation.wa.amount", { ...ar, amount: fmtIn(payableAmount, payableCurrency, true) }),
   ]
     .filter(Boolean)
     .join("\n");
@@ -163,7 +164,7 @@ function ConfirmationBody({
             <dd className="text-2xl font-extrabold text-accent">{booking.booking_number}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">{t("f.route")}</dt>
+            <dt className="text-sm text-slate-500">{t("confirmation.route")}</dt>
             <dd className="font-semibold">{formatRoute(deal)}</dd>
           </div>
           <div>
@@ -184,11 +185,9 @@ function ConfirmationBody({
             <dd>{paymentMethodLabel(paymentMethod)}</dd>
           </div>
           <div>
-            <dt className="text-sm text-slate-500">{t("confirmation.status.label")}</dt>
+            <dt className="text-sm text-slate-500">{t("confirmation.statusLabel")}</dt>
             <dd className="font-semibold text-amber-700">
-              {i18n.exists(`booking:confirmation.status.${booking.status}`)
-                ? t(`confirmation.status.${booking.status}`)
-                : booking.status}
+              {t(`confirmation.status.${booking.status}`, { defaultValue: booking.status })}
             </dd>
           </div>
         </dl>
@@ -204,27 +203,27 @@ function ConfirmationBody({
         {tripGo ? (
           <div className="mt-4 space-y-2 rounded-2xl border border-[#16A34A]/25 bg-[#F0FDF4] p-3 text-sm">
             <p className="flex items-center gap-1.5 font-extrabold text-[#16A34A]">
-              <span aria-hidden>✓</span> {t("confirmation.transferDetails")}
+              <span aria-hidden>✓</span> {t("confirmation.transfer.heading")}
             </p>
             <div className="flex justify-between">
-              <span className="text-slate-500">{t("f.pickupLocation")}</span>
+              <span className="text-slate-500">{t("confirmation.transfer.pickupLocation")}</span>
               <span className="font-semibold text-slate-800">{tripGo.pickupLocation || "—"}</span>
             </div>
             {tripGo.pickupArea ? (
               <div className="flex justify-between">
-                <span className="text-slate-500">{t("confirmation.area")}</span>
+                <span className="text-slate-500">{t("confirmation.transfer.area")}</span>
                 <span className="font-semibold text-slate-800">{tripGo.pickupArea}</span>
               </div>
             ) : null}
             {tripGo.flightNumber ? (
               <div className="flex justify-between">
-                <span className="text-slate-500">{t("f.flightNumber")}</span>
+                <span className="text-slate-500">{t("confirmation.transfer.flightNumber")}</span>
                 <span className="font-latin font-semibold text-slate-800">{tripGo.flightNumber}</span>
               </div>
             ) : null}
             {tripGo.transport ? (
               <div className="flex justify-between">
-                <span className="text-slate-500">{t("f.transportKind")}</span>
+                <span className="text-slate-500">{t("confirmation.transfer.transport")}</span>
                 <span className="font-semibold text-slate-800">
                   {transferKindLabel(tripGo.transport.transport_type, tripGo.transport.vehicle_type)}
                 </span>
@@ -234,7 +233,7 @@ function ConfirmationBody({
         ) : null}
       </Card>
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-        <Trans t={t} i18nKey="confirmation.requestNotice" components={{ strong: <strong /> }} />
+        <Trans i18nKey="confirmation.requestNotice" ns="booking" components={{ b: <strong /> }} />
       </div>
       <p className="text-sm text-slate-600">
         {t("confirmation.afterConfirm")}
@@ -242,13 +241,13 @@ function ConfirmationBody({
       <div className="flex flex-col gap-3">
         <a href={whatsAppLink(getAgencyWhatsApp(deal, catalog.agencies), waMessage)} target="_blank" rel="noreferrer">
           <Button fullWidth variant="whatsapp">
-            {t("confirmation.sendWhatsapp")}
+            {t("confirmation.sendWhatsApp")}
           </Button>
         </a>
         <PaymentProofUpload bookingNumber={String(booking.booking_number)} contact={customerPhone} />
         <Link to="/my-trips">
           <Button fullWidth variant="outline">
-            {t("confirmation.viewInTrips")}
+            {t("confirmation.viewInMyTrips")}
           </Button>
         </Link>
       </div>

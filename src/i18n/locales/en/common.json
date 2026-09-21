@@ -56,5 +56,25 @@
     "loading": "Loading…",
     "viewAll": "View all",
     "book": "Book"
+  },
+  "payment": {
+    "bank_transfer": {
+      "label": "Bank transfer",
+      "details": "Bank: {{bank}} · IBAN: {{iban}} · Account name: {{account}}"
+    },
+    "instapay": {
+      "label": "InstaPay",
+      "details": "InstaPay handle: {{handle}}"
+    },
+    "vodafone_cash": {
+      "label": "Vodafone Cash",
+      "details": "Wallet number: {{number}}"
+    }
+  },
+  "transfer": {
+    "private": "🚗 Private car",
+    "privateWith": "🚗 Private car · {{vehicle}}",
+    "shared": "🚐 Shared transfer",
+    "sharedWith": "🚐 Shared transfer · {{vehicle}}"
   }
 }

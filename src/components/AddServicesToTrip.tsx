@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { addServicesToBooking, fetchBookableAddOns } from "../lib/api";
 import { friendlyErrorMessage } from "../lib/errors";
-import { serviceDisplayLabel } from "../lib/servicePackages";
-
+import { serviceDisplayLabel, serviceRawName } from "../lib/servicePackages";
 import type { AdditionalServiceRow } from "../types/database";
 import { Button } from "./ui/Button";
 import { useCurrency } from "../hooks/useCurrency";
@@ -31,6 +31,7 @@ export function AddServicesToTrip({
   existingServiceNames: string[];
   onAdded: () => void;
 }) {
+  const { t } = useTranslation("booking");
   const { fmt } = useCurrency();
   const [open, setOpen] = useState(false);
   const [catalog, setCatalog] = useState<AdditionalServiceRow[] | null>(null);
@@ -48,7 +49,7 @@ export function AddServicesToTrip({
 
   const available = useMemo(() => {
     const taken = new Set(existingServiceNames.map((n) => n.trim()));
-    return (catalog ?? []).filter((s) => !taken.has(serviceDisplayLabel(s).trim()));
+    return (catalog ?? []).filter((s) => !taken.has(serviceRawName(s).trim()));
   }, [catalog, existingServiceNames]);
 
   const isGround = (s: AdditionalServiceRow) => s.fulfillment_type === "ground_handling";
@@ -83,7 +84,7 @@ export function AddServicesToTrip({
       setChecked(new Set());
       onAdded();
     } catch (err) {
-      setError(friendlyErrorMessage(err, "تعذر إضافة الخدمات، جرّب تاني.", "AddServicesToTrip.submit"));
+      setError(friendlyErrorMessage(err, "booking:addServices.failed", "AddServicesToTrip.submit"));
     } finally {
       setSubmitting(false);
     }
@@ -94,12 +95,12 @@ export function AddServicesToTrip({
       <div className="mt-4 border-t border-slate-100 pt-4">
         {doneAmount !== null ? (
           <p className="mb-2 text-sm font-semibold text-green-700">
-            ✓ تمت إضافة الخدمات ({fmt(doneAmount, currency)})
-            {alreadyPaid ? " — هنتواصل معاك لتحصيل فرق السعر" : ""}
+            {t("addServices.added", { amount: fmt(doneAmount, currency) })}
+            {alreadyPaid ? t("addServices.addedPaidSuffix") : ""}
           </p>
         ) : null}
         <Button type="button" variant="outline" fullWidth onClick={() => setOpen(true)}>
-          ➕ أضف خدمات لرحلتك
+          {t("addServices.open")}
         </Button>
       </div>
     );
@@ -108,15 +109,15 @@ export function AddServicesToTrip({
   return (
     <div className="mt-4 space-y-3 border-t border-slate-100 pt-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-700">أضف خدمات لرحلتك</p>
+        <p className="text-sm font-medium text-slate-700">{t("addServices.heading")}</p>
         <button type="button" className="text-xs text-slate-400" onClick={() => setOpen(false)}>
-          إغلاق
+          {t("addServices.close")}
         </button>
       </div>
 
-      {catalog === null ? <p className="text-sm text-slate-500">جاري التحميل...</p> : null}
+      {catalog === null ? <p className="text-sm text-slate-500">{t("addServices.loading")}</p> : null}
       {catalog !== null && available.length === 0 ? (
-        <p className="text-sm text-slate-500">مفيش خدمات إضافية متاحة دلوقتي.</p>
+        <p className="text-sm text-slate-500">{t("addServices.none")}</p>
       ) : null}
 
       <div className="space-y-2">
@@ -135,9 +136,9 @@ export function AddServicesToTrip({
                 value={legs[s.id] ?? ""}
                 onChange={(e) => setLegs((prev) => ({ ...prev, [s.id]: e.target.value as Leg }))}
               >
-                <option value="">اختر المطار...</option>
-                <option value="departure">مطار المغادرة</option>
-                <option value="arrival">مطار الوصول</option>
+                <option value="">{t("addServices.chooseAirport")}</option>
+                <option value="departure">{t("addServices.departureAirport")}</option>
+                <option value="arrival">{t("addServices.arrivalAirport")}</option>
               </select>
             ) : null}
           </div>
@@ -145,12 +146,16 @@ export function AddServicesToTrip({
       </div>
 
       {alreadyPaid && selected.length > 0 ? (
-        <p className="text-xs text-slate-500">الحجز مدفوع بالفعل — فرق السعر هيتم تحصيله بالتواصل معاك.</p>
+        <p className="text-xs text-slate-500">{t("addServices.paidNote")}</p>
       ) : null}
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
       <Button type="button" fullWidth disabled={submitting || selected.length === 0 || missingLeg} onClick={submit}>
-        {submitting ? "جاري الإضافة..." : selected.length > 0 ? `تأكيد الإضافة (${fmt(total, currency)})` : "اختر خدمة"}
+        {submitting
+          ? t("addServices.adding")
+          : selected.length > 0
+            ? t("addServices.confirm", { amount: fmt(total, currency) })
+            : t("addServices.chooseService")}
       </Button>
     </div>
   );

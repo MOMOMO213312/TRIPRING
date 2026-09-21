@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 import { DealImageWrapper } from "../components/DealImageWrapper";
@@ -18,6 +19,7 @@ const BUDGET_CHIPS = [100, 200, 300, 500, 700, 1000];
 type SortKey = "price_asc" | "price_desc" | "best_match";
 
 export function SearchResultsPage() {
+  const { t } = useTranslation(["search", "filters"]);
   const [params, setParams] = useSearchParams();
   const catalog = useCatalog();
   const from = params.get("from") ?? "CAI";
@@ -59,8 +61,9 @@ export function SearchResultsPage() {
       tripType,
     })
       .then(setDeals)
-      .catch((e) => setError(friendlyErrorMessage(e, "حصل خطأ في تحميل النتائج، جرّب تاني.", "SearchResultsPage.load")))
+      .catch((e) => setError(friendlyErrorMessage(e, t("search:loadError"), "SearchResultsPage.load")))
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [from, effectiveTo, date, budget, sort, tripType]);
 
   const filtered = useMemo(() => {
@@ -74,18 +77,25 @@ export function SearchResultsPage() {
   const availableAirlines = useMemo(() => airlinesInDeals(deals, catalog.airlines), [deals, catalog.airlines]);
   const activeFilterCount = countActiveFilters(filters);
 
-  if (catalog.loading) return <p className="text-slate-500">جاري التحميل...</p>;
+  if (catalog.loading) return <p className="text-slate-500">{t("search:loading")}</p>;
+
+  const airportName = airportLabel(from, catalog.airports);
+  const titleKey = scope === "domestic" ? "domestic" : scope === "international" ? "international" : "best";
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">
-          {scope === "domestic" ? "رحلات داخلية" : scope === "international" ? "رحلات دولية" : "أفضل الفرص"} من {airportLabel(from, catalog.airports)}
+          {t(`search:title.${titleKey}`, { airport: airportName })}
         </h1>
         <p className="mt-1 text-slate-600">
-          {to ? `→ ${airportLabel(effectiveTo || to, catalog.airports)}` : "كل الوجهات"}
+          {to ? t("search:to", { destination: airportLabel(effectiveTo || to, catalog.airports) }) : t("search:allDestinations")}
           {date ? ` · ${date}` : ""}
-          {tripType === "one_way" ? " · ذهاب فقط" : tripType === "round_trip" && returnDate ? ` · عودة ${returnDate}` : ""}
+          {tripType === "one_way"
+            ? ` · ${t("search:oneWay")}`
+            : tripType === "round_trip" && returnDate
+              ? ` · ${t("search:returnOn", { date: returnDate })}`
+              : ""}
         </p>
       </div>
 
@@ -105,24 +115,24 @@ export function SearchResultsPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <Select
-            label="ترتيب حسب"
+            label={t("search:sort.label")}
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
             options={[
-              { value: "best_match", label: "الأفضل (موصى به)" },
-              { value: "price_asc", label: "السعر: الأقل أولاً" },
-              { value: "price_desc", label: "السعر: الأعلى أولاً" },
+              { value: "best_match", label: t("search:sort.bestMatch") },
+              { value: "price_asc", label: t("search:sort.priceAsc") },
+              { value: "price_desc", label: t("search:sort.priceDesc") },
             ]}
             className="max-w-xs"
           />
-          <span className="text-sm text-slate-500">{filtered.length} فرصة</span>
+          <span className="text-sm text-slate-500">{t("search:resultsCount", { count: filtered.length })}</span>
         </div>
         <button
           type="button"
           onClick={() => setMobileFiltersOpen(true)}
           className="smart-chip lg:hidden"
         >
-          🔧 الفلاتر {activeFilterCount ? `(${activeFilterCount})` : ""}
+          {activeFilterCount ? t("filters:toggleFiltersCount", { count: activeFilterCount }) : t("filters:toggleFilters")}
         </button>
       </div>
 
@@ -146,14 +156,14 @@ export function SearchResultsPage() {
             <Card className="text-red-600">{error}</Card>
           ) : filtered.length === 0 ? (
             <Card className="space-y-3 text-center">
-              <p className="text-slate-700">لا توجد فرص مطابقة لاختياراتك الحالية.</p>
-              <p className="text-sm text-slate-500">جرّب زيادة الميزانية، تواريخ مرنة، أو إزالة بعض الفلاتر.</p>
+              <p className="text-slate-700">{t("search:empty.title")}</p>
+              <p className="text-sm text-slate-500">{t("search:empty.subtitle")}</p>
               <button
                 type="button"
                 onClick={() => setFilters(EMPTY_FILTERS)}
                 className="cta-primary mx-auto px-5 py-2 text-sm"
               >
-                إعادة تعيين الفلاتر
+                {t("search:empty.resetButton")}
               </button>
             </Card>
           ) : (

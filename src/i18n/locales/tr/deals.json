@@ -5,6 +5,12 @@
     "empty_seat": "Boş koltuk",
     "special_fare": "Özel fiyat"
   },
+  "region": {
+    "gulf": "Körfez",
+    "turkey": "Türkiye",
+    "europe": "Avrupa",
+    "asia": "Asya"
+  },
   "stops": {
     "direct": "Aktarmasız",
     "oneStop": "1 aktarma",

@@ -1,0 +1,69 @@
+{
+  "loading": "Loading…",
+  "error": {
+    "unavailable": "This deal is unavailable or has expired",
+    "loadFailed": "Something went wrong while loading the deal. Please try again or go back home.",
+    "notFound": "Deal not found"
+  },
+  "backHome": "Back to home",
+  "rail": {
+    "baseFare": "Base fare",
+    "taxes": "Taxes & fees",
+    "continue": "Continue",
+    "soldOut": "Sold out",
+    "copied": "Copied ✓",
+    "share": "🔗 Share",
+    "priceAlert": "🔔 Price alert"
+  },
+  "hero": {
+    "kicker": "TripRing opportunity"
+  },
+  "seatsLeft": "{{count}} seats left",
+  "info": {
+    "departure": "Departure",
+    "return": "Return",
+    "availableSeats": "Available seats",
+    "class": "Class",
+    "flightNumber": "Flight number",
+    "aircraft": "Aircraft type",
+    "operatingCarrier": "Operating carrier",
+    "arrivalDate": "Arrival date",
+    "layover": "Layover",
+    "baggage": "Baggage",
+    "baggageKg": "{{kg}} kg",
+    "cabinBag": "Cabin bag",
+    "checkedBags": "Checked bags",
+    "extraBagPrice": "Extra bag price"
+  },
+  "fare": {
+    "refundable": "Refundable",
+    "nonRefundable": "Non-refundable",
+    "changeable": "Changeable",
+    "nonChangeable": "Not changeable",
+    "changeFee": "Change fee: {{amount}}",
+    "cancellationFee": "Cancellation fee: {{amount}}"
+  },
+  "flexible": {
+    "title": "Flexible dates",
+    "subtitle": "Prices for the same route on dates near your trip",
+    "save": "💡 Save {{amount}} if you fly on {{date}}",
+    "yourTrip": "Your trip"
+  },
+  "reasons": {
+    "title": "Why is this a good deal?"
+  },
+  "priceHistory": "Price history for {{route}}",
+  "notes": "Notes",
+  "alert": {
+    "title": "Create a price alert",
+    "needContact": "Enter a phone number or email",
+    "failed": "Something went wrong, please try again",
+    "done": "Done! We'll alert you when the price of {{route}} drops below {{budget}} {{currency}}",
+    "intro": "We'll alert you when the price of {{route}} drops below this budget.",
+    "contactLabel": "Phone number or email",
+    "contactPlaceholder": "+201000000000 or you@email.com",
+    "budgetLabel": "Maximum budget (USD)",
+    "create": "Create alert",
+    "creating": "Creating…"
+  }
+}

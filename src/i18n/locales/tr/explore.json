@@ -1,0 +1,83 @@
+{
+  "heading": "Ek hizmetler veya hepsi bir arada paketlerle TripRing seyahatinizi tamamlayın",
+  "blueFriday": {
+    "title": "Mavi Cuma",
+    "subtitle": "Uçuşlarda %33'e varan indirim — her Cuma"
+  },
+  "membership": {
+    "title": "TRIPRING Üyeliği",
+    "subtitle": "Sürekli indirimler + ücretsiz hizmetler + öncelikli bildirimler"
+  },
+  "tabs": {
+    "services": { "title": "Hizmetler", "subtitle": "Herhangi bir hizmeti tek başına kendi fiyatına sipariş edin" },
+    "packages": { "title": "Paketler", "subtitle": "Ayrı ayrı sipariş etmekten daha ucuz hepsi bir arada paketler" }
+  },
+  "servicesBanner": {
+    "bold": "Tekil hizmet:",
+    "rest": "Başka bir şey rezerve etmeden, herhangi bir hizmeti tek başına kendi fiyatına sipariş edin — biletiniz tamamen başka bir yerden alınmış olsa bile."
+  },
+  "packagesBanner": {
+    "bold": "Hazır paket:",
+    "rest": "Birden fazla hizmeti, her birini ayrı ayrı sipariş etmekten daha ucuz tek bir toplam fiyatla tek bir üründe birleştirir."
+  },
+  "category": {
+    "transport": "Ulaşım",
+    "airport": "Havalimanı",
+    "destination": { "title": "Varış noktası hizmetleri", "subtitle": "Varış noktanızla ilgili deneyimler ve hizmetler" },
+    "insurance": { "title": "Seyahat sigortası", "subtitle": "Seyahatiniz için temel veya kapsamlı sigorta" }
+  },
+  "loadingServices": "Hizmetler yükleniyor...",
+  "noServicesInCategory": "Bu kategoride şu anda mevcut hizmet yok",
+  "singleServiceBadge": "Tekil hizmet",
+  "free": "Ücretsiz",
+  "bookNow": "Şimdi rezervasyon yap",
+  "packageBadge": "Paket",
+  "savedBadge": "{{amount}} tasarruf edin",
+  "startsFromYourChoice": "Seçimlerinize göre başlar",
+  "explorePackage": "Paketi keşfet",
+  "packages": {
+    "vip": { "subtitle": "Tüm havalimanı hizmetleri tek kapsamlı pakette", "badge": "En kapsamlı" },
+    "arrival": { "subtitle": "VIP karşılama ve havalimanından konforlu transfer" },
+    "departure": { "subtitle": "Seyahat ederken Fast Track ile havalimanı transferi" },
+    "family": { "subtitle": "Bagaj hizmetleriyle aileye uygun transfer" },
+    "business": { "subtitle": "VIP lounge, Fast Track ve özel transfer", "badge": "En çok talep edilen" },
+    "custom": { "subtitle": "Size uygun hizmetleri seçin ve kendi paketinizi oluşturun" }
+  },
+  "modal": {
+    "quantity": "Adet",
+    "total": "Toplam",
+    "sending": "Gönderiliyor...",
+    "confirmRequest": "Talebi onayla",
+    "confirmPackage": "Paket rezervasyonunu onayla",
+    "optionalBadge": "İsteğe bağlı",
+    "optionalNote": "Biletinizi TripRing üzerinden almış olmanız gerekmez — talebi eşleştirebilmemiz için seyahat detaylarınızı herhangi bir kaynaktan girebilirsiniz.",
+    "airline": "Havayolu",
+    "flightNumber": "Uçuş numarası",
+    "flightNumberPlaceholder": "örn. MS 123",
+    "flightDate": "Uçuş tarihi",
+    "arrivalTime": "Varış saati",
+    "airport": "Havalimanı",
+    "chooseOptional": "Seçin (isteğe bağlı)",
+    "destination": "Varış noktası",
+    "destinationPlaceholder": "örn. Cidde",
+    "name": "Ad",
+    "phone": "Telefon numarası",
+    "email": "E-posta (isteğe bağlı)",
+    "notes": "Notlar (isteğe bağlı)",
+    "errorEnterName": "Adınızı girin",
+    "errorInvalidPhone": "Geçersiz telefon numarası — +20xxxxxxxxxx gibi uluslararası formatı kullanın",
+    "errorInvalidEmail": "Geçersiz e-posta adresi",
+    "errorSubmitFailed": "Talep gönderilemedi, lütfen tekrar deneyin.",
+    "errorSelectOneService": "Paketinizi oluşturmak için en az bir hizmet seçin",
+    "chooseYourServices": "Paketinize dahil edilecek hizmetleri seçin:",
+    "includedServices": "Pakete dahil hizmetler:",
+    "includesLabel": "Paket içeriği: {{labels}}",
+    "servicesAlonePrice": "Hizmetlerin ayrı ayrı fiyatı",
+    "packageTotal": "Paket toplamı",
+    "savedComparedToAlone": "Ayrı ayrı sipariş etmeye göre {{amount}} tasarruf ettiniz",
+    "confirmationTitle": "Talebiniz gönderildi",
+    "confirmationBody": "Talep numarası #{{number}} — ekibimiz detayları ve ödemeyi onaylamak için yakında sizinle iletişime geçecek.",
+    "confirmationTotal": "Toplam: {{amount}}",
+    "ok": "Tamam"
+  }
+}
