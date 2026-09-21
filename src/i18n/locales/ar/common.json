@@ -82,5 +82,9 @@
       "airport_info": "معلومة مطار",
       "circular": "تعميم"
     }
+  },
+  "airportAutocomplete": {
+    "placeholder": "المدينة أو المطار",
+    "anyDestination": "أي وجهة"
   }
 }

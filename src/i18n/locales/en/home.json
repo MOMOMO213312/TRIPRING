@@ -94,5 +94,10 @@
     "empty": "No active deals to show on the map",
     "offersCount": "({{count}} deals)",
     "footnote": "Approximate locations of destinations with currently active deals — a red dot means 3 or more active deals to the same destination."
+  },
+  "discovery": {
+    "title": "🌍 Most searched destinations from Cairo",
+    "subtitle": "Destinations based on the deals actually available right now",
+    "roundTripFrom": "Round trips from"
   }
 }

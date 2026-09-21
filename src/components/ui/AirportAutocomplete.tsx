@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
+import { airportCityName, countryName } from "../../lib/geoNames";
 import { cn } from "../../lib/utils";
 import type { AirportRow } from "../../types/database";
 
@@ -9,22 +11,23 @@ type Props = {
   onChange: (code: string) => void;
   airports: AirportRow[];
   placeholder?: string;
-  /** If true, an empty query is a valid selection (clears value to ""). Used for "أي وجهة". */
+  /** If true, an empty query is a valid selection (clears value to ""). Used for the "anywhere" option. */
   allowClear?: boolean;
   error?: string;
 };
 
 function airportDisplay(a: AirportRow): string {
-  return `${a.city} (${a.code})`;
+  return `${airportCityName(a)} (${a.code})`;
 }
 
 /**
  * Flight-search-style route field: type-ahead by city/airport/code instead of
- * scrolling a plain <select> with 100+ airports. Matches the "من"/"إلى"
+ * scrolling a plain <select> with 100+ airports. Matches the "From"/"To"
  * fields on real flight search engines (Skyscanner/Google Flights), which is
  * the reference UX for the TripGo search bar.
  */
 export function AirportAutocomplete({ label, value, onChange, airports, placeholder, allowClear, error }: Props) {
+  const { t, i18n } = useTranslation();
   const selected = airports.find((a) => a.code === value) ?? null;
   const [query, setQuery] = useState(selected ? airportDisplay(selected) : "");
   const [open, setOpen] = useState(false);
@@ -34,16 +37,16 @@ export function AirportAutocomplete({ label, value, onChange, airports, placehol
   useEffect(() => {
     const current = airports.find((a) => a.code === value) ?? null;
     setQuery(current ? airportDisplay(current) : "");
-  }, [value, airports]);
+  }, [value, airports, i18n.language]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     const isCurrentSelection = selected && query === airportDisplay(selected);
     if (!q || isCurrentSelection) return airports.slice(0, 8);
     return airports
-      .filter((a) => [a.city, a.city_en ?? "", a.name, a.code, a.country].some((f) => f.toLowerCase().includes(q)))
+      .filter((a) => [a.city, a.city_en ?? "", a.name, a.code, a.country, countryName(a.country)].some((f) => f.toLowerCase().includes(q)))
       .slice(0, 8);
-  }, [airports, query, selected]);
+  }, [airports, query, selected, i18n.language]); // language: airportDisplay/countryName depend on it
 
   function revertToSelection() {
     const current = airports.find((a) => a.code === value) ?? null;
@@ -57,7 +60,7 @@ export function AirportAutocomplete({ label, value, onChange, airports, placehol
         <input
           type="text"
           value={query}
-          placeholder={placeholder ?? "المدينة أو المطار"}
+          placeholder={placeholder ?? t("airportAutocomplete.placeholder")}
           onFocus={() => setOpen(true)}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -93,7 +96,7 @@ export function AirportAutocomplete({ label, value, onChange, airports, placehol
                 }}
                 className="flex w-full items-center px-3 py-2 text-start text-sm text-slate-500 hover:bg-slate-50"
               >
-                أي وجهة
+                {t("airportAutocomplete.anyDestination")}
               </button>
             </li>
           ) : null}
@@ -110,7 +113,7 @@ export function AirportAutocomplete({ label, value, onChange, airports, placehol
                 className="flex w-full items-center justify-between gap-2 px-3 py-2 text-start text-sm hover:bg-slate-50"
               >
                 <span className="font-medium text-slate-800">
-                  {a.city} <span className="text-slate-400">· {a.country}</span>
+                  {airportCityName(a)} <span className="text-slate-400">· {countryName(a.country)}</span>
                 </span>
                 <span className="font-latin text-xs font-bold text-slate-500">{a.code}</span>
               </button>

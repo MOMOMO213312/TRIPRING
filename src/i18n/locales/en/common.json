@@ -82,5 +82,9 @@
       "airport_info": "Airport info",
       "circular": "Notice"
     }
+  },
+  "airportAutocomplete": {
+    "placeholder": "City or airport",
+    "anyDestination": "Anywhere"
   }
 }

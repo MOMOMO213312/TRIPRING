@@ -82,5 +82,9 @@
       "airport_info": "Havalimanı bilgisi",
       "circular": "Bildirim"
     }
+  },
+  "airportAutocomplete": {
+    "placeholder": "Şehir veya havalimanı",
+    "anyDestination": "Herhangi bir yer"
   }
 }

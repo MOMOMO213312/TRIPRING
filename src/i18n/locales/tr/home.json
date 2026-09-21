@@ -94,5 +94,10 @@
     "empty": "Haritada gösterilecek aktif fırsat yok",
     "offersCount": "({{count}} fırsat)",
     "footnote": "Şu anda aktif fırsatı olan varış noktalarının yaklaşık konumları — kırmızı nokta, aynı varış noktasına 3 veya daha fazla aktif fırsat olduğunu gösterir."
+  },
+  "discovery": {
+    "title": "🌍 Kahire'den en çok aranan destinasyonlar",
+    "subtitle": "Şu anda gerçekten mevcut fırsatlara dayalı destinasyonlar",
+    "roundTripFrom": "Gidiş-dönüş başlangıç fiyatı"
   }
 }
