@@ -29,6 +29,15 @@
       "children": "Çocuk",
       "infants": "Bebek"
     },
+    "account": {
+      "createToggle": "Daha hızlı rezervasyon ve üyelik indiriminin otomatik uygulanması için bilgilerimi kaydet",
+      "password": "Şifre",
+      "passwordTooShort": "Şifre en az 6 karakter olmalı",
+      "createdNotice": "Hesabınız oluşturuldu. E-posta onayı gerekiyorsa, üyelik indiriminiz bu rezervasyonda değil bir sonrakinde uygulanır.",
+      "existsPrompt": "Bu e-posta ile zaten bir hesap var — indirimin bu rezervasyona uygulanması için giriş yapın.",
+      "login": "Giriş yap ve devam et",
+      "loggingIn": "Giriş yapılıyor..."
+    },
     "traveler": {
       "title": "Yolcu {{n}} ({{type}})",
       "type": {

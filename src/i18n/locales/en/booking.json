@@ -29,6 +29,15 @@
       "children": "Children",
       "infants": "Infants"
     },
+    "account": {
+      "createToggle": "Save my details for faster bookings and to auto-apply my membership discount next time",
+      "password": "Password",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "createdNotice": "Your account was created. If it needs email confirmation, any membership discount will apply starting with your next booking rather than this one.",
+      "existsPrompt": "An account already exists for this email — log in so any membership discount applies to this booking.",
+      "login": "Log in and continue",
+      "loggingIn": "Logging in..."
+    },
     "traveler": {
       "title": "Traveler {{n}} ({{type}})",
       "type": {

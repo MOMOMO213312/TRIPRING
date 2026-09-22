@@ -20,6 +20,7 @@ import { friendlyErrorMessage } from "../lib/errors";
 import { fetchZonesForDeal } from "../lib/tripgo";
 import { setLastBooking } from "../lib/session";
 import { formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
+import { authErrorMessage, signInWithEmail, signUpWithEmail, useAuth } from "../lib/auth";
 import type { AdditionalServiceRow, DealRow, PaymentMethod, TransportZoneRow } from "../types/database";
 
 type DealSelectionState = {
@@ -62,6 +63,20 @@ export function BookingPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank_transfer");
   const [transportZones, setTransportZones] = useState<TransportZoneRow[]>([]);
   const [selectedZoneId, setSelectedZoneId] = useState<string>("");
+
+  // Optional account creation at checkout — never blocks the booking itself.
+  // See "account existsPrompt" state: if the email the customer typed already
+  // has an account, we don't try to guess their password — we stop and ask
+  // them to log in instead, since that's the case where they're most likely
+  // an existing subscriber checking out as a guest.
+  const { user, loading: authLoading } = useAuth();
+  const [wantAccount, setWantAccount] = useState(false);
+  const [accountPassword, setAccountPassword] = useState("");
+  const [accountError, setAccountError] = useState<string | null>(null);
+  const [accountExistsPrompt, setAccountExistsPrompt] = useState(false);
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginBusy, setLoginBusy] = useState(false);
+  const [accountCreatedNotice, setAccountCreatedNotice] = useState(false);
   const packageOptions = usePackageOptions();
 
   useEffect(() => {
@@ -189,6 +204,21 @@ export function BookingPage() {
     return base + packageMarkup() + servicesTotal() + zonePrice();
   }
 
+  async function handleExistingAccountLogin(e: FormEvent) {
+    e.preventDefault();
+    setAccountError(null);
+    setLoginBusy(true);
+    try {
+      await signInWithEmail(customerEmail, loginPassword);
+      setAccountExistsPrompt(false);
+      setLoginPassword("");
+    } catch (err) {
+      setAccountError(authErrorMessage(err));
+    } finally {
+      setLoginBusy(false);
+    }
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!deal || !dealId) return;
@@ -201,6 +231,40 @@ export function BookingPage() {
 
     setSubmitting(true);
     setError(null);
+    setAccountError(null);
+    setAccountExistsPrompt(false);
+
+    // Optional account creation. This never blocks a guest booking — it only
+    // runs if the customer ticked the box. If the email already has an
+    // account, we don't guess a password: we stop here and ask them to log
+    // in (the most likely case is an existing subscriber who forgot they're
+    // logged out), then let them press "تأكيد الحجز" again once signed in.
+    if (!user && wantAccount) {
+      if (!customerEmail.trim() || !isValidEmail(customerEmail)) {
+        setError(t("booking.validation.emailInvalid"));
+        setSubmitting(false);
+        return;
+      }
+      if (accountPassword.length < 6) {
+        setAccountError(t("booking.account.passwordTooShort"));
+        setSubmitting(false);
+        return;
+      }
+      try {
+        await signUpWithEmail(customerEmail, accountPassword, customerName);
+        setAccountCreatedNotice(true);
+      } catch (err) {
+        const raw = err instanceof Error ? err.message : String(err);
+        if (raw.includes("User already registered")) {
+          setAccountExistsPrompt(true);
+          setSubmitting(false);
+          return;
+        }
+        setAccountError(authErrorMessage(err));
+        setSubmitting(false);
+        return;
+      }
+    }
 
     // Traveler details (name, DOB, passport) are the most effortful part of
     // this form, and price/seat data here is only as fresh as whatever the
@@ -344,6 +408,53 @@ export function BookingPage() {
             onChange={(e) => setCustomerPhone(e.target.value)}
           />
           <Input label={t("booking.contact.email")} type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} />
+
+          {!authLoading && !user ? (
+            <div className="rounded-lg border border-slate-100 bg-slate-50 p-3 space-y-3">
+              {accountExistsPrompt ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-slate-700">{t("booking.account.existsPrompt")}</p>
+                  <Input
+                    label={t("booking.account.password")}
+                    type="password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                  />
+                  {accountError ? <p className="text-xs text-red-600">{accountError}</p> : null}
+                  <Button type="button" onClick={handleExistingAccountLogin} disabled={loginBusy}>
+                    {loginBusy ? t("booking.account.loggingIn") : t("booking.account.login")}
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                    <input
+                      type="checkbox"
+                      checked={wantAccount}
+                      onChange={(e) => setWantAccount(e.target.checked)}
+                    />
+                    {t("booking.account.createToggle")}
+                  </label>
+                  {wantAccount ? (
+                    <>
+                      <Input
+                        label={t("booking.account.password")}
+                        type="password"
+                        minLength={6}
+                        value={accountPassword}
+                        onChange={(e) => setAccountPassword(e.target.value)}
+                      />
+                      {accountError ? <p className="text-xs text-red-600">{accountError}</p> : null}
+                      {accountCreatedNotice ? (
+                        <p className="text-xs text-green-700">{t("booking.account.createdNotice")}</p>
+                      ) : null}
+                    </>
+                  ) : null}
+                </>
+              )}
+            </div>
+          ) : null}
+
           <div className="grid grid-cols-3 gap-3">
             <Input label={t("booking.contact.adults")} type="number" min={1} value={adults} onChange={(e) => setAdults(Number(e.target.value))} />
             <Input label={t("booking.contact.children")} type="number" min={0} value={children} onChange={(e) => setChildren(Number(e.target.value))} />
