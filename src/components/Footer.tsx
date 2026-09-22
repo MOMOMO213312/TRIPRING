@@ -78,6 +78,17 @@ export function Footer() {
 
       <div className="border-t border-slate-100 py-5 text-center text-sm text-slate-500">
         {t("footer.copyright", { year: new Date().getFullYear() })}
+        <p className="mt-1 text-xs text-slate-400">
+          {t("footer.fxAttribution")}{" "}
+          <a
+            href="https://www.exchangerate-api.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-latin underline hover:text-[#0C7BB3]"
+          >
+            Rates By Exchange Rate API
+          </a>
+        </p>
       </div>
     </footer>
   );

@@ -78,5 +78,40 @@
     "refundable": "İade edilebilir",
     "viewDetails": "Detayları gör",
     "soldOut": "Koltuklar tükendi"
+  },
+  "market": {
+    "title": "Pazara genel bakış",
+    "activeDeals": "Şu an aktif fırsatlar",
+    "priceDrops": "Fiyatı düşen fırsatlar",
+    "endingSoon": "48 saat içinde bitenler",
+    "mostViewedRoute": "En çok görüntülenen rota",
+    "views": "{{count}} görüntülenme"
+  },
+  "liveMap": {
+    "title": "Canlı fırsat haritası",
+    "legendMany": "Birden fazla aktif fırsat",
+    "legendOne": "Tek aktif fırsat",
+    "empty": "Haritada gösterilecek aktif fırsat yok",
+    "offersCount": "({{count}} fırsat)",
+    "footnote": "Şu anda aktif fırsatı olan varış noktalarının yaklaşık konumları — kırmızı nokta, aynı varış noktasına 3 veya daha fazla aktif fırsat olduğunu gösterir."
+  },
+  "discovery": {
+    "title": "🌍 Kahire'den en çok aranan destinasyonlar",
+    "subtitle": "Şu anda gerçekten mevcut fırsatlara dayalı destinasyonlar",
+    "roundTripFrom": "Gidiş-dönüş başlangıç fiyatı"
+  },
+  "flash": {
+    "badge": "Hızlı fırsat",
+    "startsFrom": "Başlangıç",
+    "bookNow": "Şimdi rezervasyon yap"
+  },
+  "trustedAirlines": {
+    "title": "Güvenilir ortaklarımız",
+    "activeDeals_one": "{{num}} aktif fırsat",
+    "activeDeals_other": "{{num}} aktif fırsat"
+  },
+  "fareBoard": {
+    "roundTrip": "GİDİŞ-DÖNÜŞ",
+    "oneWay": "TEK YÖN"
   }
 }

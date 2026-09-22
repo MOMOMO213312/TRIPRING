@@ -1,69 +1,29 @@
+import { useTranslation } from "react-i18next";
+
 import { LegalLayout } from "../components/LegalLayout";
 
+type PrivacySection = { heading: string; body?: string; items?: string[] };
+
 export function PrivacyPage() {
+  const { t } = useTranslation("legal");
+  const sections = t("privacy.sections", { returnObjects: true }) as PrivacySection[];
+
   return (
     <LegalLayout
-      title="سياسة الخصوصية"
-      intro="خصوصيتك مهمة لنا. الصفحة دي بتشرح إيه البيانات اللي بنجمعها وإزاي بنستخدمها."
-      sections={[
-        {
-          heading: "البيانات اللي بنجمعها",
-          body: (
-            <ul className="list-inside list-disc space-y-1">
-              <li>بيانات التواصل: الاسم، رقم الهاتف، البريد الإلكتروني.</li>
-              <li>بيانات السفر: بيانات المسافرين وجواز السفر اللازمة لإصدار التذكرة وقت الحجز.</li>
-              <li>بيانات الدفع: طريقة الدفع المختارة (من غير تخزين أي بيانات كارت بنكي كاملة على خوادمنا).</li>
-              <li>بيانات الاستخدام: تفضيلات البحث وتنبيهات الأسعار اللي بتنشئها.</li>
-            </ul>
-          ),
-        },
-        {
-          heading: "إزاي بنستخدم بياناتك",
-          body: (
-            <ul className="list-inside list-disc space-y-1">
-              <li>تنفيذ وتأكيد حجوزاتك.</li>
-              <li>إرسال تنبيهات الأسعار اللي طلبتها.</li>
-              <li>التواصل معاك بخصوص حالة الحجز أو الدعم الفني.</li>
-              <li>تحسين دقة Deal Score والعروض المعروضة لك.</li>
-            </ul>
-          ),
-        },
-        {
-          heading: "مشاركة البيانات",
-          body: (
-            <p>
-              بنشارك بيانات المسافرين اللازمة فقط مع الوكالة المسؤولة عن رحلتك عشان تقدر تصدر التذكرة. إحنا مبنبيعش
-              ولا بنأجّر بياناتك لأي طرف تالت لأغراض تسويقية.
-            </p>
-          ),
-        },
-        {
-          heading: "حماية البيانات",
-          body: (
-            <p>
-              بياناتك محفوظة على قاعدة بيانات مؤمّنة بصلاحيات وصول محددة (Row-Level Security)، يعني كل مستخدم بيشوف
-              بس بياناته الخاصة.
-            </p>
-          ),
-        },
-        {
-          heading: "الاحتفاظ بالبيانات",
-          body: <p>بنحتفظ ببيانات حجوزاتك المدة اللازمة لأغراض قانونية ومحاسبية، وبعدها بيتم حذفها أو تجهيلها.</p>,
-        },
-        {
-          heading: "حقوق المستخدم",
-          body: (
-            <p>
-              تقدر تطلب مراجعة أو تعديل أو حذف بياناتك، أو تلغي اشتراكك من تنبيهات الأسعار في أي وقت، من خلال
-              التواصل مع فريق الدعم.
-            </p>
-          ),
-        },
-        {
-          heading: "التواصل بخصوص الخصوصية",
-          body: <p>لأي استفسار يخص بياناتك، تواصل معنا من خلال صفحة الدعم داخل المنصة.</p>,
-        },
-      ]}
+      title={t("privacy.title")}
+      intro={t("privacy.intro")}
+      sections={sections.map((s) => ({
+        heading: s.heading,
+        body: s.items ? (
+          <ul className="list-inside list-disc space-y-1">
+            {s.items.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>{s.body}</p>
+        ),
+      }))}
     />
   );
 }

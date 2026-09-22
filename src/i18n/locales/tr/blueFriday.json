@@ -1,0 +1,68 @@
+{
+  "ticker": [
+    "HER CUMA",
+    "UÇUŞLARDA %33'E VARAN İNDİRİM",
+    "KOD: {{code}}",
+    "SÜRPRİZ BİLETLER İÇERİDE",
+    "HER SAAT FLAŞ FIRSATLAR"
+  ],
+  "hero": {
+    "badge": "✨ Mavi Cuma fırsatları — her Cuma",
+    "title1": "Her Cuma, şafaktan gece yarısına.",
+    "title2": "Uçuşlarda %33'e varan indirim.",
+    "live": "Haftanın en büyük indirimleri şu anda yayında ve gece yarısı sona eriyor. Ek indirim için <promo>{{code}}</promo> kodunu kullanın.",
+    "notLive": "Mavi Cuma yalnızca Cuma günleri geçerlidir — aşağıda bir sonraki Cuma'nın başlangıcına geri sayım var.",
+    "endsNote": "İndirim gece yarısı sona eriyor — beklemeyin.",
+    "startsNote": "Bekleyin — indirim gece 12'de otomatik olarak başlıyor.",
+    "shopDeals": "Fırsatlara göz at",
+    "tryMystery": "Mystery Fare'i dene"
+  },
+  "time": {
+    "day": "Gün",
+    "hour": "Saat",
+    "minute": "Dk",
+    "second": "Sn"
+  },
+  "code": {
+    "label": "Ek indirim kodu",
+    "copied": "✓ Kopyalandı",
+    "tapToCopy": "Kopyalamak için dokunun"
+  },
+  "trust": [
+    "En iyi fiyat",
+    "Güvenli rezervasyon",
+    "7/24 destek",
+    "Esnek ödeme"
+  ],
+  "deals": {
+    "titleLive": "Bugünün en iyi fırsatları",
+    "titlePreview": "Gelecek Cuma fırsatlarına önizleme",
+    "badge": "%33'e varan indirim",
+    "empty": "Şu anda yeterli indirimli fırsat yok — gelecek Cuma tekrar bakın.",
+    "tagHot": "Sıcak fırsat"
+  },
+  "mystery": {
+    "badge": "🎁 Mystery Fare",
+    "title": "Bütçenizi söyleyin, size sürpriz bir destinasyon gösterelim.",
+    "text": "Harcayabileceğiniz tutarı yazın, bütçenize uygun en fazla 3 sürpriz seyahati eşleştirelim — Mavi Cuma sizi nereye götürüyor, keşfedin.",
+    "placeholder": "Bütçeniz (USD)",
+    "reveal": "Fırsatları göster",
+    "empty": "Şu anda bu bütçeye uygun fırsat yok — daha yüksek bir tutar deneyin.",
+    "tag": "Sürpriz",
+    "destination": "Sürpriz destinasyon",
+    "unknown": "???"
+  },
+  "flash": {
+    "title": "Flaş saatler",
+    "badge": "Bitmek üzere",
+    "tag": "Son şans"
+  },
+  "destinations": {
+    "title": "Kahire'den Mavi Cuma destinasyonları",
+    "from": "Başlangıç: {{price}}"
+  },
+  "footer": {
+    "text": "TripRing Mavi Cuma · 24 saatlik uçuş fırsatları ·",
+    "backHome": "Ana sayfaya dön"
+  }
+}

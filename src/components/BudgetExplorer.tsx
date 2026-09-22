@@ -1,15 +1,17 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const BUDGETS = [100, 200, 300, 500, 700, 1000];
 
 export function BudgetExplorer() {
+  const { t } = useTranslation("explore");
   const navigate = useNavigate();
 
   return (
     <section>
       <div className="mb-5">
-        <h2 className="font-display text-2xl text-slate-900">💵 سافر حسب ميزانيتك</h2>
-        <p className="text-sm text-slate-600">عندك $300؟ نوريك تقدر تروح فين</p>
+        <h2 className="font-display text-2xl text-slate-900">{t("budget.title")}</h2>
+        <p className="text-sm text-slate-600">{t("budget.subtitle")}</p>
       </div>
       <div className="flex flex-wrap gap-3">
         {BUDGETS.map((amount) => (
@@ -20,7 +22,7 @@ export function BudgetExplorer() {
             className="font-latin flex min-w-[100px] flex-1 flex-col items-center gap-1 rounded-xl border border-slate-200 bg-white px-4 py-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#FF7A45] hover:shadow-md sm:flex-none"
           >
             <span className="text-xl font-extrabold text-slate-900">${amount}</span>
-            <span className="font-sans-ar text-[11px] font-medium text-slate-500">وأقل</span>
+            <span className="font-sans-ar text-[11px] font-medium text-slate-500">{t("budget.orLess")}</span>
           </button>
         ))}
         <button

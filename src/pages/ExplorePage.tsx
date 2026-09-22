@@ -26,8 +26,9 @@ import {
   type ServicePackageDef,
 } from "../lib/servicePackages";
 import { friendlyErrorMessage } from "../lib/errors";
-import { cn, formatPrice, isValidEmail, isValidPhone } from "../lib/utils";
+import { cn, isValidEmail, isValidPhone } from "../lib/utils";
 import type { AdditionalServiceRow, ServiceCategory } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 type CategoryDef = {
   id: ServiceCategory;
@@ -85,6 +86,7 @@ type ExploreTab = "services" | "packages";
 
 export function ExplorePage() {
   const { t } = useTranslation("explore");
+  const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [tab, setTab] = useState<ExploreTab>("services");
   const [services, setServices] = useState<AdditionalServiceRow[]>([]);
@@ -293,7 +295,7 @@ export function ExplorePage() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-lg font-extrabold text-[#0C7BB3]">
-                          {service.price > 0 ? formatPrice(service.price) : t("free")}
+                          {service.price > 0 ? fmt(service.price) : t("free")}
                         </span>
                         <Button onClick={() => setSelectedService(service)}>{t("bookNow")}</Button>
                       </div>
@@ -335,7 +337,7 @@ export function ExplorePage() {
                     <div>
                       <div className="mb-1 flex items-center gap-1.5">
                         <Badge tone="special_fare">{t("packageBadge")}</Badge>
-                        {savings > 0 ? <Badge tone="savings">{t("savedBadge", { amount: formatPrice(savings) })}</Badge> : null}
+                        {savings > 0 ? <Badge tone="savings">{t("savedBadge", { amount: fmt(savings) })}</Badge> : null}
                       </div>
                       <h3 className="flex items-center gap-1.5 font-bold text-slate-900">
                         <span>{pkg.icon}</span>
@@ -357,7 +359,7 @@ export function ExplorePage() {
                       {pkg.isCustom ? (
                         <span className="text-sm font-semibold text-slate-500">{t("startsFromYourChoice")}</span>
                       ) : (
-                        <span className="text-lg font-extrabold text-[#0C7BB3]">{formatPrice(finalPrice)}</span>
+                        <span className="text-lg font-extrabold text-[#0C7BB3]">{fmt(finalPrice)}</span>
                       )}
                       <Button onClick={() => setSelectedPackage(pkg)}>{t("explorePackage")}</Button>
                     </div>
@@ -403,7 +405,7 @@ export function ExplorePage() {
               {t("modal.confirmationBody", { number: confirmedRequest.number })}
             </p>
             <p className="font-semibold text-slate-900">
-              {t("modal.confirmationTotal", { amount: formatPrice(confirmedRequest.total) })}
+              {t("modal.confirmationTotal", { amount: fmt(confirmedRequest.total) })}
             </p>
             <Button fullWidth onClick={() => setConfirmedRequest(null)}>
               {t("modal.ok")}
@@ -591,6 +593,7 @@ function ServiceRequestModal({
   onSuccess: (requestNumber: number, total: number) => void;
 }) {
   const { t } = useTranslation("explore");
+  const { fmt } = useCurrency();
   const [quantity, setQuantity] = useState(1);
   const f = useTripContactFieldsState();
 
@@ -643,7 +646,7 @@ function ServiceRequestModal({
 
         <div className="flex items-center justify-between rounded-xl bg-[#0C7BB3]/5 px-4 py-3">
           <span className="text-sm font-medium text-slate-700">{t("modal.total")}</span>
-          <span className="text-lg font-extrabold text-[#0C7BB3]">{formatPrice(total)}</span>
+          <span className="text-lg font-extrabold text-[#0C7BB3]">{fmt(total)}</span>
         </div>
 
         {f.error ? <p className="text-sm text-red-600">{f.error}</p> : null}
@@ -672,6 +675,7 @@ function PackageRequestModal({
   onSuccess: (requestNumber: number, total: number) => void;
 }) {
   const { t } = useTranslation("explore");
+  const { fmt } = useCurrency();
   const allKeys = SERVICE_KEYS;
   const [customKeys, setCustomKeys] = useState<Set<PackageServiceKey>>(
     () => new Set(pkg.isCustom ? [] : pkg.includedKeys),
@@ -756,7 +760,7 @@ function PackageRequestModal({
                     <span>{SERVICE_KEY_ICONS[key]}</span>
                     {serviceKeyLabel(key)}
                   </span>
-                  {item ? <span className="text-xs text-slate-500">{formatPrice(item.price)}</span> : null}
+                  {item ? <span className="text-xs text-slate-500">{fmt(item.price)}</span> : null}
                 </label>
               );
             })}
@@ -769,16 +773,16 @@ function PackageRequestModal({
           {savings > 0 ? (
             <div className="flex items-center justify-between text-xs text-slate-500">
               <span>{t("modal.servicesAlonePrice")}</span>
-              <span className="line-through">{formatPrice(subtotal)}</span>
+              <span className="line-through">{fmt(subtotal)}</span>
             </div>
           ) : null}
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-700">{t("modal.packageTotal")}</span>
-            <span className="text-lg font-extrabold text-[#0C7BB3]">{formatPrice(total)}</span>
+            <span className="text-lg font-extrabold text-[#0C7BB3]">{fmt(total)}</span>
           </div>
           {savings > 0 ? (
             <p className="text-xs font-semibold text-[#16A34A]">
-              {t("modal.savedComparedToAlone", { amount: formatPrice(savings) })}
+              {t("modal.savedComparedToAlone", { amount: fmt(savings) })}
             </p>
           ) : null}
         </div>

@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
-import { formatPrice } from "../lib/utils";
+
+import { useCurrency } from "../hooks/useCurrency";
 
 export function DestinationCard({
   to,
@@ -10,7 +12,7 @@ export function DestinationCard({
   subtitle,
   price,
   currency = "USD",
-  priceLabel = "رحلات ذهاب وعودة ابتداءً من",
+  priceLabel,
   badge,
 }: {
   to: string;
@@ -22,6 +24,8 @@ export function DestinationCard({
   priceLabel?: string;
   badge?: ReactNode;
 }) {
+  const { t } = useTranslation("explore");
+  const { fmt } = useCurrency();
   return (
     <Link
       to={to}
@@ -46,8 +50,8 @@ export function DestinationCard({
         {subtitle ? <p className="mt-0.5 text-xs text-white/70">{subtitle}</p> : null}
         {price != null ? (
           <>
-            <p className="mt-1 text-xs text-white/70">{priceLabel}</p>
-            <p className="font-latin mt-0.5 text-lg font-extrabold text-white">{formatPrice(price, currency)}</p>
+            <p className="mt-1 text-xs text-white/70">{priceLabel ?? t("destinationCard.priceLabel")}</p>
+            <p className="font-latin mt-0.5 text-lg font-extrabold text-white">{fmt(price, currency)}</p>
           </>
         ) : null}
       </div>

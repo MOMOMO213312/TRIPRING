@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Layout } from "./components/Layout";
+import { CurrencyProvider } from "./hooks/useCurrency";
 
 const AffiliateDashboardPage = lazy(() =>
   import("./pages/AffiliateDashboardPage").then((m) => ({ default: m.AffiliateDashboardPage })),
@@ -136,6 +137,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ErrorBoundary>
+        <CurrencyProvider>
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route element={<Layout />}>
@@ -186,6 +188,7 @@ export default function App() {
             <Route path="ground-portal/settlements" element={<GroundPortalSettlementsPage />} />
           </Routes>
         </Suspense>
+        </CurrencyProvider>
       </ErrorBoundary>
     </BrowserRouter>
   );

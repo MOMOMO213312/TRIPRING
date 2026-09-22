@@ -9,8 +9,14 @@
     "subtitle": "Sürekli indirimler + ücretsiz hizmetler + öncelikli bildirimler"
   },
   "tabs": {
-    "services": { "title": "Hizmetler", "subtitle": "Herhangi bir hizmeti tek başına kendi fiyatına sipariş edin" },
-    "packages": { "title": "Paketler", "subtitle": "Ayrı ayrı sipariş etmekten daha ucuz hepsi bir arada paketler" }
+    "services": {
+      "title": "Hizmetler",
+      "subtitle": "Herhangi bir hizmeti tek başına kendi fiyatına sipariş edin"
+    },
+    "packages": {
+      "title": "Paketler",
+      "subtitle": "Ayrı ayrı sipariş etmekten daha ucuz hepsi bir arada paketler"
+    }
   },
   "servicesBanner": {
     "bold": "Tekil hizmet:",
@@ -23,8 +29,14 @@
   "category": {
     "transport": "Ulaşım",
     "airport": "Havalimanı",
-    "destination": { "title": "Varış noktası hizmetleri", "subtitle": "Varış noktanızla ilgili deneyimler ve hizmetler" },
-    "insurance": { "title": "Seyahat sigortası", "subtitle": "Seyahatiniz için temel veya kapsamlı sigorta" }
+    "destination": {
+      "title": "Varış noktası hizmetleri",
+      "subtitle": "Varış noktanızla ilgili deneyimler ve hizmetler"
+    },
+    "insurance": {
+      "title": "Seyahat sigortası",
+      "subtitle": "Seyahatiniz için temel veya kapsamlı sigorta"
+    }
   },
   "loadingServices": "Hizmetler yükleniyor...",
   "noServicesInCategory": "Bu kategoride şu anda mevcut hizmet yok",
@@ -36,12 +48,26 @@
   "startsFromYourChoice": "Seçimlerinize göre başlar",
   "explorePackage": "Paketi keşfet",
   "packages": {
-    "vip": { "subtitle": "Tüm havalimanı hizmetleri tek kapsamlı pakette", "badge": "En kapsamlı" },
-    "arrival": { "subtitle": "VIP karşılama ve havalimanından konforlu transfer" },
-    "departure": { "subtitle": "Seyahat ederken Fast Track ile havalimanı transferi" },
-    "family": { "subtitle": "Bagaj hizmetleriyle aileye uygun transfer" },
-    "business": { "subtitle": "VIP lounge, Fast Track ve özel transfer", "badge": "En çok talep edilen" },
-    "custom": { "subtitle": "Size uygun hizmetleri seçin ve kendi paketinizi oluşturun" }
+    "vip": {
+      "subtitle": "Tüm havalimanı hizmetleri tek kapsamlı pakette",
+      "badge": "En kapsamlı"
+    },
+    "arrival": {
+      "subtitle": "VIP karşılama ve havalimanından konforlu transfer"
+    },
+    "departure": {
+      "subtitle": "Seyahat ederken Fast Track ile havalimanı transferi"
+    },
+    "family": {
+      "subtitle": "Bagaj hizmetleriyle aileye uygun transfer"
+    },
+    "business": {
+      "subtitle": "VIP lounge, Fast Track ve özel transfer",
+      "badge": "En çok talep edilen"
+    },
+    "custom": {
+      "subtitle": "Size uygun hizmetleri seçin ve kendi paketinizi oluşturun"
+    }
   },
   "modal": {
     "quantity": "Adet",
@@ -79,5 +105,50 @@
     "confirmationBody": "Talep numarası #{{number}} — ekibimiz detayları ve ödemeyi onaylamak için yakında sizinle iletişime geçecek.",
     "confirmationTotal": "Toplam: {{amount}}",
     "ok": "Tamam"
+  },
+  "budget": {
+    "orLess": "veya daha az",
+    "subtitle": "300$'ınız mı var? Nereye gidebileceğinizi gösterelim",
+    "title": "💵 Bütçenize göre seyahat edin"
+  },
+  "destinationCard": {
+    "priceLabel": "Gidiş-dönüş, başlangıç fiyatı"
+  },
+  "destinations": {
+    "dealCount": "{{count}} fırsat mevcut",
+    "emptyHint": "Daha sonra tekrar bakın — sürekli yeni fırsatlar ekliyoruz.",
+    "emptyTitle": "Şu anda mevcut destinasyon yok",
+    "errorTitle": "Bir hata oluştu",
+    "meta": {
+      "description": "TripRing'de şu anda mevcut en iyi seyahat destinasyonlarını, her biri için gerçek en ucuz uçuş fiyatlarıyla keşfedin.",
+      "title": "En iyi seyahat destinasyonları ve uçuş fiyatları — TripRing"
+    },
+    "subtitle": {
+      "count": "{{count}} destinasyon, canlı TripRing fırsatlarından gerçek fiyatlarla şu anda mevcut",
+      "empty": "TripRing'de şu anda mevcut tüm destinasyonlara gerçek ve güncel fiyatlarla göz atın"
+    },
+    "title": "Seyahat destinasyonları"
+  },
+  "routes": {
+    "emptyHint": "Daha sonra tekrar bakın — sürekli yeni hatlar ekliyoruz.",
+    "emptyTitle": "Şu anda mevcut hat yok",
+    "errorTitle": "Bir hata oluştu",
+    "meta": {
+      "description": "TripRing'de mevcut tüm uçuş hatlarına, her hat için gerçek en ucuz fiyatla göz atın.",
+      "title": "Uçuş hatları ve fiyatları — TripRing"
+    },
+    "noLiveDeal": "Şu anda canlı fırsat yok",
+    "startsFrom": "Başlangıç fiyatı",
+    "subtitle": {
+      "count": "{{count}} hat mevcut, gerçek fiyatlar anlık güncelleniyor",
+      "empty": "TripRing'de mevcut tüm uçuş hatlarına göz atın"
+    },
+    "title": "Uçuş hatları"
+  },
+  "travelTo": {
+    "from": "Nereden",
+    "fromCity": "{{city}} çıkışlı",
+    "subtitle": "Önce ülkeyi, sonra şehri seçin; aramayı hemen sizin için tamamlayalım",
+    "title": "✈️ Destinasyonunuzu seçin"
   }
 }

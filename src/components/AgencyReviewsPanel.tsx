@@ -1,5 +1,6 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { AuthGate } from "./AuthGate";
 import {
@@ -24,6 +25,8 @@ function StarRow({ value }: { value: number }) {
 }
 
 export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
+  const { t } = useTranslation("booking");
+  const { t: tc } = useTranslation();
   const [reviews, setReviews] = useState<AgencyReviewRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -63,7 +66,7 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
       const fresh = await fetchAgencyReviews(agency.id);
       setReviews(fresh);
     } catch (err) {
-      setSubmitError(friendlyErrorMessage(err, "تعذر إرسال التقييم، جرّب تاني.", "AgencyReviewsPanel.submit"));
+      setSubmitError(friendlyErrorMessage(err, "booking:reviews.failed", "AgencyReviewsPanel.submit"));
     } finally {
       setSubmitting(false);
     }
@@ -79,34 +82,34 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
               <p className="mt-1 flex items-center gap-2 text-sm text-slate-600">
                 <StarRow value={summary.average ?? 0} />
                 <span className="font-latin font-semibold text-slate-800">{summary.average}</span>
-                <span>({summary.count} تقييم)</span>
+                <span>{t("reviews.count", { n: summary.count })}</span>
               </p>
             ) : (
-              <p className="mt-1 text-sm text-slate-500">لا توجد تقييمات بعد</p>
+              <p className="mt-1 text-sm text-slate-500">{t("reviews.none")}</p>
             )
           ) : null}
         </div>
         {!showForm && !submitted ? (
           <Button variant="outline" onClick={() => setShowForm(true)}>
-            قيّم الوكالة
+            {t("reviews.rate")}
           </Button>
         ) : null}
       </div>
 
       {submitted ? (
-        <p className="mt-3 text-sm font-medium text-green-700">شكرًا لك، تم إرسال تقييمك</p>
+        <p className="mt-3 text-sm font-medium text-green-700">{t("reviews.thanks")}</p>
       ) : null}
 
       {showForm ? (
         <AuthGate
-          title="سجّل الدخول لتقييم الوكالة"
-          description="نحتاج تسجيل دخولك حتى نربط تقييمك باسمك ونمنع التقييمات الوهمية"
+          title={t("reviews.authTitle")}
+          description={t("reviews.authDescription")}
         >
           {() => (
             <form onSubmit={handleSubmit} className="mt-4 space-y-3 border-t border-slate-100 pt-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-slate-700">تقييمك</span>
-                <div className="flex gap-1 font-latin text-lg text-amber-500" role="radiogroup" aria-label="التقييم">
+                <span className="text-sm font-medium text-slate-700">{t("reviews.yourRating")}</span>
+                <div className="flex gap-1 font-latin text-lg text-amber-500" role="radiogroup" aria-label={t("reviews.ratingLabel")}>
                   {[1, 2, 3, 4, 5].map((n) => (
                     <button
                       key={n}
@@ -123,17 +126,17 @@ export function AgencyReviewsPanel({ agency }: { agency: AgencyRow }) {
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-                placeholder="تعليقك (اختياري)"
+                placeholder={t("reviews.commentPlaceholder")}
                 rows={3}
                 className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-[#BFE3F6]"
               />
               {submitError ? <p className="text-xs text-red-600">{submitError}</p> : null}
               <div className="flex gap-3">
                 <Button type="submit" disabled={submitting}>
-                  {submitting ? "جاري الإرسال..." : "إرسال التقييم"}
+                  {submitting ? t("reviews.sending") : t("reviews.send")}
                 </Button>
                 <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>
-                  إلغاء
+                  {tc("actions.cancel")}
                 </Button>
               </div>
             </form>

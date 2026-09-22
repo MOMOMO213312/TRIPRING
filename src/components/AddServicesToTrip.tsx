@@ -4,9 +4,9 @@ import { useTranslation } from "react-i18next";
 import { addServicesToBooking, fetchBookableAddOns } from "../lib/api";
 import { friendlyErrorMessage } from "../lib/errors";
 import { serviceDisplayLabel, serviceRawName } from "../lib/servicePackages";
-import { formatPrice } from "../lib/utils";
 import type { AdditionalServiceRow } from "../types/database";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Leg = "departure" | "arrival";
 
@@ -32,6 +32,7 @@ export function AddServicesToTrip({
   onAdded: () => void;
 }) {
   const { t } = useTranslation("booking");
+  const { fmt } = useCurrency();
   const [open, setOpen] = useState(false);
   const [catalog, setCatalog] = useState<AdditionalServiceRow[] | null>(null);
   const [checked, setChecked] = useState<Set<string>>(new Set());
@@ -94,7 +95,7 @@ export function AddServicesToTrip({
       <div className="mt-4 border-t border-slate-100 pt-4">
         {doneAmount !== null ? (
           <p className="mb-2 text-sm font-semibold text-green-700">
-            {t("addServices.added", { amount: formatPrice(doneAmount, currency) })}
+            {t("addServices.added", { amount: fmt(doneAmount, currency) })}
             {alreadyPaid ? t("addServices.addedPaidSuffix") : ""}
           </p>
         ) : null}
@@ -127,7 +128,7 @@ export function AddServicesToTrip({
                 <input type="checkbox" checked={checked.has(s.id)} onChange={() => toggle(s.id)} />
                 {serviceDisplayLabel(s)}
               </span>
-              <span className="font-latin text-sm text-slate-500">+{formatPrice(s.price, currency)}</span>
+              <span className="font-latin text-sm text-slate-500">+{fmt(s.price, currency)}</span>
             </label>
             {isGround(s) && checked.has(s.id) ? (
               <select
@@ -153,7 +154,7 @@ export function AddServicesToTrip({
         {submitting
           ? t("addServices.adding")
           : selected.length > 0
-            ? t("addServices.confirm", { amount: formatPrice(total, currency) })
+            ? t("addServices.confirm", { amount: fmt(total, currency) })
             : t("addServices.chooseService")}
       </Button>
     </div>

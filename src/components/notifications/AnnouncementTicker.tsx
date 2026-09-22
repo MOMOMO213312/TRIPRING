@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { fetchPublicAnnouncements } from "../../lib/notifications";
@@ -16,6 +17,7 @@ const TYPE_ICON: Partial<Record<NotificationRow["type"], string>> = {
  *  "is_ticker" flag to remember when publishing, so nothing gets missed.
  *  Shows nothing if there are no active announcements. */
 export function AnnouncementTicker() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<NotificationRow[]>([]);
   const [dismissed, setDismissed] = useState(false);
 
@@ -50,7 +52,7 @@ export function AnnouncementTicker() {
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          aria-label="إخفاء"
+          aria-label={t("ticker.dismiss")}
           className="shrink-0 rounded-full p-1 text-white/70 hover:bg-white/10 hover:text-white"
         >
           ✕

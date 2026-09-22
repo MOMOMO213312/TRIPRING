@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { airlineName } from "../lib/deal-utils";
 import { formatLatinNumber } from "../lib/utils";
 import type { AirlineRow, DealRow } from "../types/database";
@@ -8,6 +10,7 @@ type Props = {
 };
 
 export function TrustedAirlinesRow({ deals, airlines }: Props) {
+  const { t } = useTranslation("home");
   const counts = new Map<string, number>();
   for (const d of deals) {
     if (!d.airline_code) continue;
@@ -20,7 +23,7 @@ export function TrustedAirlinesRow({ deals, airlines }: Props) {
   return (
     <section>
       <div className="mb-4 flex items-end justify-between gap-4">
-        <h2 className="text-xl font-bold text-slate-900">شركاؤنا الموثوقون</h2>
+        <h2 className="text-xl font-bold text-slate-900">{t("trustedAirlines.title")}</h2>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {featured.map((code) => {
@@ -41,7 +44,7 @@ export function TrustedAirlinesRow({ deals, airlines }: Props) {
                 {airlineName(code, airlines)}
               </span>
               <span className="font-latin text-xs text-slate-500">
-                {formatLatinNumber(counts.get(code) ?? 0)} عروض نشطة
+                {t("trustedAirlines.activeDeals", { count: counts.get(code) ?? 0, num: formatLatinNumber(counts.get(code) ?? 0) })}
               </span>
             </div>
           );

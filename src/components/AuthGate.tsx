@@ -1,5 +1,6 @@
 import type { FormEvent, ReactNode } from "react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { User } from "@supabase/supabase-js";
 
 import { authErrorMessage, signInWithEmail, signUpWithEmail, useAuth } from "../lib/auth";
@@ -13,7 +14,7 @@ import { Input } from "./ui/Input";
  * around the specific form/action that needs a signed-in user.
  */
 export function AuthGate({
-  title = "سجّل الدخول للمتابعة",
+  title,
   description,
   children,
 }: {
@@ -21,6 +22,7 @@ export function AuthGate({
   description?: string;
   children: (user: User) => ReactNode;
 }) {
+  const { t } = useTranslation("booking");
   const { user, loading } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -57,7 +59,7 @@ export function AuthGate({
   return (
     <Card className="space-y-4">
       <div>
-        <h3 className="font-bold text-slate-900">{title}</h3>
+        <h3 className="font-bold text-slate-900">{title ?? t("auth.defaultTitle")}</h3>
         {description ? <p className="mt-1 text-sm text-slate-600">{description}</p> : null}
       </div>
 
@@ -67,7 +69,7 @@ export function AuthGate({
           onClick={() => setMode("signin")}
           className={mode === "signin" ? "text-[#0C7BB3]" : "text-slate-400"}
         >
-          تسجيل الدخول
+          {t("auth.signIn")}
         </button>
         <span className="text-slate-300">|</span>
         <button
@@ -75,23 +77,23 @@ export function AuthGate({
           onClick={() => setMode("signup")}
           className={mode === "signup" ? "text-[#0C7BB3]" : "text-slate-400"}
         >
-          حساب جديد
+          {t("auth.signUp")}
         </button>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         {mode === "signup" ? (
-          <Input label="الاسم" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <Input label={t("auth.name")} value={fullName} onChange={(e) => setFullName(e.target.value)} />
         ) : null}
         <Input
-          label="البريد الإلكتروني"
+          label={t("auth.email")}
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          label="كلمة المرور"
+          label={t("auth.password")}
           type="password"
           required
           minLength={6}
@@ -100,10 +102,10 @@ export function AuthGate({
         />
         {error ? <p className="text-xs text-red-600">{error}</p> : null}
         {confirmNotice ? (
-          <p className="text-xs text-green-700">تم إنشاء الحساب — تحقق من بريدك الإلكتروني لتأكيد الدخول</p>
+          <p className="text-xs text-green-700">{t("auth.confirmNotice")}</p>
         ) : null}
         <Button type="submit" fullWidth disabled={submitting}>
-          {submitting ? "جاري التحقق..." : mode === "signup" ? "إنشاء حساب" : "دخول"}
+          {submitting ? t("auth.verifying") : mode === "signup" ? t("auth.createAccount") : t("auth.login")}
         </Button>
       </form>
     </Card>

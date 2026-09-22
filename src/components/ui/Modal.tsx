@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   open: boolean;
@@ -8,6 +9,7 @@ type Props = {
 };
 
 export function Modal({ open, onClose, title, children }: Props) {
+  const { t } = useTranslation();
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -19,7 +21,7 @@ export function Modal({ open, onClose, title, children }: Props) {
             type="button"
             onClick={onClose}
             className="shrink-0 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-            aria-label="إغلاق"
+            aria-label={t("actions.close")}
           >
             ✕
           </button>

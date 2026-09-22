@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 
+import i18n from "../i18n";
 import { supabase } from "./supabase";
 
 import { dbError } from "./errors";
@@ -66,15 +67,15 @@ export function useAuth() {
   return { user: session?.user ?? null, session, loading };
 }
 
-/** Human-readable Arabic messages for the auth errors we expect users to actually hit. */
+/** Human-readable (translated) messages for the auth errors we expect users to actually hit. */
 export function authErrorMessage(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err);
-  if (raw.includes("Invalid login credentials")) return "بيانات الدخول غير صحيحة";
-  if (raw.includes("User already registered")) return "هذا البريد الإلكتروني مسجل بالفعل";
-  if (raw.includes("Password should be at least")) return "كلمة المرور يجب أن تكون 6 أحرف على الأقل";
-  if (raw.includes("Unable to validate email")) return "صيغة البريد الإلكتروني غير صحيحة";
-  // Supabase Auth errors we don't have a specific Arabic message for yet are
-  // always raw English technical strings — never show those directly.
+  if (raw.includes("Invalid login credentials")) return i18n.t("booking:auth.errors.invalidCredentials");
+  if (raw.includes("User already registered")) return i18n.t("booking:auth.errors.alreadyRegistered");
+  if (raw.includes("Password should be at least")) return i18n.t("booking:auth.errors.weakPassword");
+  if (raw.includes("Unable to validate email")) return i18n.t("booking:auth.errors.invalidEmail");
+  // Supabase Auth errors we don't have a specific message for yet are always raw English
+  // technical strings — never show those directly.
   console.error("[authErrorMessage] unhandled auth error:", err);
-  return "حدث خطأ، حاول مرة أخرى";
+  return i18n.t("booking:auth.errors.generic");
 }

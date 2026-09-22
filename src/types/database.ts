@@ -375,6 +375,8 @@ export interface Database {
           name: string;
           description: string | null;
           price: number;
+          /** ISO currency the `price` is expressed in (defaults to USD in the DB). Never add it to a booking total without converting. */
+          currency: string;
           category: ServiceCategory | null;
           is_active: boolean;
           provider_id: string | null;
@@ -528,6 +530,8 @@ export interface Database {
           from_airport: string | null;
           to_airport: string | null;
           max_budget: number | null;
+          /** Currency max_budget was entered in (compared to deals in USD when it differs from the deal currency). */
+          currency: string;
           customer_id: string | null;
           phone: string | null;
           email: string | null;
@@ -840,6 +844,27 @@ export interface Database {
           markup_percent: number | null;
           commission_percent: number | null;
           contract_status: string | null;
+          /** price converted to USD with the live rate — the only safe column to sort/filter by when deals are in mixed currencies. */
+          price_usd: number | null;
+          original_price_usd: number | null;
+        };
+      };
+      // Public, read-only exchange-rate table (see currencies + exchange_rates). Added by hand like v_flight_offers.
+      v_currency_rates: {
+        Row: {
+          code: string;
+          name_ar: string;
+          name_en: string;
+          symbol_ar: string;
+          symbol_en: string;
+          decimals: number;
+          rate_per_usd: number | null;
+          fx_spread_pct: number;
+          is_chargeable: boolean;
+          is_stale: boolean;
+          rate_source: string | null;
+          rate_fetched_at: string | null;
+          sort_order: number;
         };
       };
     };
@@ -1052,34 +1077,16 @@ export type BookingLookupResult = {
 };
 
 /**
- * Customer-facing wording for order_items.fulfillment_status.
+ * Customer-facing wording for order_items.fulfillment_status (and orders.fulfillment_summary)
+ * lives in the i18n `booking` namespace — `journey.item.*` and `journey.summary.*` — and is
+ * rendered by components/JourneyPanel.tsx.
  *
- * Deliberately NOT the same copy the admin sees. `failed` and `reassigning`
- * are both internal states the Fallback Engine is actively recovering from —
- * telling a customer "فشل" while the engine is mid-recovery causes panic and
- * support calls for something that usually self-heals. The customer is told
- * the truth (something is being re-arranged) without the alarming internal
- * label. The admin Fulfillment Monitor still shows the raw state.
+ * Deliberately NOT the same copy the admin sees. `failed` and `reassigning` are both internal
+ * states the Fallback Engine is actively recovering from — telling a customer "failed" while
+ * the engine is mid-recovery causes panic and support calls for something that usually
+ * self-heals. The customer is told the truth (something is being re-arranged) without the
+ * alarming internal label. The admin Fulfillment Monitor still shows the raw state.
  */
-export const JOURNEY_ITEM_STATUS_LABELS: Record<string, string> = {
-  pending_assignment: "جاري الترتيب",
-  assigned: "جاري التأكيد",
-  confirmed: "تم التأكيد",
-  fulfilled: "مؤكد ✓",
-  failed: "بنعيد ترتيبها لك",
-  reassigning: "بنعيد ترتيبها لك",
-  cancelled: "ملغية",
-};
-
-export const JOURNEY_SUMMARY_LABELS: Record<string, string> = {
-  pending_assignment: "جاري ترتيب رحلتك",
-  partially_assigned: "جاري ترتيب رحلتك",
-  fully_assigned: "جاري تأكيد كل عناصر رحلتك",
-  partially_fulfilled: "تم تأكيد جزء من رحلتك",
-  fully_fulfilled: "رحلتك مؤكدة بالكامل ✓",
-  needs_attention: "فريقنا بيراجع عنصر في رحلتك",
-  cancelled: "ملغية",
-};
 
 /**
  * Lifecycle of an extra service (seat request, extra baggage, transfer, etc)

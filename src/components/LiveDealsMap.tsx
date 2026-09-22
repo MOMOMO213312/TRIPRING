@@ -1,10 +1,12 @@
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
-import { airportLabel } from "../lib/deal-utils";
+import { airportLabel, comparablePrice } from "../lib/deal-utils";
 import { projectAirport } from "../lib/geo";
-import { formatPrice } from "../lib/utils";
+
 import type { AirportRow, DealRow } from "../types/database";
 import { Card } from "./ui/Card";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   deals: DealRow[];
@@ -29,16 +31,24 @@ const CONTINENTS = [
 ];
 
 export function LiveDealsMap({ deals, airports }: Props) {
+  const { t } = useTranslation("home");
+  const { fmt } = useCurrency();
   const points = useMemo(() => {
-    const seen = new Map<string, { code: string; count: number; price: number }>();
+    // "Cheapest" is decided on the USD-equivalent price (deals can be in different currencies), but the tooltip
+    // shows that deal's own price + currency so fmt() converts it for the visitor like everywhere else.
+    const seen = new Map<string, { code: string; count: number; price: number; currency: string; comparable: number }>();
     for (const d of deals) {
       const code = d.to_airport;
       const existing = seen.get(code);
       if (existing) {
         existing.count += 1;
-        existing.price = Math.min(existing.price, d.price);
+        if (comparablePrice(d) < existing.comparable) {
+          existing.price = d.price;
+          existing.currency = d.currency ?? "USD";
+          existing.comparable = comparablePrice(d);
+        }
       } else {
-        seen.set(code, { code, count: 1, price: d.price });
+        seen.set(code, { code, count: 1, price: d.price, currency: d.currency ?? "USD", comparable: comparablePrice(d) });
       }
     }
     return [...seen.values()]
@@ -49,13 +59,13 @@ export function LiveDealsMap({ deals, airports }: Props) {
   return (
     <Card>
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="font-bold text-slate-900">خريطة العروض المباشرة</h3>
+        <h3 className="font-bold text-slate-900">{t("liveMap.title")}</h3>
         <div className="flex items-center gap-3 text-xs text-slate-500">
           <span className="inline-flex items-center gap-1">
-            <span className="size-2 rounded-full bg-[#DC2626]" /> عدة عروض نشطة
+            <span className="size-2 rounded-full bg-[#DC2626]" /> {t("liveMap.legendMany")}
           </span>
           <span className="inline-flex items-center gap-1">
-            <span className="size-2 rounded-full bg-[#16A34A]" /> عرض واحد نشط
+            <span className="size-2 rounded-full bg-[#16A34A]" /> {t("liveMap.legendOne")}
           </span>
         </div>
       </div>
@@ -67,7 +77,7 @@ export function LiveDealsMap({ deals, airports }: Props) {
 
         {points.length === 0 ? (
           <text x={500} y={250} textAnchor="middle" className="fill-slate-500 text-[16px]">
-            لا توجد عروض نشطة لعرضها على الخريطة
+            {t("liveMap.empty")}
           </text>
         ) : (
           points.map((p) => {
@@ -81,8 +91,8 @@ export function LiveDealsMap({ deals, airports }: Props) {
                 </circle>
                 <circle cx={p.pos.x} cy={p.pos.y} r={4} fill={color} stroke="#0B1220" strokeWidth={1.5}>
                   <title>
-                    {airportLabel(p.code, airports)} — {formatPrice(p.price)}
-                    {p.count > 1 ? ` (${p.count} عروض)` : ""}
+                    {airportLabel(p.code, airports)} — {fmt(p.price, p.currency)}
+                    {p.count > 1 ? ` ${t("liveMap.offersCount", { count: p.count })}` : ""}
                   </title>
                 </circle>
               </g>
@@ -92,7 +102,7 @@ export function LiveDealsMap({ deals, airports }: Props) {
       </svg>
 
       <p className="mt-3 text-xs text-slate-400">
-        مواقع تقريبية للوجهات ذات العروض النشطة حاليًا — النقطة الحمراء تعني 3 عروض نشطة أو أكثر على نفس الوجهة.
+        {t("liveMap.footnote")}
       </p>
     </Card>
   );

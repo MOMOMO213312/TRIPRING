@@ -33,7 +33,13 @@
     "agencyPortal": "Agency Dashboard",
     "affiliatePortal": "Affiliate Dashboard",
     "becomeSupplier": "Become a Supplier",
-    "copyright": "© {{year}} TripRing — Travel Opportunity Marketplace"
+    "copyright": "© {{year}} TripRing — Travel Opportunity Marketplace",
+    "fxAttribution": "Estimated exchange rates from"
+  },
+  "currency": {
+    "label": "Display currency",
+    "pick": "Choose display currency",
+    "disclaimer": "Prices shown are estimates at the current exchange rate — the final payment currency is set at booking time."
   },
   "actions": {
     "save": "Save",
@@ -70,5 +76,33 @@
     "privateWith": "🚗 Private car · {{vehicle}}",
     "shared": "🚐 Shared transfer",
     "sharedWith": "🚐 Shared transfer · {{vehicle}}"
+  },
+  "notifications": {
+    "bell": "Notifications",
+    "publicTitle": "Deals, news & updates",
+    "loading": "Loading...",
+    "empty": "No notifications right now",
+    "types": {
+      "flash_deal": "Flash deal",
+      "site_announcement": "Announcement",
+      "airport_info": "Airport info",
+      "circular": "Notice"
+    }
+  },
+  "airportAutocomplete": {
+    "placeholder": "City or airport",
+    "anyDestination": "Anywhere"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "There's a temporary problem displaying this page. Try going back to the home page, and contact us if it keeps happening.",
+    "home": "Back to the home page"
+  },
+  "betaNotice": "The site is still in testing — some of the flights shown are part of a trial of new data sources, so not every detail may be final yet.",
+  "ticker": {
+    "dismiss": "Dismiss"
+  },
+  "errors": {
+    "catalogLoadFailed": "Couldn't load the site data, please try again."
   }
 }

@@ -21,5 +21,31 @@
     "resetButton": "Filtreleri sıfırla"
   },
   "loading": "Yükleniyor...",
-  "loadError": "Sonuçlar yüklenirken bir hata oluştu, lütfen tekrar deneyin."
+  "loadError": "Sonuçlar yüklenirken bir hata oluştu, lütfen tekrar deneyin.",
+  "card": {
+    "priceDrop": "Son 7 günde %{{percent}} düştü",
+    "scoreLabel": "Fırsat Puanı {{score}} / 100"
+  },
+  "chips": {
+    "cheapest": "En düşük fiyat",
+    "direct": "Aktarmasız",
+    "allFilters": "+ Tüm filtreler"
+  },
+  "compare": {
+    "durationH": "{{h}} sa",
+    "durationHM": "{{h}} sa {{m}} dk",
+    "no": "✕ Hayır",
+    "remove": "Kaldır ✕",
+    "row": {
+      "price": "Fiyat",
+      "airline": "Havayolu",
+      "stops": "Aktarma",
+      "duration": "Uçuş süresi",
+      "baggage": "Bagaj",
+      "refundable": "İade edilebilir",
+      "seats": "Müsait koltuk"
+    },
+    "title": "Fırsatları karşılaştır",
+    "yes": "✓ Evet"
+  }
 }

@@ -1,8 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { getDestinationImage } from "../lib/api";
-import { formatPrice } from "../lib/utils";
+import { airportCityName } from "../lib/geoNames";
 import type { AirportRow, DealRow, ImageCacheRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
+import { comparablePrice } from "../lib/deal-utils";
 
 type Props = {
   opportunities: DealRow[];
@@ -12,17 +15,20 @@ type Props = {
 
 /** Groups current live opportunities by destination country — real data only, no invented destinations. */
 export function DestinationDiscovery({ opportunities, airports, imageCache }: Props) {
-  const byCountry = new Map<string, { airport: AirportRow; minPrice: number; currency: string; count: number }>();
+  const { t } = useTranslation("home");
+  const { fmt } = useCurrency();
+  const byCountry = new Map<string, { airport: AirportRow; minPrice: number; minComparable: number; currency: string; count: number }>();
 
   for (const deal of opportunities) {
     const airport = airports.find((a) => a.code === deal.to_airport);
     if (!airport) continue;
     const key = airport.country;
     const existing = byCountry.get(key);
-    if (!existing || deal.price < existing.minPrice) {
+    if (!existing || comparablePrice(deal) < existing.minComparable) {
       byCountry.set(key, {
         airport,
         minPrice: deal.price,
+        minComparable: comparablePrice(deal),
         currency: deal.currency ?? "USD",
         count: (existing?.count ?? 0) + 1,
       });
@@ -44,8 +50,8 @@ export function DestinationDiscovery({ opportunities, airports, imageCache }: Pr
   return (
     <section>
       <div className="mb-5 px-4 sm:px-0">
-        <h2 className="text-2xl font-bold text-slate-900">🌍 أكثر الوجهات بحثًا من القاهرة</h2>
-        <p className="text-sm text-slate-600">وجهات مبنية على الفرص المتاحة فعليًا دلوقتي</p>
+        <h2 className="text-2xl font-bold text-slate-900">{t("discovery.title")}</h2>
+        <p className="text-sm text-slate-600">{t("discovery.subtitle")}</p>
       </div>
 
       <div dir="ltr" className="group/marquee overflow-hidden">
@@ -64,7 +70,7 @@ export function DestinationDiscovery({ opportunities, airports, imageCache }: Pr
                 {image ? (
                   <img
                     src={image}
-                    alt={info.airport.city}
+                    alt={airportCityName(info.airport)}
                     className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                     draggable={false}
                   />
@@ -73,10 +79,10 @@ export function DestinationDiscovery({ opportunities, airports, imageCache }: Pr
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                 <div className="absolute bottom-0 start-0 end-0 p-4">
-                  <p className="text-base font-bold text-white">{info.airport.city}</p>
-                  <p className="mt-1 text-xs text-white/70">رحلات ذهاب وعودة ابتداءً من</p>
+                  <p className="text-base font-bold text-white">{airportCityName(info.airport)}</p>
+                  <p className="mt-1 text-xs text-white/70">{t("discovery.roundTripFrom")}</p>
                   <p className="font-latin mt-0.5 text-lg font-extrabold text-white">
-                    {formatPrice(info.minPrice, info.currency)}
+                    {fmt(info.minPrice, info.currency)}
                   </p>
                 </div>
               </Link>

@@ -94,7 +94,8 @@
       "payment_uploaded": "Payment proof received",
       "paid": "Payment confirmed",
       "ticket_issued": "Ticket issued",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "label": "Status"
     },
     "transfer": {
       "heading": "Airport transfer details",
@@ -119,7 +120,14 @@
       "adults": "{{count}} adult(s)",
       "children": "{{count}} child(ren)",
       "infants": "{{count}} infant(s)"
-    }
+    },
+    "viewMine": "View my booking in My Trips",
+    "amountDue": "Amount to transfer",
+    "fxNote": "Booking price {{price}} — converted to {{currency}} at the exchange rate locked when you booked{{rate}}.",
+    "transferDetails": "Airport transfer details",
+    "area": "Area",
+    "sendWhatsapp": "Send via WhatsApp",
+    "viewInTrips": "View in My Trips"
   },
   "myTrips": {
     "title": "My Trips",
@@ -181,7 +189,18 @@
       "cancelled": "Cancelled"
     },
     "supplierPending": "Assigning a provider…",
-    "footnote": "Each item in your journey is confirmed on its own. If something goes wrong with one item, we automatically look for an alternative without cancelling the rest of your trip."
+    "footnote": "Each item in your journey is confirmed on its own. If something goes wrong with one item, we automatically look for an alternative without cancelling the rest of your trip.",
+    "pendingSupplier": "Assigning a provider",
+    "footer": "Each item in your journey is confirmed on its own. If one item runs into a problem, we automatically look for an alternative without cancelling the rest of your trip.",
+    "item": {
+      "pending_assignment": "Being arranged",
+      "assigned": "Confirming",
+      "confirmed": "Confirmed",
+      "fulfilled": "Confirmed ✓",
+      "failed": "We're re-arranging it for you",
+      "reassigning": "We're re-arranging it for you",
+      "cancelled": "Cancelled"
+    }
   },
   "proof": {
     "failed": "Couldn't upload the file. Please try again.",
@@ -205,5 +224,309 @@
     "confirm": "Confirm addition ({{amount}})",
     "chooseService": "Choose a service",
     "adding": "Adding…"
+  },
+  "f": {
+    "route": "Route",
+    "date": "Date",
+    "travelers": "Travelers",
+    "fullName": "Full name",
+    "phone": "Phone number",
+    "email": "Email (optional)",
+    "adults": "Adults",
+    "children": "Children",
+    "infants": "Infants",
+    "passportName": "Name as on passport",
+    "dob": "Date of birth",
+    "passportNumber": "Passport number",
+    "phonePlaceholder": "+20xxxxxxxxxx",
+    "loading": "Loading...",
+    "total": "Total",
+    "baseFare": "Base fare",
+    "taxes": "Taxes & fees",
+    "pickupLocation": "Pickup location",
+    "transportKind": "Transport type",
+    "flightNumber": "Flight number"
+  },
+  "traveler": {
+    "adult": "adult",
+    "child": "child",
+    "infant": "infant",
+    "heading": "Traveler {{n}} ({{type}})",
+    "adultsN_one": "{{count}} adult",
+    "adultsN_other": "{{count}} adults",
+    "childrenN_one": "{{count}} child",
+    "childrenN_other": "{{count}} children",
+    "infantsN_one": "{{count}} infant",
+    "infantsN_other": "{{count}} infants"
+  },
+  "payment": {
+    "bankTransfer": {
+      "label": "Bank transfer",
+      "details": "Bank: {{bank}} · IBAN: {{iban}} · Account name: {{account}}"
+    },
+    "instapay": {
+      "label": "InstaPay",
+      "details": "InstaPay handle: {{handle}}"
+    },
+    "vodafoneCash": {
+      "label": "Vodafone Cash",
+      "details": "Wallet number: {{number}}"
+    }
+  },
+  "packages": {
+    "basic": {
+      "label": "Ticket only"
+    },
+    "smart": {
+      "label": "Smart Trip"
+    },
+    "premium": {
+      "label": "Premium Trip"
+    },
+    "badge": {
+      "popular": "Most popular"
+    },
+    "perk": {
+      "ticketOnly": "Flight ticket only",
+      "ticket": "Flight ticket",
+      "oneBag": "One bag",
+      "transfer": "Airport transfers",
+      "support": "Trip support",
+      "lounge": "Airport lounge",
+      "fastTrack": "Fast Track",
+      "insurance": "Travel insurance"
+    }
+  },
+  "selector": {
+    "chooseTrip": "Choose your trip",
+    "addServices": "Add your services",
+    "included": "Included ✓",
+    "recommended": "Recommended"
+  },
+  "upload": {
+    "cta": "📎 Upload payment proof (image or PDF)",
+    "uploading": "Uploading...",
+    "success": "✓ Payment proof uploaded successfully",
+    "failed": "We couldn't upload the file. Please try again."
+  },
+  "chart": {
+    "title": "Price history for {{route}}",
+    "noData": "Not enough data to show the chart",
+    "currentLow": "Current lowest price: {{price}}"
+  },
+  "auth": {
+    "defaultTitle": "Sign in to continue",
+    "signIn": "Sign in",
+    "signUp": "New account",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirmNotice": "Account created — check your email to confirm your sign-in",
+    "verifying": "Verifying...",
+    "createAccount": "Create account",
+    "login": "Sign in",
+    "errors": {
+      "invalidCredentials": "Incorrect login details",
+      "alreadyRegistered": "This email is already registered",
+      "weakPassword": "Password must be at least 6 characters",
+      "invalidEmail": "The email format is invalid",
+      "generic": "Something went wrong, please try again"
+    }
+  },
+  "reviews": {
+    "count": "({{n}} reviews)",
+    "none": "No reviews yet",
+    "rate": "Rate the agency",
+    "thanks": "Thank you, your review has been submitted",
+    "authTitle": "Sign in to rate the agency",
+    "authDescription": "We need you to sign in so your review is tied to your name and we can prevent fake reviews",
+    "yourRating": "Your rating",
+    "ratingLabel": "Rating",
+    "commentPlaceholder": "Your comment (optional)",
+    "sending": "Sending...",
+    "send": "Submit review",
+    "failed": "We couldn't submit your review. Please try again."
+  },
+  "transfer": {
+    "private": "🚗 Private car",
+    "privateVehicle": "🚗 Private car · {{vehicle}}",
+    "shared": "🚐 Shared transfer",
+    "sharedVehicle": "🚐 Shared transfer · {{vehicle}}"
+  },
+  "page": {
+    "title": "Complete your booking",
+    "dealUnavailable": "This deal is unavailable",
+    "dealNotFound": "Deal not found",
+    "loadFailed": "Something went wrong while loading the deal. Please try again.",
+    "soldOut": "Sorry, the seats for this deal are sold out. Try searching for another deal.",
+    "createFailed": "We couldn't create your booking. Please try again or contact us.",
+    "validation": {
+      "name": "Please enter your full name",
+      "phone": "Please enter your phone number",
+      "phoneInvalid": "Invalid phone number — enter it in international format, e.g. +20xxxxxxxxxx",
+      "emailInvalid": "Invalid email address",
+      "traveler": "Please enter the name of traveler {{n}} as it appears on the passport"
+    },
+    "changes": {
+      "gone": "Sorry, this deal is no longer available.",
+      "seatsGone": "Sorry, the seats for this deal just sold out.",
+      "seatsFewer": "The number of seats available now ({{available}}) is lower than the number of travelers ({{needed}}).",
+      "priceChanged": "Heads up: this deal's price changed since you opened the page (it was {{oldPrice}}, now {{newPrice}}). Review the new total below and press \"Confirm booking\" again to continue."
+    },
+    "section": {
+      "contact": "Contact & traveler details",
+      "services": "Extra services (optional)",
+      "summary": "Summary & payment"
+    },
+    "tripgo": {
+      "title": "🚗 Instant TripGo — a private car picks you up from your door (optional)",
+      "desc": "Pick your area and the car price is added automatically on top of the ticket price.",
+      "none": "No transfer — I'll arrange my own transport"
+    },
+    "summary": {
+      "estimateWarning": "⚠️ The price is an estimate and not final. Pressing \"Confirm booking\" sends a <strong>booking request</strong> to the agency, not a confirmed ticket — they will contact you to confirm the price and seat before actual payment.",
+      "estimatedTotalBeforeDiscount": "Estimated total (before any membership discount)",
+      "package": "Package",
+      "tripgoTransport": "TripGo (transfer)",
+      "estimatedTotal": "Estimated total",
+      "manualPayment": "Payment is manual — complete the transfer, then send the receipt via WhatsApp after the agency confirms"
+    },
+    "payIn": "Pay in",
+    "chargeEstimate": "You'll pay approximately <amount>{{amount}}</amount> — the exchange rate is locked for 30 minutes when you confirm the booking, and the final amount will appear on the confirmation page.",
+    "chargeUnavailable": "Paying in your currency ({{currency}}) isn't available right now — prices shown in it are estimates and payment is made in the currencies above.",
+    "submit": {
+      "checking": "Checking your booking...",
+      "confirm": "Confirm booking"
+    }
+  },
+  "whatsapp": {
+    "paid": "Hello, I sent a transfer for booking number {{number}}",
+    "name": "Name: {{name}}",
+    "route": "Route: {{route}}",
+    "travelers": "Travelers: {{value}}",
+    "pickup": "Pickup location: {{value}}",
+    "transport": "Transport: {{value}}",
+    "amount": "Amount: {{value}}",
+    "tripgoConfirm": "Hello, I'd like to confirm my TripGo trip: {{route}} — pickup from {{pickup}} — transport: {{transport}}"
+  },
+  "deal": {
+    "unavailable": "This deal is unavailable or has expired",
+    "loadFailed": "Something went wrong while loading the deal. Please try again or go back home.",
+    "backHome": "Back to home",
+    "continue": "Continue",
+    "share": "🔗 Share",
+    "copied": "Copied ✓",
+    "priceAlert": "🔔 Price alert",
+    "heroLabel": "TripRing opportunity",
+    "seatsLeft": "{{count}} seats left",
+    "f": {
+      "departure": "Departure",
+      "return": "Return",
+      "seatsAvailable": "Available seats",
+      "class": "Class",
+      "aircraft": "Aircraft",
+      "operatedBy": "Operated by",
+      "arrival": "Arrival date",
+      "layover": "Layover",
+      "baggage": "Baggage",
+      "cabinBag": "Cabin bag",
+      "checkedBags": "Checked bags",
+      "extraBag": "Extra bag price"
+    },
+    "fare": {
+      "refundable": "Refundable",
+      "nonRefundable": "Non-refundable",
+      "changeable": "Changeable",
+      "nonChangeable": "Non-changeable",
+      "changeFee": "Change fee: {{fee}}",
+      "cancelFee": "Cancellation fee: {{fee}}"
+    },
+    "flex": {
+      "title": "Flexible dates",
+      "subtitle": "Prices for the same route on dates close to your trip",
+      "save": "💡 Save {{amount}} if you travel on {{date}}",
+      "yourTrip": "Your trip"
+    },
+    "why": "Why is this a good deal?",
+    "notes": "Notes",
+    "alert": {
+      "title": "Create a price alert",
+      "contactRequired": "Enter a phone number or email",
+      "intro": "We'll notify you when the price of {{route}} drops below this budget.",
+      "done": "Done! We'll notify you when the price of {{route}} drops below {{budget}} {{currency}}",
+      "contactLabel": "Phone number or email",
+      "contactPlaceholder": "01000000000 or you@email.com",
+      "budgetLabel": "Maximum budget ({{currency}})",
+      "creating": "Creating...",
+      "create": "Create alert",
+      "failed": "Something went wrong, please try again"
+    }
+  },
+  "tripgo": {
+    "steps": {
+      "flight": "Flight",
+      "pickup": "Pickup location",
+      "transfer": "Transfer details",
+      "passengers": "Passengers",
+      "review": "Review trip",
+      "payment": "Payment"
+    },
+    "notAvailable": "This TripGo trip is unavailable",
+    "notFound": "TripGo trip not found",
+    "loadFailed": "Something went wrong while loading the trip. Please try again.",
+    "backTo": "Back to TripGo",
+    "unavailableNow": "Sorry, this trip or its transfer service is no longer available.",
+    "confirmGone": "Sorry, this TripGo trip is no longer available.",
+    "createFailed": "We couldn't create your booking. Please try again or contact us.",
+    "ticketPlusTransfer": "Ticket + transfer",
+    "validation": {
+      "pickup": "Enter the pickup address (home / hotel)",
+      "name": "Enter your full name",
+      "traveler": "Enter the name of traveler {{n}} as it appears on the passport",
+      "noCar": "No car is currently available for this time slot",
+      "seatsFewer": "Available seats ({{available}}) are fewer than the number of travelers ({{needed}})"
+    },
+    "flight": {
+      "airline": "Airline",
+      "stops": "Stops",
+      "duration": "Duration",
+      "durationValue": "{{hours}} h",
+      "transferIncluded": "✓ Airport transfers included"
+    },
+    "pickup": {
+      "intro": "Where should we pick you up to take you to the airport?",
+      "addressLabel": "Pickup address (home / hotel)",
+      "addressPlaceholder": "e.g. Apt 12, Nile Tower, Mohandessin",
+      "areaLabel": "Area / district (optional)",
+      "areaPlaceholder": "e.g. Mohandessin, Giza"
+    },
+    "transfer": {
+      "intro": "Transfer coordination details — so your driver is waiting for you at exactly the right time.",
+      "flightLabel": "Flight number (optional)",
+      "flightPlaceholder": "e.g. MS 123",
+      "yourAddress": "Your address",
+      "toAirport": "{{pickup}} → Airport",
+      "fromAirport": "Airport → {{city}}",
+      "kindLine": "Transport: {{kind}}",
+      "pickupTime": " · Approximate pickup time: {{time}}"
+    },
+    "passengers": {
+      "seatsInTransport": "Seats currently available on this transport: {{count}}"
+    },
+    "review": {
+      "title": "Review your TripGo trip",
+      "flightTicket": "Flight ticket",
+      "transfer": "Airport transfers",
+      "total": "TripGo trip total",
+      "estimateWarning": "⚠️ The price is an estimate and not final — pressing \"Confirm TripGo booking\" sends a booking request to the agency, who will contact you to confirm the price, seat and pickup details before actual payment."
+    },
+    "payment": {
+      "manual": "Payment is manual — complete the transfer, then send the receipt via WhatsApp after the agency confirms."
+    },
+    "submit": {
+      "confirming": "Confirming your TripGo trip...",
+      "confirm": "Confirm TripGo booking"
+    },
+    "whatsappHelp": "Need to confirm pickup details on WhatsApp? Contact us"
   }
 }

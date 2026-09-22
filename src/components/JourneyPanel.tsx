@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 
 import { Badge } from "./ui/Badge";
-import { formatPrice } from "../lib/utils";
 import type { BookingLookupResult } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 const ITEM_TYPE_ICON: Record<string, string> = {
   flight: "✈",
@@ -40,6 +40,7 @@ export function JourneyPanel({
   currency: string;
 }) {
   const { t } = useTranslation("booking");
+  const { fmt } = useCurrency();
   if (journey.items.length === 0) return null;
 
   return (
@@ -64,7 +65,7 @@ export function JourneyPanel({
             </div>
             <div className="mt-1 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
               <span>{item.supplier_name ?? t("journey.supplierPending")}</span>
-              <span>{formatPrice(item.customer_price, currency)}</span>
+              <span>{fmt(item.customer_price, currency)}</span>
             </div>
           </li>
         ))}

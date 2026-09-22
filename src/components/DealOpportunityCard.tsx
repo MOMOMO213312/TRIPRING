@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -10,11 +11,12 @@ import {
   seatsLeftLabel,
   stopsMetaLabel,
 } from "../lib/deal-utils";
-import { cn, formatPrice } from "../lib/utils";
+import { cn } from "../lib/utils";
 import type { AgencyRow, AirlineRow, AirportRow, DealRow } from "../types/database";
 import { DealCountdown } from "./DealCountdown";
 import { DealScoreRing } from "./DealScoreRing";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
 
 type Props = {
   deal: DealRow;
@@ -38,6 +40,8 @@ export function DealOpportunityCard({
   comparing,
   onToggleCompare,
 }: Props) {
+  const { t } = useTranslation("search");
+  const { fmt } = useCurrency();
   const airline = airlines.find((a) => a.code === deal.airline_code);
   const toAirport = airports.find((a) => a.code === deal.to_airport);
   const agency = agencies.find((a) => a.id === deal.agency_id);
@@ -73,7 +77,7 @@ export function DealOpportunityCard({
                 comparing ? "bg-[#0C7BB3] text-white" : "bg-white/95 text-slate-700 hover:bg-white",
               )}
             >
-              {comparing ? "✓ في المقارنة" : "قارن"}
+              {comparing ? t("home:dealCard.comparing") : t("home:dealCard.compare")}
             </button>
           ) : null}
           <DealCountdown expiresAt={deal.expires_at} />
@@ -115,7 +119,7 @@ export function DealOpportunityCard({
           <span className="font-medium">{airlineName(deal.airline_code, airlines)}</span>
           {agency?.is_active ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-[#E5F4FB] px-1.5 py-0.5 text-[10px] font-semibold text-[#0C7BB3]">
-              موثّق
+              {t("home:dealCard.verified")}
             </span>
           ) : null}
         </div>
@@ -133,12 +137,12 @@ export function DealOpportunityCard({
         <div className="mt-1 flex items-end justify-between gap-3 border-t border-slate-100 pt-3">
           <div className="min-w-0">
             <p className="font-latin text-xl font-extrabold text-[#0C7BB3]">
-              {formatPrice(deal.price, deal.currency ?? "USD")}
+              {fmt(deal.price, deal.currency ?? "USD")}
             </p>
             {priceDrop ? (
               <p className="mt-0.5 flex items-center gap-1 text-[11px] font-semibold text-[#16A34A]">
                 <span aria-hidden>↓</span>
-                انخفض {priceDrop.percent}% خلال آخر 7 أيام
+                {t("card.priceDrop", { percent: priceDrop.percent })}
               </p>
             ) : (
               <p className="mt-0.5 text-[11px] text-slate-400">
@@ -153,7 +157,7 @@ export function DealOpportunityCard({
           <div className="flex flex-wrap items-center gap-1.5">
             {deal.refundable ? (
               <span className="rounded-full bg-[#F0FDF4] px-1.5 py-0.5 text-[10px] font-semibold text-[#16A34A]">
-                قابلة للاسترداد
+                {t("home:dealCard.refundable")}
               </span>
             ) : null}
             {baggageBadgeLabel(deal) ? (
@@ -165,7 +169,7 @@ export function DealOpportunityCard({
         <div className="mt-auto flex flex-col gap-2 pt-1">
           {deal.available_seats <= 0 ? (
             <Button fullWidth variant="primary" disabled onClick={(e) => e.stopPropagation()}>
-              نفدت المقاعد
+              {t("home:dealCard.soldOut")}
             </Button>
           ) : (
             <Button
@@ -176,7 +180,7 @@ export function DealOpportunityCard({
                 navigate(`/deals/${deal.id}`);
               }}
             >
-              عرض التفاصيل
+              {t("home:dealCard.viewDetails")}
             </Button>
           )}
         </div>

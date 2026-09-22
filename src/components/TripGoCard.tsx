@@ -5,8 +5,9 @@ import { useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
 import { transferKindLabel, tripGoTotal } from "../lib/tripgo";
 import { airlineName, airportLabel, baggageBadgeLabel, stopsMetaLabel } from "../lib/deal-utils";
-import { formatDate, formatPrice, formatTime } from "../lib/utils";
+import { formatDate, formatTime } from "../lib/utils";
 import type { TripGoBundleJoined } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 /**
  * The primary TripGo product card, driven entirely by a real `tripgo_bundles`
@@ -16,6 +17,7 @@ import type { TripGoBundleJoined } from "../types/database";
  */
 export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; catalog: Catalog }) {
   const { t } = useTranslation("tripgo");
+  const { fmt } = useCurrency();
   const { deal, tripgo_deal: transport } = bundle;
   const imageUrl = useDealImage(deal.to_airport, catalog, deal.id);
   const currency = deal.currency ?? "USD";
@@ -107,7 +109,7 @@ export function TripGoCard({ bundle, catalog }: { bundle: TripGoBundleJoined; ca
         {/* Price */}
         <div className="mt-4 flex items-end justify-between border-t border-slate-100 pt-4">
           <div>
-            <p className="font-latin text-2xl font-extrabold text-[#0C7BB3]">{formatPrice(total, currency)}</p>
+            <p className="font-latin text-2xl font-extrabold text-[#0C7BB3]">{fmt(total, currency)}</p>
             <p className="text-[11px] font-semibold text-slate-500">{t("card.priceNote")}</p>
           </div>
           <span className="rounded-xl bg-[#0F172A] px-4 py-2.5 text-sm font-bold text-white transition group-hover:bg-[#1E3A8A]">

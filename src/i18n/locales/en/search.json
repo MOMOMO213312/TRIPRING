@@ -21,5 +21,31 @@
     "resetButton": "Reset filters"
   },
   "loading": "Loading...",
-  "loadError": "There was an error loading the results, please try again."
+  "loadError": "There was an error loading the results, please try again.",
+  "card": {
+    "priceDrop": "Down {{percent}}% in the last 7 days",
+    "scoreLabel": "Deal Score {{score}} out of 100"
+  },
+  "chips": {
+    "cheapest": "Lowest price",
+    "direct": "Non-stop",
+    "allFilters": "+ All filters"
+  },
+  "compare": {
+    "durationH": "{{h}} h",
+    "durationHM": "{{h}} h {{m}} m",
+    "no": "✕ No",
+    "remove": "Remove ✕",
+    "row": {
+      "price": "Price",
+      "airline": "Airline",
+      "stops": "Stops",
+      "duration": "Flight duration",
+      "baggage": "Baggage",
+      "refundable": "Refundable",
+      "seats": "Available seats"
+    },
+    "title": "Compare deals",
+    "yes": "✓ Yes"
+  }
 }

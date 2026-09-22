@@ -9,8 +9,14 @@
     "subtitle": "خصومات دائمة + خدمات مجانية + أولوية إشعارات"
   },
   "tabs": {
-    "services": { "title": "الخدمات", "subtitle": "اطلب أي خدمة منفردة بسعرها" },
-    "packages": { "title": "الباقات", "subtitle": "باقات متكاملة بسعر أقل من الطلب المنفرد" }
+    "services": {
+      "title": "الخدمات",
+      "subtitle": "اطلب أي خدمة منفردة بسعرها"
+    },
+    "packages": {
+      "title": "الباقات",
+      "subtitle": "باقات متكاملة بسعر أقل من الطلب المنفرد"
+    }
   },
   "servicesBanner": {
     "bold": "خدمة منفردة:",
@@ -23,8 +29,14 @@
   "category": {
     "transport": "النقل",
     "airport": "المطار",
-    "destination": { "title": "خدمات الوجهة", "subtitle": "تجارب وخدمات مرتبطة بوجهتك" },
-    "insurance": { "title": "تأمين السفر", "subtitle": "تأمين أساسي أو شامل لرحلتك" }
+    "destination": {
+      "title": "خدمات الوجهة",
+      "subtitle": "تجارب وخدمات مرتبطة بوجهتك"
+    },
+    "insurance": {
+      "title": "تأمين السفر",
+      "subtitle": "تأمين أساسي أو شامل لرحلتك"
+    }
   },
   "loadingServices": "جاري تحميل الخدمات...",
   "noServicesInCategory": "لا توجد خدمات متاحة في هذا القسم حالياً",
@@ -36,12 +48,26 @@
   "startsFromYourChoice": "يبدأ حسب اختيارك",
   "explorePackage": "استكشف الباقة",
   "packages": {
-    "vip": { "subtitle": "كل خدمات المطار في باقة واحدة شاملة", "badge": "الأشمل" },
-    "arrival": { "subtitle": "استقبال VIP وانتقال مريح من المطار" },
-    "departure": { "subtitle": "انتقال للمطار مع Fast Track عند السفر" },
-    "family": { "subtitle": "انتقال يناسب العائلة مع خدمات الأمتعة" },
-    "business": { "subtitle": "صالة VIP وFast Track وانتقال خاص", "badge": "الأكثر طلباً" },
-    "custom": { "subtitle": "اختر الخدمات اللي تناسبك وكوّن باقتك بنفسك" }
+    "vip": {
+      "subtitle": "كل خدمات المطار في باقة واحدة شاملة",
+      "badge": "الأشمل"
+    },
+    "arrival": {
+      "subtitle": "استقبال VIP وانتقال مريح من المطار"
+    },
+    "departure": {
+      "subtitle": "انتقال للمطار مع Fast Track عند السفر"
+    },
+    "family": {
+      "subtitle": "انتقال يناسب العائلة مع خدمات الأمتعة"
+    },
+    "business": {
+      "subtitle": "صالة VIP وFast Track وانتقال خاص",
+      "badge": "الأكثر طلباً"
+    },
+    "custom": {
+      "subtitle": "اختر الخدمات اللي تناسبك وكوّن باقتك بنفسك"
+    }
   },
   "modal": {
     "quantity": "الكمية",
@@ -79,5 +105,50 @@
     "confirmationBody": "رقم الطلب #{{number}} — هيتواصل معاك فريقنا قريباً لتأكيد التفاصيل والدفع.",
     "confirmationTotal": "الإجمالي: {{amount}}",
     "ok": "تمام"
+  },
+  "budget": {
+    "orLess": "وأقل",
+    "subtitle": "عندك $300؟ نوريك تقدر تروح فين",
+    "title": "💵 سافر حسب ميزانيتك"
+  },
+  "destinationCard": {
+    "priceLabel": "رحلات ذهاب وعودة ابتداءً من"
+  },
+  "destinations": {
+    "dealCount": "{{count}} فرصة متاحة",
+    "emptyHint": "جرّب تتابعنا لاحقًا، بنضيف فرص جديدة باستمرار.",
+    "emptyTitle": "لا توجد وجهات متاحة حاليًا",
+    "errorTitle": "حصل خطأ",
+    "meta": {
+      "description": "استكشف أفضل وجهات السفر المتاحة الآن على TripRing، مع أرخص أسعار الطيران الفعلية لكل وجهة.",
+      "title": "أفضل وجهات السفر وأسعار الطيران — TripRing"
+    },
+    "subtitle": {
+      "count": "{{count}} وجهة متاحة الآن بأسعار حقيقية من فرص TripRing الحية",
+      "empty": "تصفح كل الوجهات المتاحة حاليًا على TripRing بأسعار حقيقية ومحدثة"
+    },
+    "title": "وجهات السفر"
+  },
+  "routes": {
+    "emptyHint": "جرّب تتابعنا لاحقًا، بنضيف خطوط جديدة باستمرار.",
+    "emptyTitle": "لا توجد خطوط متاحة حاليًا",
+    "errorTitle": "حصل خطأ",
+    "meta": {
+      "description": "تصفح كل خطوط الطيران المتاحة على TripRing مع أرخص سعر حقيقي لكل خط سير.",
+      "title": "خطوط الطيران وأسعارها — TripRing"
+    },
+    "noLiveDeal": "لا يوجد عرض حي حاليًا",
+    "startsFrom": "يبدأ من",
+    "subtitle": {
+      "count": "{{count}} خط سير متاح، بأسعار حقيقية محدثة أول بأول",
+      "empty": "تصفح كل خطوط الطيران المتاحة على TripRing"
+    },
+    "title": "خطوط الطيران"
+  },
+  "travelTo": {
+    "from": "من",
+    "fromCity": "من {{city}}",
+    "subtitle": "اختار الدولة، وبعدين المدينة، وهنكمّلك البحث على طول",
+    "title": "✈️ اختر وجهتك"
   }
 }

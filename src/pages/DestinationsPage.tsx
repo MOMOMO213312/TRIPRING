@@ -1,38 +1,42 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { CardsSkeleton } from "../components/LoadingSkeleton";
 import { EmptyState } from "../components/EmptyState";
 import { fetchActiveDeals, getDestinationImage } from "../lib/api";
-import { formatPrice } from "../lib/utils";
+
 import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog } from "../hooks/useCatalog";
 import { usePageMeta } from "../hooks/usePageMeta";
 import type { AirportRow, DealRow } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
+import { comparablePrice } from "../lib/deal-utils";
 
 type DestinationEntry = {
   airport: AirportRow;
   minPrice: number;
+  /** USD-equivalent of minPrice — what "cheapest" is decided on when deals are in different currencies. */
+  minComparable: number;
   currency: string;
   dealCount: number;
 };
 
 export function DestinationsPage() {
+  const { t } = useTranslation("explore");
+  const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [deals, setDeals] = useState<DealRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  usePageMeta(
-    "أفضل وجهات السفر وأسعار الطيران — TripRing",
-    "استكشف أفضل وجهات السفر المتاحة الآن على TripRing، مع أرخص أسعار الطيران الفعلية لكل وجهة.",
-  );
+  usePageMeta(t("destinations.meta.title"), t("destinations.meta.description"));
 
   useEffect(() => {
     fetchActiveDeals({ sort: "price_asc", availableOnly: true })
       .then(setDeals)
       .catch((e) =>
-        setError(friendlyErrorMessage(e, "حصل خطأ في تحميل الوجهات، جرّب تاني.", "DestinationsPage.loadDeals")),
+        setError(friendlyErrorMessage(e, "explore:destinations.loadFailed", "DestinationsPage.loadDeals")),
       )
       .finally(() => setLoading(false));
   }, []);
@@ -47,18 +51,20 @@ export function DestinationsPage() {
         byAirport.set(airport.code, {
           airport,
           minPrice: deal.price,
+          minComparable: comparablePrice(deal),
           currency: deal.currency ?? "USD",
           dealCount: 1,
         });
       } else {
         existing.dealCount += 1;
-        if (deal.price < existing.minPrice) {
+        if (comparablePrice(deal) < existing.minComparable) {
           existing.minPrice = deal.price;
+          existing.minComparable = comparablePrice(deal);
           existing.currency = deal.currency ?? "USD";
         }
       }
     }
-    return [...byAirport.values()].sort((a, b) => a.minPrice - b.minPrice);
+    return [...byAirport.values()].sort((a, b) => a.minComparable - b.minComparable);
   }, [deals, catalog.airports]);
 
   const isLoading = loading || catalog.loading;
@@ -66,20 +72,20 @@ export function DestinationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">وجهات السفر</h1>
+        <h1 className="text-2xl font-bold text-slate-900">{t("destinations.title")}</h1>
         <p className="mt-1 text-sm text-slate-600">
           {destinations.length > 0
-            ? `${destinations.length} وجهة متاحة الآن بأسعار حقيقية من فرص TripRing الحية`
-            : "تصفح كل الوجهات المتاحة حاليًا على TripRing بأسعار حقيقية ومحدثة"}
+            ? t("destinations.subtitle.count", { count: destinations.length })
+            : t("destinations.subtitle.empty")}
         </p>
       </div>
 
       {isLoading ? (
         <CardsSkeleton count={8} />
       ) : error ? (
-        <EmptyState title="حصل خطأ" subtitle={error} />
+        <EmptyState title={t("destinations.errorTitle")} subtitle={error} />
       ) : destinations.length === 0 ? (
-        <EmptyState title="لا توجد وجهات متاحة حاليًا" subtitle="جرّب تتابعنا لاحقًا، بنضيف فرص جديدة باستمرار." />
+        <EmptyState title={t("destinations.emptyTitle")} subtitle={t("destinations.emptyHint")} />
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {destinations.map(({ airport, minPrice, currency, dealCount }) => {
@@ -106,10 +112,10 @@ export function DestinationsPage() {
                 <div className="absolute bottom-0 start-0 end-0 p-3">
                   <p className="text-base font-bold text-white">{airport.city}</p>
                   <p className="mt-0.5 text-xs text-white/70">
-                    {airport.country} · {dealCount} فرصة متاحة
+                    {airport.country} · {t("destinations.dealCount", { count: dealCount })}
                   </p>
                   <p className="font-latin mt-1 text-lg font-extrabold text-white">
-                    {formatPrice(minPrice, currency)}
+                    {fmt(minPrice, currency)}
                   </p>
                 </div>
               </Link>

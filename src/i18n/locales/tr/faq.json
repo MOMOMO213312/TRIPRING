@@ -1,0 +1,209 @@
+{
+  "title": "Sık Sorulan Sorular",
+  "intro": "TripRing'i kullanma, rezervasyon ve ödeme hakkında bilmeniz gereken her şey.",
+  "sections": [
+    {
+      "title": "TripRing hakkında",
+      "items": [
+        {
+          "q": "TripRing tam olarak nedir? Geleneksel uçuş rezervasyon sitelerinden farkı nedir?",
+          "a": "TripRing sıradan bir uçuş arama motoru değil — bir seyahat fırsatı keşif platformudur. Size mevcut tüm uçuşları göstermek yerine, fiyatları aynı rotadaki olağan seviyeleriyle karşılaştırarak analiz eder ve yalnızca gerçekten değer olan fırsatları gösteririz; her fırsatın neden iyi olduğunu anlatan net bir Deal Score ile birlikte."
+        },
+        {
+          "q": "TripRing'i kullanmanın bir maliyeti var mı?",
+          "a": "Hayır. Fırsatlara göz atmak, arama yapmak ve fiyatları karşılaştırmak tamamen ücretsizdir. Her fırsatta gördüğünüz fiyat, rezervasyon için gereken nihai fiyattır — TripRing gizli bir hizmet bedeli eklemez."
+        },
+        {
+          "q": "Deal Score nedir ve nasıl hesaplanır?",
+          "a": "Her fırsat için 100 üzerinden verilen bir puandır; fiyatın aynı rotadaki olağan fiyatına göre durumu, sağlanan tasarruf oranı ve koltuk durumuna dayanır. Sayı ne kadar yüksekse fırsat o kadar güçlüdür."
+        },
+        {
+          "q": "Bileti bana TripRing mi satıyor?",
+          "a": "Hayır. TripRing, sizi iş ortağı seyahat acenteleriyle buluşturan bir pazaryeridir — gördüğünüz her fırsat belirli bir acente tarafından yayınlanır ve fiyatı ile koltuğu onaylamaktan ve gerçek bileti düzenlemekten o acente sorumludur. TripRing platformu ve takibi sağlar, ancak nihai ticari ilişki sizinle acente arasındadır."
+        },
+        {
+          "q": "Normal fırsatlar ile Blue Friday arasındaki fark nedir?",
+          "a": "Blue Friday, en güçlü fırsatları ve indirimleri sınırlı bir süre boyunca tek bir yerde topladığımız dönemsel bir indirim sezonudur. Rezervasyon ve ödeme mantığı tamamen aynıdır; ancak fiyatlar ve teklifler daha yoğun ve daha özenle seçilmiştir."
+        }
+      ]
+    },
+    {
+      "title": "Arama ve fırsat seçimi",
+      "items": [
+        {
+          "q": "Gösterilen fiyat kesin ve sabit mi?",
+          "a": "Fiyat, fırsata baktığınız andaki haliyle gösterilir; ancak her sınırlı seyahat fırsatında olduğu gibi, rezervasyonu tamamlamadan önce fiyat değişebilir veya koltuk tükenebilir — özellikle geri sayım sayacı ya da sınırlı koltuk sayısı olan fırsatlarda. Her fırsatta kalan koltukları ve süreyi size gösteririz ve rezervasyon talebini gönderdiğiniz anda fiyatı ve müsaitliği yeniden kontrol ederiz."
+        },
+        {
+          "q": "Fırsat sayfasındaki üç paket (Basic / Smart / Premium) arasındaki fark nedir?",
+          "a": "Bunlar, aynı uçak biletinin üzerine eklenen farklı esneklik ve hizmet seviyeleridir — değişiklik yapabilme, bagaj ve öncelik gibi konularda fırsata göre farklılık gösterirler. Rezervasyona devam etmeden önce seyahat tarzınıza uygun paketi seçin; fiyat seçiminize göre otomatik olarak güncellenir."
+        },
+        {
+          "q": "Biletime ek hizmetler ekleyebilir miyim?",
+          "a": "Evet. Her fırsatın sayfasında, rezervasyona devam etmeden önce isteğe bağlı hizmetler (ek bagaj veya aynı fırsatta sunulan diğer hizmetler gibi) ekleyebilirsiniz; fiyatları toplama otomatik olarak eklenir."
+        },
+        {
+          "q": "Fırsat sayfasındaki 'esnek tarihler' nedir?",
+          "a": "Fiyat farkı tarihinizi değiştirmeye değecek kadar büyükse, aynı rotanın seyahatinize yakın tarihlerdeki (bir iki gün farkla) fiyatlarını gösteririz."
+        },
+        {
+          "q": "Aktarma olup olmadığını ve ayrıntılarını nasıl öğrenirim?",
+          "a": "Fırsat ayrıntıları sayfası size aktarma sayısını, her aktarmanın süresini ve farklıysa yolculuğun her bölümünden sorumlu havayolunu gösterir."
+        }
+      ]
+    },
+    {
+      "title": "Rezervasyon",
+      "items": [
+        {
+          "q": "'Rezervasyonu onayla'ya bastığımda bu gerçek bir rezervasyon mu yoksa sadece bir talep mi?",
+          "a": "'Rezervasyonu onayla'ya basmak, fırsattan sorumlu acenteye bir rezervasyon talebi gönderir — anında onaylanmış bir bilet değildir. Acente, nihai fiyatı ve koltuk müsaitliğini onaylamak için sizinle iletişime geçer, ardından ödeme ve bilet düzenleme adımlarına devam eder. Gördüğünüz her fırsatta, siz onaylamadan önce bunun bir rezervasyon talebi olduğu açıkça belirtilir."
+        },
+        {
+          "q": "Rezervasyon sırasında neden pasaport bilgilerimi girmem gerekiyor?",
+          "a": "Yolcu bilgileri (pasaporttaki ad, doğum tarihi, pasaport numarası) havayolundan gerçek bileti düzenlemek için gereklidir ve yalnızca seyahatinizden sorumlu acente ile paylaşılır."
+        },
+        {
+          "q": "Çocuk ve bebek fiyatı nasıl hesaplanır?",
+          "a": "Her yaş grubunun (yetişkin, çocuk, bebek) aynı fırsatta gösterilen ayrı bir fiyatı vardır — rezervasyon sayfasındaki toplam, girdiğiniz her gruptaki kişi sayısına göre otomatik olarak güncellenir."
+        },
+        {
+          "q": "Rezervasyon talebini gönderdikten sonra bir yolcunun bilgilerinde hata yaptım, ne yapmalıyım?",
+          "a": "Bilet düzenlenmeden önce, rezervasyonunuzdan sorumlu acenteyle hemen iletişime geçin (acentenin WhatsApp numarası rezervasyon onay sayfasında ve 'Seyahatlerim' bölümünde bulunur) ki bilgileri düzeltebilsinler."
+        }
+      ]
+    },
+    {
+      "title": "Ödeme",
+      "items": [
+        {
+          "q": "Nasıl ödeme yaparım?",
+          "a": "Şu anda banka havalesi, InstaPay ve Vodafone Cash desteklenmektedir. Ödeme yöntemini rezervasyonu tamamlarken seçersiniz ve ödeme bilgilerini (hesap/cüzdan numarası) aynı adımda bulursunuz."
+        },
+        {
+          "q": "Acente rezervasyonu onaylamadan önce mi yoksa sonra mı ödeme yapmalıyım?",
+          "a": "Acente nihai fiyatı ve koltuğun gerçekten müsait olduğunu onaylamadan hiçbir havale göndermeyin. Onaydan sonra, seçtiğiniz ödeme yöntemiyle havaleyi tamamlayın."
+        },
+        {
+          "q": "Parayı gönderdikten sonra ne yapmalıyım?",
+          "a": "Havale dekontunun fotoğrafını doğrudan rezervasyon onay sayfasından (veya 'Seyahatlerim' sayfasından) yükleyin ya da acentenin WhatsApp'ına gönderin. Acente kanıtı inceler ve ödemenin alındığını onaylar."
+        },
+        {
+          "q": "Ödeme neden manuel, neden kartla çevrimiçi ödeme yok?",
+          "a": "Mevcut yöntem, acentelerin sunduğu ve ödemeden önce fiyatın ve koltuğun insan tarafından onaylanmasını gerektiren özel ve pazarlıklı fırsatları destekler. Gelecekte ödeme yöntemlerini genişletmek için çalışıyoruz."
+        },
+        {
+          "q": "Havale yaptıktan sonra fırsat iptal olursa veya fiyat değişirse ne olur?",
+          "a": "Acente koltuğu müsait bulamazsa ya da fiyat değişmişse, bunu ödeme yapmanızdan önce size bildirmesi gerekir — ancak havaleden sonra bir anlaşmazlık çıkarsa, çözmek için doğrudan acenteyle iletişime geçin; çünkü rezervasyonun yerine getirilmesinden sorumlu taraf odur."
+        }
+      ]
+    },
+    {
+      "title": "Rezervasyon sonrası ve durum takibi",
+      "items": [
+        {
+          "q": "Rezervasyonumun durumunu nasıl takip ederim?",
+          "a": "'Seyahatlerim' sayfasından — rezervasyon numaranızı, rezervasyon sırasında girdiğiniz telefon numarası veya e-posta ile birlikte girin; güncel durumu ve tüm ayrıntıları görürsünüz."
+        },
+        {
+          "q": "Rezervasyon aşamaları tam olarak nelerdir?",
+          "a": "Rezervasyon şu aşamalardan geçer: Yeni (iletişim bekleniyor) ← Sizinle iletişime geçildi ← Ödeme bekleniyor ← Ödeme kanıtı alındı ← Ödeme onaylandı ← Bilet düzenlendi. Rezervasyonunuzu her aşamada 'Seyahatlerim' bölümünden görebilirsiniz."
+        },
+        {
+          "q": "Biletimi nasıl alırım?",
+          "a": "Acente ödemeyi onaylayıp bileti düzenledikten sonra, 'Seyahatlerim' sayfasında rezervasyonunuzun yanında bilet indirme bağlantısını bulursunuz."
+        },
+        {
+          "q": "Rezervasyonun onaylanması ne kadar sürer?",
+          "a": "Fırsattan sorumlu acentenin yanıt hızına göre değişir. Bir gecikme olduğunu düşünürseniz, aynı rezervasyon sayfasından acenteyle doğrudan WhatsApp üzerinden iletişime geçebilirsiniz."
+        },
+        {
+          "q": "Rezervasyon numaramı unuttum, ne yapmalıyım?",
+          "a": "Aynı cihaz ve tarayıcıdan rezervasyon yaptıysanız, rezervasyon onay sayfası son rezervasyonunuzu hatırlar ve numarasını gösterir. Aksi halde, rezervasyon sırasında size gelen WhatsApp mesajlarına veya e-postalara bakın."
+        }
+      ]
+    },
+    {
+      "title": "İptal, iade ve değişiklik",
+      "items": [
+        {
+          "q": "Rezervasyondan sonra biletimi iptal edebilir veya değiştirebilir miyim?",
+          "a": "İptal ve iade politikası, her fırsattan sorumlu havayolunun ve acentenin şartlarına göre değişir ve fırsat ayrıntıları sayfasında yazılıdır (iade edilebilir/değiştirilebilir olup olmadığı ve varsa her durumun ücreti). Rezervasyondan önce inceleyin; rezervasyon sonrası herhangi bir değişiklik için doğrudan acenteyle iletişime geçin."
+        },
+        {
+          "q": "Değişiklik veya iptal için ücret var mı?",
+          "a": "Bir fırsatta değişiklik veya iptal ücreti varsa, rezervasyon yapmadan önce fırsat ayrıntıları sayfasında açıkça gösterilir."
+        }
+      ]
+    },
+    {
+      "title": "Acenteler ve güven",
+      "items": [
+        {
+          "q": "Platformda görünen acenteler güvenilir mi?",
+          "a": "Yalnızca iş ortağı seyahat acentelerinin fırsatlarını gösteririz ve her acentenin doğrulama durumunu mümkün olduğunca net belirtmeye çalışırız. Ödemeyi tamamlamadan önce her zaman fırsat ayrıntılarını ve acentenin değerlendirmelerini inceleyin."
+        },
+        {
+          "q": "Acentenin önceki müşterilerinin değerlendirmelerini görebilir miyim?",
+          "a": "Evet. Her fırsat ayrıntıları sayfasının en altında, aynı acenteyle daha önce çalışmış müşterilerin gerçek değerlendirmelerini ve yorumlarını bulursunuz."
+        },
+        {
+          "q": "Bir acenteyle sorun yaşıyorum, kimle iletişime geçmeliyim?",
+          "a": "Önce rezervasyonunuzdan sorumlu acenteyle doğrudan WhatsApp üzerinden iletişime geçin (bağlantı fırsat sayfasında ve rezervasyon onay sayfasında bulunur); çünkü rezervasyonun ve biletin yerine getirilmesinden sorumlu taraf odur."
+        }
+      ]
+    },
+    {
+      "title": "TripGo (bilet + ulaşım)",
+      "items": [
+        {
+          "q": "TripGo tam olarak nedir?",
+          "a": "Uçak biletini + havalimanına ve havalimanından ulaşımı tek bir rezervasyonda, tek bir fiyatla birleştiren bir üründür; rezervasyondan sonra ulaşımı kendiniz ayarlamanız gerekmez."
+        },
+        {
+          "q": "TripGo'da ulaşım aracı nasıl belirleniyor?",
+          "a": "Her TripGo fırsatı, aynı acentenin belirli bir ulaşım aracıyla (özel araç veya paylaşımlı ulaşım) önceden eşleştirilmiş olarak gelir; rezervasyondan önce türünü ve fiyatını net biçimde görürsünüz."
+        },
+        {
+          "q": "Rezervasyondan sonra karşılama noktasını değiştirebilir miyim?",
+          "a": "Karşılama yerini veya saatini değiştirmek için seyahat tarihinden önce mümkün olan en kısa sürede seyahatinizden sorumlu acenteyle iletişime geçin."
+        }
+      ]
+    },
+    {
+      "title": "Fiyat uyarıları ve yeniden satış",
+      "items": [
+        {
+          "q": "Fiyat Alarmları (Price Alerts) nasıl çalışır?",
+          "a": "Aynı rotadaki herhangi bir fırsatın sayfasından rotayı ve beklediğiniz bütçeyi belirlersiniz; sistem bu bütçenin altına düşen yeni fiyatları izler. Bu özelliğin otomatik iletim yöntemini hâlâ geliştiriyoruz; bu nedenle anlık bildirimleri tam olarak etkinleştirene kadar şimdilik 'Seyahatlerim' bölümünü veya ilgilendiğiniz rotayı düzenli olarak kontrol etmeniz en iyisidir."
+        },
+        {
+          "q": "Bilet yeniden satış pazarı nedir?",
+          "a": "Onaylı bir biletiniz varsa ve seyahat edemiyorsanız, TripRing üzerinden yeniden satışa çıkarabilirsiniz; diğer yolcular da satın alabilir. Biletin geçerliliğinin doğrulanması ve rezervasyonun devri her iki tarafın sorumluluğundadır; TripRing yalnızca platformu sağlar."
+        }
+      ]
+    },
+    {
+      "title": "Hesap ve gizlilik",
+      "items": [
+        {
+          "q": "Rezervasyon için hesap açmam gerekiyor mu?",
+          "a": "Hayır, rezervasyon için giriş yapmanız gerekmez — bilgilerinizi rezervasyon sırasında doğrudan girersiniz ve durumunu daha sonra 'Seyahatlerim' sayfasından rezervasyon numarası ile telefon veya e-postanızla takip edersiniz."
+        },
+        {
+          "q": "Verilerim ve pasaport bilgilerim güvende mi?",
+          "a": "Yalnızca rezervasyonu tamamlamak için gerekli verileri toplarız ve bileti düzenleyebilmesi için yalnızca seyahatinizden sorumlu acenteyle paylaşırız. Tüm ayrıntılar için Gizlilik Politikası'na bakın."
+        }
+      ]
+    },
+    {
+      "title": "Acenteler için",
+      "items": [
+        {
+          "q": "Bir seyahat acentesiyim ve seyahatlerimi TripRing'de listelemek istiyorum, ne yapmalıyım?",
+          "a": "Acentelerin katılımı şu anda, hesap etkinleştirilmeden önce TripRing ekibiyle doğrudan koordinasyonla gerçekleştirilmektedir. Katılım sürecini başlatmak için platformdan sorumlu ekiple iletişime geçin."
+        }
+      ]
+    }
+  ]
+}

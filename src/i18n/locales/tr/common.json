@@ -33,7 +33,13 @@
     "agencyPortal": "Acente Paneli",
     "affiliatePortal": "Ortaklık Paneli",
     "becomeSupplier": "Tedarikçi Ol",
-    "copyright": "© {{year}} TripRing — Seyahat Fırsatları Pazarı"
+    "copyright": "© {{year}} TripRing — Seyahat Fırsatları Pazarı",
+    "fxAttribution": "Tahmini döviz kurları:"
+  },
+  "currency": {
+    "label": "Görüntüleme para birimi",
+    "pick": "Görüntüleme para birimini seç",
+    "disclaimer": "Gösterilen fiyatlar güncel kura göre tahminidir — ödeme para birimi rezervasyon sırasında belirlenir."
   },
   "actions": {
     "save": "Kaydet",
@@ -70,5 +76,33 @@
     "privateWith": "🚗 Özel araç · {{vehicle}}",
     "shared": "🚐 Paylaşımlı transfer",
     "sharedWith": "🚐 Paylaşımlı transfer · {{vehicle}}"
+  },
+  "notifications": {
+    "bell": "Bildirimler",
+    "publicTitle": "Fırsatlar, haberler ve güncellemeler",
+    "loading": "Yükleniyor...",
+    "empty": "Şu anda bildirim yok",
+    "types": {
+      "flash_deal": "Flaş fırsat",
+      "site_announcement": "Duyuru",
+      "airport_info": "Havalimanı bilgisi",
+      "circular": "Bildirim"
+    }
+  },
+  "airportAutocomplete": {
+    "placeholder": "Şehir veya havalimanı",
+    "anyDestination": "Herhangi bir yer"
+  },
+  "errorBoundary": {
+    "title": "Beklenmedik bir hata oluştu",
+    "body": "Bu sayfa görüntülenirken geçici bir sorun var. Ana sayfaya dönmeyi deneyin; sorun devam ederse bizimle iletişime geçin.",
+    "home": "Ana sayfaya dön"
+  },
+  "betaNotice": "Site hâlâ test aşamasında — gösterilen bazı uçuşlar yeni veri kaynaklarının denemesinin parçası olduğundan her ayrıntı henüz kesin olmayabilir.",
+  "ticker": {
+    "dismiss": "Gizle"
+  },
+  "errors": {
+    "catalogLoadFailed": "Site verileri yüklenemedi, lütfen tekrar deneyin."
   }
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 // "تواريخ مرنة" (flexible dates) was removed from here — it linked to
@@ -6,11 +7,12 @@ import { useNavigate } from "react-router-dom";
 // the query across a date range, not just the single-deal ±3-day view on
 // DealDetailPage) needs real implementation before this chip comes back.
 const CHIPS = [
-  { icon: "💰", label: "أقل سعر", sort: "price_asc" },
-  { icon: "✈️", label: "بدون توقف", stops: "direct" },
+  { icon: "💰", id: "cheapest", sort: "price_asc" },
+  { icon: "✈️", id: "direct", stops: "direct" },
 ] as const;
 
 export function SmartFilterChips() {
+  const { t } = useTranslation("search");
   const navigate = useNavigate();
 
   function go(chip: (typeof CHIPS)[number]) {
@@ -23,9 +25,9 @@ export function SmartFilterChips() {
   return (
     <div className="scrollbar-none -mt-1 flex gap-2 overflow-x-auto px-4 pb-1 sm:justify-center sm:px-0">
       {CHIPS.map((chip) => (
-        <button key={chip.label} type="button" onClick={() => go(chip)} className="smart-chip">
+        <button key={chip.id} type="button" onClick={() => go(chip)} className="smart-chip">
           <span aria-hidden>{chip.icon}</span>
-          {chip.label}
+          {t(`chips.${chip.id}`)}
         </button>
       ))}
       <button
@@ -33,7 +35,7 @@ export function SmartFilterChips() {
         onClick={() => navigate("/deals")}
         className="smart-chip border-dashed text-slate-500"
       >
-        + كل الفلاتر
+        {t("chips.allFilters")}
       </button>
     </div>
   );

@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import type { AdvancedFilters, DurationBucket, TimeSlot } from "../lib/filters";
 import { EMPTY_FILTERS } from "../lib/filters";
-import { formatPrice } from "../lib/utils";
 import { REGIONS, regionLabel } from "../lib/regions";
 import type { AirlineRow, StopType } from "../types/database";
 import { Button } from "./ui/Button";
+import { useCurrency } from "../hooks/useCurrency";
 
 const TIME_SLOT_ICONS: Record<TimeSlot, string> = {
   "6am_12pm": "☀️",
@@ -45,6 +45,7 @@ export function DealsSidebarFilters({
   onClose,
 }: Props) {
   const { t } = useTranslation("filters");
+  const { fmtIn } = useCurrency();
   const [airlineSearch, setAirlineSearch] = useState("");
 
   const STOP_OPTIONS: { value: StopType | ""; label: string }[] = [
@@ -136,8 +137,8 @@ export function DealsSidebarFilters({
             />
           </div>
           <div className="font-latin mt-3 flex items-center justify-between text-xs font-semibold text-slate-600">
-            <span>{formatPrice(minPrice, currency)}</span>
-            <span>{formatPrice(maxPrice, currency)}{maxPrice >= priceBounds.max ? "+" : ""}</span>
+            <span>{fmtIn(minPrice, currency)}</span>
+            <span>{fmtIn(maxPrice, currency)}{maxPrice >= priceBounds.max ? "+" : ""}</span>
           </div>
         </div>
       </FilterSection>

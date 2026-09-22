@@ -14,8 +14,8 @@ import { friendlyErrorMessage } from "../lib/errors";
 import { useCatalog, useDealImage } from "../hooks/useCatalog";
 import type { Catalog } from "../hooks/useCatalog";
 import { findRegion, regionAirportCodes, regionLabel, REGIONS } from "../lib/regions";
-import { formatPrice } from "../lib/utils";
 import type { DealRow, DealType } from "../types/database";
+import { useCurrency } from "../hooks/useCurrency";
 
 const VALID_DEAL_TYPES: DealType[] = ["flash", "last_minute", "empty_seat", "special_fare"];
 const PAGE_SIZE = 30;
@@ -23,6 +23,7 @@ type SortKey = "price_asc" | "price_desc";
 
 export function DealsCenterPage() {
   const { t } = useTranslation(["dealsCenter", "filters"]);
+  const { fmt } = useCurrency();
   const catalog = useCatalog();
   const [searchParams] = useSearchParams();
   const [deals, setDeals] = useState<DealRow[]>([]);
@@ -34,19 +35,29 @@ export function DealsCenterPage() {
   const [sort, setSort] = useState<SortKey>("price_asc");
   const [priceDrops, setPriceDrops] = useState<Map<string, { percent: number; amount: number }>>(new Map());
 
-  // Real min/max active price — fetched once so the sidebar slider never
-  // shows an invented range. Falls back to a wide-open [0, +inf] window
-  // until it resolves, so the UI is never blocked on it.
-  const [priceBounds, setPriceBounds] = useState({ min: 0, max: 100000 });
+  // Real min/max active price — fetched once (in USD, the only unit comparable across deals) so the sidebar
+  // slider never shows an invented range. The slider itself runs in the visitor's display currency and is
+  // converted back to USD when querying. If no rate exists for the display currency it falls back to USD.
+  const { currency: displayCurrency, usdToDisplay, displayToUsd, fmtIn } = useCurrency();
+  const [boundsUsd, setBoundsUsd] = useState({ min: 0, max: 100000 });
+  const sliderCurrency = usdToDisplay(1) != null ? displayCurrency : "USD";
+  const toSlider = (usd: number) => (sliderCurrency === "USD" ? usd : (usdToDisplay(usd) ?? usd));
+  const fromSlider = (amount: number) => (sliderCurrency === "USD" ? amount : (displayToUsd(amount) ?? amount));
+  const priceBounds = useMemo(
+    () => ({ min: Math.floor(toSlider(boundsUsd.min)), max: Math.ceil(toSlider(boundsUsd.max)) }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [boundsUsd.min, boundsUsd.max, sliderCurrency, usdToDisplay],
+  );
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
   useEffect(() => {
-    fetchActivePriceBounds().then(({ min, max }) => {
-      setPriceBounds({ min, max });
-      setMinPrice(min);
-      setMaxPrice(max);
-    });
+    fetchActivePriceBounds().then(setBoundsUsd);
   }, []);
+  // New bounds (first load, or the visitor switched currency) => reset the slider to the full range in the new unit.
+  useEffect(() => {
+    setMinPrice(priceBounds.min);
+    setMaxPrice(priceBounds.max);
+  }, [priceBounds.min, priceBounds.max]);
 
   // Destination entry point (see UX spec: each pick — region, then budget,
   // then stop-type — reshapes the page into a narrower curated view instead
@@ -87,8 +98,8 @@ export function DealsCenterPage() {
     fetchActiveDealsPage({
       sort,
       toAirports: toAirportCodes.length ? toAirportCodes : undefined,
-      minPrice: minPrice > priceBounds.min ? minPrice : undefined,
-      maxPrice: maxPrice < priceBounds.max ? maxPrice : undefined,
+      minPriceUsd: minPrice > priceBounds.min ? fromSlider(minPrice) : undefined,
+      maxPriceUsd: maxPrice < priceBounds.max ? fromSlider(maxPrice) : undefined,
       availableOnly: true,
       page: 0,
       pageSize: PAGE_SIZE,
@@ -109,8 +120,8 @@ export function DealsCenterPage() {
     fetchActiveDealsPage({
       sort,
       toAirports: toAirportCodes.length ? toAirportCodes : undefined,
-      minPrice: minPrice > priceBounds.min ? minPrice : undefined,
-      maxPrice: maxPrice < priceBounds.max ? maxPrice : undefined,
+      minPriceUsd: minPrice > priceBounds.min ? fromSlider(minPrice) : undefined,
+      maxPriceUsd: maxPrice < priceBounds.max ? fromSlider(maxPrice) : undefined,
       availableOnly: true,
       page: nextPage,
       pageSize: PAGE_SIZE,
@@ -129,7 +140,7 @@ export function DealsCenterPage() {
   const filtered = useMemo(() => applyAdvancedFilters(deals, filters), [deals, filters]);
   const availableAirlines = useMemo(() => airlinesInDeals(deals, catalog.airlines), [deals, catalog.airlines]);
   const activeFilterCount = countActiveFilters(filters) + (isPriceNarrowed ? 1 : 0);
-  const currency = deals[0]?.currency ?? "EGP";
+  const currency = sliderCurrency;
 
   if (catalog.loading) return <p className="text-slate-500">{t("dealsCenter:loading")}</p>;
 
@@ -208,7 +219,7 @@ export function DealsCenterPage() {
               }}
               className="smart-chip smart-chip-active font-latin"
             >
-              {formatPrice(minPrice, currency)} - {formatPrice(maxPrice, currency)} ✕
+              {fmtIn(minPrice, currency)} - {fmtIn(maxPrice, currency)} ✕
             </button>
           ) : null}
           {isDirectOnly ? (
